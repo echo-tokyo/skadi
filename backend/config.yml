@@ -1,0 +1,7 @@
+server:
+  port: 8080 # server port
+  shutdown_timeout: 5s # timeout to force shutdown server after receiving an OS signal
+
+logging:
+  log_level: 1 # 1 - debug, 2 - info (default), 3 - warn, 4 - error
+  json_format: true # use JSON format if true

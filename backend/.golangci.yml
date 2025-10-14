@@ -1,0 +1,98 @@
+version: "2"
+
+run:
+  tests: false
+
+linters:
+  default: none
+  enable:
+    - asciicheck
+    - bodyclose
+    - copyloopvar
+    - cyclop
+    - dogsled
+    - dupl
+    - errcheck
+    - errorlint
+    - funlen
+    - ginkgolinter
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - godox
+    - goprintffuncname
+    - gosec
+    - ineffassign
+    - lll
+    - makezero
+    - misspell
+    - mnd
+    - nakedret
+    - nestif
+    - noctx
+    - prealloc
+    - revive
+    - unconvert
+    - unparam
+    - unused
+    - varnamelen
+    - whitespace
+
+  settings:
+    cyclop:
+      max-complexity: 10
+    errorlint:
+      comparison: true
+    goconst:
+      ignore-string-values: .*?%s|%v|%w.*
+      numbers: true
+      ignore-calls: false
+    gocritic:
+      enable-all: true
+    gocyclo:
+      min-complexity: 10
+    lll:
+      line-length: 99
+    nestif:
+      min-complexity: 3
+    prealloc:
+      simple: false
+      for-loops: true
+    whitespace:
+      multi-func: true
+
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - bin
+    # rules:
+    #   - linters: # struct tags
+    #       - lll
+    #     path: internal/app/template/controller/http/v1
+    #     text: "The line is 1[0-9][0-9] characters long, which exceeds the maximum of 99 characters"
+    #   - linters: # struct tags
+    #       - lll
+    #     path: internal/app/entity
+    #     text: "The line is 1[0-9][0-9] characters long, which exceeds the maximum of 99 characters"
+    #   - linters: # nolint description
+    #       - lll
+    #     path: internal/pkg/validator
+    #     text: "The line is 1[0-9][0-9] characters long, which exceeds the maximum of 99 characters"
+
+issues:
+  fix: false
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - docs
