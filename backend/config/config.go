@@ -15,7 +15,7 @@ type (
 	Config struct {
 		Server  `yaml:"server"`
 		Logging `yaml:"logging"`
-		DB
+		DB      `yaml:"db"`
 	}
 
 	Server struct {
@@ -30,12 +30,13 @@ type (
 	}
 
 	DB struct {
-		DSN      string
-		User     string `env-required:"true" env:"DB_USER"`
-		Password string `env-required:"true" env:"DB_PASSWORD"`
-		Name     string `env-required:"true" env:"DB_NAME"`
-		Host     string `env:"DB_HOST" env-default:"127.0.0.1"`
-		Port     string `env:"DB_PORT" env-default:"3306"`
+		DSN           string
+		User          string `env-required:"true" env:"DB_USER"`
+		Password      string `env-required:"true" env:"DB_PASSWORD"`
+		Name          string `env-required:"true" env:"DB_NAME"`
+		Host          string `env:"DB_HOST" env-default:"127.0.0.1"`
+		Port          string `env:"DB_PORT" env-default:"3306"`
+		MigrationsURL string `yaml:"migrations_url"`
 	}
 )
 
@@ -65,7 +66,7 @@ func New() (*Config, error) {
 	dbConnParams := fmt.Sprintf("tcp(%s:%s)", cfg.DB.Host, cfg.DB.Port)
 	// collect DSN string
 	cfg.DB.DSN = fmt.Sprintf(
-		"%s:%s@%s/%s?parseTime=true&timeout=10s",
+		"%s:%s@%s/%s?parseTime=true&timeout=5s",
 		cfg.DB.User,
 		cfg.DB.Password,
 		dbConnParams,

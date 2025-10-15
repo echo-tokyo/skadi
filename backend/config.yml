@@ -5,3 +5,6 @@ server:
 logging:
   log_level: 1 # 1 - debug, 2 - info (default), 3 - warn, 4 - error
   json_format: true # use JSON format if true
+
+db:
+  migrations_url: file://migrations # path to dir with db migrations
