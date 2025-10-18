@@ -1,28 +1,43 @@
 import js from '@eslint/js'
 import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+import pluginReact from 'eslint-plugin-react'
+import { defineConfig } from 'eslint/config'
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default defineConfig([
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+    languageOptions: { globals: globals.browser },
+  },
+  {
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'default-case': 'warn',
+      'no-console': 'warn',
+      'no-alert': 'warn',
+      'prefer-arrow-callback': 'warn',
+      'no-var': 'warn',
+      'no-duplicate-case': 'warn',
+      'no-extra-boolean-cast': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      'react/jsx-key': 'warn',
+      'object-shorthand': 'warn',
+      'prefer-const': 'warn',
+      'no-trailing-spaces': 'warn',
+      eqeqeq: 'warn',
+      'arrow-parens': ['warn', 'always'],
+      curly: 'warn',
+      'no-else-return': 'warn',
+      quotes: ['warn', 'single'],
+      semi: ['warn', 'never'],
+      'comma-dangle': ['warn', 'always-multiline'],
+      indent: ['warn', 2],
     },
   },
-)
+  tseslint.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  pluginReact.configs.flat['jsx-runtime'],
+])

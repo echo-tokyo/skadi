@@ -1,6 +1,7 @@
 import { Button } from '@/shared/ui'
+import { ReactNode } from 'react'
 
-const MainPage = () => {
+const MainPage = (): ReactNode => {
   return <Button text='test' onClick={() => console.log('hi')} />
 }
 

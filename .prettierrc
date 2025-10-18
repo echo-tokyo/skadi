@@ -5,6 +5,7 @@
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
   "trailingComma": "all",
+  "printWidth": 80,
   "bracketSpacing": true,
   "arrowParens": "always",
   "endOfLine": "auto"
