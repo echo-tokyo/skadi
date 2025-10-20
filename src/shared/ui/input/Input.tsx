@@ -2,7 +2,7 @@ import { ReactNode, ChangeEvent } from 'react'
 
 interface IProps {
   placeholder: string
-  value: string | number
+  value: string
   onChange: (value: string) => void
 }
 
