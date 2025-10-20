@@ -1,13 +1,13 @@
 import { ReactNode } from 'react'
 
 interface IProps {
-  text?: string
+  children: ReactNode
   onClick?: () => void
 }
 
 const Button = (props: IProps): ReactNode => {
-  const { text, onClick } = props
-  return <button onClick={onClick}>{text}</button>
+  const { children, onClick } = props
+  return <button onClick={onClick}>{children}</button>
 }
 
 export default Button
