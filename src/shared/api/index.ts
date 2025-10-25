@@ -1,1 +1,1 @@
-export { apiHttp } from './http/api-http.ts'
+export { baseApi } from './base-api'

@@ -1,7 +1,7 @@
 import { Button } from '@/shared/ui'
-import { ReactNode } from 'react'
+import { FC, ReactNode } from 'react'
 
-const MainPage = (): ReactNode => {
+const MainPage: FC = (): ReactNode => {
   return <Button onClick={() => console.log('hi')}>Test</Button>
 }
 
