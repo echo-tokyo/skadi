@@ -1,0 +1,20 @@
+@import './variables.scss';
+
+body,
+html,
+#root {
+  height: 100%;
+  font-family: var(--font-family-primary);
+  color: var(--color-text-primary);
+  margin: 0;
+  overflow: hidden;
+}
+
+.wrapper {
+  padding: 0 2rem;
+  height: calc(100% - 56px);
+}
+
+* {
+  box-sizing: border-box;
+}

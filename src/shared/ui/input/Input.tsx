@@ -1,20 +1,59 @@
 import { ReactNode, ChangeEvent } from 'react'
+import { getUIClasses } from '@/shared/lib/classNames'
+import styles from './styles.module.scss'
+import commonStyles from '../styles/common.module.scss'
 
 interface IProps {
-  placeholder: string
   value: string
+  title?: string
+  placeholder?: string
+  fluid?: boolean
+  size?: 's' | 'm'
+  disabled?: boolean
+  type?: 'text | password'
   onChange: (value: string) => void
 }
 
 const Input = (props: IProps): ReactNode => {
-  const { placeholder, value, onChange } = props
+  const {
+    placeholder = 'Ввод...',
+    title,
+    value,
+    disabled,
+    type = 'text',
+    fluid,
+    size = 'm',
+    onChange,
+  } = props
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     onChange(e.target.value)
   }
 
+  const wrapperClassName = getUIClasses(
+    styles.wrapper,
+    { fluid },
+    commonStyles,
+  )
+
+  const inputClassName = getUIClasses(
+    styles.input,
+    { size },
+    commonStyles,
+  )
+
   return (
-    <input value={value} onChange={handleChange} placeholder={placeholder} />
+    <div className={wrapperClassName}>
+      {title && <p className={styles.input_title}>{title}</p>}
+      <input
+        value={value}
+        type={type}
+        disabled={disabled}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className={inputClassName}
+      />
+    </div>
   )
 }
 
