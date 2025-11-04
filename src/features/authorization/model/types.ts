@@ -1,4 +1,4 @@
-export type TRole = 'USER | ADMIN | SUPER_ADMIN' | null
+export type TRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN' | null
 
 export interface ISignInFormData {
   login: string

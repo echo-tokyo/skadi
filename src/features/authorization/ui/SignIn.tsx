@@ -6,8 +6,12 @@ import styles from './styles.module.scss'
 export const SignIn: FC = (): ReactNode => {
   const [login, setLogin] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const { signIn, isLoading } = useSignIn()
+  const { signIn } = useSignIn()
   const { wrapper, auth } = styles
+
+  const handleSignInClick = (): void => {
+    signIn({ login, password })
+  }
 
   return (
     <div className={wrapper}>
@@ -26,8 +30,8 @@ export const SignIn: FC = (): ReactNode => {
           value={password}
           onChange={setPassword}
         />
-        <Button fluid onClick={() => signIn({ login, password })}>
-          {isLoading ? 'Загрузка...' : 'Войти'}
+        <Button fluid onClick={handleSignInClick}>
+          Войти
         </Button>
       </form>
     </div>

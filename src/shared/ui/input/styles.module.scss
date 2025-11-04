@@ -1,23 +1,49 @@
 .wrapper {
   width: 16rem;
+  position: relative;
 }
 
 .input {
   border: 1px solid var(--color-gray-light);
   background-color: var(--color-gray-ultra-light);
+  font-family: 'Montserrat', sans-serif;
   color: var(--color-secondary);
-  font-size: 1rem;
-  padding: 0;
+  font-size: 14px;
   border-radius: 0.5rem;
   outline: none;
   width: 100%;
+  transition: border-color 0.2s ease-in-out;
+
+  &:hover:not(:disabled) {
+    border-color: rgba(128, 128, 128, 0.315);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transition: opacity 0.2s ease-in-out;
+  }
 }
 
 .input_title {
   margin: 0;
   margin-bottom: 0.25rem;
+  font-size: 12px;
+  color: var(--color-secondary);
+  transition: color 0.2s ease-in-out;
+  font-weight: 400;
 }
 
 .input::placeholder {
-  color: var(--color-gray-light);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  color: var(--color-gray);
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.input:focus::placeholder {
+  opacity: 0.5;
+  transform: translateX(4px);
 }

@@ -11,7 +11,9 @@ export const useSignIn = () => {
   const [signInMutation, { isLoading, error }] = useSignInMutation()
   const dispatch = useAppDispatch()
 
-  const signIn = async (formData: ISignInFormData): Promise<IAuthResponse> => {
+  const signIn = async (
+    formData: ISignInFormData,
+  ): Promise<IAuthResponse> => {
     try {
       const result = await signInMutation(formData).unwrap()
       dispatch(

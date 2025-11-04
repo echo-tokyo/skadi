@@ -17,7 +17,10 @@ const authSlice = createSlice({
   initialState,
 
   reducers: {
-    setCredentials: (state, { payload }: PayloadAction<ICredentials>) => {
+    setCredentials: (
+      state,
+      { payload }: PayloadAction<ICredentials>,
+    ) => {
       state.token = payload.token
       state.isAuthenticated = true
       localStorage.setItem('token', payload.token)

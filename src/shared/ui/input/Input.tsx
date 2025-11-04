@@ -17,7 +17,7 @@ interface IProps {
 const Input = (props: IProps): ReactNode => {
   const {
     placeholder = 'Ввод...',
-    title,
+    title = 'Введите значение',
     value,
     disabled,
     type = 'text',
