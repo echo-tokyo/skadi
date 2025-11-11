@@ -6,12 +6,16 @@ export interface ISignInFormData {
 }
 
 export interface IAuthResponse {
-  token: string
+  accessToken: string
   role: TRole
 }
 
+export interface IRefreshResponse {
+  accessToken: string
+}
+
 export interface IAuthState {
-  token: string | null
+  accessToken: string | null
   isAuthenticated: boolean
   role: TRole
 }

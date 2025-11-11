@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { IAuthState, TRole } from '@/features/authorization'
 
 const initialState: IAuthState = {
-  token: localStorage.getItem('token') || null,
-  isAuthenticated: !!localStorage.getItem('token'),
+  accessToken: null,
+  isAuthenticated: false,
   role: null,
 }
 
 interface ICredentials {
-  token: string
+  accessToken: string
   role: TRole
 }
 
@@ -21,20 +21,24 @@ const authSlice = createSlice({
       state,
       { payload }: PayloadAction<ICredentials>,
     ) => {
-      state.token = payload.token
+      state.accessToken = payload.accessToken
       state.isAuthenticated = true
-      localStorage.setItem('token', payload.token)
       state.role = payload.role
     },
 
+    setAccessToken: (state, { payload }: PayloadAction<string>) => {
+      state.accessToken = payload
+      state.isAuthenticated = true
+    },
+
     logout: (state) => {
-      state.token = null
+      state.accessToken = null
       state.isAuthenticated = false
-      localStorage.removeItem('token')
       state.role = null
     },
   },
 })
 
-export const { setCredentials, logout } = authSlice.actions
+export const { setCredentials, setAccessToken, logout } =
+  authSlice.actions
 export default authSlice.reducer
