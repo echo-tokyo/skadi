@@ -4,13 +4,11 @@ import { setCredentials } from '../model/auth-slice'
 import { ISignInFormData } from '../model/types'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useAuthorization = () => {
-  const [signInMutation] = useSignInMutation()
+export const useSignIn = () => {
+  const [signInMutation, { isLoading }] = useSignInMutation()
   const dispatch = useAppDispatch()
 
-  const handleSignIn = async (
-    formData: ISignInFormData,
-  ): Promise<void> => {
+  const signIn = async (formData: ISignInFormData): Promise<void> => {
     try {
       const result = await signInMutation(formData).unwrap()
 
@@ -26,5 +24,5 @@ export const useAuthorization = () => {
     }
   }
 
-  return { handleSignIn }
+  return { signIn, isLoading }
 }

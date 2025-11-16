@@ -10,6 +10,13 @@ import { Mutex } from 'async-mutex'
 interface IRefreshResponse {
   accessToken: string
 }
+export interface IAuthActions {
+  onTokenRefresh: (accessToken: string) => {
+    type: string
+    payload: string
+  }
+  onAuthFailure: () => { type: string }
+}
 
 const mutex = new Mutex()
 
@@ -29,14 +36,6 @@ const baseQuery = fetchBaseQuery({
     return headers
   },
 })
-
-export interface IAuthActions {
-  onTokenRefresh: (accessToken: string) => {
-    type: string
-    payload: string
-  }
-  onAuthFailure: () => { type: string }
-}
 
 let authActions: IAuthActions | null = null
 
