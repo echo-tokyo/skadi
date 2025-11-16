@@ -1,19 +1,16 @@
-import { useAppDispatch } from '@/app/store/hooks'
-import {
-  IAuthResponse,
-  ISignInFormData,
-  setCredentials,
-  useSignInMutation,
-} from '@/features/authorization'
+import { useAppDispatch } from '@/shared/lib/hooks'
+import { useSignInMutation } from '../api/auth-api'
+import { setCredentials } from '../model/auth-slice'
+import { ISignInFormData } from '../model/types'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useSignIn = () => {
-  const [signInMutation, { isLoading, error }] = useSignInMutation()
+export const useAuthorization = () => {
+  const [signInMutation] = useSignInMutation()
   const dispatch = useAppDispatch()
 
-  const signIn = async (
+  const handleSignIn = async (
     formData: ISignInFormData,
-  ): Promise<IAuthResponse> => {
+  ): Promise<void> => {
     try {
       const result = await signInMutation(formData).unwrap()
 
@@ -23,14 +20,11 @@ export const useSignIn = () => {
           role: result.role,
         }),
       )
-
-      return result
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Login failed:', err)
-      throw err
     }
   }
 
-  return { signIn, isLoading, error }
+  return { handleSignIn }
 }

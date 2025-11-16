@@ -1,16 +1,16 @@
 import { Button, Input } from '@/shared/ui'
 import { FC, ReactNode, useState } from 'react'
-import { useSignIn } from '@/features/authorization'
 import styles from './styles.module.scss'
+import { useAuthorization } from '../lib/UseAuthirization'
 
 export const SignIn: FC = (): ReactNode => {
   const [login, setLogin] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const { signIn } = useSignIn()
   const { wrapper, auth } = styles
+  const { handleSignIn } = useAuthorization()
 
   const handleSignInClick = (): void => {
-    signIn({ login, password })
+    handleSignIn({ login, password })
   }
 
   return (

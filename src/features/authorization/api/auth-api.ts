@@ -1,4 +1,4 @@
-import { baseApi } from '@/app/api'
+import { baseApi } from '@/shared/api'
 import type {
   ISignInFormData,
   IAuthResponse,

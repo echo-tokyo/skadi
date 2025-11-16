@@ -18,7 +18,4 @@ export type {
   TRole,
 } from './model/types'
 
-export { useSignIn } from './lib/use-sign-in'
-export { useLogout } from './lib/use-logout'
-
 export { SignIn } from './ui/SignIn.tsx'

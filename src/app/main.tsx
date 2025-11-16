@@ -3,8 +3,8 @@ import { RouterProvider } from 'react-router'
 import { Provider } from 'react-redux'
 import { router } from './routes'
 import { store } from './store/store'
-import Header from '@/widgets/header'
 import '@/app/styles/app.scss'
+import Header from '@/widgets/header'
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
