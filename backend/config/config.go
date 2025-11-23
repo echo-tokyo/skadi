@@ -9,7 +9,22 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-const _infoLevel = 2 // info log level (default log level)
+const (
+	// server
+	_defServerPort      = "8080"      // default server port
+	_defShutdownTimeout = time.Minute // default server shutdown timeout
+
+	// logging
+	_defLogLevel   = 2     // default log level (info)
+	_defJSONFormat = false // default log JSON-format
+
+	// db
+	_defDBUser        = "test_user"         // default db user
+	_defDBName        = "test_db"           // default database name
+	_defDBHost        = "127.0.0.1"         // default db host
+	_defDBPort        = "3306"              // default db port
+	_defMigrationsURL = "file://migrations" // default migrations URL (dir ./migrations)
+)
 
 type (
 	Config struct {
@@ -31,28 +46,40 @@ type (
 
 	DB struct {
 		DSN           string
-		User          string `env-required:"true" env:"DB_USER"`
+		User          string `yaml:"user"`
 		Password      string `env-required:"true" env:"DB_PASSWORD"`
-		Name          string `env-required:"true" env:"DB_NAME"`
-		Host          string `env:"DB_HOST" env-default:"127.0.0.1"`
-		Port          string `env:"DB_PORT" env-default:"3306"`
+		Name          string `yaml:"name"`
+		Host          string `yaml:"host"`
+		Port          string `yaml:"port"`
 		MigrationsURL string `yaml:"migrations_url"`
 	}
 )
 
+// NewDefault returns a new instance of Config with default data.
+func NewDefault() *Config {
+	return &Config{
+		Server: Server{
+			Port:            _defServerPort,
+			ShutdownTimeout: _defShutdownTimeout,
+		},
+		Logging: Logging{
+			LogLevel:   _defLogLevel,
+			JSONFormat: _defJSONFormat,
+		},
+		DB: DB{
+			User:          _defDBUser,
+			Name:          _defDBName,
+			Host:          _defDBHost,
+			Port:          _defDBPort,
+			MigrationsURL: _defMigrationsURL,
+		},
+	}
+}
+
 // Returns app config loaded from YAML-file.
 func New() (*Config, error) {
 	// fill with default values (for settings in yaml-file)
-	cfg := &Config{
-		Server: Server{
-			Port:            "8080",
-			ShutdownTimeout: time.Minute,
-		},
-		Logging: Logging{
-			LogLevel:   _infoLevel,
-			JSONFormat: false,
-		},
-	}
+	cfg := NewDefault()
 
 	// read YAML config file
 	if err := cleanenv.ReadConfig("./config.yml", cfg); err != nil {
@@ -63,13 +90,13 @@ func New() (*Config, error) {
 		return nil, fmt.Errorf("read env-variables: %w", err)
 	}
 
-	dbConnParams := fmt.Sprintf("tcp(%s:%s)", cfg.DB.Host, cfg.DB.Port)
+	dbAddr := fmt.Sprintf("tcp(%s:%s)", cfg.DB.Host, cfg.DB.Port)
 	// collect DSN string
 	cfg.DB.DSN = fmt.Sprintf(
 		"%s:%s@%s/%s?parseTime=true&timeout=5s",
 		cfg.DB.User,
 		cfg.DB.Password,
-		dbConnParams,
+		dbAddr,
 		cfg.DB.Name,
 	)
 	return cfg, nil
