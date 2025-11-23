@@ -14,7 +14,7 @@ type SampleStruct struct {
 func TestTagValidator_WithError(t *testing.T) {
 	t.Log("Validate struct and get error")
 
-	valid, err := New()
+	valid, err := NewTagValidator()
 	require.NoError(t, err)
 	sample := &SampleStruct{
 		Login:    "",

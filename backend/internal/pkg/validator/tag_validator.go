@@ -21,8 +21,8 @@ type TagValidator struct {
 	translator        ut.Translator
 }
 
-// New returns new instance of TagValidator.
-func New() (*TagValidator, error) {
+// NewTagValidator returns new instance of TagValidator.
+func NewTagValidator() (*TagValidator, error) {
 	enTranslator := en.New()
 	uni := ut.New(enTranslator, enTranslator)
 	trans, _ := uni.GetTranslator("en")
@@ -57,5 +57,5 @@ func (v TagValidator) Validate(s any) error {
 		transtaledStringSlice = append(transtaledStringSlice, strings.ToLower(v))
 	}
 
-	return errors.New(strings.Join(transtaledStringSlice, " && "))
+	return fmt.Errorf("%w: %s", ErrValidate, strings.Join(transtaledStringSlice, "\n"))
 }

@@ -9,16 +9,16 @@ import (
 )
 
 const (
-	_debugLevel = 1 // debug log level
-	_infoLevel  = 2 // info log level
-	_errorLevel = 4 // error log level
+	_debugLevel  = 1 // debug log level
+	_infoLevel   = 2 // info log level
+	_silentLevel = 5 // silent log level
 )
 
 // slogParams represents params for default slog logger.
 type slogParams struct {
 	// JSON logs format if true else text (by default)
 	jsonFormat bool
-	// Logs level (1 - debug, 2 - info, 3 - warn, 4 - error)
+	// Logs level (1 - debug, 2 - info, 3 - warn, 4 - error, 5 - silent)
 	level int
 	// Output writer
 	out io.Writer
@@ -41,6 +41,12 @@ func InitSlog(options ...SlogOption) {
 	// apply custom options
 	for _, option := range options {
 		option(params)
+	}
+
+	if params.level == _silentLevel {
+		devNullLog := slog.New(slog.NewJSONHandler(io.Discard, nil))
+		slog.SetDefault(devNullLog)
+		return
 	}
 
 	// options for slog with log level
@@ -74,9 +80,9 @@ func WithJSONFormat() SlogOption {
 
 // Set log level for slog logger.
 // Appplies default level (2 - info) if invalid value was given.
-// Accepts values: 1 - debug, 2 - info, 3 - warn, 4 - error.
+// Accepts values: 1 - debug, 2 - info, 3 - warn, 4 - error, 5 - silent.
 func WithLogLevel(level int) SlogOption {
-	if level < _debugLevel || level > _errorLevel {
+	if level < _debugLevel || level > _silentLevel {
 		level = _infoLevel
 	}
 	return func(s *slogParams) {
