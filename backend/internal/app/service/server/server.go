@@ -20,6 +20,17 @@ type Server struct {
 	fiberApp *fiber.App
 }
 
+//	@title			scadi API
+//	@version		1.0.0
+//	@description	HTTP API онлайн-сервиса для IT-школы.
+//
+//	@host			127.0.0.1:8000
+//	@basePath		/api/v1
+//	@schemes		http
+//
+//	@accept			json
+//	@produce		json
+//
 // New returns a new instance of server.
 func New(cfg *config.Config /*, dbStorage *gorm.DB */) (*Server, error) {
 	// fiber init
@@ -27,7 +38,7 @@ func New(cfg *config.Config /*, dbStorage *gorm.DB */) (*Server, error) {
 		ready: make(chan struct{}),
 		cfg:   cfg,
 		fiberApp: fiber.New(fiber.Config{
-			ServerHeader:  "MeteoMonitoring",
+			ServerHeader:  "Scadi",
 			StrictRouting: false,
 		}),
 	}
