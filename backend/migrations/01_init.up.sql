@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS user CASCADE;
+
+CREATE TABLE user (
+    id BINARY(16) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    password BLOB NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+    is_teacher BOOLEAN NOT NULL DEFAULT FALSE,
+    is_student BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT user_pk PRIMARY KEY (id),
+    UNIQUE INDEX uni_user_username (username)
+);

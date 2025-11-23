@@ -19,11 +19,11 @@ const (
 	_defJSONFormat = false // default log JSON-format
 
 	// db
-	_defDBUser        = "test_user"         // default db user
-	_defDBName        = "test_db"           // default database name
-	_defDBHost        = "127.0.0.1"         // default db host
-	_defDBPort        = "3306"              // default db port
-	_defMigrationsURL = "file://migrations" // default migrations URL (dir ./migrations)
+	_defDBUser       = "test_user"         // default db user
+	_defDBName       = "test_db"           // default database name
+	_defDBHost       = "127.0.0.1"         // default db host
+	_defDBPort       = "3306"              // default db port
+	_defMigrationSrc = "file://migrations" // default migrations source URL (dir ./migrations)
 )
 
 type (
@@ -45,13 +45,20 @@ type (
 	}
 
 	DB struct {
-		DSN           string
-		User          string `yaml:"user"`
-		Password      string `env-required:"true" env:"DB_PASSWORD"`
-		Name          string `yaml:"name"`
-		Host          string `yaml:"host"`
-		Port          string `yaml:"port"`
-		MigrationsURL string `yaml:"migrations_url"`
+		User      string `yaml:"user"`
+		Password  string `env-required:"true" env:"DB_PASSWORD"`
+		Name      string `yaml:"name"`
+		Host      string `yaml:"host"`
+		Port      string `yaml:"port"`
+		DSN       string
+		Migration Migration `yaml:"migration"`
+	}
+
+	Migration struct {
+		// URL to migrations source
+		Src string `yaml:"src"`
+		// URL to connect to DB to migrates
+		DB string
 	}
 )
 
@@ -67,11 +74,13 @@ func NewDefault() *Config {
 			JSONFormat: _defJSONFormat,
 		},
 		DB: DB{
-			User:          _defDBUser,
-			Name:          _defDBName,
-			Host:          _defDBHost,
-			Port:          _defDBPort,
-			MigrationsURL: _defMigrationsURL,
+			User: _defDBUser,
+			Name: _defDBName,
+			Host: _defDBHost,
+			Port: _defDBPort,
+			Migration: Migration{
+				Src: _defMigrationSrc,
+			},
 		},
 	}
 }
@@ -99,5 +108,7 @@ func New() (*Config, error) {
 		dbAddr,
 		cfg.DB.Name,
 	)
+	// collect DB connection URL string for migrate manager
+	cfg.DB.Migration.DB = "mysql://" + cfg.DB.DSN
 	return cfg, nil
 }

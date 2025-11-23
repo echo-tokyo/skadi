@@ -29,7 +29,7 @@ func startMigrator() error {
 	}
 	// create migrate manager
 	migrateManager, err := migrate.NewMySQL(
-		cfg.DB.MigrationsURL, cfg.DB.DSN)
+		cfg.DB.Migration.Src, cfg.DB.Migration.DB)
 	if err != nil {
 		return err
 	}

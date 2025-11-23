@@ -12,7 +12,7 @@ type Migrate interface {
 	Down() error
 	// Step migrates up if n > 0, and down if n < 0.
 	Step(n int) error
-	// Force sets a specific migration version (with dirty mark).
+	// Force sets a specific migration version.
 	Force(n int) error
 	// Close closes connection with database and migrations source.
 	Close() error

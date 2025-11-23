@@ -62,7 +62,7 @@ func (c *MySQL) Step(n int) error {
 	return nil
 }
 
-// Force sets a specific migration version (with dirty mark).
+// Force sets a specific migration version.
 func (c *MySQL) Force(n int) error {
 	err := c.mgrt.Force(n)
 	if err != nil {

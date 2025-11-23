@@ -7,8 +7,9 @@ logging:
   json_format: true # use JSON format if true
 
 db:
-  user: "scadi" # db user
+  user: "test_user" # db user
   name: "scadi" # database name
   host: "127.0.0.1" # db host
   port: 3306 # db port
-  migrations_url: file://migrations # path to dir with db migrations
+  migration:
+    src: file://migrations # URL to dir with db migrations
