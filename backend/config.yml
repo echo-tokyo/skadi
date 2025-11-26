@@ -2,13 +2,22 @@ server:
   port: 8080 # server port
   shutdown_timeout: 2s # timeout to force shutdown server after receiving an OS signal
 
+auth:
+  token:
+    access_expired: 5m # access JWT-token expiration duration
+    refresh_expired: 10m # refresh JWT-token expiration duration
+
 logging:
   log_level: 1 # 1 - debug, 2 - info (default), 3 - warn, 4 - error, 5 - silent
   json_format: true # use JSON format if true
 
+cache:
+  host: "127.0.0.1" # cache host
+  port: 6379 # cache port
+
 db:
   user: "test_user" # db user
-  name: "scadi" # database name
+  name: "skadi" # database name
   host: "127.0.0.1" # db host
   port: 3306 # db port
   migration:

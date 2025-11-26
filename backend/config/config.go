@@ -14,9 +14,17 @@ const (
 	_defServerPort      = "8080"      // default server port
 	_defShutdownTimeout = time.Minute // default server shutdown timeout
 
+	// auth
+	_defAccessJWTExpired  = 5 * time.Minute     // default access token exp duration  (5 minutes)
+	_defRefreshJWTExpired = 24 * 10 * time.Hour // default refresh token exp duration (10 days)
+
 	// logging
 	_defLogLevel   = 2     // default log level (info)
 	_defJSONFormat = false // default log JSON-format
+
+	// cache
+	_defCacheHost = "127.0.0.1" // default cache host
+	_defCachePort = "3306"      // default cache port
 
 	// db
 	_defDBUser       = "test_user"         // default db user
@@ -29,7 +37,9 @@ const (
 type (
 	Config struct {
 		Server  `yaml:"server"`
+		Auth    `yaml:"auth"`
 		Logging `yaml:"logging"`
+		Cache   `yaml:"cache"`
 		DB      `yaml:"db"`
 	}
 
@@ -38,10 +48,26 @@ type (
 		ShutdownTimeout time.Duration `yaml:"shutdown_timeout"`
 	}
 
+	Auth struct {
+		Token Token `yaml:"token"`
+	}
+
+	Token struct {
+		JWTSecret      []byte        `env-required:"true" env:"JWT_SECRET"`
+		AccessExpired  time.Duration `yaml:"access_expired"`
+		RefreshExpired time.Duration `yaml:"refresh_expired"`
+	}
+
 	Logging struct {
 		LogLevel int `yaml:"log_level"`
 		// use JSON format if true
 		JSONFormat bool `yaml:"json_format"`
+	}
+
+	Cache struct {
+		Host       string `yaml:"host"`
+		Port       string `yaml:"port"`
+		ConnString string
 	}
 
 	DB struct {
@@ -69,9 +95,19 @@ func NewDefault() *Config {
 			Port:            _defServerPort,
 			ShutdownTimeout: _defShutdownTimeout,
 		},
+		Auth: Auth{
+			Token: Token{
+				AccessExpired:  _defAccessJWTExpired,
+				RefreshExpired: _defRefreshJWTExpired,
+			},
+		},
 		Logging: Logging{
 			LogLevel:   _defLogLevel,
 			JSONFormat: _defJSONFormat,
+		},
+		Cache: Cache{
+			Host: _defCacheHost,
+			Port: _defCachePort,
 		},
 		DB: DB{
 			User: _defDBUser,
@@ -99,8 +135,10 @@ func New() (*Config, error) {
 		return nil, fmt.Errorf("read env-variables: %w", err)
 	}
 
-	dbAddr := fmt.Sprintf("tcp(%s:%s)", cfg.DB.Host, cfg.DB.Port)
+	// collect cache connection string
+	cfg.Cache.ConnString = fmt.Sprintf("%s:%s", cfg.Cache.Host, cfg.Cache.Port)
 	// collect DSN string
+	dbAddr := fmt.Sprintf("tcp(%s:%s)", cfg.DB.Host, cfg.DB.Port)
 	cfg.DB.DSN = fmt.Sprintf(
 		"%s:%s@%s/%s?parseTime=true&timeout=5s",
 		cfg.DB.User,
