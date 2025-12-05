@@ -6,29 +6,15 @@ import (
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
-// UserClaims represents user claims for JWT-token.
-type UserClaims struct {
-	// user ID
-	UserID string `json:"sub"`
-	// true if user is admin
-	IsAdmin bool `json:"is_admin"`
-	// true if user is teacher
-	IsTeacher bool `json:"is_teacher"`
-	// true if user is student
-	IsStudent bool `json:"is_student"`
-}
-
-// UserClaims represents all token claims for JWT-token.
-// It includes user claims and token expiration datetime in UNIX-format.
+// TokenClaims represents all token claims for JWT-token.
+// It includes token expiration datetime in UNIX-format and any extra claims.
 type TokenClaims struct {
-	*UserClaims
-	Exp int64 `json:"exp"`
+	Exp         int64 `json:"exp"`
+	ExtraClaims any
 }
 
 // GetSubject implements jwt.Claims.
-func (t *TokenClaims) GetSubject() (string, error) {
-	return t.UserID, nil
-}
+func (t *TokenClaims) GetSubject() (string, error) { return "", nil }
 
 // GetExpirationTime implements jwt.Claims.
 func (t *TokenClaims) GetExpirationTime() (*jwt.NumericDate, error) {

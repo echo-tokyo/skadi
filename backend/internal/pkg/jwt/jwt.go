@@ -3,22 +3,21 @@
 package jwt
 
 import (
-	"errors"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 const (
-	_defaultAccessExpired  = 5 * time.Minute     // default access token exp duration  (5 minutes)
-	_defaultRefreshExpired = 24 * 10 * time.Hour // default refresh token exp duration (10 days)
+	_defaultAccessTTL  = 5 * time.Minute     // default access token ttl  (5 minutes)
+	_defaultRefreshTTL = 24 * 10 * time.Hour // default refresh token ttl (10 days)
 )
 
 // Builder represents a JWT-token builder for obtaining tokens.
 type Builder struct {
-	secret         []byte
-	accessExpires  time.Duration
-	refreshExpires time.Duration
+	secret     []byte
+	accessTTL  time.Duration
+	refreshTTL time.Duration
 }
 
 // Option represents an option for Builder initializing.
@@ -27,9 +26,9 @@ type Option func(*Builder)
 // NewBuilder returns a new instance of Builder.
 func NewBuilder(secret []byte, options ...Option) *Builder {
 	builder := &Builder{
-		secret:         secret,
-		accessExpires:  _defaultAccessExpired,
-		refreshExpires: _defaultRefreshExpired,
+		secret:     secret,
+		accessTTL:  _defaultAccessTTL,
+		refreshTTL: _defaultRefreshTTL,
 	}
 
 	// apply all options to customize Builder
@@ -39,49 +38,40 @@ func NewBuilder(secret []byte, options ...Option) *Builder {
 	return builder
 }
 
-// WithAccessExpires sets custom access token expiration duration.
-func WithAccessExpires(exp time.Duration) Option {
+// WithAccessTTL sets custom access token ttl.
+func WithAccessTTL(exp time.Duration) Option {
 	return func(b *Builder) {
-		b.accessExpires = exp
+		b.accessTTL = exp
 	}
 }
 
-// WithRefreshExpires sets custom refresh token with given user claims expiration duration.
-func WithRefreshExpires(exp time.Duration) Option {
+// WithRefreshTTL sets custom refresh token ttl.
+func WithRefreshTTL(exp time.Duration) Option {
 	return func(b *Builder) {
-		b.refreshExpires = exp
+		b.refreshTTL = exp
 	}
 }
 
 // ObtainAccess obtains a new access token with given user claims and returns it.
-func (b *Builder) ObtainAccess(userClaims *UserClaims) (string, error) {
-	return b.obtain(b.accessExpires, userClaims)
+func (b *Builder) ObtainAccess(claims any) (string, error) {
+	return b.obtain(b.accessTTL, claims)
 }
 
 // ObtainRefresh obtains a new refresh token with given user claims and returns it.
-func (b *Builder) ObtainRefresh(userClaims *UserClaims) (string, error) {
-	return b.obtain(b.refreshExpires, userClaims)
+func (b *Builder) ObtainRefresh(claims any) (string, error) {
+	return b.obtain(b.refreshTTL, claims)
 }
 
 // obtain obtains a new token with given user claims and returns it.
-func (b *Builder) obtain(ttl time.Duration, userClaims *UserClaims) (string, error) {
-	claims := &TokenClaims{
-		UserClaims: userClaims,
-		Exp:        time.Now().UTC().Add(ttl).Unix(),
+func (b *Builder) obtain(ttl time.Duration, claims any) (string, error) {
+	tokenClaims := &TokenClaims{
+		ExtraClaims: claims,
+		Exp:         time.Now().UTC().Add(ttl).Unix(),
 	}
-	tokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 	tokenStr, err := tokenObj.SignedString(b.secret)
 	if err != nil {
 		return "", err
 	}
 	return tokenStr, nil
-}
-
-// ParseTokenClaims parses user claims from token object from request.
-func ParseTokenClaims(token *jwt.Token) (*TokenClaims, error) {
-	claims, ok := token.Claims.(*TokenClaims)
-	if !ok {
-		return nil, errors.New("invalid claims")
-	}
-	return claims, nil
 }
