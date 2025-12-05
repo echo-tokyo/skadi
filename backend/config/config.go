@@ -14,9 +14,20 @@ const (
 	_defServerPort      = "8080"      // default server port
 	_defShutdownTimeout = time.Minute // default server shutdown timeout
 
-	// auth
+	// cors
+	_defCorsAllowedOrigins   = "*"   // default allowed origins for cors
+	_defCorsAllowedMethods   = "GET" // default allowed methods for cors
+	_defCorsAllowCredentials = false // default allow credentials value for cors
+
+	// auth token
 	_defAccessJWTExpired  = 5 * time.Minute     // default access token exp duration  (5 minutes)
 	_defRefreshJWTExpired = 24 * 10 * time.Hour // default refresh token exp duration (10 days)
+
+	// auth cookie
+	_defCookiePath     = ""
+	_defCookieSecure   = false
+	_defCookieHTTPOnly = false
+	_defCookieSameSite = ""
 
 	// logging
 	_defLogLevel   = 2     // default log level (info)
@@ -37,7 +48,6 @@ const (
 type (
 	Config struct {
 		Server  `yaml:"server"`
-		Auth    `yaml:"auth"`
 		Logging `yaml:"logging"`
 		Cache   `yaml:"cache"`
 		DB      `yaml:"db"`
@@ -46,16 +56,32 @@ type (
 	Server struct {
 		Port            string        `yaml:"port"`
 		ShutdownTimeout time.Duration `yaml:"shutdown_timeout"`
+		CORS            `yaml:"cors"`
+		Auth            `yaml:"auth"`
+	}
+
+	CORS struct {
+		AllowedOrigins   string `yaml:"allowed_origins"`
+		AllowedMethods   string `yaml:"allowed_methods"`
+		AllowCredentials bool   `yaml:"allow_credentials"`
 	}
 
 	Auth struct {
-		Token Token `yaml:"token"`
+		Token  Token  `yaml:"token"`
+		Cookie Cookie `yaml:"cookie"`
 	}
 
 	Token struct {
-		JWTSecret      []byte        `env-required:"true" env:"JWT_SECRET"`
-		AccessExpired  time.Duration `yaml:"access_expired"`
-		RefreshExpired time.Duration `yaml:"refresh_expired"`
+		JWTSecret  []byte        `env-required:"true" env:"JWT_SECRET"`
+		AccessTTL  time.Duration `yaml:"access_ttl"`
+		RefreshTTL time.Duration `yaml:"refresh_ttl"`
+	}
+
+	Cookie struct {
+		Path     string `yaml:"path"`
+		Secure   bool   `yaml:"secure"`
+		HTTPOnly bool   `yaml:"http_only"`
+		SameSite string `yaml:"same_site"`
 	}
 
 	Logging struct {
@@ -94,11 +120,22 @@ func NewDefault() *Config {
 		Server: Server{
 			Port:            _defServerPort,
 			ShutdownTimeout: _defShutdownTimeout,
-		},
-		Auth: Auth{
-			Token: Token{
-				AccessExpired:  _defAccessJWTExpired,
-				RefreshExpired: _defRefreshJWTExpired,
+			CORS: CORS{
+				AllowedOrigins:   _defCorsAllowedOrigins,
+				AllowedMethods:   _defCorsAllowedMethods,
+				AllowCredentials: _defCorsAllowCredentials,
+			},
+			Auth: Auth{
+				Token: Token{
+					AccessTTL:  _defAccessJWTExpired,
+					RefreshTTL: _defRefreshJWTExpired,
+				},
+				Cookie: Cookie{
+					Path:     _defCookiePath,
+					Secure:   _defCookieSecure,
+					HTTPOnly: _defCookieHTTPOnly,
+					SameSite: _defCookieSameSite,
+				},
 			},
 		},
 		Logging: Logging{

@@ -17,4 +17,5 @@
 
 ```dotenv
 DB_PASSWORD="strong#password"
+JWT_SECRET="example-secret"
 ```
