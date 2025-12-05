@@ -95,6 +95,9 @@ linters:
       - linters: # swagger tags
           - lll
         path: "internal/app/auth/controller/http/v1/data_input.go"
+      - linters: # swagger tags
+          - lll
+        path: "internal/app/user/controller/http/v1/data_input.go"
 
 issues:
   fix: false

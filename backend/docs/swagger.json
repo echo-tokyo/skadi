@@ -6,16 +6,269 @@
         "application/json"
     ],
     "schemes": [
-        "http"
+        "http",
+        "https"
     ],
     "swagger": "2.0",
     "info": {
         "description": "HTTP API онлайн-сервиса для IT-школы.",
-        "title": "scadi API",
+        "title": "skadi API",
         "contact": {},
         "version": "1.0.0"
     },
     "host": "127.0.0.1:8000",
     "basePath": "/api/v1",
-    "paths": {}
+    "paths": {
+        "/admin/user/sign-up": {
+            "post": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Регистрация нового юзера с логином и паролем",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Регистрация юзера",
+                "operationId": "admin-user-sign-up",
+                "parameters": [
+                    {
+                        "description": "userBody",
+                        "name": "userBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.userBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "409": {
+                        "description": "Юзер с введенным логином уже зарегистрирован"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "description": "Вход для существующего юзера по логину и паролю",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Вход для юзера",
+                "operationId": "auth-login",
+                "parameters": [
+                    {
+                        "description": "authBody",
+                        "name": "authBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.authBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserWithToken"
+                        }
+                    },
+                    "401": {
+                        "description": "Неверный пароль для учетной записи юзера"
+                    },
+                    "404": {
+                        "description": "Юзер с введенным логином не найден"
+                    }
+                }
+            }
+        },
+        "/auth/private/logout": {
+            "get": {
+                "security": [
+                    {
+                        "JWTRefresh": []
+                    }
+                ],
+                "description": "Выход юзера (помещение refresh токена юзера в черный список)",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Выход юзера",
+                "operationId": "auth-private-logout",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Пустой или неправильный токен"
+                    },
+                    "403": {
+                        "description": "Истекший или невалидный токен"
+                    }
+                }
+            }
+        },
+        "/auth/private/obtain": {
+            "get": {
+                "security": [
+                    {
+                        "JWTRefresh": []
+                    }
+                ],
+                "description": "Получение нового access токена по данному refresh токену из cookie.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Получение access токена",
+                "operationId": "auth-private-obtain",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Token"
+                        }
+                    },
+                    "401": {
+                        "description": "Пустой или неправильный токен"
+                    },
+                    "403": {
+                        "description": "Истекший или невалидный токен"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.Token": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "description": "access token",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "user id",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "admin, teacher or student",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "user username",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserWithToken": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "$ref": "#/definitions/entity.Token"
+                },
+                "user": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "v1.authBody": {
+            "description": "authBody represents a data for user auth (log in).",
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "qwerty123"
+                },
+                "username": {
+                    "description": "user username",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "user1"
+                }
+            }
+        },
+        "v1.userBody": {
+            "description": "userBody represents a data for user auth (sign up).",
+            "type": "object",
+            "required": [
+                "password",
+                "role",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "qwerty123"
+                },
+                "role": {
+                    "description": "user role (teacher or student)",
+                    "type": "string",
+                    "enum": [
+                        "teacher",
+                        "student"
+                    ],
+                    "example": "teacher"
+                },
+                "username": {
+                    "description": "user username",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "user1"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "JWTAccess": {
+            "description": "Access JWT-token. Header will automatic add after auth (or obtain via refresh) is done.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "JWTRefresh": {
+            "description": "Refresh JWT-token. Cookie will automatic add after auth is done.",
+            "type": "apiKey",
+            "name": "refresh",
+            "in": "cookie"
+        }
+    }
 }
