@@ -26,3 +26,19 @@ func TestTagValidator_WithError(t *testing.T) {
 
 	t.Logf("Expected error: %s", err.Error())
 }
+
+func TestRuTagValidator_WithError(t *testing.T) {
+	t.Log("Validate struct and get error")
+
+	valid, err := NewRuTagValidator()
+	require.NoError(t, err)
+	sample := &SampleStruct{
+		Login:    "",
+		Password: "123",
+	}
+
+	err = valid.Validate(sample)
+	require.Error(t, err)
+
+	t.Logf("Expected error: %s", err.Error())
+}

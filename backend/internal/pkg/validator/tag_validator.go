@@ -6,9 +6,11 @@ import (
 	"strings"
 
 	"github.com/go-playground/locales/en"
+	"github.com/go-playground/locales/ru"
 	ut "github.com/go-playground/universal-translator"
 	govalidator "github.com/go-playground/validator/v10"
 	entranslation "github.com/go-playground/validator/v10/translations/en"
+	rutranslation "github.com/go-playground/validator/v10/translations/ru"
 )
 
 // Ensure tag validator implements interface.
@@ -30,7 +32,23 @@ func NewTagValidator() (*TagValidator, error) {
 	validate := govalidator.New(govalidator.WithRequiredStructEnabled())
 	err := entranslation.RegisterDefaultTranslations(validate, trans)
 	if err != nil {
-		return nil, fmt.Errorf("register translations: %w", err)
+		return nil, fmt.Errorf("register translation: %w", err)
+	}
+
+	validInst := &TagValidator{validate, trans}
+	return validInst, nil
+}
+
+// NewRuTagValidator returns new instance of TagValidator with ru error translation.
+func NewRuTagValidator() (*TagValidator, error) {
+	ruTranslator := ru.New()
+	uni := ut.New(ruTranslator, ruTranslator)
+	trans, _ := uni.GetTranslator("ru")
+
+	validate := govalidator.New(govalidator.WithRequiredStructEnabled())
+	err := rutranslation.RegisterDefaultTranslations(validate, trans)
+	if err != nil {
+		return nil, fmt.Errorf("register translation: %w", err)
 	}
 
 	validInst := &TagValidator{validate, trans}
