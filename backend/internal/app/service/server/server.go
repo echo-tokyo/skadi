@@ -7,9 +7,13 @@ import (
 	"log/slog"
 
 	fiber "github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 
 	"skadi/backend/config"
+	"skadi/backend/internal/app/service/server/errhandler"
 	"skadi/backend/internal/app/service/server/middleware"
+	"skadi/backend/internal/pkg/cache"
+	"skadi/backend/internal/pkg/validator"
 )
 
 // Server represents a HTTP-server.
@@ -20,26 +24,39 @@ type Server struct {
 	fiberApp *fiber.App
 }
 
-//	@title			scadi API
-//	@version		1.0.0
-//	@description	HTTP API онлайн-сервиса для IT-школы.
+//	@title						skadi API
+//	@version					1.0.0
+//	@description				HTTP API онлайн-сервиса для IT-школы.
 //
-//	@host			127.0.0.1:8000
-//	@basePath		/api/v1
-//	@schemes		http
+//	@host						127.0.0.1:8000
+//	@basePath					/api/v1
+//	@schemes					http https
 //
-//	@accept			json
-//	@produce		json
+//	@accept						json
+//	@produce					json
+//
+//	@securityDefinitions.apiKey	JWTRefresh
+//	@in							cookie
+//	@name						refresh
+//	@description				Refresh JWT-token. Cookie will automatic add after auth is done.
+//
+//	@securitydefinitions.apikey	JWTAccess
+//	@in							header
+//	@name						Authorization
+//	@description				Access JWT-token. Header will automatic add after auth (or obtain via refresh) is done.
 //
 // New returns a new instance of server.
-func New(cfg *config.Config /*, dbStorage *gorm.DB */) (*Server, error) {
+func New(cfg *config.Config, dbStorage *gorm.DB, cacheStorage cache.Storage,
+	valid validator.Validator) (*Server, error) {
+
 	// fiber init
 	server := &Server{
 		ready: make(chan struct{}),
 		cfg:   cfg,
 		fiberApp: fiber.New(fiber.Config{
-			ServerHeader:  "Scadi",
+			ServerHeader:  "Skadi",
 			StrictRouting: false,
+			ErrorHandler:  errhandler.CustomErrorHandler,
 		}),
 	}
 
@@ -49,8 +66,11 @@ func New(cfg *config.Config /*, dbStorage *gorm.DB */) (*Server, error) {
 		server.fiberApp.Use(httpLogger)
 	}
 	server.fiberApp.Use(middleware.Recover())
+	server.fiberApp.Use(middleware.CORS(cfg.CORS.AllowedOrigins, cfg.CORS.AllowedMethods,
+		cfg.CORS.AllowCredentials))
+	server.fiberApp.Use(middleware.Swagger())
 	// register all endpoints
-	// server.registerEndpointsV1(cfg, dbStorage) // , valid)
+	server.registerEndpointsV1(cfg, dbStorage, cacheStorage, valid)
 
 	return server, nil
 }
