@@ -4,6 +4,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -13,8 +14,10 @@ import (
 	"skadi/backend/config"
 	"skadi/backend/internal/app/service/server"
 
-	// "skadi/backend/internal/pkg/db"
+	"skadi/backend/internal/pkg/cache"
+	"skadi/backend/internal/pkg/db"
 	"skadi/backend/internal/pkg/logger"
+	"skadi/backend/internal/pkg/validator"
 )
 
 // Ensure server implements interface.
@@ -48,24 +51,34 @@ func New() (*App, error) {
 		logOpts = append(logOpts, logger.WithJSONFormat())
 	}
 	logger.InitSlog(logOpts...)
-
 	// print out config params in debug log mode
 	slog.Debug("current config", "config", cfg)
 
+	// init validator
+	valid, err := validator.NewTagValidator()
+	if err != nil {
+		return nil, fmt.Errorf("validator: %w", err)
+	}
+
 	// connect to DB
-	// dbStorage, err := db.New(cfg.DB.DSN,
-	// 	db.WithTranslateError(),
-	// 	db.WithIgnoreNotFound(),
-	// 	db.WithDisableColorful(),
-	// 	db.WithLogLevel(cfg.Logging.LogLevel),
-	// 	db.WithLogger(log.Default()))
-	// TODO: uncomment (commented for local tests)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("db: %w", err)
-	// }
+	dbStorage, err := db.New(cfg.DB.DSN,
+		db.WithTranslateError(),
+		db.WithIgnoreNotFound(),
+		db.WithDisableColorful(),
+		db.WithLogLevel(cfg.Logging.LogLevel),
+		db.WithLogger(log.Default()))
+	if err != nil {
+		return nil, fmt.Errorf("db: %w", err)
+	}
+
+	// init cache storage
+	cacheStorage, err := cache.NewRedis(cfg.Cache.ConnString)
+	if err != nil {
+		return nil, fmt.Errorf("redis cache: %w", err)
+	}
 
 	// init server service
-	srv, err := server.New(cfg /*, dbStorage */)
+	srv, err := server.New(cfg, dbStorage, cacheStorage, valid)
 	if err != nil {
 		return nil, fmt.Errorf("create server service: %w", err)
 	}
