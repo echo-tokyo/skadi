@@ -1,13 +1,10 @@
-DROP TABLE IF EXISTS user CASCADE;
+DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
-    id BINARY(16) NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     password BLOB NOT NULL,
-    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-    is_teacher BOOLEAN NOT NULL DEFAULT FALSE,
-    is_student BOOLEAN NOT NULL DEFAULT FALSE,
+    role ENUM('student', 'teacher', 'admin') NOT NULL DEFAULT 'student',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT user_pk PRIMARY KEY (id),
     UNIQUE INDEX uni_user_username (username)
 );
