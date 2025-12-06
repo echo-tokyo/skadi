@@ -11,6 +11,8 @@ import (
 const (
 	_debugLevel  = 1 // debug log level
 	_infoLevel   = 2 // info log level
+	_warnLevel   = 3 // warn log level
+	_errorLevel  = 4 // error log level
 	_silentLevel = 5 // silent log level
 )
 
@@ -71,14 +73,49 @@ func InitSlog(options ...SlogOption) {
 	slog.SetDefault(newLog)
 }
 
-// Set JSON format for slog logger.
+// WithJSONFormat sets JSON format for slog logger.
 func WithJSONFormat() SlogOption {
 	return func(s *slogParams) {
 		s.jsonFormat = true
 	}
 }
 
-// Set log level for slog logger.
+// WithDebugLevel sets debug log level for slog logger.
+func WithDebugLevel() SlogOption {
+	return func(s *slogParams) {
+		s.level = _debugLevel
+	}
+}
+
+// WithInfoLevel sets info log level for slog logger.
+func WithInfoLevel() SlogOption {
+	return func(s *slogParams) {
+		s.level = _infoLevel
+	}
+}
+
+// WithWarnLevel sets warn log level for slog logger.
+func WithWarnLevel() SlogOption {
+	return func(s *slogParams) {
+		s.level = _warnLevel
+	}
+}
+
+// WithErrorLevel sets error log level for slog logger.
+func WithErrorLevel() SlogOption {
+	return func(s *slogParams) {
+		s.level = _errorLevel
+	}
+}
+
+// WithSilentLevel sets silent log level for slog logger.
+func WithSilentLevel() SlogOption {
+	return func(s *slogParams) {
+		s.level = _silentLevel
+	}
+}
+
+// WithLogLevel sets log level for slog logger.
 // Appplies default level (2 - info) if invalid value was given.
 // Accepts values: 1 - debug, 2 - info, 3 - warn, 4 - error, 5 - silent.
 func WithLogLevel(level int) SlogOption {
