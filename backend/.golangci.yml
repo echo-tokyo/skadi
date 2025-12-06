@@ -85,6 +85,9 @@ linters:
       - linters: # general accepted var name for identifier
           - varnamelen
         text: "parameter name 'id' is too short for the scope of its usage"
+      - linters: # unnecessary
+          - errcheck
+        text: Error return value of `fmt.Scan` is not checked
       - linters: # more readable
           - goconst
         path: cmd/migrator/commands/

@@ -18,7 +18,7 @@ type UserController struct {
 }
 
 // NewUserController returns a new instance of UserController.
-func NewUserController(cfg *config.Config, userUCAdmin user.UsecaseAdmin,
+func NewUserController(_ *config.Config, userUCAdmin user.UsecaseAdmin,
 	valid validator.Validator) *UserController {
 
 	return &UserController{
