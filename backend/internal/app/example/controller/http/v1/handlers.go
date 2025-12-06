@@ -22,12 +22,12 @@ func (c *ExampleController) Free(ctx *fiber.Ctx) error {
 	})
 }
 
-// Restricted represents a handler with auth restriction (for all user roles).
-func (c *ExampleController) Restricted(ctx *fiber.Ctx) error {
+// Private represents a handler with auth restriction (for all user roles).
+func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
 		"userClaims": userClaims,
-		"handler":    "restricted",
+		"handler":    "private",
 		"access":     "auth user",
 	})
 }

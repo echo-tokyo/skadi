@@ -16,7 +16,7 @@ func RegisterEndpoints(router fiber.Router, controller *ExampleController,
 	group.Get("/free", controller.Free)
 	// authenticated only
 	authGroup := group.Use(mwJWTAccess)
-	authGroup.Get("/restricted", controller.Restricted)
+	authGroup.Get("/private", controller.Private)
 	authGroup.Get("/admin", mwAdmin, controller.Admin)       // admin only
 	authGroup.Get("/teacher", mwTeacher, controller.Teacher) // teacher only
 	authGroup.Get("/student", mwStudent, controller.Student) // student only

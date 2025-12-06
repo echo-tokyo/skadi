@@ -9,6 +9,9 @@ import (
 	authuc "skadi/backend/internal/app/auth/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
 	"skadi/backend/internal/app/service/server/middleware"
+	userhttpv1 "skadi/backend/internal/app/user/controller/http/v1"
+	userrepo "skadi/backend/internal/app/user/repository"
+	useruc "skadi/backend/internal/app/user/usecase"
 	"skadi/backend/internal/pkg/cache"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -20,12 +23,15 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	// create repos
 	authRepoDB := authrepo.NewRepoDB(dbStorage)
 	authRepoCache := authrepo.NewRepoCache(cfg, cacheStorage)
+	userRepoDB := userrepo.NewRepoDB(dbStorage)
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, authRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
+	userUCAdmin := useruc.NewUCAdmin(cfg, userRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
+	userController := userhttpv1.NewUserController(cfg, userUCAdmin, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
@@ -39,4 +45,5 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	authhttpv1.RegisterEndpoints(apiV1, authController, mwJWTRefresh)
 	examplehttpv1.RegisterEndpoints(apiV1, exampleController,
 		mwJWTAccess, mwAdmin, mwTeacher, mwStudent)
+	userhttpv1.RegisterEndpoints(apiV1, userController, mwJWTAccess, mwAdmin)
 }
