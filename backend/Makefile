@@ -10,8 +10,11 @@ version = 1
 # DEV #
 # --- #
 
-dev:
-	go run $(go_exec)
+dev-runserver:
+	go run $(go_exec) runserver
+
+dev-manager:
+	go run $(go_exec) manager
 
 lint:
 	golangci-lint run
@@ -59,3 +62,6 @@ up:
 
 migrate:
 	echo "migrate rule has not set yet"
+
+manager:
+	echo "running cmd manager has not set yet"

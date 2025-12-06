@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"skadi/backend/config"
+	"skadi/backend/internal/app/service/cmdmanager"
 	"skadi/backend/internal/app/service/server"
 
 	"skadi/backend/internal/pkg/cache"
@@ -37,8 +38,8 @@ type App struct {
 	services []Service
 }
 
-// New returns a new instance of App.
-func New() (*App, error) {
+// NewServer returns a new instance of App with services to start HTTP-server.
+func NewServer() (*App, error) {
 	// load config
 	cfg, err := config.New()
 	if err != nil {
@@ -89,6 +90,40 @@ func New() (*App, error) {
 	}, nil
 }
 
+// NewCmdManager returns a new instance of App with services to start command line manager.
+func NewCmdManager() (*App, error) {
+	// load config
+	cfg, err := config.New()
+	if err != nil {
+		return nil, fmt.Errorf("create config: %w", err)
+	}
+
+	// setup logger (text format and error level)
+	logger.InitSlog(logger.WithErrorLevel())
+
+	// connect to DB
+	dbStorage, err := db.New(cfg.DB.DSN,
+		db.WithTranslateError(),
+		db.WithIgnoreNotFound(),
+		db.WithDisableColorful(),
+		db.WithLogLevel(cfg.Logging.LogLevel),
+		db.WithLogger(log.Default()))
+	if err != nil {
+		return nil, fmt.Errorf("db: %w", err)
+	}
+
+	// init cmd manager service
+	manager, err := cmdmanager.New(cfg, dbStorage)
+	if err != nil {
+		return nil, fmt.Errorf("create cmd manager service: %w", err)
+	}
+
+	return &App{
+		cfg:      cfg,
+		services: []Service{manager},
+	}, nil
+}
+
 // Run starts all services. This function is blocking.
 // It waits for os signal to gracefully shutdown all services.
 // Or it waits for fall down one of the services and stops other services.
@@ -112,6 +147,7 @@ func (a *App) Run() error {
 	var wgRunning sync.WaitGroup
 	var wgReady sync.WaitGroup
 	serviceErr := make(chan error, 1)
+	serviceSuccess := make(chan struct{}, 1)
 	for _, service := range a.services {
 		wgRunning.Add(1)
 		wgReady.Add(1)
@@ -121,6 +157,7 @@ func (a *App) Run() error {
 			if err := service.StartWithShutdown(appContext); err != nil {
 				serviceErr <- err
 			}
+			serviceSuccess <- struct{}{}
 		}()
 		// wait for service is ready
 		go func() {
@@ -140,6 +177,9 @@ func (a *App) Run() error {
 		cancel()
 		appErr = fmt.Errorf("service: %w", err)
 		slog.Warn("one of the services fell down. Shutdown other services...")
+	case <-serviceSuccess:
+		cancel()
+		slog.Warn("one of the services has finished. Shutdown app...")
 	case <-appContext.Done():
 		appErr = appContext.Err()
 		slog.Warn("context canceled. Shutdown app...")

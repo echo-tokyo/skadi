@@ -1,4 +1,4 @@
-// Package server provides HTTP-server interface.
+// Package server provides HTTP-server service.
 package server
 
 import (
@@ -45,7 +45,7 @@ type Server struct {
 //	@name						Authorization
 //	@description				Access JWT-token. Header will automatic add after auth (or obtain via refresh) is done.
 //
-// New returns a new instance of server.
+// New returns a new instance of Server.
 func New(cfg *config.Config, dbStorage *gorm.DB, cacheStorage cache.Storage,
 	valid validator.Validator) (*Server, error) {
 
