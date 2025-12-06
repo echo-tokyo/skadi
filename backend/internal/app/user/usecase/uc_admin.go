@@ -6,7 +6,6 @@ import (
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
-	"skadi/backend/internal/pkg/jwt"
 	"skadi/backend/internal/pkg/password"
 )
 
@@ -18,7 +17,6 @@ var _ user.UsecaseAdmin = (*UCAdmin)(nil)
 type UCAdmin struct {
 	cfg        *config.Config
 	userRepoDB user.RepositoryDB
-	jwtBuilder jwt.Builder
 }
 
 // NewUCAdmin returns a new instance of UCAdmin.
@@ -26,15 +24,12 @@ func NewUCAdmin(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdmin {
 	return &UCAdmin{
 		cfg:        cfg,
 		userRepoDB: userRepoDB,
-		jwtBuilder: *jwt.NewBuilder(cfg.Auth.Token.JWTSecret,
-			jwt.WithAccessTTL(cfg.Auth.Token.AccessTTL),
-			jwt.WithRefreshTTL(cfg.Auth.Token.RefreshTTL)),
 	}
 }
 
 // SignUp creates a new user in the DB and returns them.
 // Password is a raw (not hashed) password.
-func (u *UCAdmin) SignUp(username string, passwd []byte) (*entity.User, error) {
+func (u *UCAdmin) SignUp(username string, passwd []byte, role string) (*entity.User, error) {
 	// hash password
 	hashPasswd, err := password.Encode(passwd)
 	if err != nil {
@@ -44,6 +39,7 @@ func (u *UCAdmin) SignUp(username string, passwd []byte) (*entity.User, error) {
 	userObj := &entity.User{
 		Username: username,
 		Password: hashPasswd,
+		Role:     role,
 	}
 	// create user
 	err = u.userRepoDB.CreateUser(userObj)

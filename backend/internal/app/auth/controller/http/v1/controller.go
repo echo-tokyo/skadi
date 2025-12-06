@@ -19,7 +19,7 @@ const _refreshTokenCookie = "refresh" // key to store refresh token in cookies
 
 // AuthController represents a controller for all auth routes.
 type AuthController struct {
-	validator     validator.Validator
+	valid         validator.Validator
 	authUCClient  auth.UsecaseClient
 	cookieBuilder *cookie.Builder
 }
@@ -29,7 +29,7 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 	valid validator.Validator) *AuthController {
 
 	return &AuthController{
-		validator:    valid,
+		valid:        valid,
 		authUCClient: authUCClient,
 		cookieBuilder: cookie.NewBuilder(cfg.Auth.Token.RefreshTTL,
 			cookie.WithPath(cfg.Auth.Cookie.Path),
@@ -52,12 +52,7 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 // @failure		404			"Юзер с введенным логином не найден"
 func (c *AuthController) Login(ctx *fiber.Ctx) error {
 	inputBody := &authBody{}
-	// parse JSON-body
-	if err := ctx.BodyParser(inputBody); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := c.validator.Validate(inputBody); err != nil {
+	if err := inputBody.Parse(ctx, c.valid); err != nil {
 		return err
 	}
 

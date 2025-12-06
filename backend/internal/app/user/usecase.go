@@ -6,5 +6,5 @@ import "skadi/backend/internal/app/entity"
 type UsecaseAdmin interface {
 	// SignUp creates a new user in the DB and returns them.
 	// Password is a raw (not hashed) password.
-	SignUp(username string, password []byte) (*entity.User, error)
+	SignUp(username string, password []byte, role string) (*entity.User, error)
 }

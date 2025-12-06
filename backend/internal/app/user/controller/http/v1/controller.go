@@ -7,16 +7,14 @@ import (
 
 	"skadi/backend/config"
 	"skadi/backend/internal/app/user"
-	"skadi/backend/internal/pkg/cookie"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/validator"
 )
 
 // UserController represents a controller for all auth routes.
 type UserController struct {
-	validator     validator.Validator
-	userUCAdmin   user.UsecaseAdmin
-	cookieBuilder *cookie.Builder
+	valid       validator.Validator
+	userUCAdmin user.UsecaseAdmin
 }
 
 // NewUserController returns a new instance of UserController.
@@ -24,13 +22,8 @@ func NewUserController(cfg *config.Config, userUCAdmin user.UsecaseAdmin,
 	valid validator.Validator) *UserController {
 
 	return &UserController{
-		validator:   valid,
+		valid:       valid,
 		userUCAdmin: userUCAdmin,
-		cookieBuilder: cookie.NewBuilder(cfg.Auth.Token.RefreshTTL,
-			cookie.WithPath(cfg.Auth.Cookie.Path),
-			cookie.WithSecure(cfg.Auth.Cookie.Secure),
-			cookie.WithHTTPOnly(cfg.Auth.Cookie.HTTPOnly),
-			cookie.WithSameSite(cfg.Auth.Cookie.SameSite)),
 	}
 }
 
@@ -47,17 +40,13 @@ func NewUserController(cfg *config.Config, userUCAdmin user.UsecaseAdmin,
 // @failure		409			"Юзер с введенным логином уже зарегистрирован"
 func (c *UserController) SignUp(ctx *fiber.Ctx) error {
 	inputBody := &userBody{}
-	// parse JSON-body
-	if err := ctx.BodyParser(inputBody); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := c.validator.Validate(inputBody); err != nil {
+	if err := inputBody.Parse(ctx, c.valid); err != nil {
 		return err
 	}
 
 	// sign up new user
-	userObj, err := c.userUCAdmin.SignUp(inputBody.Username, []byte(inputBody.Password))
+	userObj, err := c.userUCAdmin.SignUp(inputBody.Username,
+		[]byte(inputBody.Password), inputBody.Role)
 	if err != nil && errors.Is(err, user.ErrAlreadyExists) {
 		return &httperror.HTTPError{
 			CauseErr:   err,

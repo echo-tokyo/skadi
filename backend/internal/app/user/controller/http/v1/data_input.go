@@ -1,5 +1,11 @@
 package v1
 
+import (
+	fiber "github.com/gofiber/fiber/v2"
+
+	"skadi/backend/internal/pkg/validator"
+)
+
 // @description userBody represents a data for user auth (sign up).
 type userBody struct {
 	// user username
@@ -8,4 +14,17 @@ type userBody struct {
 	Password string `json:"password" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// user role (teacher or student)
 	Role string `json:"role" validate:"required,oneof=teacher student" example:"teacher"`
+}
+
+// Parse parses user body from JSON-body and validates it.
+func (a *userBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+	// parse JSON-body
+	if err := ctx.BodyParser(a); err != nil {
+		return err
+	}
+	// validate parsed data
+	if err := valid.Validate(a); err != nil {
+		return err
+	}
+	return nil
 }
