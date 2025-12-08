@@ -85,7 +85,6 @@ func handleTokenErr(ctx *fiber.Ctx, err error) error {
 
 // parseTokenWithClaims returns parsed token user claims.
 func parseUserClaims(tokenSecret []byte, token string) (*entity.UserClaims, error) {
-
 	claims := &jwt.TokenClaims[*entity.UserClaims]{}
 	// parse token object with claims from token string
 	_, err := gojwt.ParseWithClaims(token, claims, func(t *gojwt.Token) (any, error) {

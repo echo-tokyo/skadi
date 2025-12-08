@@ -14,14 +14,14 @@ func NewExampleController() *ExampleController {
 	return &ExampleController{}
 }
 
-//	@summary		Проверка. Все.
-//	@description	Проверочный эндпоинт с доступом абсолютно всем.
-//	@router			/example/free [get]
-//	@id				example-free
-//	@tags			example
-//	@accept			json
-//	@produce		json
-//	@success		200	{object}	exampleData
+// @summary		Проверка. Все.
+// @description	Проверочный эндпоинт с доступом абсолютно всем.
+// @router			/example/free [get]
+// @id				example-free
+// @tags			example
+// @accept			json
+// @produce		json
+// @success		200	{object}	exampleData
 func (c *ExampleController) Free(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
 		Handler: "free",
@@ -29,16 +29,16 @@ func (c *ExampleController) Free(ctx *fiber.Ctx) error {
 	})
 }
 
-//	@summary		Проверка. Только авторизованные.
-//	@description	Проверочный эндпоинт с доступом только для авторизованных юзеров.
-//	@router			/example/private [get]
-//	@id				example-private
-//	@tags			example
-//	@produce		json
-//	@security		JWTAccess
-//	@success		200	{object}	exampleData
-//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-//	@failure		404	"Юзер не авторизован, доступ запрещён"
+// @summary		Проверка. Только авторизованные.
+// @description	Проверочный эндпоинт с доступом только для авторизованных юзеров.
+// @router			/example/private [get]
+// @id				example-private
+// @tags			example
+// @produce		json
+// @security		JWTAccess
+// @success		200	{object}	exampleData
+// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+// @failure		404	"Юзер не авторизован, доступ запрещён"
 func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
@@ -48,16 +48,16 @@ func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	})
 }
 
-//	@summary		Проверка. Только админы.
-//	@description	Проверочный эндпоинт с доступом только для админов.
-//	@router			/example/admin [get]
-//	@id				example-admin
-//	@tags			example
-//	@produce		json
-//	@security		JWTAccess
-//	@success		200	{object}	exampleData
-//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-//	@failure		404	"Юзер не админ, доступ запрещён"
+// @summary		Проверка. Только админы.
+// @description	Проверочный эндпоинт с доступом только для админов.
+// @router			/example/admin [get]
+// @id				example-admin
+// @tags			example
+// @produce		json
+// @security		JWTAccess
+// @success		200	{object}	exampleData
+// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+// @failure		404	"Юзер не админ, доступ запрещён"
 func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
@@ -67,16 +67,16 @@ func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 	})
 }
 
-//	@summary		Проверка. Только преподаватели.
-//	@description	Проверочный эндпоинт с доступом только для преподавателей.
-//	@router			/example/teacher [get]
-//	@id				example-teacher
-//	@tags			example
-//	@produce		json
-//	@security		JWTAccess
-//	@success		200	{object}	exampleData
-//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-//	@failure		404	"Юзер не преподаватель, доступ запрещён"
+// @summary		Проверка. Только преподаватели.
+// @description	Проверочный эндпоинт с доступом только для преподавателей.
+// @router			/example/teacher [get]
+// @id				example-teacher
+// @tags			example
+// @produce		json
+// @security		JWTAccess
+// @success		200	{object}	exampleData
+// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+// @failure		404	"Юзер не преподаватель, доступ запрещён"
 func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
@@ -86,16 +86,16 @@ func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 	})
 }
 
-//	@summary		Проверка. Только студенты.
-//	@description	Проверочный эндпоинт с доступом только для студентов.
-//	@router			/example/student [get]
-//	@id				example-student
-//	@tags			example
-//	@produce		json
-//	@security		JWTAccess
-//	@success		200	{object}	exampleData
-//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-//	@failure		404	"Юзер не студент, доступ запрещён"
+// @summary		Проверка. Только студенты.
+// @description	Проверочный эндпоинт с доступом только для студентов.
+// @router			/example/student [get]
+// @id				example-student
+// @tags			example
+// @produce		json
+// @security		JWTAccess
+// @success		200	{object}	exampleData
+// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+// @failure		404	"Юзер не студент, доступ запрещён"
 func (c *ExampleController) Student(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{

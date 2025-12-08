@@ -109,3 +109,8 @@ func (s *Server) StartWithShutdown(ctx context.Context) error {
 func (s *Server) Ready() <-chan struct{} {
 	return s.ready
 }
+
+// Debug returns true if server was started in debug mode.
+func (s *Server) Debug() bool {
+	return s.cfg.Logging.LogLevel == 1
+}

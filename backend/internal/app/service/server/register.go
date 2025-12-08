@@ -42,8 +42,10 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 
 	// register endpoints
 	apiV1 := s.fiberApp.Group("/api/v1")
+	if s.Debug() { // register example endpoints if server is in debug mode
+		examplehttpv1.RegisterEndpoints(apiV1, exampleController,
+			mwJWTAccess, mwAdmin, mwTeacher, mwStudent)
+	}
 	authhttpv1.RegisterEndpoints(apiV1, authController, mwJWTRefresh)
-	examplehttpv1.RegisterEndpoints(apiV1, exampleController,
-		mwJWTAccess, mwAdmin, mwTeacher, mwStudent)
 	userhttpv1.RegisterEndpoints(apiV1, userController, mwJWTAccess, mwAdmin)
 }
