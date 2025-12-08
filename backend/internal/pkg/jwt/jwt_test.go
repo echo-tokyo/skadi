@@ -7,11 +7,12 @@ import (
 )
 
 var (
-	_testJWTSecret = []byte("example-secret")
-	_testClaims    = &TokenClaims{
+	_testAccessSecret  = []byte("example-access-secret")
+	_testRefreshSecret = []byte("example-refresh-secret")
+	_testClaims        = &TokenClaims[map[string]string]{
 		Exp: time.Now().UTC().Unix(),
 		ExtraClaims: map[string]string{
-			"user_id": "1",
+			"id": "1",
 		},
 	}
 
@@ -20,7 +21,7 @@ var (
 
 func TestMain(m *testing.M) {
 	// init builder
-	_testBuilder = NewBuilder(_testJWTSecret)
+	_testBuilder = NewBuilder(_testAccessSecret, _testRefreshSecret)
 	// run tests
 	os.Exit(m.Run())
 }

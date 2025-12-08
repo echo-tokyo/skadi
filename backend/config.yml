@@ -7,8 +7,8 @@ server:
     allow_credentials: false # set allow credentials for cors if true
   auth:
     token:
-      access_ttl: 5m # access JWT-token expiration duration
-      refresh_ttl: 10m # refresh JWT-token expiration duration
+      access_ttl: 1m # access JWT-token expiration duration
+      refresh_ttl: 3m # refresh JWT-token expiration duration
     cookie:
       path: "/api/v1/auth/private/" # cookie path
       secure: false # enable cookie secure if true

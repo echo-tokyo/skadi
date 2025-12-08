@@ -3,7 +3,6 @@ package v1
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 
 	fiber "github.com/gofiber/fiber/v2"
 
@@ -48,9 +47,9 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 // @produce		json
 // @param			authBody	body		authBody	true	"authBody"
 // @success		200			{object}	entity.UserWithToken
-// @failure		401			"Неверный пароль для учетной записи юзера"
+// @failure		400			"Неверный пароль для учетной записи юзера"
 // @failure		404			"Юзер с введенным логином не найден"
-func (c *AuthController) Login(ctx *fiber.Ctx) error {
+func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 	inputBody := &authBody{}
 	if err := inputBody.Parse(ctx, c.valid); err != nil {
 		return err
@@ -61,7 +60,7 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 	if err != nil && errors.Is(err, auth.ErrInvalidPassword) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
-			StatusCode: fiber.StatusUnauthorized,
+			StatusCode: fiber.StatusBadRequest,
 			Message:    "неверный пароль",
 		}
 	}
@@ -75,9 +74,6 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	slog.Debug("user login",
-		"user", userWithToken.User,
-		"token", userWithToken.Token)
 	// add refresh token to cookies
 	ctx.Cookie(c.cookieBuilder.Create(_refreshTokenCookie, userWithToken.Token.Refresh))
 	return ctx.Status(fiber.StatusOK).JSON(userWithToken)
@@ -85,14 +81,14 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 
 // @summary		Получение access токена
 // @description	Получение нового access токена по данному refresh токену из cookie.
-// @router			/auth/private/obtain [get]
+// @router			/auth/private/obtain [post]
 // @id				auth-private-obtain
 // @tags			auth
 // @produce		json
 // @security		JWTRefresh
 // @success		200 {object}	entity.Token
-// @failure		401	"Пустой или неправильный токен"
-// @failure		403	"Истекший или невалидный токен"
+// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"Токен в черном списке"
 func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -106,14 +102,14 @@ func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
 
 // @summary		Выход юзера
 // @description	Выход юзера (помещение refresh токена юзера в черный список)
-// @router			/auth/private/logout [get]
+// @router			/auth/private/logout [post]
 // @id				auth-private-logout
 // @tags			auth
 // @security		JWTRefresh
 // @success		204	"No Content"
-// @failure		401	"Пустой или неправильный токен"
-// @failure		403	"Истекший или невалидный токен"
-func (c *AuthController) Logout(ctx *fiber.Ctx) error {
+// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"Токен в черном списке"
+func (c *AuthController) LogOut(ctx *fiber.Ctx) error {
 	// parse access token
 	token := utilsjwt.ParseTokenStringFromRequest(ctx)
 

@@ -15,20 +15,22 @@ const (
 
 // Builder represents a JWT-token builder for obtaining tokens.
 type Builder struct {
-	secret     []byte
-	accessTTL  time.Duration
-	refreshTTL time.Duration
+	accessSecret  []byte
+	refreshSecret []byte
+	accessTTL     time.Duration
+	refreshTTL    time.Duration
 }
 
 // Option represents an option for Builder initializing.
 type Option func(*Builder)
 
 // NewBuilder returns a new instance of Builder.
-func NewBuilder(secret []byte, options ...Option) *Builder {
+func NewBuilder(accessSecret, refreshSecret []byte, options ...Option) *Builder {
 	builder := &Builder{
-		secret:     secret,
-		accessTTL:  _defaultAccessTTL,
-		refreshTTL: _defaultRefreshTTL,
+		accessSecret:  accessSecret,
+		refreshSecret: refreshSecret,
+		accessTTL:     _defaultAccessTTL,
+		refreshTTL:    _defaultRefreshTTL,
 	}
 
 	// apply all options to customize Builder
@@ -54,22 +56,22 @@ func WithRefreshTTL(exp time.Duration) Option {
 
 // ObtainAccess obtains a new access token with given user claims and returns it.
 func (b *Builder) ObtainAccess(claims any) (string, error) {
-	return b.obtain(b.accessTTL, claims)
+	return obtain(b.accessTTL, b.accessSecret, claims)
 }
 
 // ObtainRefresh obtains a new refresh token with given user claims and returns it.
 func (b *Builder) ObtainRefresh(claims any) (string, error) {
-	return b.obtain(b.refreshTTL, claims)
+	return obtain(b.refreshTTL, b.refreshSecret, claims)
 }
 
 // obtain obtains a new token with given user claims and returns it.
-func (b *Builder) obtain(ttl time.Duration, claims any) (string, error) {
-	tokenClaims := &TokenClaims{
+func obtain(ttl time.Duration, secret []byte, claims any) (string, error) {
+	tokenClaims := &TokenClaims[any]{
 		ExtraClaims: claims,
 		Exp:         time.Now().UTC().Add(ttl).Unix(),
 	}
 	tokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
-	tokenStr, err := tokenObj.SignedString(b.secret)
+	tokenStr, err := tokenObj.SignedString(secret)
 	if err != nil {
 		return "", err
 	}

@@ -98,6 +98,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/entity.User'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
         "409":
           description: Юзер с введенным логином уже зарегистрирован
       security:
@@ -125,7 +127,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.UserWithToken'
-        "401":
+        "400":
           description: Неверный пароль для учетной записи юзера
         "404":
           description: Юзер с введенным логином не найден
@@ -133,23 +135,23 @@ paths:
       tags:
       - auth
   /auth/private/logout:
-    get:
+    post:
       description: Выход юзера (помещение refresh токена юзера в черный список)
       operationId: auth-private-logout
       responses:
         "204":
           description: No Content
         "401":
-          description: Пустой или неправильный токен
+          description: Неверный токен (пустой, истекший или неверный формат)
         "403":
-          description: Истекший или невалидный токен
+          description: Токен в черном списке
       security:
       - JWTRefresh: []
       summary: Выход юзера
       tags:
       - auth
   /auth/private/obtain:
-    get:
+    post:
       description: Получение нового access токена по данному refresh токену из cookie.
       operationId: auth-private-obtain
       produces:
@@ -160,9 +162,9 @@ paths:
           schema:
             $ref: '#/definitions/entity.Token'
         "401":
-          description: Пустой или неправильный токен
+          description: Неверный токен (пустой, истекший или неверный формат)
         "403":
-          description: Истекший или невалидный токен
+          description: Токен в черном списке
       security:
       - JWTRefresh: []
       summary: Получение access токена

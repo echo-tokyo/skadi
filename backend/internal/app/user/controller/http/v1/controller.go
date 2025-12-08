@@ -27,17 +27,18 @@ func NewUserController(_ *config.Config, userUCAdmin user.UsecaseAdmin,
 	}
 }
 
-// @summary		Регистрация юзера
-// @description	Регистрация нового юзера с логином и паролем
-// @router			/admin/user/sign-up [post]
-// @id				admin-user-sign-up
-// @tags			user
-// @accept			json
-// @produce		json
-// @security		JWTAccess
-// @param			userBody	body		userBody	true	"userBody"
-// @success		201			{object}	entity.User
-// @failure		409			"Юзер с введенным логином уже зарегистрирован"
+//	@summary		Регистрация юзера
+//	@description	Регистрация нового юзера с логином и паролем
+//	@router			/admin/user/sign-up [post]
+//	@id				admin-user-sign-up
+//	@tags			user
+//	@accept			json
+//	@produce		json
+//	@security		JWTAccess
+//	@param			userBody	body		userBody	true	"userBody"
+//	@success		201			{object}	entity.User
+//	@failure		401			"Неверный токен (пустой, истекший или неверный формат)"
+//	@failure		409			"Юзер с введенным логином уже зарегистрирован"
 func (c *UserController) SignUp(ctx *fiber.Ctx) error {
 	inputBody := &userBody{}
 	if err := inputBody.Parse(ctx, c.valid); err != nil {

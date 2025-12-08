@@ -26,9 +26,9 @@ func (c *ExampleController) Free(ctx *fiber.Ctx) error {
 func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"userClaims": userClaims,
-		"handler":    "private",
-		"access":     "auth user",
+		"user_claims": userClaims,
+		"handler":     "private",
+		"access":      "auth user",
 	})
 }
 
@@ -36,9 +36,9 @@ func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"userClaims": userClaims,
-		"handler":    "admin",
-		"access":     "admin only",
+		"user_claims": userClaims,
+		"handler":     "admin",
+		"access":      "admin only",
 	})
 }
 
@@ -46,9 +46,9 @@ func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"userClaims": userClaims,
-		"handler":    "teacher",
-		"access":     "teacher only",
+		"user_claims": userClaims,
+		"handler":     "teacher",
+		"access":      "teacher only",
 	})
 }
 
@@ -56,8 +56,8 @@ func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 func (c *ExampleController) Student(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"userClaims": userClaims,
-		"handler":    "student",
-		"access":     "student only",
+		"user_claims": userClaims,
+		"handler":     "student",
+		"access":      "student only",
 	})
 }

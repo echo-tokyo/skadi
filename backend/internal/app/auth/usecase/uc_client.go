@@ -31,7 +31,9 @@ func NewUCClient(cfg *config.Config, authRepoDB auth.RepositoryDB,
 		cfg:           cfg,
 		authRepoDB:    authRepoDB,
 		authRepoCache: authRepoCache,
-		jwtBuilder: *jwt.NewBuilder(cfg.Auth.Token.JWTSecret,
+		jwtBuilder: *jwt.NewBuilder(
+			cfg.Auth.Token.AccessSecret,
+			cfg.Auth.Token.RefreshSecret,
 			jwt.WithAccessTTL(cfg.Auth.Token.AccessTTL),
 			jwt.WithRefreshTTL(cfg.Auth.Token.RefreshTTL)),
 	}
@@ -84,16 +86,16 @@ func (u *UCClient) ObtainAccess(userClaims *entity.UserClaims) (*entity.Token, e
 
 // obtainTokenPair returns obtained token pair (access and refresh) for user.
 func (u *UCClient) obtainTokenPair(user *entity.User) (*entity.Token, error) {
-	claims := &entity.UserClaims{
+	userClaims := &entity.UserClaims{
 		UserID: user.ID,
 		Role:   user.Role,
 	}
 	// generate token pair
-	accessToken, err := u.jwtBuilder.ObtainAccess(claims)
+	accessToken, err := u.jwtBuilder.ObtainAccess(userClaims)
 	if err != nil {
 		return nil, fmt.Errorf("obtain access token: %w", err)
 	}
-	refreshToken, err := u.jwtBuilder.ObtainRefresh(claims)
+	refreshToken, err := u.jwtBuilder.ObtainRefresh(userClaims)
 	if err != nil {
 		return nil, fmt.Errorf("obtain refresh token: %w", err)
 	}

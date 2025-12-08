@@ -72,9 +72,10 @@ type (
 	}
 
 	Token struct {
-		JWTSecret  []byte        `env-required:"true" env:"JWT_SECRET"`
-		AccessTTL  time.Duration `yaml:"access_ttl"`
-		RefreshTTL time.Duration `yaml:"refresh_ttl"`
+		AccessSecret  []byte        `env-required:"true" env:"ACCESS_SECRET"`
+		RefreshSecret []byte        `env-required:"true" env:"REFRESH_SECRET"`
+		AccessTTL     time.Duration `yaml:"access_ttl"`
+		RefreshTTL    time.Duration `yaml:"refresh_ttl"`
 	}
 
 	Cookie struct {

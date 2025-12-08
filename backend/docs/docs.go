@@ -58,6 +58,9 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.User"
                         }
                     },
+                    "401": {
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                    },
                     "409": {
                         "description": "Юзер с введенным логином уже зарегистрирован"
                     }
@@ -96,7 +99,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.UserWithToken"
                         }
                     },
-                    "401": {
+                    "400": {
                         "description": "Неверный пароль для учетной записи юзера"
                     },
                     "404": {
@@ -106,7 +109,7 @@ const docTemplate = `{
             }
         },
         "/auth/private/logout": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "JWTRefresh": []
@@ -123,16 +126,16 @@ const docTemplate = `{
                         "description": "No Content"
                     },
                     "401": {
-                        "description": "Пустой или неправильный токен"
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
                     },
                     "403": {
-                        "description": "Истекший или невалидный токен"
+                        "description": "Токен в черном списке"
                     }
                 }
             }
         },
         "/auth/private/obtain": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "JWTRefresh": []
@@ -155,10 +158,10 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Пустой или неправильный токен"
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
                     },
                     "403": {
-                        "description": "Истекший или невалидный токен"
+                        "description": "Токен в черном списке"
                     }
                 }
             }

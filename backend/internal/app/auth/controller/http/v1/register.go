@@ -12,9 +12,9 @@ func RegisterEndpoints(router fiber.Router, controller *AuthController,
 
 	group := router.Group("/auth")
 	// public
-	group.Post("/login", controller.Login)
+	group.Post("/login", controller.LogIn)
 	// authenticated only
 	authGroup := group.Group("/private", mwJWTRefresh)
-	authGroup.Get("/obtain", controller.Logout)
-	authGroup.Get("/logout", controller.Logout)
+	authGroup.Post("/obtain", controller.Obtain)
+	authGroup.Post("/logout", controller.LogOut)
 }
