@@ -20,6 +20,15 @@ definitions:
         description: user username
         type: string
     type: object
+  entity.UserClaims:
+    properties:
+      id:
+        description: user ID
+        type: string
+      role:
+        description: admin, teacher or student
+        type: string
+    type: object
   entity.UserWithToken:
     properties:
       token:
@@ -44,6 +53,22 @@ definitions:
     required:
     - password
     - username
+    type: object
+  v1.exampleData:
+    description: exampleData represents an output data for example endpoints.
+    properties:
+      access:
+        description: endpoint access description
+        example: student only
+        type: string
+      handler:
+        description: handler name
+        example: student
+        type: string
+      user_claims:
+        allOf:
+        - $ref: '#/definitions/entity.UserClaims'
+        description: user claims (for endpoints with auth restriction)
     type: object
   v1.userBody:
     description: userBody represents a data for user auth (sign up).
@@ -82,7 +107,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Регистрация нового юзера с логином и паролем
+      description: Регистрация нового юзера с логином и паролем.
       operationId: admin-user-sign-up
       parameters:
       - description: userBody
@@ -104,14 +129,14 @@ paths:
           description: Юзер с введенным логином уже зарегистрирован
       security:
       - JWTAccess: []
-      summary: Регистрация юзера
+      summary: Регистрация юзера.
       tags:
       - user
   /auth/login:
     post:
       consumes:
       - application/json
-      description: Вход для существующего юзера по логину и паролю
+      description: Вход для существующего юзера по логину и паролю.
       operationId: auth-login
       parameters:
       - description: authBody
@@ -131,12 +156,12 @@ paths:
           description: Неверный пароль для учетной записи юзера
         "404":
           description: Юзер с введенным логином не найден
-      summary: Вход для юзера
+      summary: Вход для юзера.
       tags:
       - auth
   /auth/private/logout:
     post:
-      description: Выход юзера (помещение refresh токена юзера в черный список)
+      description: Выход юзера (помещение refresh токена юзера в черный список).
       operationId: auth-private-logout
       responses:
         "204":
@@ -147,7 +172,7 @@ paths:
           description: Токен в черном списке
       security:
       - JWTRefresh: []
-      summary: Выход юзера
+      summary: Выход юзера.
       tags:
       - auth
   /auth/private/obtain:
@@ -167,9 +192,105 @@ paths:
           description: Токен в черном списке
       security:
       - JWTRefresh: []
-      summary: Получение access токена
+      summary: Получение access токена.
       tags:
       - auth
+  /example/admin:
+    get:
+      description: Проверочный эндпоинт с доступом только для админов.
+      operationId: example-admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: Юзер не админ, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. Только админы.
+      tags:
+      - example
+  /example/free:
+    get:
+      consumes:
+      - application/json
+      description: Проверочный эндпоинт с доступом абсолютно всем.
+      operationId: example-free
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+      summary: Проверка. Все.
+      tags:
+      - example
+  /example/private:
+    get:
+      description: Проверочный эндпоинт с доступом только для авторизованных юзеров.
+      operationId: example-private
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: Юзер не авторизован, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. Только авторизованные.
+      tags:
+      - example
+  /example/student:
+    get:
+      description: Проверочный эндпоинт с доступом только для студентов.
+      operationId: example-student
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: Юзер не студент, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. Только студенты.
+      tags:
+      - example
+  /example/teacher:
+    get:
+      description: Проверочный эндпоинт с доступом только для преподавателей.
+      operationId: example-teacher
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.exampleData'
+        "401":
+          description: Неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: Юзер не преподаватель, доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Проверка. Только преподаватели.
+      tags:
+      - example
 produces:
 - application/json
 schemes:

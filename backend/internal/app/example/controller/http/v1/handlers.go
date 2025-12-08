@@ -14,50 +14,93 @@ func NewExampleController() *ExampleController {
 	return &ExampleController{}
 }
 
-// Free represents a handler without any auth restriction.
+//	@summary		Проверка. Все.
+//	@description	Проверочный эндпоинт с доступом абсолютно всем.
+//	@router			/example/free [get]
+//	@id				example-free
+//	@tags			example
+//	@accept			json
+//	@produce		json
+//	@success		200	{object}	exampleData
 func (c *ExampleController) Free(ctx *fiber.Ctx) error {
-	return ctx.Status(fiber.StatusOK).JSON(map[string]string{
-		"handler": "free",
-		"access":  "any",
+	return ctx.Status(fiber.StatusOK).JSON(exampleData{
+		Handler: "free",
+		Access:  "any",
 	})
 }
 
-// Private represents a handler with auth restriction (for all user roles).
+//	@summary		Проверка. Только авторизованные.
+//	@description	Проверочный эндпоинт с доступом только для авторизованных юзеров.
+//	@router			/example/private [get]
+//	@id				example-private
+//	@tags			example
+//	@produce		json
+//	@security		JWTAccess
+//	@success		200	{object}	exampleData
+//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+//	@failure		404	"Юзер не авторизован, доступ запрещён"
 func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
-	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"user_claims": userClaims,
-		"handler":     "private",
-		"access":      "auth user",
+	return ctx.Status(fiber.StatusOK).JSON(exampleData{
+		UserClaims: userClaims,
+		Handler:    "private",
+		Access:     "auth user",
 	})
 }
 
-// Admin represents a handler for admins only.
+//	@summary		Проверка. Только админы.
+//	@description	Проверочный эндпоинт с доступом только для админов.
+//	@router			/example/admin [get]
+//	@id				example-admin
+//	@tags			example
+//	@produce		json
+//	@security		JWTAccess
+//	@success		200	{object}	exampleData
+//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+//	@failure		404	"Юзер не админ, доступ запрещён"
 func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
-	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"user_claims": userClaims,
-		"handler":     "admin",
-		"access":      "admin only",
+	return ctx.Status(fiber.StatusOK).JSON(exampleData{
+		UserClaims: userClaims,
+		Handler:    "admin",
+		Access:     "admin only",
 	})
 }
 
-// Teacher represents a handler for teachers only.
+//	@summary		Проверка. Только преподаватели.
+//	@description	Проверочный эндпоинт с доступом только для преподавателей.
+//	@router			/example/teacher [get]
+//	@id				example-teacher
+//	@tags			example
+//	@produce		json
+//	@security		JWTAccess
+//	@success		200	{object}	exampleData
+//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+//	@failure		404	"Юзер не преподаватель, доступ запрещён"
 func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
-	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"user_claims": userClaims,
-		"handler":     "teacher",
-		"access":      "teacher only",
+	return ctx.Status(fiber.StatusOK).JSON(exampleData{
+		UserClaims: userClaims,
+		Handler:    "teacher",
+		Access:     "teacher only",
 	})
 }
 
-// Student represents a handler for students only.
+//	@summary		Проверка. Только студенты.
+//	@description	Проверочный эндпоинт с доступом только для студентов.
+//	@router			/example/student [get]
+//	@id				example-student
+//	@tags			example
+//	@produce		json
+//	@security		JWTAccess
+//	@success		200	{object}	exampleData
+//	@failure		401	"Неверный токен (пустой, истекший или неверный формат)"
+//	@failure		404	"Юзер не студент, доступ запрещён"
 func (c *ExampleController) Student(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
-	return ctx.Status(fiber.StatusOK).JSON(map[string]any{
-		"user_claims": userClaims,
-		"handler":     "student",
-		"access":      "student only",
+	return ctx.Status(fiber.StatusOK).JSON(exampleData{
+		UserClaims: userClaims,
+		Handler:    "student",
+		Access:     "student only",
 	})
 }

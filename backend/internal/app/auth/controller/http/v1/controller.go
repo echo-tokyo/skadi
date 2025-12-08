@@ -38,8 +38,8 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 	}
 }
 
-// @summary		Вход для юзера
-// @description	Вход для существующего юзера по логину и паролю
+// @summary		Вход для юзера.
+// @description	Вход для существующего юзера по логину и паролю.
 // @router			/auth/login [post]
 // @id				auth-login
 // @tags			auth
@@ -79,7 +79,7 @@ func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(userWithToken)
 }
 
-// @summary		Получение access токена
+// @summary		Получение access токена.
 // @description	Получение нового access токена по данному refresh токену из cookie.
 // @router			/auth/private/obtain [post]
 // @id				auth-private-obtain
@@ -100,8 +100,8 @@ func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(token)
 }
 
-// @summary		Выход юзера
-// @description	Выход юзера (помещение refresh токена юзера в черный список)
+// @summary		Выход юзера.
+// @description	Выход юзера (помещение refresh токена юзера в черный список).
 // @router			/auth/private/logout [post]
 // @id				auth-private-logout
 // @tags			auth

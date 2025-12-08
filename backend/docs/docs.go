@@ -28,7 +28,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Регистрация нового юзера с логином и паролем",
+                "description": "Регистрация нового юзера с логином и паролем.",
                 "consumes": [
                     "application/json"
                 ],
@@ -38,7 +38,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Регистрация юзера",
+                "summary": "Регистрация юзера.",
                 "operationId": "admin-user-sign-up",
                 "parameters": [
                     {
@@ -69,7 +69,7 @@ const docTemplate = `{
         },
         "/auth/login": {
             "post": {
-                "description": "Вход для существующего юзера по логину и паролю",
+                "description": "Вход для существующего юзера по логину и паролю.",
                 "consumes": [
                     "application/json"
                 ],
@@ -79,7 +79,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Вход для юзера",
+                "summary": "Вход для юзера.",
                 "operationId": "auth-login",
                 "parameters": [
                     {
@@ -115,11 +115,11 @@ const docTemplate = `{
                         "JWTRefresh": []
                     }
                 ],
-                "description": "Выход юзера (помещение refresh токена юзера в черный список)",
+                "description": "Выход юзера (помещение refresh токена юзера в черный список).",
                 "tags": [
                     "auth"
                 ],
-                "summary": "Выход юзера",
+                "summary": "Выход юзера.",
                 "operationId": "auth-private-logout",
                 "responses": {
                     "204": {
@@ -148,7 +148,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Получение access токена",
+                "summary": "Получение access токена.",
                 "operationId": "auth-private-obtain",
                 "responses": {
                     "200": {
@@ -162,6 +162,158 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Токен в черном списке"
+                    }
+                }
+            }
+        },
+        "/example/admin": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Проверочный эндпоинт с доступом только для админов.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "Проверка. Только админы.",
+                "operationId": "example-admin",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.exampleData"
+                        }
+                    },
+                    "401": {
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "Юзер не админ, доступ запрещён"
+                    }
+                }
+            }
+        },
+        "/example/free": {
+            "get": {
+                "description": "Проверочный эндпоинт с доступом абсолютно всем.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "Проверка. Все.",
+                "operationId": "example-free",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.exampleData"
+                        }
+                    }
+                }
+            }
+        },
+        "/example/private": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Проверочный эндпоинт с доступом только для авторизованных юзеров.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "Проверка. Только авторизованные.",
+                "operationId": "example-private",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.exampleData"
+                        }
+                    },
+                    "401": {
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "Юзер не авторизован, доступ запрещён"
+                    }
+                }
+            }
+        },
+        "/example/student": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Проверочный эндпоинт с доступом только для студентов.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "Проверка. Только студенты.",
+                "operationId": "example-student",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.exampleData"
+                        }
+                    },
+                    "401": {
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "Юзер не студент, доступ запрещён"
+                    }
+                }
+            }
+        },
+        "/example/teacher": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Проверочный эндпоинт с доступом только для преподавателей.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "Проверка. Только преподаватели.",
+                "operationId": "example-teacher",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.exampleData"
+                        }
+                    },
+                    "401": {
+                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "Юзер не преподаватель, доступ запрещён"
                     }
                 }
             }
@@ -190,6 +342,19 @@ const docTemplate = `{
                 },
                 "username": {
                     "description": "user username",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserClaims": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "user ID",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "admin, teacher or student",
                     "type": "string"
                 }
             }
@@ -225,6 +390,30 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 50,
                     "example": "user1"
+                }
+            }
+        },
+        "v1.exampleData": {
+            "description": "exampleData represents an output data for example endpoints.",
+            "type": "object",
+            "properties": {
+                "access": {
+                    "description": "endpoint access description",
+                    "type": "string",
+                    "example": "student only"
+                },
+                "handler": {
+                    "description": "handler name",
+                    "type": "string",
+                    "example": "student"
+                },
+                "user_claims": {
+                    "description": "user claims (for endpoints with auth restriction)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.UserClaims"
+                        }
+                    ]
                 }
             }
         },
