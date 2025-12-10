@@ -1,7 +1,10 @@
-# Environments
+# environments
 .env
 env/
 *.env
 
 # dev
 backend/temp/
+
+# test configs
+!test-stand/**

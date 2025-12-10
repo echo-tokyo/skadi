@@ -61,7 +61,7 @@ up:
 	docker compose up --build -d
 
 migrate:
-	echo "migrate rule has not set yet"
+	docker exec -it skadi_backend /bin/sh -c "/app/migrator up"
 
 manager:
-	echo "running cmd manager has not set yet"
+	docker exec -it skadi_backend /bin/sh -c "/app/app manager"
