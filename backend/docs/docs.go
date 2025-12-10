@@ -38,7 +38,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Регистрация юзера.",
+                "summary": "Регистрация юзера. [Только админ]",
                 "operationId": "admin-user-sign-up",
                 "parameters": [
                     {

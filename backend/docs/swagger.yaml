@@ -129,7 +129,7 @@ paths:
           description: Юзер с введенным логином уже зарегистрирован
       security:
       - JWTAccess: []
-      summary: Регистрация юзера.
+      summary: Регистрация юзера. [Только админ]
       tags:
       - user
   /auth/login:

@@ -27,7 +27,7 @@ func NewUserController(_ *config.Config, userUCAdmin user.UsecaseAdmin,
 	}
 }
 
-// @summary		Регистрация юзера.
+// @summary		Регистрация юзера. [Только админ]
 // @description	Регистрация нового юзера с логином и паролем.
 // @router			/admin/user/sign-up [post]
 // @id				admin-user-sign-up
