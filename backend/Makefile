@@ -19,6 +19,9 @@ dev-manager:
 lint:
 	golangci-lint run
 
+mysql:
+	mysql -u test_user --password=test_password skadi
+
 # ------- #
 # SWAGGER #
 # ------- #
