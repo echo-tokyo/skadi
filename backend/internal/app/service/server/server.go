@@ -68,7 +68,10 @@ func New(cfg *config.Config, dbStorage *gorm.DB, cacheStorage cache.Storage,
 	server.fiberApp.Use(middleware.Recover())
 	server.fiberApp.Use(middleware.CORS(cfg.CORS.AllowedOrigins, cfg.CORS.AllowedMethods,
 		cfg.CORS.AllowCredentials))
-	server.fiberApp.Use(middleware.Swagger())
+	// register swagger docs if server is in debug mode
+	if server.Debug() {
+		server.fiberApp.Use(middleware.Swagger())
+	}
 	// register all endpoints
 	server.registerEndpointsV1(cfg, dbStorage, cacheStorage, valid)
 

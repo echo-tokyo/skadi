@@ -16,7 +16,7 @@ server:
       same_site: "" # cookie same site mode ("None", "Strict" or "Lax")
 
 logging:
-  log_level: 3 # 1 - debug, 2 - info (default), 3 - warn, 4 - error, 5 - silent
+  log_level: 1 # 1 - debug, 2 - info (default), 3 - warn, 4 - error, 5 - silent
   json_format: true # use JSON format if true
 
 cache:
