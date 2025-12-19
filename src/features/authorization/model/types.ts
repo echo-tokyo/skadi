@@ -1,13 +1,19 @@
 export type TRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN' | null
 
 export interface ISignInFormData {
-  login: string
+  username: string
   password: string
 }
 
 export interface IAuthResponse {
-  accessToken: string
-  role: TRole
+  token: {
+    access: string
+  }
+  user: {
+    id: string
+    role: TRole
+    username: string
+  }
 }
 
 export interface IRefreshResponse {

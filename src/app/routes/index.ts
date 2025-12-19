@@ -11,4 +11,7 @@ export const router = createBrowserRouter([
     path: '/authorization',
     Component: Authorization,
   },
+  {
+    path: '/personal-area',
+  },
 ])

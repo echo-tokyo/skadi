@@ -4,13 +4,13 @@ import styles from './styles.module.scss'
 import { useSignIn } from '../lib/use-sign-in'
 
 export const SignIn: FC = (): ReactNode => {
-  const [login, setLogin] = useState<string>('')
+  const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const { wrapper, auth } = styles
   const { signIn } = useSignIn()
 
   const handleSignInClick = (): void => {
-    signIn({ login, password })
+    signIn({ username, password })
   }
 
   return (
@@ -20,8 +20,8 @@ export const SignIn: FC = (): ReactNode => {
           title='test'
           fluid
           placeholder='login'
-          value={login}
-          onChange={setLogin}
+          value={username}
+          onChange={setUsername}
         />
         <Input
           title='test'

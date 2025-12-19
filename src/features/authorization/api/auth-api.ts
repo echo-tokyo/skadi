@@ -8,7 +8,7 @@ export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     signIn: builder.mutation<IAuthResponse, ISignInFormData>({
       query: (credentials) => ({
-        url: '/signin',
+        url: '/auth/login',
         method: 'POST',
         body: credentials,
         credentials: 'include',
