@@ -15,7 +15,7 @@ export type {
   ISignInFormData,
   IAuthResponse,
   IAuthState,
-  TRole,
+  ICredentials,
 } from './model/types'
 
 export { SignIn } from './ui/SignIn.tsx'

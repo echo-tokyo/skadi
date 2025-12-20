@@ -3,6 +3,7 @@ import { useSignInMutation } from '../api/auth-api'
 import { setCredentials } from '../model/auth-slice'
 import { ISignInFormData } from '../model/types'
 import { useNavigate } from 'react-router'
+import { setUserData } from '@/entities/user'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useSignIn = () => {
@@ -17,7 +18,12 @@ export const useSignIn = () => {
       dispatch(
         setCredentials({
           accessToken: result.token.access,
+        }),
+      )
+      dispatch(
+        setUserData({
           role: result.user.role,
+          username: result.user.username,
         }),
       )
 

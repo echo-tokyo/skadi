@@ -1,6 +1,7 @@
 import { useAppDispatch } from '@/shared/lib/hooks'
 import { useLogoutMutation } from '../api/auth-api'
 import { logout as logoutActions } from '../model/auth-slice'
+import { clearUserData } from '@/entities/user'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useLogout = () => {
@@ -15,6 +16,7 @@ export const useLogout = () => {
       console.log('Logout failed: ', err)
     } finally {
       dispatch(logoutActions())
+      dispatch(clearUserData())
     }
   }
 

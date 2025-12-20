@@ -10,7 +10,7 @@ import { Mutex } from 'async-mutex'
 interface IRefreshResponse {
   accessToken: string
 }
-export interface IAuthActions {
+interface IAuthActions {
   onTokenRefresh: (accessToken: string) => {
     type: string
     payload: string

@@ -1,4 +1,4 @@
-export type TRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN' | null
+import { TRole } from '@/shared/types'
 
 export interface ISignInFormData {
   username: string
@@ -16,12 +16,11 @@ export interface IAuthResponse {
   }
 }
 
-export interface IRefreshResponse {
-  accessToken: string
-}
-
 export interface IAuthState {
   accessToken: string | null
   isAuthenticated: boolean
-  role: TRole
+}
+
+export interface ICredentials {
+  accessToken: string
 }

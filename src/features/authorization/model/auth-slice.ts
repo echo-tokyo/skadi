@@ -1,21 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { IAuthState, TRole } from '@/features/authorization'
+import type { IAuthState } from '@/features/authorization'
+import { ICredentials } from './types'
 
 const initialState: IAuthState = {
   accessToken: null,
   isAuthenticated: false,
-  role: null,
-}
-
-interface ICredentials {
-  accessToken: string
-  role: TRole
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-
   reducers: {
     setCredentials: (
       state,
@@ -23,7 +17,6 @@ const authSlice = createSlice({
     ) => {
       state.accessToken = payload.accessToken
       state.isAuthenticated = true
-      state.role = payload.role
     },
 
     setAccessToken: (state, { payload }: PayloadAction<string>) => {
@@ -34,7 +27,6 @@ const authSlice = createSlice({
     logout: (state) => {
       state.accessToken = null
       state.isAuthenticated = false
-      state.role = null
     },
   },
 })
