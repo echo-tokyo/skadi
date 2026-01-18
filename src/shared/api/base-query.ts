@@ -67,7 +67,7 @@ const baseQueryWithReauth: BaseQueryFn<
       try {
         const refreshResult = await baseQuery(
           {
-            url: '/refresh',
+            url: '/auth/private/obtain',
             method: 'POST',
             credentials: 'include',
           },
@@ -98,7 +98,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
 export const baseApi = createApi({
   reducerPath: 'api',
-  tagTypes: ['Auth'],
+  tagTypes: ['Auth', 'User'],
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
 })

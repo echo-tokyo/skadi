@@ -6,13 +6,16 @@ html,
   height: 100%;
   font-family: 'Montserrat', sans-serif;
   color: var(--color-secondary);
+  background-color: #fffdf7;
   margin: 0;
   overflow: hidden;
 }
 
 .wrapper {
-  padding: 0 2rem;
-  height: calc(100% - 56px);
+  display: flex;
+  flex-direction: column;
+  margin: 0 2rem;
+  height: calc(100% - var(--header-height));
 }
 
 * {

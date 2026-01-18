@@ -10,7 +10,7 @@ interface IProps {
   fluid?: boolean
   size?: 's' | 'm'
   disabled?: boolean
-  type?: 'text | password'
+  type?: 'text' | 'password'
   onChange: (value: string) => void
 }
 
@@ -38,7 +38,7 @@ const Input = (props: IProps): ReactNode => {
 
   const inputClassName = getUIClasses(
     styles.input,
-    { size },
+    { size, fluid },
     commonStyles,
   )
 

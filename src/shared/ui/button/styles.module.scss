@@ -2,7 +2,7 @@
   background-color: var(--color-primary);
   color: var(--color-white);
   border: none;
-  width: fit-content;
+  width: var(--ui-width, fit-content);
   border-radius: 0.5rem;
   font-size: 14px;
   font-weight: 600;

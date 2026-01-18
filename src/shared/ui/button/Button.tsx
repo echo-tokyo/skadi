@@ -9,6 +9,7 @@ interface IProps {
   fluid?: boolean
   size?: 's' | 'm'
   disabled?: boolean
+  type?: 'button' | 'submit'
 }
 
 const Button = (props: IProps): ReactNode => {
@@ -18,12 +19,15 @@ const Button = (props: IProps): ReactNode => {
     fluid = false,
     size = 'm',
     disabled,
+    type = 'button',
   } = props
 
   const handleClick = (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ): void => {
-    e.preventDefault()
+    if (type === 'button') {
+      e.preventDefault()
+    }
     if (onClick) {
       onClick()
     }
@@ -40,6 +44,7 @@ const Button = (props: IProps): ReactNode => {
       disabled={disabled}
       onClick={(e) => handleClick(e)}
       className={buttonClassName}
+      type={type}
     >
       {children}
     </button>

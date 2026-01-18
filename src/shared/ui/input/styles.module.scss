@@ -1,6 +1,6 @@
 .wrapper {
-  width: 16rem;
   position: relative;
+  width: var(--ui-width, fit-content);
 }
 
 .input {
@@ -9,9 +9,9 @@
   font-family: 'Montserrat', sans-serif;
   color: var(--color-secondary);
   font-size: 14px;
+  width: var(--ui-width, 16rem);
   border-radius: 0.5rem;
   outline: none;
-  width: 100%;
   transition: border-color 0.2s ease-in-out;
 
   &:hover:not(:disabled) {

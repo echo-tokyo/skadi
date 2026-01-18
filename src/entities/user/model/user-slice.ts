@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IUserData } from './types'
 
 const initialState: IUserData = {
+  id: null,
   role: null,
   username: null,
 }

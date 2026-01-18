@@ -22,6 +22,7 @@ export const useSignIn = () => {
       )
       dispatch(
         setUserData({
+          id: result.user.id,
           role: result.user.role,
           username: result.user.username,
         }),

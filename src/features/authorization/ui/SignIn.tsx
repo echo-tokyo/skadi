@@ -1,5 +1,5 @@
 import { Button, Input } from '@/shared/ui'
-import { FC, ReactNode, useState } from 'react'
+import { FC, FormEvent, ReactNode, useState } from 'react'
 import styles from './styles.module.scss'
 import { useSignIn } from '../lib/use-sign-in'
 
@@ -9,13 +9,14 @@ export const SignIn: FC = (): ReactNode => {
   const { wrapper, auth } = styles
   const { signIn } = useSignIn()
 
-  const handleSignInClick = (): void => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault()
     signIn({ username, password })
   }
 
   return (
     <div className={wrapper}>
-      <form action='' className={auth}>
+      <form className={auth} onSubmit={handleSubmit}>
         <Input
           title='test'
           fluid
@@ -30,7 +31,7 @@ export const SignIn: FC = (): ReactNode => {
           value={password}
           onChange={setPassword}
         />
-        <Button fluid onClick={handleSignInClick}>
+        <Button fluid type='submit'>
           Войти
         </Button>
       </form>

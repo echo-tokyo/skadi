@@ -1,6 +1,8 @@
 import Authorization from '@/pages/authorization'
 import MainPage from '@/pages/main'
+import PersonalArea from '@/pages/personal-area'
 import { createBrowserRouter } from 'react-router'
+import ProtectedRoute from '../layouts/ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +14,12 @@ export const router = createBrowserRouter([
     Component: Authorization,
   },
   {
-    path: '/personal-area',
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/personal-area',
+        Component: PersonalArea,
+      },
+    ],
   },
 ])

@@ -1,4 +1,4 @@
-import { TRole } from '@/shared/types'
+import { TRole } from '@/entities/user'
 
 export interface ISignInFormData {
   username: string
@@ -14,6 +14,10 @@ export interface IAuthResponse {
     role: TRole
     username: string
   }
+}
+
+export interface IRefreshResponse {
+  access: string
 }
 
 export interface IAuthState {
