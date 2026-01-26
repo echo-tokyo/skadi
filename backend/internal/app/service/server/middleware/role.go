@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"fmt"
+
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/service/server/errhandler"
@@ -24,7 +26,8 @@ func Admin() fiber.Handler {
 			return ctx.Next()
 		}
 		// not found error for non-admin
-		return errhandler.CustomErrorHandler(ctx, fiber.ErrNotFound)
+		err := fmt.Errorf("non-admin: %w", fiber.ErrNotFound)
+		return errhandler.CustomErrorHandler(ctx, err)
 	}
 }
 
@@ -39,7 +42,8 @@ func Teacher() fiber.Handler {
 			return ctx.Next()
 		}
 		// not found error for non-teacher
-		return errhandler.CustomErrorHandler(ctx, fiber.ErrNotFound)
+		err := fmt.Errorf("non-teacher: %w", fiber.ErrNotFound)
+		return errhandler.CustomErrorHandler(ctx, err)
 	}
 }
 
@@ -54,6 +58,7 @@ func Student() fiber.Handler {
 			return ctx.Next()
 		}
 		// not found error for non-student
-		return errhandler.CustomErrorHandler(ctx, fiber.ErrNotFound)
+		err := fmt.Errorf("non-student: %w", fiber.ErrNotFound)
+		return errhandler.CustomErrorHandler(ctx, err)
 	}
 }
