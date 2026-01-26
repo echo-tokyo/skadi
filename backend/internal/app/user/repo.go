@@ -6,4 +6,8 @@ import "skadi/backend/internal/app/entity"
 type RepositoryDB interface {
 	// CreateUser creates a new user and fills given struct.
 	CreateUser(user *entity.User) error
+	// CreateUserWithProfile creates a new user and profile for them and fills given structs.
+	CreateUserWithProfile(user *entity.User) error
+	// GetByID returns user object with profile by given id.
+	GetByID(id string) (*entity.User, error)
 }

@@ -9,6 +9,9 @@ import (
 	"skadi/backend/internal/pkg/password"
 )
 
+const _adminRole = "admin"     // admin role for user
+const _studentRole = "student" // student role for user
+
 // Ensure UCAdmin implements interface.
 var _ user.UsecaseAdmin = (*UCAdmin)(nil)
 
@@ -27,9 +30,9 @@ func NewUCAdmin(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdmin {
 	}
 }
 
-// SignUp creates a new user in the DB and returns them.
+// CreateAdmin creates a new admin user in the DB and returns them.
 // Password is a raw (not hashed) password.
-func (u *UCAdmin) SignUp(username string, passwd []byte, role string) (*entity.User, error) {
+func (u *UCAdmin) CreateAdmin(username string, passwd []byte) (*entity.User, error) {
 	// hash password
 	hashPasswd, err := password.Encode(passwd)
 	if err != nil {
@@ -39,7 +42,7 @@ func (u *UCAdmin) SignUp(username string, passwd []byte, role string) (*entity.U
 	userObj := &entity.User{
 		Username: username,
 		Password: hashPasswd,
-		Role:     role,
+		Role:     _adminRole,
 	}
 	// create user
 	err = u.userRepoDB.CreateUser(userObj)
@@ -47,4 +50,39 @@ func (u *UCAdmin) SignUp(username string, passwd []byte, role string) (*entity.U
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 	return userObj, nil
+}
+
+// CreateWithProfile creates a new user with profile in the DB and returns them.
+// Password is a raw (not hashed) password.
+func (u *UCAdmin) CreateWithProfile(userObj *entity.User) error {
+	if userObj.Profile == nil {
+		return fmt.Errorf("profile missing: %w", user.ErrInvalidData)
+	}
+	// set nil  parent contact for non-student users
+	if userObj.Role != _studentRole {
+		userObj.Profile.ParentContact = nil
+	}
+
+	// hash password
+	hashPasswd, err := password.Encode(userObj.Password)
+	if err != nil {
+		return fmt.Errorf("encode password: %w", err)
+	}
+	userObj.Password = hashPasswd
+
+	// create user with profile
+	err = u.userRepoDB.CreateUserWithProfile(userObj)
+	if err != nil {
+		return fmt.Errorf("create user: %w", err)
+	}
+	return nil
+}
+
+// GetByID returns user object with profile by given id.
+func (u *UCAdmin) GetByID(id string) (*entity.User, error) {
+	profile, err := u.userRepoDB.GetByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("get by id: %w", err)
+	}
+	return profile, nil
 }

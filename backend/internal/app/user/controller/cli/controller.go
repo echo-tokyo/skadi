@@ -19,19 +19,13 @@ func NewUserController(_ *config.Config, userUCAdmin user.UsecaseAdmin) *UserCon
 	}
 }
 
-// SignUp signs up a new user.
-func (c *UserController) SignUp() error {
+// CreateAdmin creates a new admin user.
+func (c *UserController) CreateAdmin() error {
 	var (
-		inputBody                = &userBody{}
-		role, username, password string
+		inputBody          = &userBody{}
+		username, password string
 	)
 
-	// ask for role
-	fmt.Print("Enter user role [admin teacher student]: ")
-	fmt.Scan(&role)
-	if err := inputBody.ParseRole(role); err != nil {
-		return err
-	}
 	// ask for username
 	fmt.Print("Enter username: ")
 	fmt.Scan(&username)
@@ -50,12 +44,11 @@ func (c *UserController) SignUp() error {
 		return err
 	}
 
-	// sign up a new user
-	userObj, err := c.userUCAdmin.SignUp(inputBody.Username,
-		inputBody.Password, inputBody.Role)
+	// sign up a new admin
+	userObj, err := c.userUCAdmin.CreateAdmin(inputBody.Username, inputBody.Password)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("User %q was created successfully!\n", userObj.Username)
+	fmt.Printf("Admin user %q was created successfully!\n", userObj.Username)
 	return nil
 }

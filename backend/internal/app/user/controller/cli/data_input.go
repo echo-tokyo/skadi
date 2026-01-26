@@ -3,7 +3,6 @@ package cli
 import (
 	"errors"
 	"skadi/backend/internal/pkg/password"
-	"slices"
 )
 
 const _usernameMaxLen = 50 // max length of user username
@@ -14,8 +13,6 @@ type userBody struct {
 	Username string
 	// user password
 	Password []byte
-	// user role (teacher or student)
-	Role string
 }
 
 // ParseUsername parses user username from given string and validates it.
@@ -33,14 +30,5 @@ func (a *userBody) ParsePassword(raw string) error {
 		return errors.New("weak password")
 	}
 	a.Password = []byte(raw)
-	return nil
-}
-
-// ParseRole parses user role from given string and validates it.
-func (a *userBody) ParseRole(raw string) error {
-	if !slices.Contains([]string{"admin", "teacher", "student"}, raw) {
-		return errors.New("invalid role")
-	}
-	a.Role = raw
 	return nil
 }

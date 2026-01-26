@@ -19,6 +19,6 @@ func (c *CmdManager) registerCommands(cfg *config.Config, dbStorage *gorm.DB) {
 	userController := usercli.NewUserController(cfg, userUCAdmin)
 
 	c.commands = map[string]Handler{
-		"create-user": userController.SignUp,
+		"create-admin": userController.CreateAdmin,
 	}
 }
