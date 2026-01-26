@@ -6,7 +6,7 @@ import "time"
 // User represents an app user with main user data.
 type User struct {
 	// user id
-	ID string `json:"id" gorm:"primaryKey;autoIncrement"`
+	ID int `json:"id" gorm:"primaryKey;autoIncrement"`
 	// user username
 	Username string `json:"username"`
 	// user password hash
@@ -15,6 +15,9 @@ type User struct {
 	Role string `json:"role"`
 	// user creating datetime
 	CreatedAt time.Time `json:"-"`
+
+	// user profile
+	Profile *Profile `json:"profile,omitempty" gorm:"foreignKey:ID"`
 }
 
 // TableName determines DB table name for the user object.
@@ -25,7 +28,7 @@ func (*User) TableName() string {
 // UserClaims represents a claims with user data for JWT-tokens.
 type UserClaims struct {
 	// user ID
-	UserID string `json:"id"`
+	UserID int `json:"id"`
 	// admin, teacher or student
 	Role string `json:"role"`
 }

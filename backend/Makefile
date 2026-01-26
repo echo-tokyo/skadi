@@ -45,7 +45,7 @@ migrations:
 
 # use "version" var for specify the version of the migration to force
 migrate-force:
-	@go run $(go_migrator_path) force $(version)
+	@go run $(go_migrator_path) force -v $(version)
 
 migrate-status:
 	@go run $(go_migrator_path) status
