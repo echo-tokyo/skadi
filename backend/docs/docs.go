@@ -21,14 +21,14 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/user/sign-up": {
+        "/admin/user": {
             "post": {
                 "security": [
                     {
                         "JWTAccess": []
                     }
                 ],
-                "description": "Регистрация нового юзера с логином и паролем.",
+                "description": "Создание нового юзера и профиля для него со всеми данными.",
                 "consumes": [
                     "application/json"
                 ],
@@ -38,16 +38,16 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Регистрация юзера. [Только админ]",
-                "operationId": "admin-user-sign-up",
+                "summary": "Создание нового юзера. [Только админ]",
+                "operationId": "admin-user-create",
                 "parameters": [
                     {
-                        "description": "userBody",
-                        "name": "userBody",
+                        "description": "createUserBody",
+                        "name": "createUserBody",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.userBody"
+                            "$ref": "#/definitions/v1.createUserBody"
                         }
                     }
                 ],
@@ -59,10 +59,54 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     },
                     "409": {
-                        "description": "Юзер с введенным логином уже зарегистрирован"
+                        "description": "пользователь с введенным логином уже существует"
+                    }
+                }
+            }
+        },
+        "/admin/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение юзера со всеми данными по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получение юзера по id. [Только админ]",
+                "operationId": "admin-user-read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "юзер с данным id не найден"
                     }
                 }
             }
@@ -100,10 +144,10 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Неверный пароль для учетной записи юзера"
+                        "description": "неверный пароль"
                     },
                     "404": {
-                        "description": "Юзер с введенным логином не найден"
+                        "description": "пользователь с введенным логином не найден"
                     }
                 }
             }
@@ -126,10 +170,10 @@ const docTemplate = `{
                         "description": "No Content"
                     },
                     "401": {
-                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     },
                     "403": {
-                        "description": "Токен в черном списке"
+                        "description": "токен в черном списке"
                     }
                 }
             }
@@ -158,10 +202,10 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Неверный токен (пустой, истекший или неверный формат)"
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     },
                     "403": {
-                        "description": "Токен в черном списке"
+                        "description": "токен в черном списке"
                     }
                 }
             }
@@ -320,6 +364,40 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.Contact": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Profile": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "user address",
+                    "type": "string"
+                },
+                "contact": {
+                    "$ref": "#/definitions/entity.Contact"
+                },
+                "extra": {
+                    "description": "extra data (for admin only)",
+                    "type": "string"
+                },
+                "fullname": {
+                    "description": "user full name",
+                    "type": "string"
+                },
+                "parent_contact": {
+                    "$ref": "#/definitions/entity.Contact"
+                }
+            }
+        },
         "entity.Token": {
             "type": "object",
             "properties": {
@@ -334,7 +412,15 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "description": "user id",
-                    "type": "string"
+                    "type": "integer"
+                },
+                "profile": {
+                    "description": "user profile",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Profile"
+                        }
+                    ]
                 },
                 "role": {
                     "description": "admin, teacher or student",
@@ -351,7 +437,7 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "description": "user ID",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "role": {
                     "description": "admin, teacher or student",
@@ -393,6 +479,112 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.createContactBody": {
+            "description": "createProfileBody represents a data to create a new profile contact.",
+            "type": "object",
+            "required": [
+                "email",
+                "phone"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "ivanovvp@gmail.com"
+                },
+                "phone": {
+                    "type": "string",
+                    "maxLength": 15,
+                    "example": "88005553535"
+                }
+            }
+        },
+        "v1.createProfileBody": {
+            "description": "createProfileBody represents a data to create a new user profile.",
+            "type": "object",
+            "required": [
+                "address",
+                "contact",
+                "fullname"
+            ],
+            "properties": {
+                "address": {
+                    "description": "user address",
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "3-я ул.Строителей д. 25"
+                },
+                "contact": {
+                    "description": "user contact info",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.createContactBody"
+                        }
+                    ]
+                },
+                "extra": {
+                    "description": "extra data (for admin only)",
+                    "type": "string",
+                    "example": "только для админов"
+                },
+                "fullname": {
+                    "description": "user full name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "example": "Иванов Василий Петрович"
+                },
+                "parent_contact": {
+                    "description": "parent contact info (for students)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.createContactBody"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.createUserBody": {
+            "description": "createUserBody represents a data to create a new user.",
+            "type": "object",
+            "required": [
+                "password",
+                "profile",
+                "role",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "qwerty123"
+                },
+                "profile": {
+                    "description": "user profile",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.createProfileBody"
+                        }
+                    ]
+                },
+                "role": {
+                    "description": "user role (teacher or student)",
+                    "type": "string",
+                    "enum": [
+                        "teacher",
+                        "student"
+                    ],
+                    "example": "teacher"
+                },
+                "username": {
+                    "description": "user username",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "user1"
+                }
+            }
+        },
         "v1.exampleData": {
             "description": "exampleData represents an output data for example endpoints.",
             "type": "object",
@@ -414,39 +606,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.UserClaims"
                         }
                     ]
-                }
-            }
-        },
-        "v1.userBody": {
-            "description": "userBody represents a data for user auth (sign up).",
-            "type": "object",
-            "required": [
-                "password",
-                "role",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "description": "user password",
-                    "type": "string",
-                    "maxLength": 40,
-                    "minLength": 8,
-                    "example": "qwerty123"
-                },
-                "role": {
-                    "description": "user role (teacher or student)",
-                    "type": "string",
-                    "enum": [
-                        "teacher",
-                        "student"
-                    ],
-                    "example": "teacher"
-                },
-                "username": {
-                    "description": "user username",
-                    "type": "string",
-                    "maxLength": 50,
-                    "example": "user1"
                 }
             }
         }

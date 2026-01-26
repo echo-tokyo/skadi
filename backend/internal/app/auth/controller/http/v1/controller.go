@@ -47,8 +47,8 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 // @produce		json
 // @param			authBody	body		authBody	true	"authBody"
 // @success		200			{object}	entity.UserWithToken
-// @failure		400			"Неверный пароль для учетной записи юзера"
-// @failure		404			"Юзер с введенным логином не найден"
+// @failure		400			"неверный пароль"
+// @failure		404			"пользователь с введенным логином не найден"
 func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 	inputBody := &authBody{}
 	if err := inputBody.Parse(ctx, c.valid); err != nil {
@@ -87,8 +87,8 @@ func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 // @produce		json
 // @security		JWTRefresh
 // @success		200 {object}	entity.Token
-// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-// @failure		403	"Токен в черном списке"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"токен в черном списке"
 func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -107,8 +107,8 @@ func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
 // @tags			auth
 // @security		JWTRefresh
 // @success		204	"No Content"
-// @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-// @failure		403	"Токен в черном списке"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"токен в черном списке"
 func (c *AuthController) LogOut(ctx *fiber.Ctx) error {
 	// parse access token
 	token := utilsjwt.ParseTokenStringFromRequest(ctx)
