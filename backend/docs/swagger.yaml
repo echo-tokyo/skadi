@@ -181,6 +181,27 @@ info:
   version: 1.0.0
 paths:
   /admin/user:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка юзеров со всеми данными.
+      operationId: admin-user-list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.User'
+            type: array
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка юзеров. [Только админ]
+      tags:
+      - user
     post:
       consumes:
       - application/json

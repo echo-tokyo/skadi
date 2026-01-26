@@ -22,6 +22,39 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/admin/user": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка юзеров со всеми данными.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получение списка юзеров. [Только админ]",
+                "operationId": "admin-user-list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.User"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
