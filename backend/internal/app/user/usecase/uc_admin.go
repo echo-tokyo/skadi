@@ -80,9 +80,18 @@ func (u *UCAdmin) CreateWithProfile(userObj *entity.User) error {
 
 // GetByID returns user object with profile by given id.
 func (u *UCAdmin) GetByID(id string) (*entity.User, error) {
-	profile, err := u.userRepoDB.GetByID(id)
+	userObj, err := u.userRepoDB.GetByID(id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
 	}
-	return profile, nil
+	return userObj, nil
+}
+
+// GetMany returns list with users.
+func (u *UCAdmin) GetMany() ([]entity.User, error) {
+	userList, err := u.userRepoDB.GetMany()
+	if err != nil {
+		return nil, fmt.Errorf("get many: %w", err)
+	}
+	return userList, nil
 }

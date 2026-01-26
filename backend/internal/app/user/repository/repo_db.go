@@ -100,3 +100,17 @@ func (r *RepoDB) GetByID(id string) (*entity.User, error) {
 	}
 	return &userObj, nil
 }
+
+// GetMany returns list with users.
+func (r *RepoDB) GetMany() ([]entity.User, error) {
+	var userList []entity.User
+	err := r.dbStorage.
+		Preload("Profile").
+		Preload("Profile.Contact").
+		Preload("Profile.ParentContact").
+		Find(&userList).Error
+	if err != nil {
+		return nil, err
+	}
+	return userList, nil
+}

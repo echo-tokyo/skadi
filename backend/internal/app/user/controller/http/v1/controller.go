@@ -114,3 +114,21 @@ func (c *UserController) Read(ctx *fiber.Ctx) error {
 	}
 	return ctx.Status(fiber.StatusOK).JSON(userResp)
 }
+
+// @summary		Получение списка юзеров. [Только админ]
+// @description	Получение списка юзеров со всеми данными.
+// @router			/admin/user [get]
+// @id				admin-user-list
+// @tags			user
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @success		200	{array}	entity.User
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+func (c *UserController) List(ctx *fiber.Ctx) error {
+	userListResp, err := c.userUCAdmin.GetMany()
+	if err != nil {
+		return fmt.Errorf("list: %w", err)
+	}
+	return ctx.Status(fiber.StatusOK).JSON(userListResp)
+}

@@ -10,4 +10,6 @@ type RepositoryDB interface {
 	CreateUserWithProfile(user *entity.User) error
 	// GetByID returns user object with profile by given id.
 	GetByID(id string) (*entity.User, error)
+	// GetMany returns list with users.
+	GetMany() ([]entity.User, error)
 }
