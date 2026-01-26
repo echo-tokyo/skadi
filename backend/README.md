@@ -16,8 +16,13 @@
 Пример переменных окружения:
 
 ```dotenv
-DB_PASSWORD="strong#password"
-JWT_SECRET="example-secret"
+# dev
+ACCESS_SECRET="example-access-secret"
+REFRESH_SECRET="example-refresh-secret"
+DB_PASSWORD="test_password"
+
+# test
+TEST_DSN="test_user:test_password@tcp(127.0.0.1:3306)/meteo_ssc_ras?parseTime=true&timeout=10s"
 ```
 
 ### Тестовый стенд (для frontend'а)
@@ -69,7 +74,7 @@ docker exec -it skadi_backend /bin/sh -c "/app/app manager"
 ```
 
 После его запуска предложится список доступных действий.
-Необходимо выбрать `create-user` для создания нового юзера.
+Необходимо выбрать `create-admin` для создания нового юзера-админа.
 Следуя инструкциям, создайте пользователя.
 
 #### 6. Готово
