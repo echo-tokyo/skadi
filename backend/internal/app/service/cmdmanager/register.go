@@ -14,11 +14,13 @@ func (c *CmdManager) registerCommands(cfg *config.Config, dbStorage *gorm.DB) {
 	// create repos
 	userRepoDB := userrepo.NewRepoDB(dbStorage)
 	// create usecases
-	userUCAdmin := useruc.NewUCAdmin(cfg, userRepoDB)
+	userUCManager := useruc.NewUCManager(cfg, userRepoDB)
 	// create controllers
-	userController := usercli.NewUserController(cfg, userUCAdmin)
+	userController := usercli.NewUserController(cfg, userUCManager)
 
 	c.commands = map[string]Handler{
 		"create-admin": userController.CreateAdmin,
+		"delete-admin": userController.DeleteAdmin,
+		"get-admins":   userController.GetAdmins,
 	}
 }

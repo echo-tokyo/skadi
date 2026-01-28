@@ -1,0 +1,76 @@
+package usecase
+
+import (
+	"errors"
+	"fmt"
+
+	"skadi/backend/config"
+	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/user"
+	"skadi/backend/internal/pkg/password"
+)
+
+// Ensure UCManager implements interface.
+var _ user.UsecaseManager = (*UCManager)(nil)
+
+// UCManager represents an auth usecase for client.
+// It implements the auth.UsecaseAdmin interface.
+type UCManager struct {
+	cfg        *config.Config
+	userRepoDB user.RepositoryDB
+}
+
+// NewUCManager returns a new instance of UCAdmin.
+func NewUCManager(cfg *config.Config, userRepoDB user.RepositoryDB) *UCManager {
+	return &UCManager{
+		cfg:        cfg,
+		userRepoDB: userRepoDB,
+	}
+}
+
+// CreateAdmin creates a new admin user in the DB and returns them.
+// Password is a raw (not hashed) password.
+func (u *UCManager) CreateAdmin(username string, passwd []byte) (*entity.User, error) {
+	// hash password
+	hashPasswd, err := password.Encode(passwd)
+	if err != nil {
+		return nil, fmt.Errorf("encode password: %w", err)
+	}
+
+	userObj := &entity.User{
+		Username: username,
+		Password: hashPasswd,
+		Role:     _adminRole,
+	}
+	// create user
+	err = u.userRepoDB.CreateUser(userObj)
+	if err != nil {
+		return nil, fmt.Errorf("create user: %w", err)
+	}
+	return userObj, nil
+}
+
+// DeleteAdminByID deletes admin user with given id.
+func (u *UCManager) DeleteAdminByID(id int) error {
+	userObj, err := u.userRepoDB.GetByID(id)
+	if err != nil {
+		return fmt.Errorf("get by id: %w", err)
+	}
+	// deny deletion of non-admins
+	if userObj.Role != _adminRole {
+		return errors.New("cannot delete non-admin")
+	}
+	if err := u.userRepoDB.DeleteByID(id); err != nil {
+		return fmt.Errorf("delete by id: %w", err)
+	}
+	return nil
+}
+
+// GetAdmins returns all admins.
+func (u *UCManager) GetAdmins() ([]entity.User, error) {
+	userList, err := u.userRepoDB.GetByRoles([]string{_adminRole})
+	if err != nil {
+		return nil, fmt.Errorf("get many: %w", err)
+	}
+	return userList, nil
+}
