@@ -186,6 +186,16 @@ paths:
       - application/json
       description: Получение списка юзеров со всеми данными.
       operationId: admin-user-list
+      parameters:
+      - collectionFormat: csv
+        description: user roles (teacher, student)
+        example:
+        - student
+        in: query
+        items:
+          type: string
+        name: roles
+        type: array
       produces:
       - application/json
       responses:
@@ -231,6 +241,29 @@ paths:
       tags:
       - user
   /admin/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление юзера и его профиля по его id.
+      operationId: admin-user-delete
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Удаление юзера по id. [Только админ]
+      tags:
+      - user
     get:
       consumes:
       - application/json

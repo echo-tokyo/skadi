@@ -115,6 +115,37 @@ func (c *UserController) Read(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(userResp)
 }
 
+// @summary		Удаление юзера по id. [Только админ]
+// @description	Удаление юзера и его профиля по его id.
+// @router			/admin/user/{id} [delete]
+// @id				admin-user-delete
+// @tags			user
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id	path	string	true	"ID юзера"
+// @success		204	"No Content"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+func (c *UserController) Delete(ctx *fiber.Ctx) error {
+	inputBody := &userIDPath{}
+	if err := inputBody.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+
+	err := c.userUCAdmin.DeleteByID(inputBody.ID)
+	if errors.Is(err, user.ErrNotFound) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusNotFound,
+			Message:    "пользователь не найден",
+		}
+	}
+	if err != nil {
+		return fmt.Errorf("delete: %w", err)
+	}
+	return ctx.Status(fiber.StatusNoContent).JSON(nil)
+}
+
 // @summary		Получение списка юзеров. [Только админ]
 // @description	Получение списка юзеров со всеми данными.
 // @router			/admin/user [get]
@@ -123,10 +154,15 @@ func (c *UserController) Read(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @success		200	{array}	entity.User
-// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @param			listUserQuery	query	listUserQuery	false	"listUserQuery"
+// @success		200				{array}	entity.User
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *UserController) List(ctx *fiber.Ctx) error {
-	userListResp, err := c.userUCAdmin.GetMany()
+	inputBody := &listUserQuery{}
+	if err := inputBody.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	userListResp, err := c.userUCAdmin.GetByRoles(inputBody.Roles)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

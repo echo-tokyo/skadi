@@ -83,8 +83,23 @@ func (r *RepoDB) CreateUserWithProfile(userObj *entity.User) error {
 	})
 }
 
-// GetByID returns user object with profile by given id.
-func (r *RepoDB) GetByID(id string) (*entity.User, error) {
+// GetByID returns user by given id.
+func (r *RepoDB) GetByID(id int) (*entity.User, error) {
+	var userObj entity.User
+	err := r.dbStorage.Where(id).
+		First(&userObj).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// user object with such id not found
+		return nil, fmt.Errorf("user with id: %w", user.ErrNotFound)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &userObj, nil
+}
+
+// GetByIDWithProfile returns user object with profile by given id.
+func (r *RepoDB) GetByIDWithProfile(id int) (*entity.User, error) {
 	var userObj entity.User
 	err := r.dbStorage.
 		Preload("Profile").
@@ -101,13 +116,22 @@ func (r *RepoDB) GetByID(id string) (*entity.User, error) {
 	return &userObj, nil
 }
 
-// GetMany returns list with users.
-func (r *RepoDB) GetMany() ([]entity.User, error) {
+// DeleteByID deletes user object and user profile with given id.
+func (r *RepoDB) DeleteByID(id int) error {
+	return r.dbStorage.Delete(&entity.User{}, id).Error
+}
+
+// GetByRoles returns user list with given roles.
+func (r *RepoDB) GetByRoles(roles []string) ([]entity.User, error) {
+	if len(roles) == 0 {
+		return nil, errors.New("no one role specified")
+	}
 	var userList []entity.User
 	err := r.dbStorage.
 		Preload("Profile").
 		Preload("Profile.Contact").
 		Preload("Profile.ParentContact").
+		Where("role IN ?", roles).
 		Find(&userList).Error
 	if err != nil {
 		return nil, err

@@ -1,8 +1,10 @@
-// Package usecase contains auth.UsecaseAdmin implementation.
+// Package usecase contains user.UsecaseAdmin and user.UsecaseManager implementations.
 package usecase
 
 import (
+	"errors"
 	"fmt"
+
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
@@ -30,33 +32,11 @@ func NewUCAdmin(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdmin {
 	}
 }
 
-// CreateAdmin creates a new admin user in the DB and returns them.
-// Password is a raw (not hashed) password.
-func (u *UCAdmin) CreateAdmin(username string, passwd []byte) (*entity.User, error) {
-	// hash password
-	hashPasswd, err := password.Encode(passwd)
-	if err != nil {
-		return nil, fmt.Errorf("encode password: %w", err)
-	}
-
-	userObj := &entity.User{
-		Username: username,
-		Password: hashPasswd,
-		Role:     _adminRole,
-	}
-	// create user
-	err = u.userRepoDB.CreateUser(userObj)
-	if err != nil {
-		return nil, fmt.Errorf("create user: %w", err)
-	}
-	return userObj, nil
-}
-
 // CreateWithProfile creates a new user with profile in the DB and returns them.
 // Password is a raw (not hashed) password.
 func (u *UCAdmin) CreateWithProfile(userObj *entity.User) error {
 	if userObj.Profile == nil {
-		return fmt.Errorf("profile missing: %w", user.ErrInvalidData)
+		return errors.New("profile missing")
 	}
 	// set nil  parent contact for non-student users
 	if userObj.Role != _studentRole {
@@ -79,17 +59,33 @@ func (u *UCAdmin) CreateWithProfile(userObj *entity.User) error {
 }
 
 // GetByID returns user object with profile by given id.
-func (u *UCAdmin) GetByID(id string) (*entity.User, error) {
-	userObj, err := u.userRepoDB.GetByID(id)
+func (u *UCAdmin) GetByID(id int) (*entity.User, error) {
+	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
 	}
 	return userObj, nil
 }
 
-// GetMany returns list with users.
-func (u *UCAdmin) GetMany() ([]entity.User, error) {
-	userList, err := u.userRepoDB.GetMany()
+// DeleteByID deletes user object and user profile with given id.
+func (u *UCAdmin) DeleteByID(id int) error {
+	userObj, err := u.userRepoDB.GetByID(id)
+	if err != nil {
+		return fmt.Errorf("get by id: %w", err)
+	}
+	// deny deletion of admins
+	if userObj.Role == _adminRole {
+		return fmt.Errorf("cannot delete admin: %w", user.ErrNotFound)
+	}
+	if err := u.userRepoDB.DeleteByID(id); err != nil {
+		return fmt.Errorf("delete by id: %w", err)
+	}
+	return nil
+}
+
+// GetByRoles returns user list with given roles.
+func (u *UCAdmin) GetByRoles(roles []string) ([]entity.User, error) {
+	userList, err := u.userRepoDB.GetByRoles(roles)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}

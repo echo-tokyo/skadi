@@ -26,11 +26,11 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreateUserWithProfile(t *testing.T) {
-	user_id := "1"
+	user_id := 1
 
-	profile, err := _testRepoDB.GetByID(user_id)
+	userObj, err := _testRepoDB.GetByIDWithProfile(user_id)
 	if err != nil {
 		log.Fatalf("get by id: %v", err)
 	}
-	t.Logf("Gotten profile: %+v", profile)
+	t.Logf("Gotten user with profile: %+v", userObj)
 }

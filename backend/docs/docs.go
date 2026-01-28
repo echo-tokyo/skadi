@@ -40,6 +40,21 @@ const docTemplate = `{
                 ],
                 "summary": "Получение списка юзеров. [Только админ]",
                 "operationId": "admin-user-list",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "example": [
+                            "student"
+                        ],
+                        "description": "user roles (teacher, student)",
+                        "name": "roles",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -140,6 +155,42 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "юзер с данным id не найден"
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление юзера и его профиля по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Удаление юзера по id. [Только админ]",
+                "operationId": "admin-user-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     }
                 }
             }
