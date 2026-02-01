@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 
-	"skadi/backend/config"
 	"skadi/backend/internal/app/user"
 )
 
@@ -13,7 +12,7 @@ type UserController struct {
 }
 
 // NewUserController returns a new instance of UserController.
-func NewUserController(_ *config.Config, userUCManager user.UsecaseManager) *UserController {
+func NewUserController(userUCManager user.UsecaseManager) *UserController {
 	return &UserController{
 		userUCManager: userUCManager,
 	}
