@@ -81,8 +81,8 @@ definitions:
     - password
     - username
     type: object
-  v1.createContactBody:
-    description: createProfileBody represents a data to create a new profile contact.
+  v1.contactBody:
+    description: contactBody represents a data with profile contact.
     properties:
       email:
         example: ivanovvp@gmail.com
@@ -96,8 +96,24 @@ definitions:
     - email
     - phone
     type: object
-  v1.createProfileBody:
-    description: createProfileBody represents a data to create a new user profile.
+  v1.exampleData:
+    description: exampleData represents an output data for example endpoints.
+    properties:
+      access:
+        description: endpoint access description
+        example: student only
+        type: string
+      handler:
+        description: handler name
+        example: student
+        type: string
+      user_claims:
+        allOf:
+        - $ref: '#/definitions/entity.UserClaims'
+        description: user claims (for endpoints with auth restriction)
+    type: object
+  v1.profileBody:
+    description: profileBody represents a data with user profile.
     properties:
       address:
         description: user address
@@ -106,7 +122,7 @@ definitions:
         type: string
       contact:
         allOf:
-        - $ref: '#/definitions/v1.createContactBody'
+        - $ref: '#/definitions/v1.contactBody'
         description: user contact info
       extra:
         description: extra data (for admin only)
@@ -119,15 +135,28 @@ definitions:
         type: string
       parent_contact:
         allOf:
-        - $ref: '#/definitions/v1.createContactBody'
+        - $ref: '#/definitions/v1.contactBody'
         description: parent contact info (for students)
     required:
     - address
     - contact
     - fullname
     type: object
-  v1.createUserBody:
-    description: createUserBody represents a data to create a new user.
+  v1.updatePasswordAdminBody:
+    description: updatePasswordAdminBody represents a data to update user password
+      by admin.
+    properties:
+      new:
+        description: new password for user
+        example: ytrewq321
+        maxLength: 40
+        minLength: 8
+        type: string
+    required:
+    - new
+    type: object
+  v1.userBody:
+    description: userBody represents a data with user.
     properties:
       password:
         description: user password
@@ -137,7 +166,7 @@ definitions:
         type: string
       profile:
         allOf:
-        - $ref: '#/definitions/v1.createProfileBody'
+        - $ref: '#/definitions/v1.profileBody'
         description: user profile
       role:
         description: user role (teacher or student)
@@ -157,22 +186,6 @@ definitions:
     - role
     - username
     type: object
-  v1.exampleData:
-    description: exampleData represents an output data for example endpoints.
-    properties:
-      access:
-        description: endpoint access description
-        example: student only
-        type: string
-      handler:
-        description: handler name
-        example: student
-        type: string
-      user_claims:
-        allOf:
-        - $ref: '#/definitions/entity.UserClaims'
-        description: user claims (for endpoints with auth restriction)
-    type: object
 host: 127.0.0.1:8000
 info:
   contact: {}
@@ -188,7 +201,7 @@ paths:
       operationId: admin-user-list
       parameters:
       - collectionFormat: csv
-        description: user roles (teacher, student)
+        description: 'user roles (accepted: "teacher", "student")'
         example:
         - student
         in: query
@@ -218,12 +231,12 @@ paths:
       description: Создание нового юзера и профиля для него со всеми данными.
       operationId: admin-user-create
       parameters:
-      - description: createUserBody
+      - description: userBody
         in: body
-        name: createUserBody
+        name: userBody
         required: true
         schema:
-          $ref: '#/definitions/v1.createUserBody'
+          $ref: '#/definitions/v1.userBody'
       produces:
       - application/json
       responses:
@@ -259,6 +272,8 @@ paths:
           description: No Content
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
       security:
       - JWTAccess: []
       summary: Удаление юзера по id. [Только админ]
@@ -285,10 +300,76 @@ paths:
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "404":
-          description: юзер с данным id не найден
+          description: пользователь не найден
       security:
       - JWTAccess: []
       summary: Получение юзера по id. [Только админ]
+      tags:
+      - user
+  /admin/user/{id}/password:
+    put:
+      consumes:
+      - application/json
+      description: Смена пароля юзера по его id.
+      operationId: admin-user-password-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updatePasswordAdminBody
+        in: body
+        name: updatePasswordAdminBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updatePasswordAdminBody'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Смена пароля юзера. [Только админ]
+      tags:
+      - user
+  /admin/user/{id}/profile:
+    put:
+      consumes:
+      - application/json
+      description: Полное обновление профиля юзера по его id.
+      operationId: admin-user-profile-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: profileBody
+        in: body
+        name: profileBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.profileBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Обновление профиля юзера по id. [Только админ]
       tags:
       - user
   /auth/login:
@@ -454,7 +535,6 @@ produces:
 - application/json
 schemes:
 - http
-- https
 securityDefinitions:
   JWTAccess:
     description: Access JWT-token. Header will automatic add after auth (or obtain

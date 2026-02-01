@@ -6,8 +6,7 @@
         "application/json"
     ],
     "schemes": [
-        "http",
-        "https"
+        "http"
     ],
     "swagger": "2.0",
     "info": {
@@ -48,7 +47,7 @@
                         "example": [
                             "student"
                         ],
-                        "description": "user roles (teacher, student)",
+                        "description": "user roles (accepted: \"teacher\", \"student\")",
                         "name": "roles",
                         "in": "query"
                     }
@@ -88,12 +87,12 @@
                 "operationId": "admin-user-create",
                 "parameters": [
                     {
-                        "description": "createUserBody",
-                        "name": "createUserBody",
+                        "description": "userBody",
+                        "name": "userBody",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.createUserBody"
+                            "$ref": "#/definitions/v1.userBody"
                         }
                     }
                 ],
@@ -152,7 +151,7 @@
                         "description": "неверный токен (пустой, истекший или неверный формат)"
                     },
                     "404": {
-                        "description": "юзер с данным id не найден"
+                        "description": "пользователь не найден"
                     }
                 }
             },
@@ -189,6 +188,112 @@
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
+                    }
+                }
+            }
+        },
+        "/admin/user/{id}/password": {
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Смена пароля юзера по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Смена пароля юзера. [Только админ]",
+                "operationId": "admin-user-password-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updatePasswordAdminBody",
+                        "name": "updatePasswordAdminBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updatePasswordAdminBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
+                    }
+                }
+            }
+        },
+        "/admin/user/{id}/profile": {
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Полное обновление профиля юзера по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Обновление профиля юзера по id. [Только админ]",
+                "operationId": "admin-user-profile-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "profileBody",
+                        "name": "profileBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.profileBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
                     }
                 }
             }
@@ -561,8 +666,8 @@
                 }
             }
         },
-        "v1.createContactBody": {
-            "description": "createProfileBody represents a data to create a new profile contact.",
+        "v1.contactBody": {
+            "description": "contactBody represents a data with profile contact.",
             "type": "object",
             "required": [
                 "email",
@@ -578,92 +683,6 @@
                     "type": "string",
                     "maxLength": 15,
                     "example": "88005553535"
-                }
-            }
-        },
-        "v1.createProfileBody": {
-            "description": "createProfileBody represents a data to create a new user profile.",
-            "type": "object",
-            "required": [
-                "address",
-                "contact",
-                "fullname"
-            ],
-            "properties": {
-                "address": {
-                    "description": "user address",
-                    "type": "string",
-                    "maxLength": 255,
-                    "example": "3-я ул.Строителей д. 25"
-                },
-                "contact": {
-                    "description": "user contact info",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/v1.createContactBody"
-                        }
-                    ]
-                },
-                "extra": {
-                    "description": "extra data (for admin only)",
-                    "type": "string",
-                    "example": "только для админов"
-                },
-                "fullname": {
-                    "description": "user full name",
-                    "type": "string",
-                    "maxLength": 150,
-                    "example": "Иванов Василий Петрович"
-                },
-                "parent_contact": {
-                    "description": "parent contact info (for students)",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/v1.createContactBody"
-                        }
-                    ]
-                }
-            }
-        },
-        "v1.createUserBody": {
-            "description": "createUserBody represents a data to create a new user.",
-            "type": "object",
-            "required": [
-                "password",
-                "profile",
-                "role",
-                "username"
-            ],
-            "properties": {
-                "password": {
-                    "description": "user password",
-                    "type": "string",
-                    "maxLength": 40,
-                    "minLength": 8,
-                    "example": "qwerty123"
-                },
-                "profile": {
-                    "description": "user profile",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/v1.createProfileBody"
-                        }
-                    ]
-                },
-                "role": {
-                    "description": "user role (teacher or student)",
-                    "type": "string",
-                    "enum": [
-                        "teacher",
-                        "student"
-                    ],
-                    "example": "teacher"
-                },
-                "username": {
-                    "description": "user username",
-                    "type": "string",
-                    "maxLength": 50,
-                    "example": "user1"
                 }
             }
         },
@@ -688,6 +707,108 @@
                             "$ref": "#/definitions/entity.UserClaims"
                         }
                     ]
+                }
+            }
+        },
+        "v1.profileBody": {
+            "description": "profileBody represents a data with user profile.",
+            "type": "object",
+            "required": [
+                "address",
+                "contact",
+                "fullname"
+            ],
+            "properties": {
+                "address": {
+                    "description": "user address",
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "3-я ул.Строителей д. 25"
+                },
+                "contact": {
+                    "description": "user contact info",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.contactBody"
+                        }
+                    ]
+                },
+                "extra": {
+                    "description": "extra data (for admin only)",
+                    "type": "string",
+                    "example": "только для админов"
+                },
+                "fullname": {
+                    "description": "user full name",
+                    "type": "string",
+                    "maxLength": 150,
+                    "example": "Иванов Василий Петрович"
+                },
+                "parent_contact": {
+                    "description": "parent contact info (for students)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.contactBody"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.updatePasswordAdminBody": {
+            "description": "updatePasswordAdminBody represents a data to update user password by admin.",
+            "type": "object",
+            "required": [
+                "new"
+            ],
+            "properties": {
+                "new": {
+                    "description": "new password for user",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "ytrewq321"
+                }
+            }
+        },
+        "v1.userBody": {
+            "description": "userBody represents a data with user.",
+            "type": "object",
+            "required": [
+                "password",
+                "profile",
+                "role",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "qwerty123"
+                },
+                "profile": {
+                    "description": "user profile",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.profileBody"
+                        }
+                    ]
+                },
+                "role": {
+                    "description": "user role (teacher or student)",
+                    "type": "string",
+                    "enum": [
+                        "teacher",
+                        "student"
+                    ],
+                    "example": "teacher"
+                },
+                "username": {
+                    "description": "user username",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "user1"
                 }
             }
         }

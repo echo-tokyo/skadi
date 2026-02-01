@@ -7,15 +7,16 @@ import (
 )
 
 // RegisterEndpoints registers all user endpoints.
-func RegisterEndpoints(router fiber.Router, controller *UserController,
+func RegisterEndpoints(router fiber.Router, controllerAdmin *UserControllerAdmin,
 	mwJWTAccess fiber.Handler, mwAdmin fiber.Handler) {
 
 	adminGroup := router.Group("/admin/user", mwJWTAccess, mwAdmin)
-	adminGroup.Post("/", controller.Create)
-	adminGroup.Get("/:id", controller.Read)
-	// adminGroup.Patch("/:id", controller.Update)
-	adminGroup.Delete("/:id", controller.Delete)
-	adminGroup.Get("/", controller.List)
+	adminGroup.Post("/", controllerAdmin.Create)
+	adminGroup.Get("/:id", controllerAdmin.Read)
+	adminGroup.Put("/:id/profile", controllerAdmin.UpdateProfile)
+	adminGroup.Delete("/:id", controllerAdmin.Delete)
+	adminGroup.Get("/", controllerAdmin.List)
+	adminGroup.Put("/:id/password", controllerAdmin.ChangePassword)
 
 	// authGroup := router.Group("/user", mwJWTAccess)
 	// authGroup.Get("/me", controller.GetMe)

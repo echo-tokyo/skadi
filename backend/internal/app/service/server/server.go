@@ -30,7 +30,7 @@ type Server struct {
 //
 //	@host						127.0.0.1:8000
 //	@basePath					/api/v1
-//	@schemes					http https
+//	@schemes					http
 //
 //	@accept						json
 //	@produce					json
