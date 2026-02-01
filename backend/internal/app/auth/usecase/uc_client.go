@@ -87,8 +87,8 @@ func (u *UCClient) ObtainAccess(userClaims *entity.UserClaims) (*entity.Token, e
 // obtainTokenPair returns obtained token pair (access and refresh) for user.
 func (u *UCClient) obtainTokenPair(user *entity.User) (*entity.Token, error) {
 	userClaims := &entity.UserClaims{
-		UserID: user.ID,
-		Role:   user.Role,
+		ID:   user.ID,
+		Role: user.Role,
 	}
 	// generate token pair
 	accessToken, err := u.jwtBuilder.ObtainAccess(userClaims)

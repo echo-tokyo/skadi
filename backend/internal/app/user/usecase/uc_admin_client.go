@@ -14,19 +14,20 @@ import (
 const _adminRole = "admin"     // admin role for user
 const _studentRole = "student" // student role for user
 
-// Ensure UCAdmin implements interface.
-var _ user.UsecaseAdmin = (*UCAdmin)(nil)
+// Ensure UCAdmin implements interfaces.
+var _ user.UsecaseAdmin = (*UCAdminClient)(nil)
+var _ user.UsecaseClient = (*UCAdminClient)(nil)
 
-// UCAdmin represents an auth usecase for client.
-// It implements the auth.UsecaseAdmin interface.
-type UCAdmin struct {
+// UCAdminClient represents a user usecase for admin and client.
+// It implements the user.UsecaseAdmin and the user.UsecaseClient interfaces.
+type UCAdminClient struct {
 	cfg        *config.Config
 	userRepoDB user.RepositoryDB
 }
 
-// NewUCAdmin returns a new instance of UCAdmin.
-func NewUCAdmin(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdmin {
-	return &UCAdmin{
+// NewUCAdminClient returns a new instance of UCAdminClient.
+func NewUCAdminClient(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdminClient {
+	return &UCAdminClient{
 		cfg:        cfg,
 		userRepoDB: userRepoDB,
 	}
@@ -34,7 +35,7 @@ func NewUCAdmin(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdmin {
 
 // CreateWithProfile creates a new user with profile in the DB and returns them.
 // Password is a raw (not hashed) password.
-func (u *UCAdmin) CreateWithProfile(userObj *entity.User) error {
+func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 	if userObj.Profile == nil {
 		return errors.New("profile missing")
 	}
@@ -59,7 +60,7 @@ func (u *UCAdmin) CreateWithProfile(userObj *entity.User) error {
 }
 
 // GetByID returns user object with profile by given id.
-func (u *UCAdmin) GetByID(id int) (*entity.User, error) {
+func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
 	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
@@ -69,7 +70,7 @@ func (u *UCAdmin) GetByID(id int) (*entity.User, error) {
 
 // UpdateProfile updates user profile by given ID with given data.
 // It returns user object with updated profile data.
-func (u *UCAdmin) UpdateProfile(id int, newProfile *entity.Profile) (*entity.User, error) {
+func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*entity.User, error) {
 	// get user with old profile data
 	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
 	if err != nil {
@@ -91,7 +92,7 @@ func (u *UCAdmin) UpdateProfile(id int, newProfile *entity.Profile) (*entity.Use
 }
 
 // DeleteByID deletes user object and user profile with given id.
-func (u *UCAdmin) DeleteByID(id int) error {
+func (u *UCAdminClient) DeleteByID(id int) error {
 	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
 	if err != nil {
 		return fmt.Errorf("get by id: %w", err)
@@ -107,7 +108,7 @@ func (u *UCAdmin) DeleteByID(id int) error {
 }
 
 // GetByRoles returns user list with given roles.
-func (u *UCAdmin) GetByRoles(roles []string) ([]entity.User, error) {
+func (u *UCAdminClient) GetByRoles(roles []string) ([]entity.User, error) {
 	userList, err := u.userRepoDB.GetByRoles(roles)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
@@ -115,9 +116,35 @@ func (u *UCAdmin) GetByRoles(roles []string) ([]entity.User, error) {
 	return userList, nil
 }
 
-// ChangePassword changes user password.
+// ChangePasswordAsAdmin changes password of any client.
 // New password is a raw (not hashed) password.
-func (u *UCAdmin) ChangePassword(id int, newPasswd []byte) error {
+func (u *UCAdminClient) ChangePasswordAsAdmin(id int, newPasswd []byte) error {
+	var noCheck = func(_ *entity.User) error { return nil }
+	return u.changePassword(id, newPasswd, noCheck)
+}
+
+// ChangePasswordAsClient changes client password.
+// Passwords is a raw (not hashed) passwords.
+// The new password cannot be the same as the old one.
+func (u *UCAdminClient) ChangePasswordAsClient(id int, oldPasswd, newPasswd []byte) error {
+	return u.changePassword(id, newPasswd, func(userObj *entity.User) error {
+		// check that real user password and the entered old password are equal
+		if !password.IsCorrect(oldPasswd, userObj.Password) {
+			return fmt.Errorf("invalid old password: %w", user.ErrInvalidData)
+		}
+		// check that the new password and the old password are different,
+		// so if the isCorrect() returns true it means the new password is equal to the old one
+		if password.IsCorrect(newPasswd, userObj.Password) {
+			return fmt.Errorf("new password equals to the old one: %w", user.ErrConflict)
+		}
+		return nil
+	})
+}
+
+// changePassword changes user password.
+func (u *UCAdminClient) changePassword(id int, newPasswd []byte,
+	checkFunc func(userObj *entity.User) error) error {
+
 	userObj, err := u.userRepoDB.GetByID(id)
 	if err != nil {
 		return fmt.Errorf("get by id: %w", err)
@@ -127,13 +154,16 @@ func (u *UCAdmin) ChangePassword(id int, newPasswd []byte) error {
 		return fmt.Errorf("cannot change admin password: %w", user.ErrNotFound)
 	}
 
-	// hash password
-	hashPasswd, err := password.Encode(newPasswd)
-	if err != nil {
-		return fmt.Errorf("encode password: %w", err)
+	// apply additional password checks
+	if err := checkFunc(userObj); err != nil {
+		return err
 	}
-	userObj.Password = hashPasswd
 
+	// hash new password
+	userObj.Password, err = password.Encode(newPasswd)
+	if err != nil {
+		return fmt.Errorf("encode new password: %w", err)
+	}
 	// update user's password
 	if err := u.userRepoDB.UpdateUser(userObj); err != nil {
 		return fmt.Errorf("change password: %w", err)

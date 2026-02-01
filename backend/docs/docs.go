@@ -551,6 +551,127 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение всей информации о себе (юзер, профиль).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получение информации о себе.",
+                "operationId": "user-me-get",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/user/me/password": {
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Смена своего пароля.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Смена своего пароля.",
+                "operationId": "user-me-password-update",
+                "parameters": [
+                    {
+                        "description": "updatePasswordBody",
+                        "name": "updatePasswordBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updatePasswordBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "неверный старый пароль"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "409": {
+                        "description": "пароли не должны совпадать"
+                    }
+                }
+            }
+        },
+        "/user/me/profile": {
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Полное обновление своего профиля.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Обновление своего профиля.",
+                "operationId": "user-me-profile-update",
+                "parameters": [
+                    {
+                        "description": "profileBody",
+                        "name": "profileBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.profileBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -770,6 +891,30 @@ const docTemplate = `{
                     "maxLength": 40,
                     "minLength": 8,
                     "example": "ytrewq321"
+                }
+            }
+        },
+        "v1.updatePasswordBody": {
+            "description": "updatePasswordBody represents a data to update user password by the user himself.",
+            "type": "object",
+            "required": [
+                "new",
+                "old"
+            ],
+            "properties": {
+                "new": {
+                    "description": "new user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "ytrewq321"
+                },
+                "old": {
+                    "description": "old user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "qwerty123"
                 }
             }
         },

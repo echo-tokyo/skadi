@@ -27,11 +27,12 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, authRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
-	userUCAdmin := useruc.NewUCAdmin(cfg, userRepoDB)
+	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
-	userControllerAdmin := userhttpv1.NewUserControllerAdmin(userUCAdmin, valid)
+	userControllerAdmin := userhttpv1.NewUserControllerAdmin(userUCAdminClient, valid)
+	userController := userhttpv1.NewUserController(userUCAdminClient, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
@@ -47,5 +48,5 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 			mwJWTAccess, mwAdmin, mwTeacher, mwStudent)
 	}
 	authhttpv1.RegisterEndpoints(apiV1, authController, mwJWTRefresh)
-	userhttpv1.RegisterEndpoints(apiV1, userControllerAdmin, mwJWTAccess, mwAdmin)
+	userhttpv1.RegisterEndpoints(apiV1, userController, userControllerAdmin, mwJWTAccess, mwAdmin)
 }

@@ -12,7 +12,7 @@ import (
 	"skadi/backend/internal/pkg/validator"
 )
 
-// UserControllerAdmin represents a controller for all auth routes.
+// UserControllerAdmin represents a controller for user routes accepted for admin only.
 type UserControllerAdmin struct {
 	valid       validator.Validator
 	userUCAdmin user.UsecaseAdmin
@@ -248,7 +248,7 @@ func (c *UserControllerAdmin) ChangePassword(ctx *fiber.Ctx) error {
 	}
 
 	// change user password
-	err := c.userUCAdmin.ChangePassword(inputPath.ID, []byte(inputBody.NewPasswd))
+	err := c.userUCAdmin.ChangePasswordAsAdmin(inputPath.ID, []byte(inputBody.NewPasswd))
 	if errors.Is(err, user.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,

@@ -28,7 +28,7 @@ func (*User) TableName() string {
 // UserClaims represents a claims with user data for JWT-tokens.
 type UserClaims struct {
 	// user ID
-	UserID int `json:"id"`
+	ID int `json:"id"`
 	// admin, teacher or student
 	Role string `json:"role"`
 }
