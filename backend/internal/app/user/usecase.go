@@ -20,8 +20,26 @@ type UsecaseAdmin interface {
 	CreateWithProfile(userObj *entity.User) error
 	// GetByID returns user object with profile by given id.
 	GetByID(id int) (*entity.User, error)
+	// UpdateProfile updates user profile by given ID with given data.
+	// It returns user object with updated profile data.
+	UpdateProfile(id int, data *entity.Profile) (*entity.User, error)
 	// DeleteByID deletes user object and user profile with given id.
 	DeleteByID(id int) error
 	// GetByRoles returns user list with given roles.
 	GetByRoles(roles []string) ([]entity.User, error)
+	// ChangePassword changes user password.
+	// New password is a raw (not hashed) password.
+	ChangePassword(id int, newPasswd []byte) error
 }
+
+// // UsecaseClient describes all user usecases for client.
+// type UsecaseClient interface {
+// 	// GetByID returns user object with profile by given id.
+// 	GetByID(id int) (*entity.User, error)
+// 	// UpdateOne updates user by given ID with given data.
+// 	UpdateOne(id int, data *entity.UserProfileUpdate) error
+// 	// ChangePassword changes user password.
+// 	// Old and new passwords is a raw (not hashed) passwords.
+// The new password cannot be the same as the old one.
+// 	ChangePassword(id int, old, new []byte) error
+// }
