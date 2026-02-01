@@ -9,7 +9,7 @@ type Profile struct {
 	// user address
 	Address string `json:"address"`
 	// extra data (for admin only)
-	Extra string `json:"extra,omitempty"`
+	Extra *string `json:"extra,omitempty"`
 	// user contact info id
 	ContactID int `json:"-"`
 	// parent contact info id (for students)
