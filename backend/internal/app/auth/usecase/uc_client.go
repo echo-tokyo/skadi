@@ -7,6 +7,7 @@ import (
 	"skadi/backend/config"
 	"skadi/backend/internal/app/auth"
 	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/jwt"
 	"skadi/backend/internal/pkg/password"
 )
@@ -18,48 +19,48 @@ var _ auth.UsecaseClient = (*UCClient)(nil)
 // It implements the auth.UsecaseClient interface.
 type UCClient struct {
 	cfg           *config.Config
-	authRepoDB    auth.RepositoryDB
+	userRepoDB    user.RepositoryDB
 	authRepoCache auth.RepositoryCache
 	jwtBuilder    jwt.Builder
 }
 
 // NewUCClient returns a new instance of UCClient.
-func NewUCClient(cfg *config.Config, authRepoDB auth.RepositoryDB,
+func NewUCClient(cfg *config.Config, userRepoDB user.RepositoryDB,
 	authRepoCache auth.RepositoryCache) *UCClient {
 
 	return &UCClient{
 		cfg:           cfg,
-		authRepoDB:    authRepoDB,
+		userRepoDB:    userRepoDB,
 		authRepoCache: authRepoCache,
 		jwtBuilder: *jwt.NewBuilder(
-			cfg.Auth.Token.AccessSecret,
-			cfg.Auth.Token.RefreshSecret,
-			jwt.WithAccessTTL(cfg.Auth.Token.AccessTTL),
-			jwt.WithRefreshTTL(cfg.Auth.Token.RefreshTTL)),
+			cfg.Auth.AccessToken.Secret,
+			cfg.Auth.RefreshToken.Secret,
+			jwt.WithAccessTTL(cfg.Auth.AccessToken.TTL),
+			jwt.WithRefreshTTL(cfg.Auth.RefreshToken.TTL)),
 	}
 }
 
 // LogIn returns authenticated user with token pair (access and refresh).
 // Password is a raw (not hashed) password.
 func (u *UCClient) LogIn(username string, passwd []byte) (*entity.UserWithToken, error) {
-	// get user from DB with username
-	user, err := u.authRepoDB.GetUserByUsername(username)
+	// get userObj from DB with username
+	userObj, err := u.userRepoDB.GetByUsernameWithProfile(username)
 	if err != nil {
 		return nil, fmt.Errorf("get user by username: %w", err)
 	}
 
 	// check entered password is correct
-	if !password.IsCorrect(passwd, user.Password) {
+	if !password.IsCorrect(passwd, userObj.Password) {
 		return nil, auth.ErrInvalidPassword
 	}
 
 	// obtain token pair
-	token, err := u.obtainTokenPair(user)
+	token, err := u.obtainTokenPair(userObj)
 	if err != nil {
 		return nil, err
 	}
 	return &entity.UserWithToken{
-		User:  user,
+		User:  userObj,
 		Token: token,
 	}, nil
 }
@@ -67,7 +68,7 @@ func (u *UCClient) LogIn(username string, passwd []byte) (*entity.UserWithToken,
 // LogOut sets given refresh token to blacklist.
 func (u *UCClient) LogOut(refreshToken string) error {
 	// put token to blacklist
-	err := u.authRepoCache.SetTokenToBlacklist(refreshToken, u.cfg.Auth.Token.RefreshTTL)
+	err := u.authRepoCache.SetTokenToBlacklist(refreshToken, u.cfg.Auth.RefreshToken.TTL)
 	if err != nil {
 		return fmt.Errorf("blacklist token: %w", err)
 	}
@@ -85,10 +86,10 @@ func (u *UCClient) ObtainAccess(userClaims *entity.UserClaims) (*entity.Token, e
 }
 
 // obtainTokenPair returns obtained token pair (access and refresh) for user.
-func (u *UCClient) obtainTokenPair(user *entity.User) (*entity.Token, error) {
+func (u *UCClient) obtainTokenPair(userObj *entity.User) (*entity.Token, error) {
 	userClaims := &entity.UserClaims{
-		ID:   user.ID,
-		Role: user.Role,
+		ID:   userObj.ID,
+		Role: userObj.Role,
 	}
 	// generate token pair
 	accessToken, err := u.jwtBuilder.ObtainAccess(userClaims)

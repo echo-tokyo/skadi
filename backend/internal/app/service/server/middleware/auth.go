@@ -3,7 +3,6 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	fiber "github.com/gofiber/fiber/v2"
 	gojwt "github.com/golang-jwt/jwt/v5"
@@ -17,6 +16,9 @@ import (
 )
 
 const (
+	_accessTokenCookie  = "access"  // key to store access token in cookies
+	_refreshTokenCookie = "refresh" // key to store refresh token in cookies
+
 	_tokenCtxKey      = "token"      // key for the JWT-token string in the fiber ctx
 	_userClaimsCtxKey = "userClaims" // key for the user claims in the fiber ctx
 )
@@ -24,14 +26,13 @@ const (
 // JWTAccess parses access token from request header to context and validates it.
 func JWTAccess(cfg *config.Config) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		// parse token string from auth header
-		authHeader := ctx.Get("Authorization")
-		if authHeader == "" {
+		// parse token string from refresh cookie
+		token := ctx.Cookies(_accessTokenCookie)
+		if token == "" {
 			return handleTokenErr(ctx, errors.New("missing"))
 		}
-		token := strings.TrimPrefix(authHeader, "Bearer ")
 		// parse user claims from token
-		userClaims, err := parseUserClaims(cfg.Server.Auth.Token.AccessSecret, token)
+		userClaims, err := parseUserClaims(cfg.Server.Auth.AccessToken.Secret, token)
 		if err != nil {
 			return handleTokenErr(ctx, err)
 		}
@@ -46,12 +47,12 @@ func JWTAccess(cfg *config.Config) fiber.Handler {
 func JWTRefresh(cfg *config.Config, authUC auth.UsecaseMiddleware) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		// parse token string from refresh cookie
-		token := ctx.Cookies("refresh")
+		token := ctx.Cookies(_refreshTokenCookie)
 		if token == "" {
 			return handleTokenErr(ctx, errors.New("missing"))
 		}
 		// parse user claims from token
-		userClaims, err := parseUserClaims(cfg.Server.Auth.Token.RefreshSecret, token)
+		userClaims, err := parseUserClaims(cfg.Server.Auth.RefreshToken.Secret, token)
 		if err != nil {
 			return handleTokenErr(ctx, err)
 		}

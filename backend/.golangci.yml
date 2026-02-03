@@ -104,6 +104,9 @@ linters:
       - linters: # swagger tags
           - lll
         path: "internal/app/user/controller/http/v1/data_input.*?.go"
+      - linters: # struct tags
+          - lll
+        path: "internal/app/entity"
 
 issues:
   fix: false

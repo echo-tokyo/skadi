@@ -103,6 +103,21 @@ func (r *RepoDB) GetByIDWithProfile(id int) (*entity.User, error) {
 	return &userObj, nil
 }
 
+// GetByUsernameWithProfile gets user with profile by username and returns it.
+func (r *RepoDB) GetByUsernameWithProfile(username string) (*entity.User, error) {
+	userObj := &entity.User{}
+	err := r.dbStorage.
+		Preload(_tableProfile).
+		Preload(_tableContact).
+		Preload(_tableParentContact).
+		Where("username = ?", username).First(userObj).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		// user was not found
+		return nil, fmt.Errorf("user with username: %w: %s", user.ErrNotFound, err.Error())
+	}
+	return userObj, err // err OR nil
+}
+
 // UpdateUser updates old user data to new one (by data ID).
 func (r *RepoDB) UpdateUser(data *entity.User) error {
 	err := r.dbStorage.Omit(_tableProfile).

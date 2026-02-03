@@ -41,9 +41,9 @@ type Server struct {
 //	@description				Refresh JWT-token. Cookie will automatic add after auth is done.
 //
 //	@securitydefinitions.apikey	JWTAccess
-//	@in							header
-//	@name						Authorization
-//	@description				Access JWT-token. Header will automatic add after auth (or obtain via refresh) is done.
+//	@in							cookie
+//	@name						access
+//	@description				Access JWT-token. Cookie will automatic add after auth is done.
 //
 // New returns a new instance of Server.
 func New(cfg *config.Config, dbStorage *gorm.DB, cacheStorage cache.Storage,

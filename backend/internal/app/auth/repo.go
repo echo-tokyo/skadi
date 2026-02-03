@@ -2,15 +2,7 @@ package auth
 
 import (
 	"time"
-
-	"skadi/backend/internal/app/entity"
 )
-
-// RepositoryDB describes all DB methods for auth.
-type RepositoryDB interface {
-	// CreateUser gets user by username and returns it.
-	GetUserByUsername(username string) (*entity.User, error)
-}
 
 // RepositoryCache describes all cache methods for auth.
 type RepositoryCache interface {

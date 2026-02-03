@@ -8,19 +8,22 @@ import (
 
 	"skadi/backend/config"
 	"skadi/backend/internal/app/auth"
+	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/cookie"
 	"skadi/backend/internal/pkg/httperror"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
 
+const _accessTokenCookie = "access"   // key to store access token in cookies
 const _refreshTokenCookie = "refresh" // key to store refresh token in cookies
 
 // AuthController represents a controller for all auth routes.
 type AuthController struct {
-	valid         validator.Validator
-	authUCClient  auth.UsecaseClient
-	cookieBuilder *cookie.Builder
+	valid                validator.Validator
+	authUCClient         auth.UsecaseClient
+	accessCookieBuilder  *cookie.Builder
+	refreshCookieBuilder *cookie.Builder
 }
 
 // NewAuthController returns a new instance of AuthController.
@@ -30,11 +33,18 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 	return &AuthController{
 		valid:        valid,
 		authUCClient: authUCClient,
-		cookieBuilder: cookie.NewBuilder(cfg.Auth.Token.RefreshTTL,
-			cookie.WithPath(cfg.Auth.Cookie.Path),
-			cookie.WithSecure(cfg.Auth.Cookie.Secure),
-			cookie.WithHTTPOnly(cfg.Auth.Cookie.HTTPOnly),
-			cookie.WithSameSite(cfg.Auth.Cookie.SameSite)),
+		accessCookieBuilder: cookie.NewBuilder(cfg.Auth.AccessToken.TTL,
+			cookie.WithPath(cfg.Auth.AccessToken.Cookie.Path),
+			cookie.WithSecure(cfg.Auth.AccessToken.Cookie.Secure),
+			cookie.WithHTTPOnly(cfg.Auth.AccessToken.Cookie.HTTPOnly),
+			cookie.WithSameSite(cfg.Auth.AccessToken.Cookie.SameSite),
+		),
+		refreshCookieBuilder: cookie.NewBuilder(cfg.Auth.RefreshToken.TTL,
+			cookie.WithPath(cfg.Auth.RefreshToken.Cookie.Path),
+			cookie.WithSecure(cfg.Auth.RefreshToken.Cookie.Secure),
+			cookie.WithHTTPOnly(cfg.Auth.RefreshToken.Cookie.HTTPOnly),
+			cookie.WithSameSite(cfg.Auth.RefreshToken.Cookie.SameSite),
+		),
 	}
 }
 
@@ -46,7 +56,7 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 // @accept			json
 // @produce		json
 // @param			authBody	body		authBody	true	"authBody"
-// @success		200			{object}	entity.UserWithToken
+// @success		200			{object}	entity.User
 // @failure		400			"неверный пароль"
 // @failure		404			"пользователь с введенным логином не найден"
 func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
@@ -64,7 +74,7 @@ func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 			Message:    "неверный пароль",
 		}
 	}
-	if err != nil && errors.Is(err, auth.ErrNotFound) {
+	if err != nil && errors.Is(err, user.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusNotFound,
@@ -74,9 +84,10 @@ func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	// add refresh token to cookies
-	ctx.Cookie(c.cookieBuilder.Create(_refreshTokenCookie, userWithToken.Token.Refresh))
-	return ctx.Status(fiber.StatusOK).JSON(userWithToken)
+	// add access and refresh tokens to cookies
+	ctx.Cookie(c.accessCookieBuilder.Create(_accessTokenCookie, userWithToken.Token.Access))
+	ctx.Cookie(c.refreshCookieBuilder.Create(_refreshTokenCookie, userWithToken.Token.Refresh))
+	return ctx.Status(fiber.StatusOK).JSON(userWithToken.User)
 }
 
 // @summary		Получение access токена.
@@ -86,7 +97,7 @@ func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 // @tags			auth
 // @produce		json
 // @security		JWTRefresh
-// @success		200 {object}	entity.Token
+// @success		204 "No Content"
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403	"токен в черном списке"
 func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
@@ -97,7 +108,9 @@ func (c *AuthController) Obtain(ctx *fiber.Ctx) error {
 	if err != nil {
 		return fmt.Errorf("obtain access token: %w", err)
 	}
-	return ctx.Status(fiber.StatusOK).JSON(token)
+	// add access token to cookies
+	ctx.Cookie(c.accessCookieBuilder.Create(_accessTokenCookie, token.Access))
+	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
 // @summary		Выход юзера.
@@ -118,6 +131,7 @@ func (c *AuthController) LogOut(ctx *fiber.Ctx) error {
 		return err
 	}
 	// remove refresh token from cookies
-	ctx.Cookie(c.cookieBuilder.Clear(_refreshTokenCookie))
+	ctx.Cookie(c.accessCookieBuilder.Clear(_accessTokenCookie))
+	ctx.Cookie(c.refreshCookieBuilder.Clear(_refreshTokenCookie))
 	return ctx.Status(fiber.StatusNoContent).Send(nil)
 }

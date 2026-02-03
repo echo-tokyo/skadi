@@ -19,15 +19,19 @@ const (
 	_defCorsAllowedMethods   = "GET" // default allowed methods for cors
 	_defCorsAllowCredentials = false // default allow credentials value for cors
 
-	// auth token
-	_defAccessJWTExpired  = 5 * time.Minute     // default access token exp duration  (5 minutes)
-	_defRefreshJWTExpired = 24 * 10 * time.Hour // default refresh token exp duration (10 days)
+	// auth access token
+	_defAccessTTL            = 5 * time.Minute // default access token ttl (5 minutes)
+	_defAccessCookiePath     = ""
+	_defAccessCookieSecure   = false
+	_defAccessCookieHTTPOnly = false
+	_defAccessCookieSameSite = ""
 
-	// auth cookie
-	_defCookiePath     = ""
-	_defCookieSecure   = false
-	_defCookieHTTPOnly = false
-	_defCookieSameSite = ""
+	// auth refresh token
+	_defRefreshTTL            = 24 * 10 * time.Hour // default refresh token ttl (10 days)
+	_defRefreshCookiePath     = ""
+	_defRefreshCookieSecure   = false
+	_defRefreshCookieHTTPOnly = false
+	_defRefreshCookieSameSite = ""
 
 	// logging
 	_defLogLevel   = 2     // default log level (info)
@@ -67,15 +71,20 @@ type (
 	}
 
 	Auth struct {
-		Token  Token  `yaml:"token"`
-		Cookie Cookie `yaml:"cookie"`
+		AccessToken  AccessToken  `yaml:"access_token"`
+		RefreshToken RefreshToken `yaml:"refresh_token"`
 	}
 
-	Token struct {
-		AccessSecret  []byte        `env-required:"true" env:"ACCESS_SECRET"`
-		RefreshSecret []byte        `env-required:"true" env:"REFRESH_SECRET"`
-		AccessTTL     time.Duration `yaml:"access_ttl"`
-		RefreshTTL    time.Duration `yaml:"refresh_ttl"`
+	AccessToken struct {
+		Secret []byte        `env-required:"true" env:"ACCESS_SECRET"`
+		TTL    time.Duration `yaml:"ttl"`
+		Cookie Cookie        `yaml:"cookie"`
+	}
+
+	RefreshToken struct {
+		Secret []byte        `env-required:"true" env:"REFRESH_SECRET"`
+		TTL    time.Duration `yaml:"ttl"`
+		Cookie Cookie        `yaml:"cookie"`
 	}
 
 	Cookie struct {
@@ -127,15 +136,23 @@ func NewDefault() *Config {
 				AllowCredentials: _defCorsAllowCredentials,
 			},
 			Auth: Auth{
-				Token: Token{
-					AccessTTL:  _defAccessJWTExpired,
-					RefreshTTL: _defRefreshJWTExpired,
+				AccessToken: AccessToken{
+					TTL: _defAccessTTL,
+					Cookie: Cookie{
+						Path:     _defAccessCookiePath,
+						Secure:   _defAccessCookieSecure,
+						HTTPOnly: _defAccessCookieHTTPOnly,
+						SameSite: _defAccessCookieSameSite,
+					},
 				},
-				Cookie: Cookie{
-					Path:     _defCookiePath,
-					Secure:   _defCookieSecure,
-					HTTPOnly: _defCookieHTTPOnly,
-					SameSite: _defCookieSameSite,
+				RefreshToken: RefreshToken{
+					TTL: _defRefreshTTL,
+					Cookie: Cookie{
+						Path:     _defRefreshCookiePath,
+						Secure:   _defRefreshCookieSecure,
+						HTTPOnly: _defRefreshCookieHTTPOnly,
+						SameSite: _defRefreshCookieSameSite,
+					},
 				},
 			},
 		},

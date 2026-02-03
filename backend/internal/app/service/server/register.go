@@ -21,11 +21,10 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	cacheStorage cache.Storage, valid validator.Validator) {
 
 	// create repos
-	authRepoDB := authrepo.NewRepoDB(dbStorage)
 	authRepoCache := authrepo.NewRepoCache(cfg, cacheStorage)
 	userRepoDB := userrepo.NewRepoDB(dbStorage)
 	// create usecases
-	authUCClient := authuc.NewUCClient(cfg, authRepoDB, authRepoCache)
+	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB)
 	// create controllers

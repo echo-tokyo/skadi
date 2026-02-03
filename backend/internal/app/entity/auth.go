@@ -6,18 +6,18 @@ import "time"
 // User represents an app user with main user data.
 type User struct {
 	// user id
-	ID int `json:"id" gorm:"primaryKey;autoIncrement"`
+	ID int `gorm:"primaryKey;autoIncrement" json:"id" validate:"required"`
 	// user username
-	Username string `json:"username"`
+	Username string `json:"username" validate:"required"`
 	// user password hash
 	Password []byte `json:"-"`
 	// admin, teacher or student
-	Role string `json:"role"`
+	Role string `json:"role" validate:"required"`
 	// user creating datetime
 	CreatedAt time.Time `json:"-"`
 
 	// user profile
-	Profile *Profile `json:"profile,omitempty" gorm:"foreignKey:ID"`
+	Profile *Profile `gorm:"foreignKey:ID" json:"profile,omitempty" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the user object.
@@ -36,13 +36,13 @@ type UserClaims struct {
 // Token represents a user token pair (access and refresh).
 type Token struct {
 	// access token
-	Access string `json:"access"`
+	Access string
 	// refresh token
-	Refresh string `json:"-"`
+	Refresh string
 }
 
 // UserWithToken is a user object and a token object.
 type UserWithToken struct {
-	User  *User  `json:"user"`
-	Token *Token `json:"token"`
+	User  *User
+	Token *Token `json:"-"`
 }

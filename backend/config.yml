@@ -6,14 +6,20 @@ server:
     allowed_methods: "GET,HEAD,POST,OPTIONS" # comma-separated allowed methods for cors
     allow_credentials: false # allow credentials for cors if true
   auth:
-    token:
-      access_ttl: 30m # access JWT-token expiration duration
-      refresh_ttl: 24h # refresh JWT-token expiration duration
-    cookie:
-      path: "/api/v1/auth/private/" # cookie path
-      secure: false # enable cookie secure if true
-      http_only: false # enable cookie HTTP-only if true
-      same_site: "" # cookie same site mode ("None", "Strict" or "Lax")
+    access_token:
+      ttl: 30m # access JWT-token expiration duration
+      cookie:
+        path: "/api/v1/" # cookie path
+        secure: false # enable cookie secure if true
+        http_only: false # enable cookie HTTP-only if true
+        same_site: "" # cookie same site mode ("None", "Strict" or "Lax")
+    refresh_token:
+      ttl: 24h # refresh JWT-token expiration duration
+      cookie:
+        path: "/api/v1/auth/private/" # cookie path
+        secure: false # enable cookie secure if true
+        http_only: false # enable cookie HTTP-only if true
+        same_site: "" # cookie same site mode ("None", "Strict" or "Lax")
 
 logging:
   log_level: 1 # 1 - debug, 2 - info (default), 3 - warn, 4 - error, 5 - silent
