@@ -8,6 +8,9 @@ definitions:
         type: string
       phone:
         type: string
+    required:
+    - email
+    - phone
     type: object
   entity.Profile:
     properties:
@@ -24,12 +27,10 @@ definitions:
         type: string
       parent_contact:
         $ref: '#/definitions/entity.Contact'
-    type: object
-  entity.Token:
-    properties:
-      access:
-        description: access token
-        type: string
+    required:
+    - address
+    - contact
+    - fullname
     type: object
   entity.User:
     properties:
@@ -46,6 +47,10 @@ definitions:
       username:
         description: user username
         type: string
+    required:
+    - id
+    - role
+    - username
     type: object
   entity.UserClaims:
     properties:
@@ -55,13 +60,6 @@ definitions:
       role:
         description: admin, teacher or student
         type: string
-    type: object
-  entity.UserWithToken:
-    properties:
-      token:
-        $ref: '#/definitions/entity.Token'
-      user:
-        $ref: '#/definitions/entity.User'
     type: object
   v1.authBody:
     description: authBody represents a data for user auth (log in).
@@ -411,7 +409,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.UserWithToken'
+            $ref: '#/definitions/entity.User'
         "400":
           description: неверный пароль
         "404":
@@ -442,10 +440,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Token'
+        "204":
+          description: No Content
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "403":
@@ -633,10 +629,9 @@ schemes:
 - http
 securityDefinitions:
   JWTAccess:
-    description: Access JWT-token. Header will automatic add after auth (or obtain
-      via refresh) is done.
-    in: header
-    name: Authorization
+    description: Access JWT-token. Cookie will automatic add after auth is done.
+    in: cookie
+    name: access
     type: apiKey
   JWTRefresh:
     description: Refresh JWT-token. Cookie will automatic add after auth is done.
