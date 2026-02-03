@@ -1,4 +1,4 @@
-export type { IUserData, IUserDataResponse, TRole } from './model/types.ts'
+export type { IUserResponse, TRole } from './model/types.ts'
 
 export { setUserData, clearUserData } from './model/user-slice.ts'
 

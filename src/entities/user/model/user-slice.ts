@@ -1,23 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IUserData } from './types'
+import { IUserResponse } from './types'
 
-const initialState: IUserData = {
-  id: null,
-  role: null,
-  username: null,
+interface IUserState {
+  user: IUserResponse | null
+}
+
+const initialState: IUserState = {
+  user: null,
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUserData: (state, { payload }: PayloadAction<IUserData>) => {
-      state.role = payload.role
-      state.username = payload.username
+    setUserData: (
+      state,
+      { payload }: PayloadAction<IUserResponse>,
+    ) => {
+      state.user = payload
     },
     clearUserData: (state) => {
-      state.role = null
-      state.username = null
+      state.user = null
     },
   },
 })

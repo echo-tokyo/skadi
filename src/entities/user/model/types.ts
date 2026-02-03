@@ -1,9 +1,15 @@
 export type TRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN'
 
-export interface IUserDataResponse {
-  id: string | null
-  role: TRole | null
-  username: string | null
+type TContact = { email: string; phone: string }
+export interface IUserResponse {
+  id: string
+  profile: {
+    address: string
+    contact: TContact
+    extra: string | undefined
+    fullname: string
+    parent_contact: TContact | undefined
+  }
+  role: TRole
+  username: string
 }
-
-export type IUserData = Required<IUserDataResponse>

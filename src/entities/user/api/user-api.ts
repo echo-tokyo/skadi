@@ -1,9 +1,9 @@
 import { baseApi } from '@/shared/api'
-import { IUserDataResponse } from '@/entities/user'
+import { IUserResponse } from '../model/types'
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMe: builder.query<IUserDataResponse, void>({
+    getMe: builder.query<IUserResponse, void>({
       query: () => ({
         url: '/user/me',
         method: 'GET',

@@ -7,10 +7,6 @@ export { default as authReducer } from './model/auth-slice'
 export { useSignIn } from './lib/use-sign-in.ts'
 export { useLogout } from './lib/use-logout.ts'
 
-export type {
-  ISignInFormData,
-  IAuthResponse,
-  IAuthState,
-} from './model/types'
+export type { ISignInFormData } from './model/types'
 
 export { SignIn } from './ui/SignIn.tsx'

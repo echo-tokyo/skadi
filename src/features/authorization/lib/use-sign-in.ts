@@ -16,13 +16,7 @@ export const useSignIn = () => {
       const result = await signInMutation(formData).unwrap()
 
       dispatch(setCredentials())
-      dispatch(
-        setUserData({
-          id: result.user.id,
-          role: result.user.role,
-          username: result.user.username,
-        }),
-      )
+      dispatch(setUserData(result))
 
       navigate('/personal-area')
     } catch (err) {

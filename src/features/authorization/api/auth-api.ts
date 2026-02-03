@@ -1,12 +1,10 @@
 import { baseApi } from '@/shared/api'
-import type {
-  ISignInFormData,
-  IAuthResponse,
-} from '@/features/authorization'
+import type { ISignInFormData } from '@/features/authorization'
+import { IUserResponse } from '@/entities/user'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    signIn: builder.mutation<IAuthResponse, ISignInFormData>({
+    signIn: builder.mutation<IUserResponse, ISignInFormData>({
       query: (credentials) => ({
         url: '/auth/login',
         method: 'POST',
