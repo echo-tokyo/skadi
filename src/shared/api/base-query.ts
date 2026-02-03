@@ -7,37 +7,17 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { Mutex } from 'async-mutex'
 
-interface IRefreshResponse {
-  accessToken: string
-}
 interface IAuthActions {
-  onTokenRefresh: (accessToken: string) => {
-    type: string
-    payload: string
-  }
   onAuthFailure: () => { type: string }
 }
 
 const mutex = new Mutex()
+let authActions: IAuthActions | null = null
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL || '',
   credentials: 'include',
-  prepareHeaders: (headers, { getState }) => {
-    const state = getState() as {
-      auth?: { accessToken?: string | null }
-    }
-    const token = state.auth?.accessToken
-
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`)
-    }
-
-    return headers
-  },
 })
-
-let authActions: IAuthActions | null = null
 
 export const initializeAuthActions = (
   actions: IAuthActions,
@@ -60,7 +40,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
   let result = await baseQuery(args, api, extraOptions)
 
-  if (result.error && result.error.status === 401) {
+  if (result.error?.status === 401) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire()
 
@@ -69,18 +49,14 @@ const baseQueryWithReauth: BaseQueryFn<
           {
             url: '/auth/private/obtain',
             method: 'POST',
-            credentials: 'include',
           },
           api,
           extraOptions,
         )
 
-        if (refreshResult.data) {
-          const { accessToken } =
-            refreshResult.data as IRefreshResponse
-
-          api.dispatch(authActions.onTokenRefresh(accessToken))
-
+        if (refreshResult.error?.status === 401) {
+          api.dispatch(authActions.onAuthFailure())
+        } else if (refreshResult.data) {
           result = await baseQuery(args, api, extraOptions)
         } else {
           api.dispatch(authActions.onAuthFailure())

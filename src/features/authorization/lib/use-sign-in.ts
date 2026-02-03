@@ -15,11 +15,7 @@ export const useSignIn = () => {
     try {
       const result = await signInMutation(formData).unwrap()
 
-      dispatch(
-        setCredentials({
-          accessToken: result.token.access,
-        }),
-      )
+      dispatch(setCredentials())
       dispatch(
         setUserData({
           id: result.user.id,

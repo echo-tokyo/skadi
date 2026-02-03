@@ -5,7 +5,7 @@ export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMe: builder.query<IUserDataResponse, void>({
       query: () => ({
-        url: '/user/get-me',
+        url: '/user/me',
         method: 'GET',
       }),
       providesTags: ['User'],

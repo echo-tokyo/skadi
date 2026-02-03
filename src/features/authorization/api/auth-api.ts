@@ -2,7 +2,6 @@ import { baseApi } from '@/shared/api'
 import type {
   ISignInFormData,
   IAuthResponse,
-  IRefreshResponse,
 } from '@/features/authorization'
 
 export const authApi = baseApi.injectEndpoints({
@@ -19,16 +18,16 @@ export const authApi = baseApi.injectEndpoints({
 
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/private/logout',
+        url: 'auth/private/logout',
         method: 'POST',
         credentials: 'include',
       }),
       invalidatesTags: ['Auth'],
     }),
 
-    getAccess: builder.mutation<IRefreshResponse, void>({
+    getAccess: builder.mutation<void, void>({
       query: () => ({
-        url: '/private/obtain',
+        url: 'auth/private/obtain',
         method: 'POST',
         credentials: 'include',
       }),
