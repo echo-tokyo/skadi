@@ -8,7 +8,7 @@ import {
 import { Mutex } from 'async-mutex'
 
 interface IAuthActions {
-  onAuthFailure: () => { type: string }
+  onAuthFailure: () => void
 }
 
 const mutex = new Mutex()
@@ -55,11 +55,9 @@ const baseQueryWithReauth: BaseQueryFn<
         )
 
         if (refreshResult.error?.status === 401) {
-          api.dispatch(authActions.onAuthFailure())
-        } else if (refreshResult.data) {
+          authActions.onAuthFailure()
+        } else if (!refreshResult.error) {
           result = await baseQuery(args, api, extraOptions)
-        } else {
-          api.dispatch(authActions.onAuthFailure())
         }
       } finally {
         release()

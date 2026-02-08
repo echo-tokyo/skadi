@@ -1,10 +1,10 @@
 import { useGetMeQuery, setUserData } from '@/entities/user'
 import { setCredentials } from '@/features/authorization'
 import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks'
-import { FC, PropsWithChildren, useEffect } from 'react'
-import { Navigate } from 'react-router'
+import { FC, useEffect } from 'react'
+import { Navigate, Outlet } from 'react-router'
 
-const ProtectedRoute: FC<PropsWithChildren> = ({ children }) => {
+const ProtectedRoute: FC = () => {
   const dispatch = useAppDispatch()
 
   const { isAuthenticated } = useAppSelector((state) => state.auth)
@@ -20,12 +20,12 @@ const ProtectedRoute: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [userData, dispatch])
 
-  if (isLoading) {
+  if (isLoading || (userData && !isAuthenticated)) {
     return null
   }
 
-  if (isAuthenticated || userData) {
-    return children
+  if (isAuthenticated) {
+    return <Outlet />
   }
 
   return <Navigate to='/authorization' replace />
