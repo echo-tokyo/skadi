@@ -10,7 +10,7 @@ const ProtectedRoute: FC = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth)
 
   const { data: userData, isLoading } = useGetMeQuery(undefined, {
-    skip: isAuthenticated || !document.cookie.includes('refresh'),
+    skip: isAuthenticated,
   })
 
   useEffect(() => {
