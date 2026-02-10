@@ -15,9 +15,13 @@ type User struct {
 	Role string `json:"role" validate:"required"`
 	// user creating datetime
 	CreatedAt time.Time `json:"-"`
+	// student's class id
+	ClassID int `json:"-"`
 
 	// user profile
 	Profile *Profile `gorm:"foreignKey:ID" json:"profile,omitempty" validate:"omitempty"`
+	// student's class
+	Class *Class `gorm:"foreignKey:ClassID" json:"class" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the user object.
