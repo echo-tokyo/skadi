@@ -20,6 +20,8 @@ type userBody struct {
 	Password string `json:"password" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// user role (teacher or student)
 	Role string `json:"role" validate:"required,oneof=teacher student" example:"teacher"`
+	// class id (for students)
+	ClassID *int `json:"class_id" validate:"omitempty,numeric" example:"3"`
 	// user profile
 	Profile profileBody `json:"profile" validate:"required"`
 }
@@ -29,11 +31,11 @@ type profileBody struct {
 	// user full name
 	FullName string `json:"fullname" validate:"required,max=150" example:"Иванов Василий Петрович" maxLength:"150"`
 	// user address
-	Address string `json:"address" validate:"required,max=255" example:"3-я ул.Строителей д. 25" maxLength:"255"`
+	Address *string `json:"address,omitempty" validate:"omitempty,max=255" example:"3-я ул.Строителей д. 25" maxLength:"255"`
 	// extra data (for admin only)
 	Extra *string `json:"extra,omitempty" validate:"omitempty" example:"только для админов"`
 	// user contact info
-	Contact contactBody `json:"contact" validate:"required"`
+	Contact *contactBody `json:"contact,omitempty" validate:"omitempty"`
 	// parent contact info (for students)
 	ParentContact *contactBody `json:"parent_contact,omitempty" validate:"omitempty"`
 }
@@ -89,32 +91,26 @@ func (u *userIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 	return nil
 }
 
-// // @description updateProfileBody represents a data to update user profile.
-// type updateProfileBody struct {
-// 	// user full name
-// 	FullName *string `json:"fullname,omitempty" validate:"omitempty,max=150" example:"Иванов Василий Петрович" maxLength:"150"`
-// 	// user address
-// 	Address *string `json:"address,omitempty" validate:"omitempty,max=255" example:"3-я ул.Строителей д. 25" maxLength:"255"`
-// 	// extra data (for admin only)
-// 	Extra *string `json:"extra,omitempty" validate:"omitempty" example:"только для админов"`
-// 	// user contact info
-// 	Contact *contactBody `json:"contact,omitempty" validate:"omitempty"`
-// 	// parent contact info (for students)
-// 	ParentContact *contactBody `json:"parent_contact,omitempty" validate:"omitempty"`
-// }
+// @description updateUserBody represents a data to patch update user.
+type updateUserBody struct {
+	// user username
+	Username *string `json:"username" validate:"omitempty,max=50" example:"user1" maxLength:"50"`
+	// class id (for students)
+	ClassID *int `json:"class_id" validate:"omitempty,numeric" example:"3"`
+}
 
-// // Parse parses updateProfileBody request data and validates it.
-// func (u *updateProfileBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-// 	// parse JSON-body
-// 	if err := ctx.BodyParser(u); err != nil {
-// 		return err
-// 	}
-// 	// validate parsed data
-// 	if err := valid.Validate(u); err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+// Parse parses updateUserBody request data and validates it.
+func (u *updateUserBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+	// parse JSON-body
+	if err := ctx.BodyParser(u); err != nil {
+		return err
+	}
+	// validate parsed data
+	if err := valid.Validate(u); err != nil {
+		return err
+	}
+	return nil
+}
 
 // @description listUserQuery represents a data with optional query-params to get users list.
 type listUserQuery struct {

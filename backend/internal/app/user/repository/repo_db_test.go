@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 func TestCreateUserWithProfile(t *testing.T) {
 	user_id := 1
 
-	userObj, err := _testRepoDB.GetByIDWithProfile(user_id)
+	userObj, err := _testRepoDB.GetByIDFull(user_id)
 	if err != nil {
 		log.Fatalf("get by id: %v", err)
 	}

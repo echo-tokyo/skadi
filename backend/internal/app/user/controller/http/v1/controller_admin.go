@@ -38,7 +38,9 @@ func NewUserControllerAdmin(userUCAdmin user.UsecaseAdmin,
 // @security		JWTAccess
 // @param			userBody	body		userBody	true	"userBody"
 // @success		201			{object}	entity.User
+// @failure		400			"группа не найдена"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
+// @failure		404			"группа не найдена"
 // @failure		409			"пользователь с введенным логином уже существует"
 func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 	inputBody := &userBody{}
@@ -51,6 +53,7 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 		Username: inputBody.Username,
 		Password: []byte(inputBody.Password),
 		Role:     inputBody.Role,
+		ClassID:  inputBody.ClassID,
 	}
 	userObj.Profile = &entity.Profile{
 		Fullname: inputBody.Profile.FullName,
@@ -74,6 +77,13 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 			CauseErr:   err,
 			StatusCode: fiber.StatusConflict,
 			Message:    "пользователь с введенным логином уже существует",
+		}
+	}
+	if errors.Is(err, user.ErrInvalidData) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusBadRequest,
+			Message:    "группа не найдена",
 		}
 	}
 	if err != nil {

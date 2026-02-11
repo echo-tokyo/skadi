@@ -13,6 +13,7 @@ func RegisterEndpoints(router fiber.Router, controller *UserController,
 	adminGroup := router.Group("/admin/user", mwJWTAccess, mwAdmin)
 	adminGroup.Post("/", controllerAdmin.Create)
 	adminGroup.Get("/:id", controllerAdmin.Read)
+	// adminGroup.Patch("/:id", controllerAdmin.UpdateUser)
 	adminGroup.Put("/:id/profile", controllerAdmin.UpdateProfile)
 	adminGroup.Delete("/:id", controllerAdmin.Delete)
 	adminGroup.Get("/", controllerAdmin.List)

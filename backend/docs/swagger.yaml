@@ -2,6 +2,27 @@ basePath: /api/v1
 consumes:
 - application/json
 definitions:
+  entity.Class:
+    properties:
+      id:
+        description: class id
+        type: integer
+      name:
+        description: class name
+        type: string
+      schedule:
+        description: class schedule
+        type: string
+      students:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      teacher:
+        $ref: '#/definitions/entity.User'
+    required:
+    - id
+    - name
+    type: object
   entity.Contact:
     properties:
       email:
@@ -34,6 +55,10 @@ definitions:
     type: object
   entity.User:
     properties:
+      class:
+        allOf:
+        - $ref: '#/definitions/entity.Class'
+        description: student's class
       id:
         description: user id
         type: integer
@@ -176,6 +201,10 @@ definitions:
   v1.userBody:
     description: userBody represents a data with user.
     properties:
+      class_id:
+        description: class id (for students)
+        example: 3
+        type: integer
       password:
         description: user password
         example: qwerty123
@@ -262,8 +291,12 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/entity.User'
+        "400":
+          description: группа не найдена
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: группа не найдена
         "409":
           description: пользователь с введенным логином уже существует
       security:

@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS profile;
 CREATE TABLE IF NOT EXISTS profile (
     id BIGINT NOT NULL PRIMARY KEY,
     fullname VARCHAR(150) NOT NULL,
-    address VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NULL,
     contact_id BIGINT NULL,
     parent_contact_id BIGINT NULL,
     extra TEXT NULL

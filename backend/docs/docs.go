@@ -106,8 +106,14 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.User"
                         }
                     },
+                    "400": {
+                        "description": "группа не найдена"
+                    },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "группа не найдена"
                     },
                     "409": {
                         "description": "пользователь с введенным логином уже существует"
@@ -672,6 +678,36 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.Class": {
+            "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "description": "class id",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "class name",
+                    "type": "string"
+                },
+                "schedule": {
+                    "description": "class schedule",
+                    "type": "string"
+                },
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.User"
+                    }
+                },
+                "teacher": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
         "entity.Contact": {
             "type": "object",
             "required": [
@@ -723,6 +759,14 @@ const docTemplate = `{
                 "username"
             ],
             "properties": {
+                "class": {
+                    "description": "student's class",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Class"
+                        }
+                    ]
+                },
                 "id": {
                     "description": "user id",
                     "type": "integer"
@@ -919,6 +963,11 @@ const docTemplate = `{
                 "username"
             ],
             "properties": {
+                "class_id": {
+                    "description": "class id (for students)",
+                    "type": "integer",
+                    "example": 3
+                },
                 "password": {
                     "description": "user password",
                     "type": "string",

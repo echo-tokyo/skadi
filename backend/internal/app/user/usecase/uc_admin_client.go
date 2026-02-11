@@ -39,8 +39,9 @@ func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 	if userObj.Profile == nil {
 		return errors.New("profile missing")
 	}
-	// set nil parent contact for non-student users
+	// set nil class ID and parent contact for non-student users
 	if userObj.Role != _studentRole {
+		userObj.ClassID = nil
 		userObj.Profile.ParentContact = nil
 	}
 
@@ -52,18 +53,26 @@ func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 	userObj.Password = hashPasswd
 
 	// create user with profile
-	err = u.userRepoDB.CreateUserWithProfile(userObj)
+	err = u.userRepoDB.CreateUserFull(userObj)
 	if err != nil {
 		return fmt.Errorf("create user: %w", err)
+	}
+	// schedule is unnecessary data in this usecase
+	if userObj.Class != nil {
+		userObj.Class.Schedule = nil
 	}
 	return nil
 }
 
 // GetByID returns user object with profile by given id.
 func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
-	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
+	userObj, err := u.userRepoDB.GetByIDFull(id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
+	}
+	// schedule is unnecessary data in this usecase
+	if userObj.Class != nil {
+		userObj.Class.Schedule = nil
 	}
 	return userObj, nil
 }
@@ -72,7 +81,7 @@ func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
 // It returns user object with updated profile data.
 func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*entity.User, error) {
 	// get user with old profile data
-	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
+	userObj, err := u.userRepoDB.GetByIDFull(id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
 	}
@@ -93,7 +102,7 @@ func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*enti
 
 // DeleteByID deletes user object and user profile with given id.
 func (u *UCAdminClient) DeleteByID(id int) error {
-	userObj, err := u.userRepoDB.GetByIDWithProfile(id)
+	userObj, err := u.userRepoDB.GetByIDFull(id)
 	if err != nil {
 		return fmt.Errorf("get by id: %w", err)
 	}

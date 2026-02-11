@@ -7,15 +7,15 @@ type Profile struct {
 	// user full name
 	Fullname string `json:"fullname" validate:"required"`
 	// user address
-	Address string `json:"address" validate:"required"`
+	Address *string `json:"address,omitempty" validate:"omitempty"`
 	// extra data (for admin only)
 	Extra *string `json:"extra,omitempty" validate:"omitempty"`
 	// user contact info id
-	ContactID int `json:"-"`
+	ContactID *int `json:"-"`
 	// parent contact info id (for students)
 	ParentContactID *int `json:"-"`
 
-	Contact       *Contact `gorm:"foreignKey:ContactID" json:"contact" validate:"required"`
+	Contact       *Contact `gorm:"foreignKey:ContactID" json:"contact,omitempty" validate:"omitempty"`
 	ParentContact *Contact `gorm:"foreignKey:ParentContactID" json:"parent_contact,omitempty" validate:"omitempty"`
 }
 
