@@ -60,7 +60,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 	if userObj.Role != _adminRole {
 		return errors.New("cannot delete non-admin")
 	}
-	if err := u.userRepoDB.DeleteByID(userObj); err != nil {
+	if err := u.userRepoDB.Delete(userObj); err != nil {
 		return fmt.Errorf("delete by id: %w", err)
 	}
 	return nil

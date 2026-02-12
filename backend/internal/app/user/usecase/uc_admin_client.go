@@ -1,4 +1,5 @@
-// Package usecase contains user.UsecaseAdmin and user.UsecaseManager implementations.
+// Package usecase contains user.UsecaseAdmin, user.UsecaseClient
+// and user.UsecaseManager implementations.
 package usecase
 
 import (
@@ -6,6 +7,7 @@ import (
 	"fmt"
 
 	"skadi/backend/config"
+	"skadi/backend/internal/app/class"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/password"
@@ -21,15 +23,19 @@ var _ user.UsecaseClient = (*UCAdminClient)(nil)
 // UCAdminClient represents a user usecase for admin and client.
 // It implements the user.UsecaseAdmin and the user.UsecaseClient interfaces.
 type UCAdminClient struct {
-	cfg        *config.Config
-	userRepoDB user.RepositoryDB
+	cfg         *config.Config
+	userRepoDB  user.RepositoryDB
+	classRepoDB class.RepositoryDB
 }
 
 // NewUCAdminClient returns a new instance of UCAdminClient.
-func NewUCAdminClient(cfg *config.Config, userRepoDB user.RepositoryDB) *UCAdminClient {
+func NewUCAdminClient(cfg *config.Config, userRepoDB user.RepositoryDB,
+	classRepoDB class.RepositoryDB) *UCAdminClient {
+
 	return &UCAdminClient{
-		cfg:        cfg,
-		userRepoDB: userRepoDB,
+		cfg:         cfg,
+		userRepoDB:  userRepoDB,
+		classRepoDB: classRepoDB,
 	}
 }
 
@@ -77,6 +83,40 @@ func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
 	return userObj, nil
 }
 
+// Update updates user (class and profile) by given ID with given data.
+// It returns user object with updated user data.
+func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, error) {
+	userObj, err := u.UpdateProfile(id, newUser.Profile)
+	if err != nil {
+		return nil, fmt.Errorf("profile: %w", err)
+	}
+
+	// skip class update for non-student users and not updated data
+	if userObj.Role != _studentRole || userObj.ClassID == newUser.ClassID {
+		return userObj, nil
+	}
+
+	// update user object only
+	userObj.ClassID = newUser.ClassID // set new class ID
+	userObj.Password = nil            // skip password updates
+	if err := u.userRepoDB.UpdateUser(userObj); err != nil {
+		return nil, fmt.Errorf("user: %w", err)
+	}
+
+	// set NULL group for student
+	if newUser.ClassID == nil {
+		userObj.Class = nil
+		return userObj, nil
+	}
+
+	// get class by ID
+	userObj.Class, err = u.classRepoDB.GetByIDShort(*newUser.ClassID)
+	if err != nil {
+		return nil, fmt.Errorf("get class %w", err)
+	}
+	return userObj, nil
+}
+
 // UpdateProfile updates user profile by given ID with given data.
 // It returns user object with updated profile data.
 func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*entity.User, error) {
@@ -110,7 +150,7 @@ func (u *UCAdminClient) DeleteByID(id int) error {
 	if userObj.Role == _adminRole {
 		return fmt.Errorf("cannot delete admin: %w", user.ErrNotFound)
 	}
-	if err := u.userRepoDB.DeleteByID(userObj); err != nil {
+	if err := u.userRepoDB.Delete(userObj); err != nil {
 		return fmt.Errorf("delete by id: %w", err)
 	}
 	return nil

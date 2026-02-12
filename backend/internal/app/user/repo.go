@@ -5,10 +5,10 @@ import "skadi/backend/internal/app/entity"
 // RepositoryDB describes all DB methods for user.
 type RepositoryDB interface {
 	// CreateUser creates a new user and fills given struct.
-	CreateUser(user *entity.User) error
+	CreateUser(userObj *entity.User) error
 	// CreateUserFull creates a new user with class (if set) and
 	// profile for them and fills given structs.
-	CreateUserFull(user *entity.User) error
+	CreateUserFull(userObj *entity.User) error
 
 	// GetByID returns user by given id.
 	GetByID(id int) (*entity.User, error)
@@ -25,10 +25,10 @@ type RepositoryDB interface {
 	// if they are changed and not used in other profiles.
 	UpdateProfile(oldData, newData *entity.Profile) error
 
-	// DeleteByID deletes user object and user profile with given id.
+	// Delete deletes user object and user profile (by data ID).
 	// Also user profile contacts (contact and parent contact) will be deleted
 	// if they are not used in other profiles.
-	DeleteByID(data *entity.User) error
+	Delete(data *entity.User) error
 
 	// GetByRoles returns user (with class if set and profile) list with given roles.
 	GetByRoles(roles []string) ([]entity.User, error)

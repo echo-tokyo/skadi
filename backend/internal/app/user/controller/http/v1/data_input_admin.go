@@ -91,16 +91,16 @@ func (u *userIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 	return nil
 }
 
-// @description updateUserBody represents a data to patch update user.
-type updateUserBody struct {
-	// user username
-	Username *string `json:"username" validate:"omitempty,max=50" example:"user1" maxLength:"50"`
+// @description updateBody represents a data to update user and profile.
+type updateBody struct {
 	// class id (for students)
-	ClassID *int `json:"class_id" validate:"omitempty,numeric" example:"3"`
+	ClassID *int `json:"class_id,omitempty" validate:"omitempty,numeric" example:"3"`
+	// user profile
+	Profile profileBody `json:"profile" validate:"required"`
 }
 
-// Parse parses updateUserBody request data and validates it.
-func (u *updateUserBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+// Parse parses updateBody request data and validates it.
+func (u *updateBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 	// parse JSON-body
 	if err := ctx.BodyParser(u); err != nil {
 		return err

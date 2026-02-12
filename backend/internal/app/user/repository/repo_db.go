@@ -19,8 +19,8 @@ const _tableParentContact = "Profile.ParentContact" // table name
 // Ensure RepoDB implements interface.
 var _ user.RepositoryDB = (*RepoDB)(nil)
 
-// RepoDB is an auth RepoDB repo.
-// It implements the auth.RepoDB interface.
+// RepoDB is a user DB repo.
+// It implements the user.RepositoryDB interface.
 type RepoDB struct {
 	dbStorage *gorm.DB
 }
@@ -90,10 +90,7 @@ func (r *RepoDB) GetByID(id int) (*entity.User, error) {
 		// user object with such id not found
 		return nil, fmt.Errorf("user with id: %w: %s", user.ErrNotFound, err.Error())
 	}
-	if err != nil {
-		return nil, err
-	}
-	return &userObj, nil
+	return &userObj, err // err OR nil
 }
 
 // GetByIDFull returns user with class (if set) and profile by given id.
@@ -109,10 +106,7 @@ func (r *RepoDB) GetByIDFull(id int) (*entity.User, error) {
 		// user object with such id not found
 		return nil, fmt.Errorf("user with id: %w: %s", user.ErrNotFound, err.Error())
 	}
-	if err != nil {
-		return nil, err
-	}
-	return &userObj, nil
+	return &userObj, err // err OR nil
 }
 
 // GetByUsernameFull gets user with class (if set) and
@@ -134,12 +128,25 @@ func (r *RepoDB) GetByUsernameFull(username string) (*entity.User, error) {
 
 // UpdateUser updates old user data to new one (by data ID).
 func (r *RepoDB) UpdateUser(data *entity.User) error {
-	err := r.dbStorage.Omit(_tableProfile).
-		Save(data).Error
-	if err != nil {
-		return err
+	// collect updates to map
+	updates := make(map[string]any, 0)
+	updates["class_id"] = data.ClassID
+	if len(data.Password) > 0 {
+		updates["password"] = data.Password
 	}
-	return nil
+
+	if len(updates) == 0 {
+		return nil
+	}
+	// update user
+	err := r.dbStorage.Model(&entity.User{}).
+		Where("id = ?", data.ID).
+		Updates(updates).Error
+	if errors.Is(err, gorm.ErrForeignKeyViolated) {
+		// class with given ID is not found
+		return fmt.Errorf("user: %w: class is not found", user.ErrInvalidData)
+	}
+	return err
 }
 
 // UpdateProfile updates old user profile to new one (by profile ID).
@@ -168,10 +175,10 @@ func (r *RepoDB) UpdateProfile(oldData, newData *entity.Profile) error {
 	})
 }
 
-// DeleteByID deletes user object and user profile with given id.
+// Delete deletes user object and user profile (by data ID).
 // Also user profile contacts (contact and parent contact) will be deleted
 // if they are not used in other profiles.
-func (r *RepoDB) DeleteByID(data *entity.User) error {
+func (r *RepoDB) Delete(data *entity.User) error {
 	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
 		// delete user (cascade with profile)
 		if err := tx.Delete(&entity.User{}, data.ID).Error; err != nil {

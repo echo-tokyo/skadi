@@ -20,9 +20,9 @@ type UsecaseAdmin interface {
 	CreateWithProfile(userObj *entity.User) error
 	// GetByID returns user object with profile by given id.
 	GetByID(id int) (*entity.User, error)
-	// UpdateProfile updates user profile by given ID with given data.
-	// It returns user object with updated profile data.
-	UpdateProfile(id int, data *entity.Profile) (*entity.User, error)
+	// Update updates user (class and profile) by given ID with given data.
+	// It returns user object with updated user data.
+	Update(id int, data *entity.User) (*entity.User, error)
 	// DeleteByID deletes user object and user profile with given id.
 	DeleteByID(id int) error
 	// GetByRoles returns user list with given roles.
