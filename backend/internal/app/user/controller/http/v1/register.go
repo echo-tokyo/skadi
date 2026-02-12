@@ -11,16 +11,22 @@ func RegisterEndpoints(router fiber.Router, controller *UserController,
 	controllerAdmin *UserControllerAdmin, mwJWTAccess fiber.Handler, mwAdmin fiber.Handler) {
 
 	adminGroup := router.Group("/admin/user", mwJWTAccess, mwAdmin)
-	adminGroup.Post("/", controllerAdmin.Create)
-	adminGroup.Get("/:id", controllerAdmin.Read)
-	// adminGroup.Patch("/:id", controllerAdmin.UpdateUser)
-	adminGroup.Put("/:id/profile", controllerAdmin.UpdateProfile)
-	adminGroup.Delete("/:id", controllerAdmin.Delete)
-	adminGroup.Get("/", controllerAdmin.List)
-	adminGroup.Put("/:id/password", controllerAdmin.ChangePassword)
+	{
+		adminGroup.Post("/", controllerAdmin.Create)
+		adminGroupOne := adminGroup.Group("/:id")
+		{
+			adminGroupOne.Get("/", controllerAdmin.Read)
+			adminGroupOne.Put("/", controllerAdmin.Update)
+			adminGroupOne.Delete("/", controllerAdmin.Delete)
+		}
+		adminGroup.Get("/", controllerAdmin.List)
+		adminGroup.Put("/:id/password", controllerAdmin.ChangePassword)
+	}
 
 	authGroup := router.Group("/user/me", mwJWTAccess)
-	authGroup.Get("/", controller.GetMe)
-	authGroup.Put("/profile", controller.UpdateMeProfile)
-	authGroup.Put("/password", controller.ChangePassword)
+	{
+		authGroup.Get("/", controller.GetMe)
+		authGroup.Put("/profile", controller.UpdateMeProfile)
+		authGroup.Put("/password", controller.ChangePassword)
+	}
 }

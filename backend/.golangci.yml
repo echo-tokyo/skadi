@@ -107,6 +107,10 @@ linters:
       - linters: # struct tags
           - lll
         path: "internal/app/entity"
+      - linters: # more clearly
+          - gocritic
+        path: "internal/app/.*?/controller/http/v1/register.go"
+        text: "unnecessaryBlock: block doesn't have definitions, can be simply deleted"
 
 issues:
   fix: false
