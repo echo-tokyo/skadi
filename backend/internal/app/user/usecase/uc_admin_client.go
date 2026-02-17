@@ -13,8 +13,8 @@ import (
 	"skadi/backend/internal/pkg/password"
 )
 
-const _adminRole = "admin"     // admin role for user
-const _studentRole = "student" // student role for user
+const _roleAdmin = "admin"     // admin role for user
+const _roleStudent = "student" // student role for user
 
 // Ensure UCAdmin implements interfaces.
 var _ user.UsecaseAdmin = (*UCAdminClient)(nil)
@@ -46,7 +46,7 @@ func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 		return errors.New("profile missing")
 	}
 	// set nil class ID and parent contact for non-student users
-	if userObj.Role != _studentRole {
+	if userObj.Role != _roleStudent {
 		userObj.ClassID = nil
 		userObj.Profile.ParentContact = nil
 	}
@@ -63,22 +63,14 @@ func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 	if err != nil {
 		return fmt.Errorf("create user: %w", err)
 	}
-	// schedule is unnecessary data in this usecase
-	if userObj.Class != nil {
-		userObj.Class.Schedule = nil
-	}
 	return nil
 }
 
 // GetByID returns user object with profile by given id.
 func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
-	userObj, err := u.userRepoDB.GetByIDFull(id)
+	userObj, err := u.userRepoDB.GetOneFull("id", id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
-	}
-	// schedule is unnecessary data in this usecase
-	if userObj.Class != nil {
-		userObj.Class.Schedule = nil
 	}
 	return userObj, nil
 }
@@ -92,7 +84,7 @@ func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, erro
 	}
 
 	// skip class update for non-student users and not updated data
-	if userObj.Role != _studentRole || userObj.ClassID == newUser.ClassID {
+	if userObj.Role != _roleStudent || userObj.ClassID == newUser.ClassID {
 		return userObj, nil
 	}
 
@@ -121,14 +113,14 @@ func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, erro
 // It returns user object with updated profile data.
 func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*entity.User, error) {
 	// get user with old profile data
-	userObj, err := u.userRepoDB.GetByIDFull(id)
+	userObj, err := u.userRepoDB.GetOneFull("id", id)
 	if err != nil {
 		return nil, fmt.Errorf("get by id: %w", err)
 	}
-	newProfile.ID = userObj.ID
+	newProfile.ID = &userObj.ID
 
 	// set nil parent contact for non-student users
-	if userObj.Role != _studentRole {
+	if userObj.Role != _roleStudent {
 		userObj.Profile.ParentContact = nil
 	}
 	// update profile
@@ -136,18 +128,19 @@ func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*enti
 		return nil, fmt.Errorf("update: %w", err)
 	}
 	// return user object with the new profile
+	newProfile.ID = nil
 	userObj.Profile = newProfile
 	return userObj, nil
 }
 
 // DeleteByID deletes user object and user profile with given id.
 func (u *UCAdminClient) DeleteByID(id int) error {
-	userObj, err := u.userRepoDB.GetByIDFull(id)
+	userObj, err := u.userRepoDB.GetOneFull("id", id)
 	if err != nil {
 		return fmt.Errorf("get by id: %w", err)
 	}
 	// deny deletion of admins
-	if userObj.Role == _adminRole {
+	if userObj.Role == _roleAdmin {
 		return fmt.Errorf("cannot delete admin: %w", user.ErrNotFound)
 	}
 	if err := u.userRepoDB.Delete(userObj); err != nil {
@@ -157,8 +150,15 @@ func (u *UCAdminClient) DeleteByID(id int) error {
 }
 
 // GetByRoles returns user list with given roles.
-func (u *UCAdminClient) GetByRoles(roles []string) ([]entity.User, error) {
-	userList, err := u.userRepoDB.GetByRoles(roles)
+// Free param (if only student role was given) used to get class-free students.
+func (u *UCAdminClient) GetByRoles(roles []string, free bool,
+	page *entity.Pagination) ([]entity.User, error) {
+
+	if !(len(roles) == 1 && roles[0] == _roleStudent) {
+		free = false
+	}
+
+	userList, err := u.userRepoDB.GetByRoles(roles, free, page)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}
@@ -199,7 +199,7 @@ func (u *UCAdminClient) changePassword(id int, newPasswd []byte,
 		return fmt.Errorf("get by id: %w", err)
 	}
 	// deny changing password for admins
-	if userObj.Role == _adminRole {
+	if userObj.Role == _roleAdmin {
 		return fmt.Errorf("cannot change admin password: %w", user.ErrNotFound)
 	}
 

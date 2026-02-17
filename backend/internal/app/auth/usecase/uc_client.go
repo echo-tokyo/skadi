@@ -44,7 +44,7 @@ func NewUCClient(cfg *config.Config, userRepoDB user.RepositoryDB,
 // Password is a raw (not hashed) password.
 func (u *UCClient) LogIn(username string, passwd []byte) (*entity.UserWithToken, error) {
 	// get userObj from DB with username
-	userObj, err := u.userRepoDB.GetByUsernameFull(username)
+	userObj, err := u.userRepoDB.GetOneFull("username", username)
 	if err != nil {
 		return nil, fmt.Errorf("get user by username: %w", err)
 	}

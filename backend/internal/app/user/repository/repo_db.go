@@ -11,10 +11,19 @@ import (
 	"skadi/backend/internal/app/user"
 )
 
-const _tableClass = "Class"                         // table name
-const _tableProfile = "Profile"                     // table name
-const _tableContact = "Profile.Contact"             // table name
-const _tableParentContact = "Profile.ParentContact" // table name
+const (
+	_defaultFullname = "Your name" // default fullname for user profile
+
+	_preloadClass         = "Class"                 // object field name
+	_preloadProfile       = "Profile"               // object field name
+	_preloadContact       = "Profile.Contact"       // object field name
+	_preloadParentContact = "Profile.ParentContact" // object field name
+	_tableUser            = "User"                  // table name
+
+	_fieldID       = "id"       // table field name
+	_fieldName     = "name"     // table field name
+	_fieldFullname = "fullname" // table field name
+)
 
 // Ensure RepoDB implements interface.
 var _ user.RepositoryDB = (*RepoDB)(nil)
@@ -32,14 +41,26 @@ func NewRepoDB(dbStorage *gorm.DB) *RepoDB {
 	}
 }
 
-// CreateUser creates new user and fills given struct.
-func (r *RepoDB) CreateUser(userObj *entity.User) error {
-	err := r.dbStorage.Create(userObj).Error
-	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		// user with such username already exists
-		return fmt.Errorf("user with username: %w: %s", user.ErrAlreadyExists, err.Error())
-	}
-	return err // err OR nil
+// CreateUserWithDefaultProfile creates new user with default profile.
+func (r *RepoDB) CreateUserWithDefaultProfile(userObj *entity.User) error {
+	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		// create user
+		err := r.dbStorage.Create(userObj).Error
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			// user with such username already exists
+			return fmt.Errorf("user with username: %w: %s", user.ErrAlreadyExists, err.Error())
+		}
+
+		userObj.Profile = &entity.Profile{
+			ID:       &userObj.ID,
+			Fullname: _defaultFullname,
+		}
+		// create user profile record
+		if err = tx.Create(userObj.Profile).Error; err != nil {
+			return fmt.Errorf("profile: %w", err)
+		}
+		return err // err OR nil
+	})
 }
 
 // CreateUserFull creates a new user with class (if set) and
@@ -47,7 +68,7 @@ func (r *RepoDB) CreateUser(userObj *entity.User) error {
 func (r *RepoDB) CreateUserFull(userObj *entity.User) error {
 	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
 		// create user record
-		err := tx.Omit(_tableProfile).Create(userObj).Error
+		err := tx.Omit(_preloadProfile).Create(userObj).Error
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			// user with such username already exists
 			return fmt.Errorf("user with username: %w: %s", user.ErrAlreadyExists, err.Error())
@@ -60,7 +81,7 @@ func (r *RepoDB) CreateUserFull(userObj *entity.User) error {
 			return err
 		}
 		// set profile id
-		userObj.Profile.ID = userObj.ID
+		userObj.Profile.ID = &userObj.ID
 
 		// find or create contact and parent contact
 		if err := findOrCreateContacts(tx, userObj.Profile); err != nil {
@@ -70,10 +91,15 @@ func (r *RepoDB) CreateUserFull(userObj *entity.User) error {
 		if err = tx.Create(userObj.Profile).Error; err != nil {
 			return fmt.Errorf("profile: %w", err)
 		}
+		// set nil to skip ID field serialization
+		userObj.Profile.ID = nil
 
-		// get class info (without teacher)
+		// get class info (ID and name only)
 		if userObj.ClassID != nil {
-			if err = tx.Where(*userObj.ClassID).First(&userObj.Class).Error; err != nil {
+			err = tx.Select(_fieldID, _fieldName).
+				Where(*userObj.ClassID).
+				First(&userObj.Class).Error
+			if err != nil {
 				return fmt.Errorf("class: %w", err)
 			}
 		}
@@ -93,37 +119,39 @@ func (r *RepoDB) GetByID(id int) (*entity.User, error) {
 	return &userObj, err // err OR nil
 }
 
-// GetByIDFull returns user with class (if set) and profile by given id.
-func (r *RepoDB) GetByIDFull(id int) (*entity.User, error) {
+// GetOneFull returns user with class (if set) and profile with given cond.
+func (r *RepoDB) GetOneFull(field string, value any) (*entity.User, error) {
 	var userObj entity.User
 	err := r.dbStorage.
-		Preload(_tableClass).
-		Preload(_tableProfile).
-		Preload(_tableContact).
-		Preload(_tableParentContact).
+		Preload(_preloadClass, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldName) // preload only ID and name
+		}).
+		Preload(_preloadProfile).
+		Preload(_preloadContact).
+		Preload(_preloadParentContact).
+		Where(field+" = ?", value).First(&userObj).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// user object not found
+		return nil, fmt.Errorf("user by %s: %w: %s", field, user.ErrNotFound, err.Error())
+	}
+	// set nil to skip ID field serialization
+	userObj.Profile.ID = nil
+	return &userObj, err // err OR nil
+}
+
+// GetByIDWithProfileShort returns user with short profile (id and fullname only) by given ID.
+func (r *RepoDB) GetByIDWithProfileShort(id int) (*entity.User, error) {
+	var userObj entity.User
+	err := r.dbStorage.
+		Preload(_preloadProfile, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
+		}).
 		Where(id).First(&userObj).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// user object with such id not found
 		return nil, fmt.Errorf("user with id: %w: %s", user.ErrNotFound, err.Error())
 	}
 	return &userObj, err // err OR nil
-}
-
-// GetByUsernameFull gets user with class (if set) and
-// profile by username and returns it.
-func (r *RepoDB) GetByUsernameFull(username string) (*entity.User, error) {
-	userObj := &entity.User{}
-	err := r.dbStorage.
-		Preload(_tableClass).
-		Preload(_tableProfile).
-		Preload(_tableContact).
-		Preload(_tableParentContact).
-		Where("username = ?", username).First(userObj).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
-		// user was not found
-		return nil, fmt.Errorf("user with username: %w: %s", user.ErrNotFound, err.Error())
-	}
-	return userObj, err // err OR nil
 }
 
 // UpdateUser updates old user data to new one (by data ID).
@@ -198,37 +226,92 @@ func (r *RepoDB) Delete(data *entity.User) error {
 }
 
 // GetByRoles returns user (with class if set and profile) list with given roles.
-func (r *RepoDB) GetByRoles(roles []string) ([]entity.User, error) {
+// Free param appends condition (if only student role was given) to get class-free students.
+func (r *RepoDB) GetByRoles(roles []string, free bool,
+	page *entity.Pagination) ([]entity.User, error) {
+
 	if len(roles) == 0 {
 		return nil, errors.New("no one role specified")
 	}
 	var userList []entity.User
-	err := r.dbStorage.
-		Preload(_tableClass, func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "name") // preload only ID and name
+	// create query
+	query := r.dbStorage.
+		Preload(_preloadClass, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldName) // preload only ID and name
 		}).
-		Preload(_tableProfile).
-		Preload(_tableContact).
-		Preload(_tableParentContact).
-		Where("role IN ?", roles).
-		Find(&userList).Error
-	if err != nil {
+		Preload(_preloadProfile).
+		Preload(_preloadContact).
+		Preload(_preloadParentContact).
+		Where("role IN ?", roles)
+	if free {
+		query = query.Where("class_id IS NULL")
+	}
+	query = query.Order("id ASC")
+	// apply pagination if it's not nil
+	if page != nil {
+		query = page.Query(query)
+	}
+	// execute query
+	if err := query.Find(&userList).Error; err != nil {
 		return nil, err
+	}
+
+	// set nil to skip ID field serialization
+	for idx := range userList {
+		userList[idx].Profile.ID = nil
 	}
 	return userList, nil
 }
 
+// GetManyWithProfilesShort returns users with by IDs with short profiles (ID and fullname).
+func (r *RepoDB) GetManyWithProfilesShort(ids []int) ([]entity.User, error) {
+	var users []entity.User
+	err := r.dbStorage.
+		Preload(_preloadProfile, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
+		}).
+		Where("id IN ?", ids).
+		Find(&users).Error
+
+	return users, err // err OR nil
+}
+
+// GetProfilesByClass returns short profiles (ID and fullname) linked to the class with given ID.
+func (r *RepoDB) GetProfilesShortByClass(classID int) ([]entity.Profile, error) {
+	var profiles []entity.Profile
+	err := r.dbStorage.
+		Select("profile.id", _fieldFullname).
+		Joins("INNER JOIN user ON user.id=profile.id").
+		Where("user.class_id = ?", classID).
+		Find(&profiles).Error
+	return profiles, err // err OR nil
+}
+
+// SetClass sets class with given ID for all given students (update users).
+func (r *RepoDB) SetClass(classID int, students []entity.User) error {
+	// TODO: implement
+	panic("unimplemented")
+}
+
+// UnsetClass unsets class with given ID for all given students (update users).
+func (r *RepoDB) UnsetClass(classID int, students []entity.User) error {
+	// TODO: implement
+	panic("unimplemented")
+}
+
 // findOrCreateContacts finds or creates contact and parent contact info
 func findOrCreateContacts(tx *gorm.DB, profile *entity.Profile) error {
-	// find or create contact record
-	err := tx.Where(entity.Contact{
-		Email: profile.Contact.Email,
-		Phone: profile.Contact.Phone,
-	}).FirstOrCreate(profile.Contact).Error
-	if err != nil {
-		return fmt.Errorf("find contact: %w", err)
+	if profile.Contact != nil {
+		// find or create contact record
+		err := tx.Where(entity.Contact{
+			Email: profile.Contact.Email,
+			Phone: profile.Contact.Phone,
+		}).FirstOrCreate(profile.Contact).Error
+		if err != nil {
+			return fmt.Errorf("find contact: %w", err)
+		}
+		profile.ContactID = &profile.Contact.ID
 	}
-	profile.ContactID = &profile.Contact.ID
 
 	// find or create parent contact record
 	if profile.ParentContact != nil {

@@ -4,19 +4,18 @@ import "skadi/backend/internal/app/entity"
 
 // RepositoryDB describes all DB methods for user.
 type RepositoryDB interface {
-	// CreateUser creates a new user and fills given struct.
-	CreateUser(userObj *entity.User) error
+	// CreateUserWithDefaultProfile creates a new user with default profile.
+	CreateUserWithDefaultProfile(userObj *entity.User) error
 	// CreateUserFull creates a new user with class (if set) and
 	// profile for them and fills given structs.
 	CreateUserFull(userObj *entity.User) error
 
-	// GetByID returns user by given id.
+	// GetByID returns user by given ID.
 	GetByID(id int) (*entity.User, error)
-	// GetByIDFull returns user with class (if set) and profile by given id.
-	GetByIDFull(id int) (*entity.User, error)
-	// GetByUsernameFull gets user with class (if set) and
-	// profile by username and returns it.
-	GetByUsernameFull(username string) (*entity.User, error)
+	// GetOneFull returns user with class (if set) and profile with given cond.
+	GetOneFull(field string, value any) (*entity.User, error)
+	// GetByIDWithProfileShort returns user with short profile (id and fullname only) by given ID.
+	GetByIDWithProfileShort(id int) (*entity.User, error)
 
 	// UpdateUser updates old user data to new one (by data ID).
 	UpdateUser(data *entity.User) error
@@ -31,7 +30,15 @@ type RepositoryDB interface {
 	Delete(data *entity.User) error
 
 	// GetByRoles returns user (with class if set and profile) list with given roles.
-	GetByRoles(roles []string) ([]entity.User, error)
-	// IsRole returns true if user with given ID has the given role.
-	// IsRole(id int, role string) (bool, error)
+	// Free param appends condition (if only student role was given) to get class-free students.
+	GetByRoles(roles []string, free bool, page *entity.Pagination) ([]entity.User, error)
+
+	// GetManyWithProfilesShort returns users by given IDs with short profiles (ID and fullname).
+	GetManyWithProfilesShort(ids []int) ([]entity.User, error)
+	// GetProfilesByClass returns short profiles (ID and fullname) linked to the class with given ID.
+	GetProfilesShortByClass(classID int) ([]entity.Profile, error)
+	// SetClass sets class with given ID for all given students (update users).
+	SetClass(classID int, students []entity.User) error
+	// UnsetClass unsets class with given ID for all given students (update users).
+	UnsetClass(classID int, students []entity.User) error
 }

@@ -7,12 +7,15 @@ type Class struct {
 	// class name
 	Name string `json:"name" validate:"required"`
 	// teacher id
-	TeacherID int `json:"-"`
+	TeacherID *int `json:"-"`
 	// class schedule
 	Schedule *string `json:"schedule,omitempty" validate:"omitempty"`
 
-	Teacher  *User   `gorm:"foreignKey:TeacherID" json:"teacher,omitempty" validate:"omitempty"`
-	Students []*User `gorm:"foreignKey:ClassID" json:"students,omitempty" validate:"omitempty"`
+	// teacher object
+	Teacher     *Profile `gorm:"-" json:"teacher,omitempty" validate:"omitempty"`
+	TeacherUser *User    `gorm:"foreignKey:TeacherID;references:ID" json:"-"`
+	// student objects list
+	Students []Profile `gorm:"-" json:"students,omitempty" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the class object.

@@ -74,10 +74,12 @@ func (c *UserController) UpdateMeProfile(ctx *fiber.Ctx) error {
 		Fullname: inputBody.FullName,
 		Address:  inputBody.Address,
 		Extra:    inputBody.Extra,
-		Contact: &entity.Contact{
+	}
+	if inputBody.Contact != nil {
+		profile.Contact = &entity.Contact{
 			Phone: inputBody.Contact.Phone,
 			Email: inputBody.Contact.Email,
-		},
+		}
 	}
 	if inputBody.ParentContact != nil {
 		profile.ParentContact = &entity.Contact{

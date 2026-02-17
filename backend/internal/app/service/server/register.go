@@ -7,7 +7,9 @@ import (
 	authhttpv1 "skadi/backend/internal/app/auth/controller/http/v1"
 	authrepo "skadi/backend/internal/app/auth/repository"
 	authuc "skadi/backend/internal/app/auth/usecase"
+	classhttpv1 "skadi/backend/internal/app/class/controller/http/v1"
 	classrepo "skadi/backend/internal/app/class/repository"
+	classuc "skadi/backend/internal/app/class/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
 	"skadi/backend/internal/app/service/server/middleware"
 	userhttpv1 "skadi/backend/internal/app/user/controller/http/v1"
@@ -29,11 +31,14 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB, classRepoDB)
+	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
 	userControllerAdmin := userhttpv1.NewUserControllerAdmin(userUCAdminClient, valid)
 	userController := userhttpv1.NewUserController(userUCAdminClient, valid)
+	classControllerAdmin := classhttpv1.NewClassControllerAdmin(classUCAdminClient, valid)
+	classController := classhttpv1.NewClassController(classUCAdminClient, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
@@ -50,4 +55,6 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	}
 	authhttpv1.RegisterEndpoints(apiV1, authController, mwJWTRefresh)
 	userhttpv1.RegisterEndpoints(apiV1, userController, userControllerAdmin, mwJWTAccess, mwAdmin)
+	classhttpv1.RegisterEndpoints(apiV1, classController, classControllerAdmin,
+		mwJWTAccess, mwAdmin)
 }

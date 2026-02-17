@@ -26,7 +26,8 @@ type UsecaseAdmin interface {
 	// DeleteByID deletes user object and user profile with given id.
 	DeleteByID(id int) error
 	// GetByRoles returns user list with given roles.
-	GetByRoles(roles []string) ([]entity.User, error)
+	// Free param (if only student role was given) used to get class-free students.
+	GetByRoles(roles []string, free bool, page *entity.Pagination) ([]entity.User, error)
 	// ChangePasswordAsAdmin changes password of any client.
 	// New password is a raw (not hashed) password.
 	ChangePasswordAsAdmin(id int, newPasswd []byte) error

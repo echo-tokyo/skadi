@@ -40,10 +40,10 @@ func (u *UCManager) CreateAdmin(username string, passwd []byte) (*entity.User, e
 	userObj := &entity.User{
 		Username: username,
 		Password: hashPasswd,
-		Role:     _adminRole,
+		Role:     _roleAdmin,
 	}
-	// create user
-	err = u.userRepoDB.CreateUser(userObj)
+	// create user with default profile
+	err = u.userRepoDB.CreateUserWithDefaultProfile(userObj)
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
 	}
@@ -57,7 +57,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 		return fmt.Errorf("get by id: %w", err)
 	}
 	// deny deletion of non-admins
-	if userObj.Role != _adminRole {
+	if userObj.Role != _roleAdmin {
 		return errors.New("cannot delete non-admin")
 	}
 	if err := u.userRepoDB.Delete(userObj); err != nil {
@@ -68,7 +68,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 
 // GetAdmins returns all admins.
 func (u *UCManager) GetAdmins() ([]entity.User, error) {
-	userList, err := u.userRepoDB.GetByRoles([]string{_adminRole})
+	userList, err := u.userRepoDB.GetByRoles([]string{_roleAdmin}, false, nil)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}

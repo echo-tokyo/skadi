@@ -40,7 +40,6 @@ func NewUserControllerAdmin(userUCAdmin user.UsecaseAdmin,
 // @success		201			{object}	entity.User
 // @failure		400			"группа не найдена"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
-// @failure		404			"группа не найдена"
 // @failure		409			"пользователь с введенным логином уже существует"
 func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 	inputBody := &userBody{}
@@ -59,10 +58,12 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 		Fullname: inputBody.Profile.FullName,
 		Address:  inputBody.Profile.Address,
 		Extra:    inputBody.Profile.Extra,
-		Contact: &entity.Contact{
+	}
+	if inputBody.Profile.Contact != nil {
+		userObj.Profile.Contact = &entity.Contact{
 			Phone: inputBody.Profile.Contact.Phone,
 			Email: inputBody.Profile.Contact.Email,
-		},
+		}
 	}
 	if inputBody.Profile.ParentContact != nil {
 		userObj.Profile.ParentContact = &entity.Contact{
@@ -155,11 +156,13 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 			Fullname: inputBody.Profile.FullName,
 			Address:  inputBody.Profile.Address,
 			Extra:    inputBody.Profile.Extra,
-			Contact: &entity.Contact{
-				Phone: inputBody.Profile.Contact.Phone,
-				Email: inputBody.Profile.Contact.Email,
-			},
 		},
+	}
+	if inputBody.Profile.Contact != nil {
+		oldUser.Profile.Contact = &entity.Contact{
+			Phone: inputBody.Profile.Contact.Phone,
+			Email: inputBody.Profile.Contact.Email,
+		}
 	}
 	if inputBody.Profile.ParentContact != nil {
 		oldUser.Profile.ParentContact = &entity.Contact{
@@ -223,26 +226,35 @@ func (c *UserControllerAdmin) Delete(ctx *fiber.Ctx) error {
 }
 
 // @summary		Получение списка юзеров. [Только админ]
-// @description	Получение списка юзеров со всеми данными.
+// @description	Получение списка юзеров со всеми данными (с настраиваемой пагинацией).
 // @router			/admin/user [get]
 // @id				admin-user-list
 // @tags			user
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			listUserQuery	query	listUserQuery	false	"listUserQuery"
-// @success		200				{array}	entity.User
+// @param			listUserQuery	query		listUserQuery	false	"listUserQuery"
+// @success		200				{object}	listUserOut
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 	inputQuery := &listUserQuery{}
 	if err := inputQuery.Parse(ctx); err != nil {
 		return err
 	}
-	userListResp, err := c.userUCAdmin.GetByRoles(inputQuery.Roles)
+	// get pagination object OR nil
+	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+
+	// get users
+	userListResp, err := c.userUCAdmin.GetByRoles(inputQuery.Roles, inputQuery.Free, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}
-	return ctx.Status(fiber.StatusOK).JSON(userListResp)
+
+	output := &listUserOut{
+		Data:       userListResp,
+		Pagination: pageParams,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(output)
 }
 
 // @summary		Смена пароля юзера. [Только админ]

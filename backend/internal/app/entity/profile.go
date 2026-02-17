@@ -2,8 +2,8 @@ package entity
 
 // Profile represents a user profile with additional user data.
 type Profile struct {
-	// profile id (user id)
-	ID int `gorm:"primaryKey" json:"-"`
+	// profile id (equals to user id)
+	ID *int `gorm:"primaryKey" json:"id,omitempty" validate:"omitempty"`
 	// user full name
 	Fullname string `json:"fullname" validate:"required"`
 	// user address
