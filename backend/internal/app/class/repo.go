@@ -18,5 +18,5 @@ type RepositoryDB interface {
 	// ListShort returns slice of class objects (IDs and names only).
 	ListShort() ([]entity.Class, error)
 	// ListFull returns slice of class objects with full data.
-	ListFull() ([]entity.Class, error)
+	ListFull(page *entity.Pagination) ([]entity.Class, error)
 }

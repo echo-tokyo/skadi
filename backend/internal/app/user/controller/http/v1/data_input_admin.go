@@ -126,7 +126,7 @@ type listUserQuery struct {
 }
 
 // Parse parses listUserQuery request data and validates it.
-func (u *listUserQuery) Parse(ctx *fiber.Ctx) error {
+func (u *listUserQuery) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 	// parse query-params
 	if err := ctx.QueryParser(u); err != nil {
 		return err
@@ -140,6 +140,10 @@ func (u *listUserQuery) Parse(ctx *fiber.Ctx) error {
 	// set all roles if no one role specified
 	if len(u.Roles) == 0 {
 		u.Roles = _acceptedRoles
+	}
+	// validate parsed data
+	if err := valid.Validate(u); err != nil {
+		return err
 	}
 	return nil
 }

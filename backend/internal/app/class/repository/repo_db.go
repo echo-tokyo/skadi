@@ -104,20 +104,27 @@ func (r *RepoDB) ListShort() ([]entity.Class, error) {
 	classes := []entity.Class{}
 	err := r.dbStorage.
 		Select(_fieldID, _fieldName).
+		Order("id ASC").
 		Find(&classes).Error
 	return classes, err // err OR nil
 }
 
 // ListFull returns slice of class objects with full data.
-func (r *RepoDB) ListFull() ([]entity.Class, error) {
+func (r *RepoDB) ListFull(page *entity.Pagination) ([]entity.Class, error) {
 	classes := []entity.Class{}
-	err := r.dbStorage.
+	// create query
+	query := r.dbStorage.
 		Preload(_preloadTeacher).
 		Preload(_preloadTeacherProfile, func(db *gorm.DB) *gorm.DB {
 			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
-		}).
-		Find(&classes).Error
-	if err != nil {
+		})
+	query = query.Order("id ASC")
+	// apply pagination if it's not nil
+	if page != nil {
+		query = page.Query(query)
+	}
+	// exec query
+	if err := query.Find(&classes).Error; err != nil {
 		return nil, err
 	}
 

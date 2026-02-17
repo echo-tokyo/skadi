@@ -21,6 +21,55 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/class": {
+            "post": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Создание новой группы со всеми данными и включение в неё переданных студентов.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Создание новой группы. [Только админ]",
+                "operationId": "admin-class-create",
+                "parameters": [
+                    {
+                        "description": "classBody",
+                        "name": "classBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.classBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Class"
+                        }
+                    },
+                    "400": {
+                        "description": "преподаватель не найден"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "409": {
+                        "description": "группа с введенным названием уже существует"
+                    }
+                }
+            }
+        },
         "/admin/user": {
             "get": {
                 "security": [
@@ -28,7 +77,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Получение списка юзеров со всеми данными.",
+                "description": "Получение списка юзеров со всеми данными (с настраиваемой пагинацией).",
                 "consumes": [
                     "application/json"
                 ],
@@ -41,6 +90,30 @@ const docTemplate = `{
                 "summary": "Получение списка юзеров. [Только админ]",
                 "operationId": "admin-user-list",
                 "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "return only class-free students (only if param role=student)",
+                        "name": "free",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 1,
+                        "description": "per page pagination param (default: 10)",
+                        "name": "perPage",
+                        "in": "query"
+                    },
                     {
                         "type": "array",
                         "items": {
@@ -59,10 +132,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.User"
-                            }
+                            "$ref": "#/definitions/v1.listUserOut"
                         }
                     },
                     "401": {
@@ -112,9 +182,6 @@ const docTemplate = `{
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
                     },
-                    "404": {
-                        "description": "группа не найдена"
-                    },
                     "409": {
                         "description": "пользователь с введенным логином уже существует"
                     }
@@ -155,6 +222,60 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/entity.User"
                         }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Полное обновление профиля юзера и его группы (если студент) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Обновление юзера по id. [Только админ]",
+                "operationId": "admin-user-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateBody",
+                        "name": "updateBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "группа не найдена"
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
@@ -244,59 +365,6 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "404": {
-                        "description": "пользователь не найден"
-                    }
-                }
-            }
-        },
-        "/admin/user/{id}/profile": {
-            "put": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Полное обновление профиля юзера по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Обновление профиля юзера по id. [Только админ]",
-                "operationId": "admin-user-profile-update",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "profileBody",
-                        "name": "profileBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.profileBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.User"
-                        }
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
@@ -399,6 +467,136 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "токен в черном списке"
+                    }
+                }
+            }
+        },
+        "/class": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка групп со всеми данными (ID и имена препода и учеников).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Получение списка групп.",
+                "operationId": "class-list",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 1,
+                        "description": "per page pagination param (default: 10)",
+                        "name": "perPage",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listClassOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/class/short": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка групп (только ID и названия).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Получение списка групп (кратко).",
+                "operationId": "class-list-short",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Class"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/class/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение всех данных о группе с инфой о преподе и учениках (ID и полные имена).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Получение группы по id.",
+                "operationId": "class-read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID группы",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Class"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "группа не найдена"
                     }
                 }
             }
@@ -698,13 +896,19 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "students": {
+                    "description": "student objects list",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.User"
+                        "$ref": "#/definitions/entity.Profile"
                     }
                 },
                 "teacher": {
-                    "$ref": "#/definitions/entity.User"
+                    "description": "teacher object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Profile"
+                        }
+                    ]
                 }
             }
         },
@@ -723,11 +927,23 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.Pagination": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "per_page": {
+                    "type": "integer",
+                    "default": 10,
+                    "example": 5
+                }
+            }
+        },
         "entity.Profile": {
             "type": "object",
             "required": [
-                "address",
-                "contact",
                 "fullname"
             ],
             "properties": {
@@ -745,6 +961,10 @@ const docTemplate = `{
                 "fullname": {
                     "description": "user full name",
                     "type": "string"
+                },
+                "id": {
+                    "description": "profile id (equals to user id)",
+                    "type": "integer"
                 },
                 "parent_contact": {
                     "$ref": "#/definitions/entity.Contact"
@@ -825,6 +1045,39 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.classBody": {
+            "description": "classBody represents a data with class.",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "description": "class name",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "B26-1"
+                },
+                "schedule": {
+                    "description": "class schedule",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "сб 18:00-19:00"
+                },
+                "students": {
+                    "description": "student ID list",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "teacher_id": {
+                    "description": "teacher id",
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
         "v1.contactBody": {
             "description": "contactBody represents a data with profile contact.",
             "type": "object",
@@ -869,12 +1122,58 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.listClassOut": {
+            "description": "listClassOut represents a classes list and pagination params.",
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "description": "classes list",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Class"
+                    }
+                },
+                "pagination": {
+                    "description": "pagination params",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Pagination"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.listUserOut": {
+            "description": "listUserOut represents a users list and pagination params.",
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "description": "users list",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.User"
+                    }
+                },
+                "pagination": {
+                    "description": "pagination params",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Pagination"
+                        }
+                    ]
+                }
+            }
+        },
         "v1.profileBody": {
             "description": "profileBody represents a data with user profile.",
             "type": "object",
             "required": [
-                "address",
-                "contact",
                 "fullname"
             ],
             "properties": {
@@ -908,6 +1207,28 @@ const docTemplate = `{
                     "allOf": [
                         {
                             "$ref": "#/definitions/v1.contactBody"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.updateBody": {
+            "description": "updateBody represents a data to update user and profile.",
+            "type": "object",
+            "required": [
+                "profile"
+            ],
+            "properties": {
+                "class_id": {
+                    "description": "class id (for students)",
+                    "type": "integer",
+                    "example": 3
+                },
+                "profile": {
+                    "description": "user profile",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.profileBody"
                         }
                     ]
                 }

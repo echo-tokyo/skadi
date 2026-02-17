@@ -238,7 +238,7 @@ func (c *UserControllerAdmin) Delete(ctx *fiber.Ctx) error {
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 	inputQuery := &listUserQuery{}
-	if err := inputQuery.Parse(ctx); err != nil {
+	if err := inputQuery.Parse(ctx, c.valid); err != nil {
 		return err
 	}
 	// get pagination object OR nil

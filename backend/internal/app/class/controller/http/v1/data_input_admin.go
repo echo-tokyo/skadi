@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"skadi/backend/internal/pkg/validator"
-
 	fiber "github.com/gofiber/fiber/v2"
+
+	"skadi/backend/internal/pkg/validator"
 )
 
 // @description classBody represents a data with class.

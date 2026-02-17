@@ -113,8 +113,8 @@ func (u *UCAdminClient) ListShort() ([]entity.Class, error) {
 }
 
 // ListFull returns slice of class objects with full data.
-func (u *UCAdminClient) ListFull() ([]entity.Class, error) {
-	return u.classRepoDB.ListFull()
+func (u *UCAdminClient) ListFull(page *entity.Pagination) ([]entity.Class, error) {
+	return u.classRepoDB.ListFull(page)
 }
 
 // // addFreeStudsToClass adds class-free students

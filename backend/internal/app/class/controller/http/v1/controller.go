@@ -7,6 +7,7 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/class"
+	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -45,7 +46,7 @@ func (c *ClassController) Read(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	userResp, err := c.classUCClient.GetByID(inputPath.ID)
+	classResp, err := c.classUCClient.GetByID(inputPath.ID)
 	if errors.Is(err, class.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
@@ -56,7 +57,7 @@ func (c *ClassController) Read(ctx *fiber.Ctx) error {
 	if err != nil {
 		return fmt.Errorf("read: %w", err)
 	}
-	return ctx.Status(fiber.StatusOK).JSON(userResp)
+	return ctx.Status(fiber.StatusOK).JSON(classResp)
 }
 
 // @summary		Получение списка групп (кратко).
@@ -70,15 +71,11 @@ func (c *ClassController) Read(ctx *fiber.Ctx) error {
 // @success		200	{array}	entity.Class
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassController) ListShort(ctx *fiber.Ctx) error {
-	// inputQuery := &listUserQuery{}
-	// if err := inputQuery.Parse(ctx); err != nil {
-	// 	return err
-	// }
-	userListResp, err := c.classUCClient.ListShort()
+	classListResp, err := c.classUCClient.ListShort()
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}
-	return ctx.Status(fiber.StatusOK).JSON(userListResp)
+	return ctx.Status(fiber.StatusOK).JSON(classListResp)
 }
 
 // @summary		Получение списка групп.
@@ -89,18 +86,27 @@ func (c *ClassController) ListShort(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @success		200	{array}	entity.Class
+// @param			listClassQuery	query		listClassQuery	false	"listClassQuery"
+// @success		200	{object}	listClassOut
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
-	// inputQuery := &listUserQuery{}
-	// if err := inputQuery.Parse(ctx); err != nil {
-	// 	return err
-	// }
-	userListResp, err := c.classUCClient.ListFull()
+	inputQuery := &listClassQuery{}
+	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	// get pagination object OR nil
+	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+
+	// get classes
+	classListResp, err := c.classUCClient.ListFull(pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}
-	return ctx.Status(fiber.StatusOK).JSON(userListResp)
+	output := &listClassOut{
+		Data:       classListResp,
+		Pagination: pageParams,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(output)
 }
 
 // // @summary		Получение информации о себе.

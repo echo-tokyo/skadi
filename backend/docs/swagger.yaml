@@ -14,11 +14,14 @@ definitions:
         description: class schedule
         type: string
       students:
+        description: student objects list
         items:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/entity.Profile'
         type: array
       teacher:
-        $ref: '#/definitions/entity.User'
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: teacher object
     required:
     - id
     - name
@@ -33,6 +36,16 @@ definitions:
     - email
     - phone
     type: object
+  entity.Pagination:
+    properties:
+      page:
+        example: 1
+        type: integer
+      per_page:
+        default: 10
+        example: 5
+        type: integer
+    type: object
   entity.Profile:
     properties:
       address:
@@ -46,11 +59,12 @@ definitions:
       fullname:
         description: user full name
         type: string
+      id:
+        description: profile id (equals to user id)
+        type: integer
       parent_contact:
         $ref: '#/definitions/entity.Contact'
     required:
-    - address
-    - contact
     - fullname
     type: object
   entity.User:
@@ -104,6 +118,31 @@ definitions:
     - password
     - username
     type: object
+  v1.classBody:
+    description: classBody represents a data with class.
+    properties:
+      name:
+        description: class name
+        example: B26-1
+        maxLength: 50
+        type: string
+      schedule:
+        description: class schedule
+        example: сб 18:00-19:00
+        maxLength: 100
+        type: string
+      students:
+        description: student ID list
+        items:
+          type: integer
+        type: array
+      teacher_id:
+        description: teacher id
+        example: 2
+        type: integer
+    required:
+    - name
+    type: object
   v1.contactBody:
     description: contactBody represents a data with profile contact.
     properties:
@@ -135,6 +174,36 @@ definitions:
         - $ref: '#/definitions/entity.UserClaims'
         description: user claims (for endpoints with auth restriction)
     type: object
+  v1.listClassOut:
+    description: listClassOut represents a classes list and pagination params.
+    properties:
+      data:
+        description: classes list
+        items:
+          $ref: '#/definitions/entity.Class'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listUserOut:
+    description: listUserOut represents a users list and pagination params.
+    properties:
+      data:
+        description: users list
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
   v1.profileBody:
     description: profileBody represents a data with user profile.
     properties:
@@ -161,9 +230,21 @@ definitions:
         - $ref: '#/definitions/v1.contactBody'
         description: parent contact info (for students)
     required:
-    - address
-    - contact
     - fullname
+    type: object
+  v1.updateBody:
+    description: updateBody represents a data to update user and profile.
+    properties:
+      class_id:
+        description: class id (for students)
+        example: 3
+        type: integer
+      profile:
+        allOf:
+        - $ref: '#/definitions/v1.profileBody'
+        description: user profile
+    required:
+    - profile
     type: object
   v1.updatePasswordAdminBody:
     description: updatePasswordAdminBody represents a data to update user password
@@ -240,13 +321,63 @@ info:
   title: skadi API
   version: 1.0.0
 paths:
+  /admin/class:
+    post:
+      consumes:
+      - application/json
+      description: Создание новой группы со всеми данными и включение в неё переданных
+        студентов.
+      operationId: admin-class-create
+      parameters:
+      - description: classBody
+        in: body
+        name: classBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.classBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "400":
+          description: преподаватель не найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "409":
+          description: группа с введенным названием уже существует
+      security:
+      - JWTAccess: []
+      summary: Создание новой группы. [Только админ]
+      tags:
+      - class
   /admin/user:
     get:
       consumes:
       - application/json
-      description: Получение списка юзеров со всеми данными.
+      description: Получение списка юзеров со всеми данными (с настраиваемой пагинацией).
       operationId: admin-user-list
       parameters:
+      - description: return only class-free students (only if param role=student)
+        example: true
+        in: query
+        name: free
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: 'per page pagination param (default: 10)'
+        example: 1
+        in: query
+        minimum: 1
+        name: perPage
+        type: integer
       - collectionFormat: csv
         description: 'user roles (accepted: "teacher", "student")'
         example:
@@ -262,9 +393,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/entity.User'
-            type: array
+            $ref: '#/definitions/v1.listUserOut'
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
       security:
@@ -295,8 +424,6 @@ paths:
           description: группа не найдена
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: группа не найдена
         "409":
           description: пользователь с введенным логином уже существует
       security:
@@ -357,6 +484,42 @@ paths:
       summary: Получение юзера по id. [Только админ]
       tags:
       - user
+    put:
+      consumes:
+      - application/json
+      description: Полное обновление профиля юзера и его группы (если студент) по
+        его id.
+      operationId: admin-user-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateBody
+        in: body
+        name: updateBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: группа не найдена
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Обновление юзера по id. [Только админ]
+      tags:
+      - user
   /admin/user/{id}/password:
     put:
       consumes:
@@ -387,40 +550,6 @@ paths:
       security:
       - JWTAccess: []
       summary: Смена пароля юзера. [Только админ]
-      tags:
-      - user
-  /admin/user/{id}/profile:
-    put:
-      consumes:
-      - application/json
-      description: Полное обновление профиля юзера по его id.
-      operationId: admin-user-profile-update
-      parameters:
-      - description: ID юзера
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: profileBody
-        in: body
-        name: profileBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.profileBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.User'
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: пользователь не найден
-      security:
-      - JWTAccess: []
-      summary: Обновление профиля юзера по id. [Только админ]
       tags:
       - user
   /auth/login:
@@ -484,6 +613,91 @@ paths:
       summary: Получение access токена.
       tags:
       - auth
+  /class:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка групп со всеми данными (ID и имена препода и учеников).
+      operationId: class-list
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: 'per page pagination param (default: 10)'
+        example: 1
+        in: query
+        minimum: 1
+        name: perPage
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listClassOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка групп.
+      tags:
+      - class
+  /class/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о группе с инфой о преподе и учениках (ID
+        и полные имена).
+      operationId: class-read
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: группа не найдена
+      security:
+      - JWTAccess: []
+      summary: Получение группы по id.
+      tags:
+      - class
+  /class/short:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка групп (только ID и названия).
+      operationId: class-list-short
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Class'
+            type: array
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка групп (кратко).
+      tags:
+      - class
   /example/admin:
     get:
       description: Проверочный эндпоинт с доступом только для админов.
