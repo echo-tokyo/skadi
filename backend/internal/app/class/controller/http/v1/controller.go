@@ -87,8 +87,8 @@ func (c *ClassController) ListShort(ctx *fiber.Ctx) error {
 // @produce		json
 // @security		JWTAccess
 // @param			listClassQuery	query		listClassQuery	false	"listClassQuery"
-// @success		200	{object}	listClassOut
-// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @success		200				{object}	listClassOut
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
 	inputQuery := &listClassQuery{}
 	if err := inputQuery.Parse(ctx, c.valid); err != nil {
