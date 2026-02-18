@@ -1,15 +1,19 @@
-export type TRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN'
+export type TRole = 'admin' | 'teacher' | 'student'
 
 type TContact = { email: string; phone: string }
-export interface IUserResponse {
+
+type TProfile = {
+  address: string
+  contact: TContact
+  extra?: string
+  fullname: string
+  parentContact: TContact
+}
+export interface IUser {
   id: string
-  profile: {
-    address: string
-    contact: TContact
-    extra: string | undefined
-    fullname: string
-    parent_contact: TContact | undefined
-  }
+  profile: TProfile
   role: TRole
   username: string
 }
+
+export type IUserResponse = IUser

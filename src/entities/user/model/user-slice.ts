@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IUserResponse } from './types'
+import { IUser, IUserResponse } from './types'
 
 interface IUserState {
-  user: IUserResponse | null
+  user: IUser | null
 }
 
 const initialState: IUserState = {
@@ -27,3 +27,6 @@ const userSlice = createSlice({
 
 export const { setUserData, clearUserData } = userSlice.actions
 export default userSlice.reducer
+export const selectAuthenticatedUser = (state: {
+  user: IUserState
+}): IUser => state.user.user!
