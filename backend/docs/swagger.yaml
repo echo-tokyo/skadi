@@ -353,6 +353,30 @@ paths:
       summary: Создание новой группы. [Только админ]
       tags:
       - class
+  /admin/class/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление группы по её id.
+      operationId: admin-class-delete
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Удаление группы по id. [Только админ]
+      tags:
+      - class
   /admin/user:
     get:
       consumes:
@@ -647,7 +671,7 @@ paths:
       summary: Получение списка групп.
       tags:
       - class
-  /class/{id}:
+  /class/get/{id}:
     get:
       consumes:
       - application/json

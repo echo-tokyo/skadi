@@ -70,6 +70,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/class/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление группы по её id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Удаление группы по id. [Только админ]",
+                "operationId": "admin-class-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
         "/admin/user": {
             "get": {
                 "security": [
@@ -522,42 +560,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/class/short": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение списка групп (только ID и названия).",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "class"
-                ],
-                "summary": "Получение списка групп (кратко).",
-                "operationId": "class-list-short",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.Class"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    }
-                }
-            }
-        },
-        "/class/{id}": {
+        "/class/get/{id}": {
             "get": {
                 "security": [
                     {
@@ -597,6 +600,41 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "группа не найдена"
+                    }
+                }
+            }
+        },
+        "/class/short": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка групп (только ID и названия).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Получение списка групп (кратко).",
+                "operationId": "class-list-short",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Class"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     }
                 }
             }
