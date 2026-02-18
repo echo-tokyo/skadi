@@ -2,6 +2,7 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 
 	fiber "github.com/gofiber/fiber/v2"
 
@@ -142,37 +143,28 @@ func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 // 	return ctx.Status(fiber.StatusOK).JSON(newUser)
 // }
 
-// // @summary		Удаление юзера по id. [Только админ]
-// // @description	Удаление юзера и его профиля по его id.
-// // @router			/admin/user/{id} [delete]
-// // @id				admin-user-delete
-// // @tags			user
-// // @accept			json
-// // @produce		json
-// // @security		JWTAccess
-// // @param			id	path	string	true	"ID юзера"
-// // @success		204	"No Content"
-// // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
-// // @failure		404	"пользователь не найден"
-// func (c *UserControllerAdmin) Delete(ctx *fiber.Ctx) error {
-// 	inputPath := &userIDPath{}
-// 	if err := inputPath.Parse(ctx, c.valid); err != nil {
-// 		return err
-// 	}
-
-// 	err := c.userUCAdmin.DeleteByID(inputPath.ID)
-// 	if errors.Is(err, user.ErrNotFound) {
-// 		return &httperror.HTTPError{
-// 			CauseErr:   err,
-// 			StatusCode: fiber.StatusNotFound,
-// 			Message:    "пользователь не найден",
-// 		}
-// 	}
-// 	if err != nil {
-// 		return fmt.Errorf("delete: %w", err)
-// 	}
-// 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
-// }
+// @summary		Удаление группы по id. [Только админ]
+// @description	Удаление группы по её id.
+// @router			/admin/class/{id} [delete]
+// @id				admin-class-delete
+// @tags			class
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id	path	string	true	"ID юзера"
+// @success		204	"No Content"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+func (c *ClassControllerAdmin) Delete(ctx *fiber.Ctx) error {
+	inputPath := &classIDPath{}
+	if err := inputPath.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	err := c.classUCAdmin.DeleteByID(inputPath.ID)
+	if err != nil {
+		return fmt.Errorf("delete: %w", err)
+	}
+	return ctx.Status(fiber.StatusNoContent).JSON(nil)
+}
 
 // // @summary		Смена пароля юзера. [Только админ]
 // // @description	Смена пароля юзера по его id.
