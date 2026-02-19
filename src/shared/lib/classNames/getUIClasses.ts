@@ -13,11 +13,13 @@ export const getUIClasses = (
 ): string => {
   const { fluid, size, additionalClasses = [] } = options
 
-  return clsx(
+  const classes = [
     baseClass,
     fluid && styles.fluid,
     size === 's' && styles.size_s,
     size === 'm' && styles.size_m,
     ...additionalClasses,
-  )
+  ]
+
+  return clsx(classes)
 }

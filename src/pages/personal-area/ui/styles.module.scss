@@ -4,10 +4,32 @@
   gap: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  button {
+    border: 0;
+    background-color: transparent;
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    outline: none;
+  }
+}
+
+.left,
+.right {
+  background-color: var(--color-white);
+  border-radius: 1rem;
+  padding: 1rem;
 }
 .left {
   width: 30%;
 }
 .right {
   width: 100%;
+}
+
+.tab {
+  background: none;
+  border: none;
+  display: block;
+  padding: 0;
+  cursor: pointer;
 }

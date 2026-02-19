@@ -16,7 +16,7 @@ const Text = (props: IProps): ReactNode => {
   } = props
 
   return (
-    <div
+    <span
       style={{
         fontSize: size + 'px',
         fontWeight: weight,
@@ -24,7 +24,7 @@ const Text = (props: IProps): ReactNode => {
       }}
     >
       {children}
-    </div>
+    </span>
   )
 }
 

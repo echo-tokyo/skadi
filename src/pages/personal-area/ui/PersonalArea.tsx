@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react'
+import { FC, ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { Text } from '@/shared/ui'
 import { useAppSelector } from '@/shared/lib/hooks'
@@ -8,29 +8,41 @@ import { selectAuthenticatedUser } from '@/entities/user'
 const PersonalArea: FC = (): ReactNode => {
   const user = useAppSelector(selectAuthenticatedUser)
   const role = user.role
-  const tabs = TAB_CONFIG.filter((tab) => tab.role === role)
-  const [currentTab, setCurrentTab] = useState<ITabConfig>(tabs[0])
 
-  const tabClick = (tab: ITabConfig): void => {
-    setCurrentTab(tab)
-  }
+  const tabs = useMemo(
+    () => TAB_CONFIG.filter((tab) => tab.role === role),
+    [role],
+  )
 
-  const ActiveComponent = currentTab.component
+  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(
+    tabs[0] ?? null,
+  )
+
+  const ActiveComponent = currentTab?.component
+
+  const getTabColor = (
+    tab: ITabConfig,
+  ): '--color-primary' | undefined =>
+    currentTab?.name === tab.name ? '--color-primary' : undefined
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.left}>
         <Text weight='bold' size='20'>
-          Test
+          Личный кабинет
         </Text>
         {tabs.map((tab) => (
-          <p onClick={() => tabClick(tab)} key={tab.name}>
-            {tab.name}
-          </p>
+          <button
+            type='button'
+            onClick={() => setCurrentTab(tab)}
+            key={tab.name}
+          >
+            <Text color={getTabColor(tab)}>{tab.name}</Text>
+          </button>
         ))}
       </div>
       <div className={styles.right}>
-        <ActiveComponent />
+        {ActiveComponent && <ActiveComponent />}
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ interface IProps {
   size?: 's' | 'm'
   disabled?: boolean
   type?: 'button' | 'submit'
+  color?: 'primary' | 'secondary' | 'ghost'
 }
 
 const Button = (props: IProps): ReactNode => {
@@ -20,6 +21,7 @@ const Button = (props: IProps): ReactNode => {
     size = 'm',
     disabled,
     type = 'button',
+    color = 'primary',
   } = props
 
   const handleClick = (
@@ -35,7 +37,11 @@ const Button = (props: IProps): ReactNode => {
 
   const buttonClassName = getUIClasses(
     styles.button,
-    { fluid, size },
+    {
+      fluid,
+      size,
+      additionalClasses: [commonStyles[color]],
+    },
     commonStyles,
   )
 
