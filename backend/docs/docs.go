@@ -71,6 +71,60 @@ const docTemplate = `{
             }
         },
         "/admin/class/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление группы (только переданные поля) по её id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Обновление группы по id. [Только админ]",
+                "operationId": "admin-class-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID группы",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateBody",
+                        "name": "updateBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_app_class_controller_http_v1.updateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Class"
+                        }
+                    },
+                    "400": {
+                        "description": "преподаватель не найден"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "группа не найдена"
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -301,7 +355,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.updateBody"
+                            "$ref": "#/definitions/internal_app_user_controller_http_v1.updateBody"
                         }
                     }
                 ],
@@ -1060,6 +1114,58 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_app_class_controller_http_v1.updateBody": {
+            "description": "updateBody represents a data to update class.",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "new class name",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "F26-2"
+                },
+                "schedule": {
+                    "description": "new class schedule",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "пн 15:00-16:00"
+                },
+                "students": {
+                    "description": "IDs of students (updated list) in the class",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "teacher_id": {
+                    "description": "new teacher id",
+                    "type": "integer",
+                    "example": 5
+                }
+            }
+        },
+        "internal_app_user_controller_http_v1.updateBody": {
+            "description": "updateBody represents a data to update user and profile.",
+            "type": "object",
+            "required": [
+                "profile"
+            ],
+            "properties": {
+                "class_id": {
+                    "description": "class id (for students)",
+                    "type": "integer",
+                    "example": 3
+                },
+                "profile": {
+                    "description": "user profile",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v1.profileBody"
+                        }
+                    ]
+                }
+            }
+        },
         "v1.authBody": {
             "description": "authBody represents a data for user auth (log in).",
             "type": "object",
@@ -1245,28 +1351,6 @@ const docTemplate = `{
                     "allOf": [
                         {
                             "$ref": "#/definitions/v1.contactBody"
-                        }
-                    ]
-                }
-            }
-        },
-        "v1.updateBody": {
-            "description": "updateBody represents a data to update user and profile.",
-            "type": "object",
-            "required": [
-                "profile"
-            ],
-            "properties": {
-                "class_id": {
-                    "description": "class id (for students)",
-                    "type": "integer",
-                    "example": 3
-                },
-                "profile": {
-                    "description": "user profile",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/v1.profileBody"
                         }
                     ]
                 }

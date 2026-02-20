@@ -9,8 +9,9 @@ import "skadi/backend/internal/app/entity"
 type UsecaseAdmin interface {
 	// CreateClass creates a new class and fills given struct.
 	Create(classObj *entity.Class, studentIDs []int) error
-	// Update updates old class data to new one (by data ID).
-	Update(data *entity.Class) error
+	// Update updates class by ID (in new class object) with the new data.
+	// It returns the updated class object.
+	Update(id int, newData *entity.ClassUpdate) (*entity.Class, error)
 	// DeleteByID deletes class object by given ID.
 	DeleteByID(id int) error
 }

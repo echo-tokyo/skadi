@@ -10,8 +10,9 @@ type RepositoryDB interface {
 	GetByIDShort(id int) (*entity.Class, error)
 	// GetByID returns class by given id.
 	GetByID(id int) (*entity.Class, error)
-	// Update updates old class data to new one (by data ID).
-	Update(data *entity.Class) error
+	// Update updates class by given ID with the new data.
+	// It returns the updated class object.
+	Update(id int, newData *entity.ClassUpdate) error
 	// DeleteByID deletes class object by given id.
 	DeleteByID(id int) error
 

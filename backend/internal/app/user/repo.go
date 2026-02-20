@@ -37,8 +37,4 @@ type RepositoryDB interface {
 	GetManyWithProfilesShort(ids []int) ([]entity.User, error)
 	// GetProfilesByClass returns short profiles (ID and fullname) linked to the class with given ID.
 	GetProfilesShortByClass(classID int) ([]entity.Profile, error)
-	// SetClass sets class with given ID for all given students (update users).
-	SetClass(classID int, students []entity.User) error
-	// UnsetClass unsets class with given ID for all given students (update users).
-	UnsetClass(classID int, students []entity.User) error
 }

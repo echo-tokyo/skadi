@@ -48,7 +48,7 @@ func (r *RepoDB) CreateClass(classObj *entity.Class, studentIDs []int) error {
 		}
 		if errors.Is(err, gorm.ErrForeignKeyViolated) {
 			// teacher with given ID is not found
-			return fmt.Errorf("class: %w: teacher is not found", class.ErrInvalidData)
+			return fmt.Errorf("class: %w: not found", class.ErrInvalidTeacher)
 		}
 		if err != nil {
 			return err
@@ -88,10 +88,52 @@ func (r *RepoDB) GetByID(id int) (*entity.Class, error) {
 	return &classObj, err // err OR nil
 }
 
-// Update updates old class data to new one (by data ID).
-func (r *RepoDB) Update(data *entity.Class) error {
-	// TODO: implement
-	panic("unimplemented")
+// Update updates class by given ID with the new data.
+// It returns the updated class object.
+func (r *RepoDB) Update(classID int, newData *entity.ClassUpdate) error {
+	updates := make(map[string]any)
+	// set new name
+	if newData.Name != nil {
+		updates["name"] = *newData.Name
+	}
+	// set new schedule
+	if newData.Schedule != nil {
+		updates["schedule"] = newData.Schedule
+	}
+	// set new teacher ID
+	if newData.TeacherID != nil {
+		updates["teacher_id"] = newData.TeacherID
+	}
+
+	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		// update class
+		err := tx.Model(&entity.Class{}).
+			Where(_fieldID+" = ?", classID).
+			Updates(updates).Error
+		if err != nil {
+			return fmt.Errorf("class: %w", err)
+		}
+
+		// add students to the class
+		if len(newData.AddStudents) > 0 {
+			err := tx.Model(&entity.User{}).
+				Where(_fieldID+" IN ?", newData.AddStudents).
+				Update(_fieldClassID, classID).Error
+			if err != nil {
+				return fmt.Errorf("add students: %w", err)
+			}
+		}
+		// delete students from the class
+		if len(newData.DelStudents) > 0 {
+			err := tx.Model(&entity.User{}).
+				Where(_fieldID+" IN ?", newData.DelStudents).
+				Update(_fieldClassID, nil).Error
+			if err != nil {
+				return fmt.Errorf("delete students: %w", err)
+			}
+		}
+		return nil
+	})
 }
 
 // DeleteByID deletes class object by given id.

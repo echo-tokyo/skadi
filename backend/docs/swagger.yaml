@@ -100,6 +100,43 @@ definitions:
         description: admin, teacher or student
         type: string
     type: object
+  internal_app_class_controller_http_v1.updateBody:
+    description: updateBody represents a data to update class.
+    properties:
+      name:
+        description: new class name
+        example: F26-2
+        maxLength: 50
+        type: string
+      schedule:
+        description: new class schedule
+        example: пн 15:00-16:00
+        maxLength: 100
+        type: string
+      students:
+        description: IDs of students (updated list) in the class
+        items:
+          type: integer
+        type: array
+      teacher_id:
+        description: new teacher id
+        example: 5
+        type: integer
+    type: object
+  internal_app_user_controller_http_v1.updateBody:
+    description: updateBody represents a data to update user and profile.
+    properties:
+      class_id:
+        description: class id (for students)
+        example: 3
+        type: integer
+      profile:
+        allOf:
+        - $ref: '#/definitions/v1.profileBody'
+        description: user profile
+    required:
+    - profile
+    type: object
   v1.authBody:
     description: authBody represents a data for user auth (log in).
     properties:
@@ -232,20 +269,6 @@ definitions:
     required:
     - fullname
     type: object
-  v1.updateBody:
-    description: updateBody represents a data to update user and profile.
-    properties:
-      class_id:
-        description: class id (for students)
-        example: 3
-        type: integer
-      profile:
-        allOf:
-        - $ref: '#/definitions/v1.profileBody'
-        description: user profile
-    required:
-    - profile
-    type: object
   v1.updatePasswordAdminBody:
     description: updatePasswordAdminBody represents a data to update user password
       by admin.
@@ -375,6 +398,41 @@ paths:
       security:
       - JWTAccess: []
       summary: Удаление группы по id. [Только админ]
+      tags:
+      - class
+    put:
+      consumes:
+      - application/json
+      description: Частичное обновление группы (только переданные поля) по её id.
+      operationId: admin-class-update
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateBody
+        in: body
+        name: updateBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal_app_class_controller_http_v1.updateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "400":
+          description: преподаватель не найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: группа не найдена
+      security:
+      - JWTAccess: []
+      summary: Обновление группы по id. [Только админ]
       tags:
       - class
   /admin/user:
@@ -525,7 +583,7 @@ paths:
         name: updateBody
         required: true
         schema:
-          $ref: '#/definitions/v1.updateBody'
+          $ref: '#/definitions/internal_app_user_controller_http_v1.updateBody'
       produces:
       - application/json
       responses:

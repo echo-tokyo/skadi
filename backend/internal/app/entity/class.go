@@ -22,3 +22,19 @@ type Class struct {
 func (*Class) TableName() string {
 	return "class"
 }
+
+// ClassUpdate represents a data to update class.
+type ClassUpdate struct {
+	// new class name
+	Name *string
+	// new teacher id
+	TeacherID *int
+	// new class schedule
+	Schedule *string
+	// IDs of new students to completely replace old students
+	NewFullStudents []int
+	// IDs of students to add them to the class
+	AddStudents []int
+	// IDs of students to delete them from the class
+	DelStudents []int
+}

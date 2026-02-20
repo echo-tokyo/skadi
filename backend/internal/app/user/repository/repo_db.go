@@ -287,18 +287,6 @@ func (r *RepoDB) GetProfilesShortByClass(classID int) ([]entity.Profile, error) 
 	return profiles, err // err OR nil
 }
 
-// SetClass sets class with given ID for all given students (update users).
-func (r *RepoDB) SetClass(classID int, students []entity.User) error {
-	// TODO: implement
-	panic("unimplemented")
-}
-
-// UnsetClass unsets class with given ID for all given students (update users).
-func (r *RepoDB) UnsetClass(classID int, students []entity.User) error {
-	// TODO: implement
-	panic("unimplemented")
-}
-
 // findOrCreateContacts finds or creates contact and parent contact info
 func findOrCreateContacts(tx *gorm.DB, profile *entity.Profile) error {
 	if profile.Contact != nil {
