@@ -34,6 +34,7 @@ const PersonalArea: FC = (): ReactNode => {
         {tabs.map((tab) => (
           <button
             type='button'
+            className=''
             onClick={() => setCurrentTab(tab)}
             key={tab.name}
           >

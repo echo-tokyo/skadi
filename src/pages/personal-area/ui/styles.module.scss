@@ -4,13 +4,6 @@
   gap: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  button {
-    border: 0;
-    background-color: transparent;
-    font-family: 'Montserrat', sans-serif;
-    padding: 0;
-    outline: none;
-  }
 }
 
 .left,
@@ -21,6 +14,13 @@
 }
 .left {
   width: 30%;
+  button {
+    border: 0;
+    background-color: transparent;
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    outline: none;
+  }
 }
 .right {
   width: 100%;
