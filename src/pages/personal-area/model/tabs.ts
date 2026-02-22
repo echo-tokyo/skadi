@@ -1,4 +1,4 @@
-import { TRole } from '@/entities/user'
+import { TRole } from '@/shared/model'
 import RoleManagement from '@/widgets/role-management'
 import { FC } from 'react'
 

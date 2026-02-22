@@ -12,10 +12,10 @@ import {
 } from 'react'
 import * as Popover from '@radix-ui/react-popover'
 import clsx from 'clsx'
-import { getUIClasses } from '@/shared/lib/classNames'
 import { ChevronDown, Check } from '@/shared/ui/icons'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
+import { getUIClasses } from '@/shared/lib'
 
 // TODO: порефакторить этот нейрокал
 
@@ -41,15 +41,13 @@ interface BaseProps<T extends string = string> {
   noResultsText?: string
 }
 
-interface SingleProps<T extends string = string>
-  extends BaseProps<T> {
+interface SingleProps<T extends string = string> extends BaseProps<T> {
   multiple?: false
   value: T | ''
   onChange: (value: T | '') => void
 }
 
-interface MultipleProps<T extends string = string>
-  extends BaseProps<T> {
+interface MultipleProps<T extends string = string> extends BaseProps<T> {
   multiple: true
   value: T[]
   onChange: (value: T[]) => void
@@ -91,9 +89,7 @@ const SelectItem = memo(
       onClick={disabled ? undefined : onSelect}
       onMouseEnter={onMouseEnter}
     >
-      <span className={styles.check_indicator}>
-        {selected && <Check />}
-      </span>
+      <span className={styles.check_indicator}>{selected && <Check />}</span>
       {label}
     </div>
   ),
@@ -129,10 +125,7 @@ const useSelectKeyboard = ({
         case 'ArrowDown': {
           e.preventDefault()
           const currentPos = enabledIndices.indexOf(highlightedIndex)
-          const nextPos = Math.min(
-            currentPos + 1,
-            enabledIndices.length - 1,
-          )
+          const nextPos = Math.min(currentPos + 1, enabledIndices.length - 1)
           setHighlightedIndex(enabledIndices[nextPos] ?? 0)
           break
         }
@@ -153,9 +146,7 @@ const useSelectKeyboard = ({
         case 'End': {
           e.preventDefault()
           if (enabledIndices.length > 0) {
-            setHighlightedIndex(
-              enabledIndices[enabledIndices.length - 1],
-            )
+            setHighlightedIndex(enabledIndices[enabledIndices.length - 1])
           }
           break
         }
@@ -174,13 +165,7 @@ const useSelectKeyboard = ({
         }
       }
     },
-    [
-      options,
-      highlightedIndex,
-      setHighlightedIndex,
-      onSelect,
-      onClose,
-    ],
+    [options, highlightedIndex, setHighlightedIndex, onSelect, onClose],
   )
 
   return { handleKeyDown }
@@ -217,11 +202,11 @@ const SelectContent = <T extends string>({
 
   // Фильтрация опций
   const filteredOptions = useMemo(() => {
-    if (!searchQuery.trim()) return options
+    if (!searchQuery.trim()) {
+      return options
+    }
     const query = searchQuery.toLowerCase()
-    return options.filter((o) =>
-      o.label.toLowerCase().includes(query),
-    )
+    return options.filter((o) => o.label.toLowerCase().includes(query))
   }, [options, searchQuery])
 
   // Инициализация highlighted на выбранном элементе (или 0)
@@ -325,8 +310,7 @@ const SelectContent = <T extends string>({
 // SingleSelect
 // ---------------------------------------------------------------------------
 
-interface SingleSelectInternalProps<T extends string>
-  extends SingleProps<T> {
+interface SingleSelectInternalProps<T extends string> extends SingleProps<T> {
   wrapperClassName: string
   triggerClassName: string
 }
@@ -380,9 +364,7 @@ const SingleSelect = <T extends string>({
           aria-expanded={open}
           aria-controls={listboxId}
         >
-          <span
-            className={selectedLabel ? undefined : styles.placeholder}
-          >
+          <span className={selectedLabel ? undefined : styles.placeholder}>
             {selectedLabel ?? placeholder}
           </span>
           <span className={styles.icon}>
@@ -424,8 +406,7 @@ const SingleSelect = <T extends string>({
 // MultiSelect
 // ---------------------------------------------------------------------------
 
-interface MultiSelectInternalProps<T extends string>
-  extends MultipleProps<T> {
+interface MultiSelectInternalProps<T extends string> extends MultipleProps<T> {
   wrapperClassName: string
   triggerClassName: string
 }
@@ -448,11 +429,11 @@ const MultiSelect = <T extends string>({
   const listboxId = useId()
 
   const triggerLabel = useMemo(() => {
-    if (value.length === 0) return null
+    if (value.length === 0) {
+      return null
+    }
     if (value.length <= 2) {
-      const optionsMap = new Map(
-        options.map((o) => [o.value, o.label]),
-      )
+      const optionsMap = new Map(options.map((o) => [o.value, o.label]))
       return value
         .map((v) => optionsMap.get(v))
         .filter(Boolean)
@@ -489,9 +470,7 @@ const MultiSelect = <T extends string>({
           aria-expanded={undefined}
           aria-controls={listboxId}
         >
-          <span
-            className={triggerLabel ? undefined : styles.placeholder}
-          >
+          <span className={triggerLabel ? undefined : styles.placeholder}>
             {triggerLabel ?? placeholder}
           </span>
           <span className={styles.icon}>
@@ -537,11 +516,7 @@ const Select = <T extends string = string>(
 ): ReactNode => {
   const { fluid, size = 'm' } = props
 
-  const wrapperClassName = getUIClasses(
-    styles.wrapper,
-    { fluid },
-    commonStyles,
-  )
+  const wrapperClassName = getUIClasses(styles.wrapper, { fluid }, commonStyles)
   const triggerClassName = getUIClasses(
     styles.trigger,
     { size, fluid },

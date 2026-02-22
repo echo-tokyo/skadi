@@ -1,6 +1,6 @@
 import { useGetMeQuery, setUserData } from '@/entities/user'
 import { setCredentials } from '@/features/authorization'
-import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks'
+import { useAppDispatch, useAppSelector } from '@/shared/lib'
 import { FC, useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router'
 

@@ -20,9 +20,7 @@ const PersonalArea: FC = (): ReactNode => {
 
   const ActiveComponent = currentTab?.component
 
-  const getTabColor = (
-    tab: ITabConfig,
-  ): '--color-primary' | undefined =>
+  const getTabColor = (tab: ITabConfig): '--color-primary' | undefined =>
     currentTab?.name === tab.name ? '--color-primary' : undefined
 
   return (

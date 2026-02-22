@@ -1,4 +1,4 @@
-import { TProfile, TRole } from '@/shared/types'
+import { TProfile, TRole } from '@/shared/model'
 
 export interface IMember {
   id: number
