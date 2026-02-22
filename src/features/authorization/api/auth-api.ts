@@ -23,19 +23,20 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Auth'],
     }),
 
-    getAccess: builder.mutation<void, void>({
-      query: () => ({
-        url: 'auth/private/obtain',
-        method: 'POST',
-        credentials: 'include',
-      }),
-      invalidatesTags: ['Auth'],
-    }),
+    // Пока не используется отсюда
+    // getAccess: builder.mutation<void, void>({
+    //   query: () => ({
+    //     url: 'auth/private/obtain',
+    //     method: 'POST',
+    //     credentials: 'include',
+    //   }),
+    //   invalidatesTags: ['Auth'],
+    // }),
   }),
 })
 
 export const {
   useSignInMutation,
   useLogoutMutation,
-  useGetAccessMutation,
+  // useGetAccessMutation,
 } = authApi

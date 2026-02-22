@@ -1,4 +1,4 @@
-export type { IUserResponse, TRole, IUser } from './model/types.ts'
+export type { IUserResponse, IUser } from './model/types.ts'
 
 export {
   setUserData,

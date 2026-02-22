@@ -1,17 +1,8 @@
-export type TRole = 'admin' | 'teacher' | 'student'
+import { TProfile, TRole } from '@/shared/types'
 
-type TContact = { email: string; phone: string }
-
-type TProfile = {
-  address: string
-  contact: TContact
-  extra?: string
-  fullname: string
-  parentContact: TContact
-}
 export interface IUser {
   id: string
-  profile: TProfile
+  profile?: TProfile
   role: TRole
   username: string
 }
