@@ -1,9 +1,9 @@
-import { useAppDispatch } from '@/shared/lib/hooks'
 import { useSignInMutation } from '../api/auth-api'
 import { setCredentials } from '../model/auth-slice'
 import { ISignInFormData } from '../model/types'
 import { useNavigate } from 'react-router'
 import { setUserData } from '@/entities/user'
+import { useAppDispatch } from '@/shared/lib'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useSignIn = () => {

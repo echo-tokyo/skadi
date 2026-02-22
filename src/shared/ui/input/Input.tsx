@@ -1,7 +1,7 @@
 import { ReactNode, ChangeEvent } from 'react'
-import { getUIClasses } from '@/shared/lib/classNames'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
+import { getUIClasses } from '@/shared/lib'
 
 interface IProps {
   value: string
@@ -30,11 +30,7 @@ const Input = (props: IProps): ReactNode => {
     onChange(e.target.value)
   }
 
-  const wrapperClassName = getUIClasses(
-    styles.wrapper,
-    { fluid },
-    commonStyles,
-  )
+  const wrapperClassName = getUIClasses(styles.wrapper, { fluid }, commonStyles)
 
   const inputClassName = getUIClasses(
     styles.input,

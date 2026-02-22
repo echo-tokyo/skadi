@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@/shared/lib/hooks'
+import { useAppDispatch } from '@/shared/lib'
 import { useLogoutMutation } from '../api/auth-api'
 import { logout as logoutActions } from '../model/auth-slice'
 import { clearUserData } from '@/entities/user'

@@ -1,7 +1,7 @@
 import { MouseEvent, ReactNode } from 'react'
-import { getUIClasses } from '@/shared/lib/classNames'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
+import { getUIClasses } from '@/shared/lib'
 
 interface IProps {
   children: string
