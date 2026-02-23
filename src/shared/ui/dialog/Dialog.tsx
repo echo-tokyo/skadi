@@ -15,7 +15,7 @@ interface IProps {
   onClose: () => void
 }
 
-const Dialog = (props: IProps) => {
+const Dialog = (props: IProps): ReactNode => {
   const {
     children,
     title = 'Модальное окно',
@@ -27,21 +27,21 @@ const Dialog = (props: IProps) => {
 
   const [isClosing, setIsClosing] = useState(false)
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setIsClosing(true)
     setTimeout(() => {
       onClose()
     }, ANIMATION_DURATION)
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = (): void => {
     setIsClosing(true)
     setTimeout(() => {
       onConfirm()
     }, ANIMATION_DURATION)
   }
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (e.target === e.currentTarget) {
       handleClose()
     }
@@ -49,7 +49,7 @@ const Dialog = (props: IProps) => {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    return () => {
+    return (): void => {
       document.body.style.overflow = ''
     }
   }, [])

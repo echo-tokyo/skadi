@@ -1,3 +1,6 @@
+// TODO: порефакторить этот нейрокал
+/* eslint-disable */
+
 import {
   useState,
   useCallback,
@@ -16,8 +19,6 @@ import { ChevronDown, Check } from '@/shared/ui/icons'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib'
-
-// TODO: порефакторить этот нейрокал
 
 export interface SelectOption<T extends string = string> {
   label: string

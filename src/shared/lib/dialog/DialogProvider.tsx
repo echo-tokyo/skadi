@@ -3,7 +3,11 @@ import { Dialog } from '@/shared/ui'
 import { DialogContext } from './context'
 import { DialogParams, DialogState } from './types'
 
-export const DialogProvider = ({ children }: { children: ReactNode }) => {
+export const DialogProvider = ({
+  children,
+}: {
+  children: ReactNode
+}): ReactNode => {
   const [dialogs, setDialogs] = useState<DialogState[]>([])
 
   const show = useCallback((params: DialogParams) => {

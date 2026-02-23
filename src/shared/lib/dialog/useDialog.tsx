@@ -1,7 +1,8 @@
 import { useContext } from 'react'
 import { DialogContext } from './context'
+import { DialogParams } from './types'
 
-export const useDialog = () => {
+export const useDialog = (): ((params: DialogParams) => string) => {
   const ctx = useContext(DialogContext)
 
   if (!ctx) {
