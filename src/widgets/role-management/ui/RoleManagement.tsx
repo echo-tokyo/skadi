@@ -2,7 +2,7 @@ import { Button, Input, Select, Text } from '@/shared/ui'
 import type { SelectOption } from '@/shared/ui'
 import { ReactNode, useState } from 'react'
 import styles from './styles.module.scss'
-import { useDialog } from '@/shared/lib'
+import { useCreateRoleDialog } from '../model/useCreateRoleDialog'
 
 const ROLE_OPTIONS: SelectOption[] = [
   { value: 'admin', label: 'Администратор' },
@@ -13,7 +13,7 @@ const ROLE_OPTIONS: SelectOption[] = [
 const RoleManagement = (): ReactNode => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
   const [role, setRole] = useState<string>('')
-  const show = useDialog()
+  const { show } = useCreateRoleDialog()
 
   return (
     <>
@@ -34,11 +34,7 @@ const RoleManagement = (): ReactNode => {
           value={role}
           onChange={setRole}
         />
-        <Button
-          onClick={() => show({ content: 'fef', title: 'Создание новой роли' })}
-        >
-          Создать роль
-        </Button>
+        <Button onClick={show}>Создать роль</Button>
       </div>
     </>
   )

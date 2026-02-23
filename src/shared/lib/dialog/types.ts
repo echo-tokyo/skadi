@@ -5,12 +5,15 @@ export interface DialogParams {
   content: ReactNode
   positiveText?: string
   negativeText?: string
-  onConfirm?: () => void
+  onConfirm?: () => Promise<void>
   onClose?: () => void
+  isConfirmDisabled?: boolean
 }
 
 export interface DialogState extends DialogParams {
   id: string
+  isClosing: boolean
+  isLoading: boolean
 }
 
 export interface DialogContextType {

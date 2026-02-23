@@ -1,10 +1,8 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { memo, ReactNode, useEffect } from 'react'
 import styles from './styles.module.scss'
 import { createPortal } from 'react-dom'
 import Text from '../text/Text'
 import Button from '../button/Button'
-
-const ANIMATION_DURATION = 150
 
 interface IProps {
   title?: string
@@ -13,6 +11,9 @@ interface IProps {
   negativeText?: string
   onConfirm: () => void
   onClose: () => void
+  isClosing: boolean
+  isConfirmDisabled?: boolean
+  isConfirmLoading?: boolean
 }
 
 const Dialog = (props: IProps): ReactNode => {
@@ -23,27 +24,14 @@ const Dialog = (props: IProps): ReactNode => {
     onConfirm,
     positiveText = 'Сохранить',
     negativeText = 'Отменить',
+    isClosing,
+    isConfirmDisabled = false,
+    isConfirmLoading = false,
   } = props
-
-  const [isClosing, setIsClosing] = useState(false)
-
-  const handleClose = (): void => {
-    setIsClosing(true)
-    setTimeout(() => {
-      onClose()
-    }, ANIMATION_DURATION)
-  }
-
-  const handleConfirm = (): void => {
-    setIsClosing(true)
-    setTimeout(() => {
-      onConfirm()
-    }, ANIMATION_DURATION)
-  }
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (e.target === e.currentTarget) {
-      handleClose()
+      onClose()
     }
   }
 
@@ -64,10 +52,14 @@ const Dialog = (props: IProps): ReactNode => {
         </Text>
         <div className={styles.content}>{children}</div>
         <div className={styles.actions}>
-          <Button fluid color='secondary' onClick={handleClose}>
+          <Button fluid color='secondary' onClick={onClose}>
             {negativeText}
           </Button>
-          <Button fluid onClick={handleConfirm}>
+          <Button
+            fluid
+            onClick={onConfirm}
+            disabled={isConfirmDisabled && isConfirmLoading}
+          >
             {positiveText}
           </Button>
         </div>
@@ -77,4 +69,4 @@ const Dialog = (props: IProps): ReactNode => {
   )
 }
 
-export default Dialog
+export default memo(Dialog)
