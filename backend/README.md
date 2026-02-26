@@ -88,6 +88,15 @@ Swagger документация доступна по [адресу](http://127
 docker compose -f dev.front.docker-compose.yml down
 ```
 
+> Чтобы снести БД и создать заново, используйте:
+>
+> \* После первой команды будет запрошен пароль от БД. Его можно найти в файле `./mysql/.env` относительно корня проекта.
+
+```shell
+docker compose -f dev.front.docker-compose.yml exec mysql mysql -u root -p -e "DROP DATABASE skadi; CREATE DATABASE skadi;"
+docker exec -it skadi_backend /bin/sh -c "/app/migrator up"
+```
+
 ### Особенности работы программы
 
 Время везде использует часовой пояс `UTC`. Это единый часовой пояс.
