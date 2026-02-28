@@ -23,9 +23,11 @@ export default defineConfig([
       'no-var': 'warn',
       'no-duplicate-case': 'warn',
       'no-extra-boolean-cast': 'warn',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/explicit-function-return-type': 'warn',
       'react/jsx-key': 'warn',
       'object-shorthand': 'warn',
       'prefer-const': 'warn',

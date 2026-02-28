@@ -1,5 +1,12 @@
 import { TProfile, TRole } from '@/shared/model'
 
+export type TClass = {
+  id: number
+  name: string
+  schedule?: string
+  students?: TProfile[]
+  teacher?: TProfile
+}
 export interface IMember {
   id: number
   profile?: TProfile
@@ -7,16 +14,22 @@ export interface IMember {
   username: string
 }
 
-export interface IMemberCreateRequest {
+export interface IUpdateMemberRequest {
+  profile: TProfile
+}
+
+export interface ICreateMemberRequest {
+  class_id?: number
   password: string
   profile: TProfile
   role: TRole
   username: string
 }
 
-// TODO: роль не передается ?
-export interface IMemberUpdateRequest {
-  profile: TProfile
+export interface ICreateMemberResponse {
+  class?: TClass
+  id: number
+  profile?: TProfile
+  role: TRole
+  username: string
 }
-
-export type IMemberResponse = IMember

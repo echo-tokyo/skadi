@@ -1,17 +1,16 @@
-import { useSignInMutation } from '../api/auth-api'
-import { setCredentials } from '../model/auth-slice'
-import { ISignInFormData } from '../model/types'
+import { useSignInMutation } from '../../api/auth-api'
+import { setCredentials } from '../slices/auth-slice'
 import { useNavigate } from 'react-router'
 import { setUserData } from '@/entities/user'
 import { useAppDispatch } from '@/shared/lib'
+import { ISignInRequest } from '../types'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useSignIn = () => {
   const [signInMutation, { isLoading }] = useSignInMutation()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const signIn = async (formData: ISignInFormData): Promise<void> => {
+  const signIn = async (formData: ISignInRequest): Promise<void> => {
     try {
       const result = await signInMutation(formData).unwrap()
 

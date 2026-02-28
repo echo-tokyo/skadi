@@ -1,9 +1,8 @@
 import { useAppDispatch } from '@/shared/lib'
-import { useLogoutMutation } from '../api/auth-api'
-import { logout as logoutActions } from '../model/auth-slice'
+import { useLogoutMutation } from '../../api/auth-api'
 import { clearUserData } from '@/entities/user'
+import { logout as logoutActions } from '../slices/auth-slice'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useLogout = () => {
   const [logoutMutation, { isLoading }] = useLogoutMutation()
   const dispatch = useAppDispatch()

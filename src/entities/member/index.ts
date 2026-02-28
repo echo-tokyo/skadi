@@ -1,14 +1,10 @@
 export type {
   IMember,
-  IMemberResponse,
-  IMemberCreateRequest,
-  IMemberUpdateRequest,
+  ICreateMemberRequest,
+  ICreateMemberResponse,
+  IUpdateMemberRequest,
 } from './model/types'
 
-export {
-  useGetMembersQuery,
-  useGetMemberByIdQuery,
-  useCreateMemberMutation,
-  useUpdateMemberProfileMutation,
-  useDeleteMemberMutation,
-} from './api/member-api'
+export { ROLE_OPTIONS } from './config/role-options'
+
+export { useCreateMemberMutation } from './api/member-api'

@@ -1,5 +1,5 @@
 import { TRole } from '@/shared/model'
-import RoleManagement from '@/widgets/role-management'
+import { RoleManagement } from '@/widgets/role-management'
 import { FC } from 'react'
 
 export interface ITabConfig {

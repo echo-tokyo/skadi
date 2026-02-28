@@ -1,3 +1,1 @@
-import PersonalArea from './ui/PersonalArea'
-
-export default PersonalArea
+export { default as PersonalArea } from './ui/PersonalArea'

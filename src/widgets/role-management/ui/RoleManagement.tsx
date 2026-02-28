@@ -1,19 +1,13 @@
 import { Button, Input, Select, Text } from '@/shared/ui'
-import type { SelectOption } from '@/shared/ui'
 import { ReactNode, useState } from 'react'
 import styles from './styles.module.scss'
-import { useCreateRoleDialog } from '../model/useCreateRoleDialog'
-
-const ROLE_OPTIONS: SelectOption[] = [
-  { value: 'admin', label: 'Администратор' },
-  { value: 'teacher', label: 'Преподаватель' },
-  { value: 'student', label: 'Студент' },
-]
+import { useCreateMemberDialog } from '@/features/create-member'
+import { ROLE_OPTIONS } from '@/entities/member'
 
 const RoleManagement = (): ReactNode => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
   const [role, setRole] = useState<string>('')
-  const { show } = useCreateRoleDialog()
+  const { show } = useCreateMemberDialog()
 
   return (
     <>

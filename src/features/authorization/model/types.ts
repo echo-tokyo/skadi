@@ -1,4 +1,4 @@
-export interface ISignInFormData {
+export interface ISignInRequest {
   username: string
   password: string
 }

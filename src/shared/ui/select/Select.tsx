@@ -18,7 +18,7 @@ import clsx from 'clsx'
 import { ChevronDown, Check } from '@/shared/ui/icons'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
-import { getUIClasses } from '@/shared/lib'
+import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
 
 export interface SelectOption<T extends string = string> {
   label: string

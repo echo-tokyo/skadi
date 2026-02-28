@@ -1,10 +1,10 @@
-export type { IUserResponse, IUser } from './model/types.ts'
-
 export {
   setUserData,
   clearUserData,
   selectAuthenticatedUser,
 } from './model/user-slice.ts'
+
+export type { IUserResponse } from './model/types.ts'
 
 export { default as userReducer } from './model/user-slice.ts'
 

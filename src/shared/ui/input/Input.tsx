@@ -1,7 +1,7 @@
 import { ReactNode, ChangeEvent } from 'react'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
-import { getUIClasses } from '@/shared/lib'
+import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
 
 interface IProps {
   value: string
@@ -17,7 +17,7 @@ interface IProps {
 const Input = (props: IProps): ReactNode => {
   const {
     placeholder = 'Ввод...',
-    title = 'Введите значение',
+    title,
     value,
     disabled,
     type = 'text',

@@ -1,3 +1,1 @@
-import RoleManagement from './ui/RoleManagement'
-
-export default RoleManagement
+export { default as RoleManagement } from './ui/RoleManagement'

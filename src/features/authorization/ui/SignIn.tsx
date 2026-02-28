@@ -1,7 +1,7 @@
 import { Button, Input } from '@/shared/ui'
 import { FC, FormEvent, ReactNode, useState } from 'react'
 import styles from './styles.module.scss'
-import { useSignIn } from '../lib/use-sign-in'
+import { useSignIn } from '../model/hooks/use-sign-in'
 
 export const SignIn: FC = (): ReactNode => {
   const [username, setUsername] = useState<string>('')

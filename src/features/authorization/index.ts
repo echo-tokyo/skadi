@@ -1,12 +1,5 @@
-export { useSignInMutation, useLogoutMutation } from './api/auth-api'
+export { setCredentials, logout } from './model/slices/auth-slice.ts'
 
-export { setCredentials, logout } from './model/auth-slice'
-
-export { default as authReducer } from './model/auth-slice'
-
-export { useSignIn } from './lib/use-sign-in.ts'
-export { useLogout } from './lib/use-logout.ts'
-
-export type { ISignInFormData } from './model/types'
+export { default as authReducer } from './model/slices/auth-slice.ts'
 
 export { SignIn } from './ui/SignIn.tsx'

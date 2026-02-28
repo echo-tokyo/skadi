@@ -58,7 +58,7 @@ const Dialog = (props: IProps): ReactNode => {
           <Button
             fluid
             onClick={onConfirm}
-            disabled={isConfirmDisabled && isConfirmLoading}
+            disabled={isConfirmDisabled || isConfirmLoading}
           >
             {positiveText}
           </Button>
