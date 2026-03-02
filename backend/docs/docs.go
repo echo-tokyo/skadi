@@ -71,7 +71,43 @@ const docTemplate = `{
             }
         },
         "/admin/class/{id}": {
-            "put": {
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление группы по её id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Удаление группы по id. [Только админ]",
+                "operationId": "admin-class-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            },
+            "patch": {
                 "security": [
                     {
                         "JWTAccess": []
@@ -122,42 +158,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "группа не найдена"
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Удаление группы по её id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "class"
-                ],
-                "summary": "Удаление группы по id. [Только админ]",
-                "operationId": "admin-class-delete",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     }
                 }
             }
@@ -1006,10 +1006,6 @@ const docTemplate = `{
         },
         "entity.Contact": {
             "type": "object",
-            "required": [
-                "email",
-                "phone"
-            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -1225,10 +1221,6 @@ const docTemplate = `{
         "v1.contactBody": {
             "description": "contactBody represents a data with profile contact.",
             "type": "object",
-            "required": [
-                "email",
-                "phone"
-            ],
             "properties": {
                 "email": {
                     "type": "string",

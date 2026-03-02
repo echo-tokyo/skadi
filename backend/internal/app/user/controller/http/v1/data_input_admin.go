@@ -21,7 +21,7 @@ type userBody struct {
 	// user role (teacher or student)
 	Role string `json:"role" validate:"required,oneof=teacher student" example:"teacher"`
 	// class id (for students)
-	ClassID *int `json:"class_id" validate:"omitempty,numeric" example:"3"`
+	ClassID *int `json:"class_id" validate:"omitempty" example:"3"`
 	// user profile
 	Profile profileBody `json:"profile" validate:"required"`
 }
@@ -42,8 +42,8 @@ type profileBody struct {
 
 // @description contactBody represents a data with profile contact.
 type contactBody struct {
-	Phone string `json:"phone" validate:"required,max=15" example:"88005553535" maxLength:"15"`
-	Email string `json:"email" validate:"required,email,max=50" example:"ivanovvp@gmail.com" maxLength:"50"`
+	Phone string `json:"phone" validate:"omitempty,max=15" example:"88005553535" maxLength:"15"`
+	Email string `json:"email" validate:"omitempty,email,max=50" example:"ivanovvp@gmail.com" maxLength:"50"`
 }
 
 // Parse parses userBody request data and validates it.

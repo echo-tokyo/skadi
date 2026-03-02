@@ -32,9 +32,6 @@ definitions:
         type: string
       phone:
         type: string
-    required:
-    - email
-    - phone
     type: object
   entity.Pagination:
     properties:
@@ -191,9 +188,6 @@ definitions:
         example: "88005553535"
         maxLength: 15
         type: string
-    required:
-    - email
-    - phone
     type: object
   v1.exampleData:
     description: exampleData represents an output data for example endpoints.
@@ -400,7 +394,7 @@ paths:
       summary: Удаление группы по id. [Только админ]
       tags:
       - class
-    put:
+    patch:
       consumes:
       - application/json
       description: Частичное обновление группы (только переданные поля) по её id.

@@ -28,8 +28,8 @@ func (*Profile) TableName() string {
 type Contact struct {
 	// contact id
 	ID    int    `gorm:"primaryKey;autoIncrement" json:"-"`
-	Phone string `json:"phone" validate:"required"`
-	Email string `json:"email" validate:"required"`
+	Phone string `json:"phone,omitempty" validate:"omitempty"`
+	Email string `json:"email,omitempty" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the contact object.
