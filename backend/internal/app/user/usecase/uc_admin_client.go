@@ -11,10 +11,8 @@ import (
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/password"
+	"skadi/backend/internal/pkg/roles"
 )
-
-const _roleAdmin = "admin"     // admin role for user
-const _roleStudent = "student" // student role for user
 
 // Ensure UCAdmin implements interfaces.
 var _ user.UsecaseAdmin = (*UCAdminClient)(nil)
@@ -46,7 +44,7 @@ func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 		return errors.New("profile missing")
 	}
 	// set nil class ID and parent contact for non-student users
-	if userObj.Role != _roleStudent {
+	if !roles.IsStudent(userObj) {
 		userObj.ClassID = nil
 		userObj.Profile.ParentContact = nil
 	}
@@ -84,7 +82,7 @@ func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, erro
 	}
 
 	// skip class update for non-student users and not updated data
-	if userObj.Role != _roleStudent || userObj.ClassID == newUser.ClassID {
+	if !roles.IsStudent(userObj) || userObj.ClassID == newUser.ClassID {
 		return userObj, nil
 	}
 
@@ -120,7 +118,7 @@ func (u *UCAdminClient) UpdateProfile(id int, newProfile *entity.Profile) (*enti
 	newProfile.ID = &userObj.ID
 
 	// set nil parent contact for non-student users
-	if userObj.Role != _roleStudent {
+	if !roles.IsStudent(userObj) {
 		userObj.Profile.ParentContact = nil
 	}
 	// update profile
@@ -140,7 +138,7 @@ func (u *UCAdminClient) DeleteByID(id int) error {
 		return fmt.Errorf("get by id: %w", err)
 	}
 	// deny deletion of admins
-	if userObj.Role == _roleAdmin {
+	if roles.IsAdmin(userObj) {
 		return fmt.Errorf("cannot delete admin: %w", user.ErrNotFound)
 	}
 	if err := u.userRepoDB.Delete(userObj); err != nil {
@@ -151,14 +149,14 @@ func (u *UCAdminClient) DeleteByID(id int) error {
 
 // GetByRoles returns user list with given roles.
 // Free param (if only student role was given) used to get class-free students.
-func (u *UCAdminClient) GetByRoles(roles []string, free bool,
+func (u *UCAdminClient) GetByRoles(roleList []string, free bool,
 	page *entity.Pagination) ([]entity.User, error) {
 
-	if !(len(roles) == 1 && roles[0] == _roleStudent) {
+	if !(len(roleList) == 1 && roleList[0] == roles.Student) {
 		free = false
 	}
 
-	userList, err := u.userRepoDB.GetByRoles(roles, free, page)
+	userList, err := u.userRepoDB.GetByRoles(roleList, free, page)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}
@@ -199,7 +197,7 @@ func (u *UCAdminClient) changePassword(id int, newPasswd []byte,
 		return fmt.Errorf("get by id: %w", err)
 	}
 	// deny changing password for admins
-	if userObj.Role == _roleAdmin {
+	if roles.IsAdmin(userObj) {
 		return fmt.Errorf("cannot change admin password: %w", user.ErrNotFound)
 	}
 

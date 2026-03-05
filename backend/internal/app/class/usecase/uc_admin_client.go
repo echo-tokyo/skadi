@@ -8,12 +8,10 @@ import (
 	"skadi/backend/internal/app/class"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
+	"skadi/backend/internal/pkg/roles"
 )
 
-const _roleStudent = "student" // student role for user
-const _roleTeacher = "teacher" // teacher role for user
-
-// Ensure UCAdmin implements interfaces.
+// Ensure UCAdminClient implements interfaces.
 var _ class.UsecaseAdmin = (*UCAdminClient)(nil)
 var _ class.UsecaseClient = (*UCAdminClient)(nil)
 
@@ -145,7 +143,7 @@ func (u *UCAdminClient) setTeacherProfile(classObj *entity.Class) error {
 	if err != nil {
 		return fmt.Errorf("get teacher: %w", err)
 	}
-	if teacherUser.Role != _roleTeacher {
+	if !roles.IsTeacher(teacherUser) {
 		return fmt.Errorf("%w: user %d: not teacher", class.ErrInvalidTeacher, teacherUser.ID)
 	}
 	classObj.Teacher = teacherUser.Profile
@@ -161,7 +159,7 @@ func (u *UCAdminClient) getStudentsByIDs(classID int, studentIDs []int) ([]entit
 	}
 	// check students
 	for idx := range students {
-		if students[idx].Role != _roleStudent {
+		if !roles.IsStudent(&students[idx]) {
 			return nil, fmt.Errorf("%w: user %d: not student",
 				class.ErrInvalidStud, students[idx].ID)
 		}

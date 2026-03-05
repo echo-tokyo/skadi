@@ -1,5 +1,5 @@
 // Package auth contains all repos, usecases and controllers for auth.
-// Sub-package repo contains RepoDB and RepoCache implementations.
+// Sub-package repo contains RepoCache implementation.
 // Sub-package usecase contains UsecaseClient and UsecaseMiddleware implementations.
 package auth
 

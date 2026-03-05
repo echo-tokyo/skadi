@@ -6,11 +6,12 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
+	"skadi/backend/internal/pkg/roles"
 	"skadi/backend/internal/pkg/validator"
 )
 
 // _acceptedRoles contains accepted roles for listUserQuery
-var _acceptedRoles = []string{"teacher", "student"}
+var _acceptedRoles = []string{roles.Teacher, roles.Student}
 
 // @description userBody represents a data with user.
 type userBody struct {

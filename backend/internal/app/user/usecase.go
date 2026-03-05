@@ -1,3 +1,6 @@
+// Package user contains all repos, usecases and controllers for user.
+// Sub-package repo contains RepoDB implementation.
+// Sub-package usecase contains UsecaseManager, UsecaseAdmin and UsecaseClient implementations.
 package user
 
 import "skadi/backend/internal/app/entity"
@@ -27,7 +30,7 @@ type UsecaseAdmin interface {
 	DeleteByID(id int) error
 	// GetByRoles returns user list with given roles.
 	// Free param (if only student role was given) used to get class-free students.
-	GetByRoles(roles []string, free bool, page *entity.Pagination) ([]entity.User, error)
+	GetByRoles(roleList []string, free bool, page *entity.Pagination) ([]entity.User, error)
 	// ChangePasswordAsAdmin changes password of any client.
 	// New password is a raw (not hashed) password.
 	ChangePasswordAsAdmin(id int, newPasswd []byte) error
