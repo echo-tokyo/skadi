@@ -11,7 +11,7 @@ type Solution struct {
 	// student id
 	StudentID int `json:"-"`
 	// solution status id
-	StatusID *int `json:"-"`
+	StatusID int `json:"-"`
 	// solution grade
 	Grade *string `json:"grade,omitempty" validate:"omitempty"`
 	// solution text answer
@@ -25,7 +25,7 @@ type Solution struct {
 	Student     *Profile `gorm:"-" json:"student" validate:"required"`
 	StudentUser *User    `gorm:"foreignKey:StudentID;references:ID" json:"-"`
 	// status object
-	Status *Status `gorm:"foreignKey:StudentID;references:ID" json:"status,omitempty" validate:"omitempty"`
+	Status *Status `gorm:"foreignKey:StudentID;references:ID" json:"status" validate:"required"`
 }
 
 // TableName determines DB table name for the solution object.
