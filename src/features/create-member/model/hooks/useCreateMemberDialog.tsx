@@ -1,14 +1,14 @@
 import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
 import CreateMemberDialog, {
-  CreateMemberDialogRef,
+  ICreateMemberDialogRef,
 } from '../../ui/CreateMemberDialog'
-import { transformToRequest } from '../../lib/transformToRequest'
+import { useCreateMember } from './use-create-member'
 
 export const useCreateMemberDialog = (): { show: () => void } => {
   const showDialog = useDialog()
-  // const { submit } = useCreateMember()
-  const formRef = useRef<CreateMemberDialogRef>(null)
+  const { submit } = useCreateMember()
+  const formRef = useRef<ICreateMemberDialogRef>(null)
 
   const show = (): void => {
     showDialog({
@@ -16,25 +16,25 @@ export const useCreateMemberDialog = (): { show: () => void } => {
       content: <CreateMemberDialog ref={formRef} />,
       positiveText: 'Создать',
       negativeText: 'Отмена',
+      size: 'm',
       onConfirm: async () => {
-        if (!formRef.current) {
-          return
+        const isValid = await formRef.current?.validate()
+
+        if (!isValid) {
+          throw new Error('Validation failed')
         }
 
-        console.log(formRef.current.getFormData())
-        console.log(transformToRequest(formRef.current.getFormData()))
+        const formData = formRef.current?.getFormData()
 
-        // закоменчено до появления валидации полей
-        // const formData = formRef.current.getFormData()
-        // const success = await submit(formData)
+        if (formData) {
+          const success = await submit(formData)
+          if (!success) {
+            throw new Error('Failed to create member')
+          }
+        }
 
-        // if (!success) {
-        //   throw new Error('Failed to create member')
-        // }
-
-        formRef.current.reset()
+        formRef.current?.reset()
       },
-      onClose: () => {},
     })
   }
 

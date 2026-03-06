@@ -47,8 +47,6 @@ export const DialogProvider = ({
       return
     }
 
-    setLoading(dialog.id, true)
-
     try {
       await dialog.onConfirm()
       hide(dialog.id)
@@ -73,6 +71,7 @@ export const DialogProvider = ({
           isClosing={dialog.isClosing}
           isConfirmDisabled={dialog.isConfirmDisabled}
           isConfirmLoading={dialog.isLoading}
+          size={dialog.size}
         >
           {dialog.content}
         </Dialog>

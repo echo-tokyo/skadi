@@ -1,12 +1,5 @@
-import { TProfile, TRole } from '@/shared/model'
+import { TClass, TProfile, TRole } from '@/shared/model'
 
-export type TClass = {
-  id: number
-  name: string
-  schedule?: string
-  students?: TProfile[]
-  teacher?: TProfile
-}
 export interface IMember {
   id: number
   profile?: TProfile

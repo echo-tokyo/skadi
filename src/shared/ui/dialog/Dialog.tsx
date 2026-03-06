@@ -14,6 +14,7 @@ interface IProps {
   isClosing: boolean
   isConfirmDisabled?: boolean
   isConfirmLoading?: boolean
+  size?: 's' | 'm' | 'l'
 }
 
 const Dialog = (props: IProps): ReactNode => {
@@ -27,6 +28,7 @@ const Dialog = (props: IProps): ReactNode => {
     isClosing,
     isConfirmDisabled = false,
     isConfirmLoading = false,
+    size = 's',
   } = props
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>): void => {
@@ -43,10 +45,11 @@ const Dialog = (props: IProps): ReactNode => {
   }, [])
 
   const wrapperClass = `${styles.wrapper} ${isClosing ? styles.closing : ''}`
+  const dialogClass = `${styles.dialog} ${styles[size]}`
 
   return createPortal(
     <div className={wrapperClass} onClick={handleOverlayClick}>
-      <div className={styles.dialog}>
+      <div className={dialogClass}>
         <Text size='20' weight='bold'>
           {title}
         </Text>

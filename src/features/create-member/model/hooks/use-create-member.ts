@@ -1,14 +1,14 @@
 import { useCreateMemberMutation } from '@/entities/member'
-import { CreateMemberFormData } from '../types'
 import { transformToRequest } from '../../lib/transformToRequest'
+import { TCreateMemberFormData } from '../schemas'
 
 export const useCreateMember = (): {
-  submit: (formData: CreateMemberFormData) => Promise<boolean>
+  submit: (formData: TCreateMemberFormData) => Promise<boolean>
   isLoading: boolean
 } => {
   const [createMember, { isLoading }] = useCreateMemberMutation()
 
-  const submit = async (formData: CreateMemberFormData): Promise<boolean> => {
+  const submit = async (formData: TCreateMemberFormData): Promise<boolean> => {
     try {
       await createMember(transformToRequest(formData)).unwrap()
       return true

@@ -1,89 +1,111 @@
 import { ROLE_OPTIONS } from '@/entities/member'
 import { TRole } from '@/shared/model'
-import { Input, Select } from '@/shared/ui'
-import { ReactNode, useState, useImperativeHandle, forwardRef } from 'react'
-import { CreateMemberFormData } from '../model/types'
-import { INITIAL_FORM_DATA } from '../config/initial-form-data'
+import { Input, Select, Textarea } from '@/shared/ui'
+import { ReactNode, useImperativeHandle, forwardRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createMemberSchema, TCreateMemberFormData } from '../model/schemas'
+import {
+  FIELD_CONFIG,
+  INITIAL_FORM_DATA,
+  TFieldConfig,
+} from '../config/form-config'
+import styles from './styles.module.scss'
 
-export interface CreateMemberDialogRef {
-  getFormData: () => CreateMemberFormData
+export interface ICreateMemberDialogRef {
+  validate: () => Promise<boolean>
+  getFormData: () => TCreateMemberFormData
   reset: () => void
 }
 
-const CreateMemberDialog = forwardRef<CreateMemberDialogRef>(
+// FIXME: deprecated forwardRef
+const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
   (_, ref): ReactNode => {
-    const [formData, setFormData] =
-      useState<CreateMemberFormData>(INITIAL_FORM_DATA)
+    const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
 
-    const updateField = <K extends keyof CreateMemberFormData>(
-      field: K,
-      value: CreateMemberFormData[K],
-    ): void => {
-      setFormData((prev) => ({ ...prev, [field]: value }))
-    }
+    const { watch, setValue, trigger, reset, formState } =
+      useForm<TCreateMemberFormData>({
+        resolver: zodResolver(createMemberSchema),
+        defaultValues: INITIAL_FORM_DATA,
+      })
+
+    const formData = watch()
+    const { errors } = formState
 
     useImperativeHandle(ref, () => ({
+      validate: async () => {
+        setHasAttemptedValidation(true)
+        return trigger()
+      },
       getFormData: () => formData,
-      reset: () => setFormData(INITIAL_FORM_DATA),
+      reset: () => {
+        reset()
+        setHasAttemptedValidation(false)
+      },
     }))
 
-    return (
-      <div>
+    const renderField = (field: TFieldConfig) => {
+      const { name, title, required } = field
+
+      if (field.type === 'select') {
+        return (
+          <Select
+            key={name}
+            label={title}
+            placeholder='Выберите'
+            isValid={!errors[name]}
+            required={required}
+            fluid
+            description={errors[name]?.message}
+            options={ROLE_OPTIONS}
+            value={formData[name]}
+            onChange={(v) =>
+              setValue(name, v as TRole, {
+                shouldValidate: hasAttemptedValidation,
+              })
+            }
+          />
+        )
+      }
+
+      if (field.type === 'textarea') {
+        return (
+          <Textarea
+            key={name}
+            label={title}
+            placeholder='Ввод..'
+            isValid={!errors[name]}
+            required={true}
+            fluid
+            description={errors[name]?.message}
+            resize='none'
+            value={formData[name]}
+            onChange={(v) =>
+              setValue(name, v, {
+                shouldValidate: hasAttemptedValidation,
+              })
+            }
+          />
+        )
+      }
+
+      return (
         <Input
-          title='ФИО'
-          value={formData.fullname}
-          onChange={(v) => updateField('fullname', v)}
+          key={name}
+          title={title}
+          value={formData[name]}
+          isValid={!errors[name]}
+          required={required}
+          fluid
+          description={errors[name]?.message}
+          onChange={(v) =>
+            setValue(name, v, { shouldValidate: hasAttemptedValidation })
+          }
         />
-        <Select
-          label='Роль'
-          placeholder='Выберите'
-          options={ROLE_OPTIONS}
-          value={formData.role}
-          onChange={(v) => updateField('role', v as TRole)}
-        />
-        <Input
-          title='Логин'
-          value={formData.username}
-          onChange={(v) => updateField('username', v)}
-        />
-        <Input
-          title='Пароль'
-          value={formData.password}
-          onChange={(v) => updateField('password', v)}
-        />
-        <Input
-          title='Адрес проживания'
-          value={formData.address}
-          onChange={(v) => updateField('address', v)}
-        />
-        <Input
-          title='Email'
-          value={formData.email}
-          onChange={(v) => updateField('email', v)}
-        />
-        <Input
-          title='Телефон'
-          value={formData.phone}
-          onChange={(v) => updateField('phone', v)}
-        />
-        <Input
-          title='Email родителя'
-          value={formData.parentEmail}
-          onChange={(v) => updateField('parentEmail', v)}
-        />
-        <Input
-          title='Телефон родителя'
-          value={formData.parentPhone}
-          onChange={(v) => updateField('parentPhone', v)}
-        />
-        {/* TODO: сделать textarea */}
-        <Input
-          title='Допольнительная информация'
-          value={formData.extra}
-          onChange={(v) => updateField('extra', v)}
-        />
-      </div>
-    )
+      )
+    }
+
+    return <div className={styles.wrapper}>{FIELD_CONFIG.map(renderField)}</div>
   },
 )
 

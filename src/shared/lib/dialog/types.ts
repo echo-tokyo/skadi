@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+type TSize = 's' | 'm' | 'l'
 export interface DialogParams {
   title?: string
   content: ReactNode
@@ -8,6 +9,7 @@ export interface DialogParams {
   onConfirm?: () => Promise<void>
   onClose?: () => void
   isConfirmDisabled?: boolean
+  size?: TSize
 }
 
 export interface DialogState extends DialogParams {

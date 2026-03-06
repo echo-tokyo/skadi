@@ -30,10 +30,13 @@ interface BaseProps<T extends string = string> {
   options: SelectOption<T>[]
   placeholder?: string
   label?: string
+  description?: string
   disabled?: boolean
   fluid?: boolean
   size?: 's' | 'm'
   selectedCountLabel?: string
+  required?: boolean
+  isValid?: boolean
   /** Включить поиск по опциям */
   searchable?: boolean
   /** Placeholder для поля поиска */
@@ -319,8 +322,11 @@ interface SingleSelectInternalProps<T extends string> extends SingleProps<T> {
 const SingleSelect = <T extends string>({
   options,
   label,
+  description,
   placeholder,
   disabled,
+  required,
+  isValid = true,
   value,
   onChange,
   wrapperClassName,
@@ -331,7 +337,9 @@ const SingleSelect = <T extends string>({
 }: SingleSelectInternalProps<T>): ReactNode => {
   const [open, setOpen] = useState(false)
   const triggerId = useId()
+  const labelId = `${triggerId}-label`
   const listboxId = useId()
+  const descriptionId = `${triggerId}-description`
 
   const selectedLabel = useMemo(
     () => options.find((o) => o.value === value)?.label,
@@ -352,9 +360,14 @@ const SingleSelect = <T extends string>({
   return (
     <div className={wrapperClassName}>
       {label && (
-        <label htmlFor={triggerId} className={styles.label}>
+        <span id={labelId} className={styles.label}>
           {label}
-        </label>
+          {required && (
+            <span className={styles.required} aria-label='обязательное поле'>
+              *
+            </span>
+          )}
+        </span>
       )}
       <Popover.Root open={open} onOpenChange={setOpen}>
         <Popover.Trigger
@@ -364,6 +377,10 @@ const SingleSelect = <T extends string>({
           aria-haspopup='listbox'
           aria-expanded={open}
           aria-controls={listboxId}
+          aria-labelledby={label ? labelId : undefined}
+          aria-invalid={!isValid}
+          aria-describedby={description ? descriptionId : undefined}
+          aria-required={required}
         >
           <span className={selectedLabel ? undefined : styles.placeholder}>
             {selectedLabel ?? placeholder}
@@ -399,6 +416,11 @@ const SingleSelect = <T extends string>({
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>
+      {description && (
+        <p id={descriptionId} className={styles.description}>
+          {description}
+        </p>
+      )}
     </div>
   )
 }
@@ -415,8 +437,11 @@ interface MultiSelectInternalProps<T extends string> extends MultipleProps<T> {
 const MultiSelect = <T extends string>({
   options,
   label,
+  description,
   placeholder,
   disabled,
+  required,
+  isValid = true,
   value,
   onChange,
   wrapperClassName,
@@ -427,7 +452,9 @@ const MultiSelect = <T extends string>({
   noResultsText,
 }: MultiSelectInternalProps<T>): ReactNode => {
   const triggerId = useId()
+  const labelId = `${triggerId}-label`
   const listboxId = useId()
+  const descriptionId = `${triggerId}-description`
 
   const triggerLabel = useMemo(() => {
     if (value.length === 0) {
@@ -458,9 +485,14 @@ const MultiSelect = <T extends string>({
   return (
     <div className={wrapperClassName}>
       {label && (
-        <label htmlFor={triggerId} className={styles.label}>
+        <span id={labelId} className={styles.label}>
           {label}
-        </label>
+          {required && (
+            <span className={styles.required} aria-label='обязательное поле'>
+              *
+            </span>
+          )}
+        </span>
       )}
       <Popover.Root>
         <Popover.Trigger
@@ -470,6 +502,10 @@ const MultiSelect = <T extends string>({
           aria-haspopup='listbox'
           aria-expanded={undefined}
           aria-controls={listboxId}
+          aria-labelledby={label ? labelId : undefined}
+          aria-invalid={!isValid}
+          aria-describedby={description ? descriptionId : undefined}
+          aria-required={required}
         >
           <span className={triggerLabel ? undefined : styles.placeholder}>
             {triggerLabel ?? placeholder}
@@ -504,6 +540,11 @@ const MultiSelect = <T extends string>({
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>
+      {description && (
+        <p id={descriptionId} className={styles.description}>
+          {description}
+        </p>
+      )}
     </div>
   )
 }
@@ -515,12 +556,16 @@ const MultiSelect = <T extends string>({
 const Select = <T extends string = string>(
   props: SelectProps<T>,
 ): ReactNode => {
-  const { fluid, size = 'm' } = props
+  const { fluid, size = 'm', isValid = true } = props
 
-  const wrapperClassName = getUIClasses(styles.wrapper, { fluid }, commonStyles)
+  const wrapperClassName = getUIClasses(
+    styles.wrapper,
+    { fluid, additionalClasses: isValid ? [] : [commonStyles.invalidText] },
+    commonStyles,
+  )
   const triggerClassName = getUIClasses(
     styles.trigger,
-    { size, fluid },
+    { size, fluid, additionalClasses: isValid ? [] : [commonStyles.invalid] },
     commonStyles,
   )
 

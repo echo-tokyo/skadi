@@ -25,6 +25,10 @@
   padding: 1rem;
   border-radius: 0.5rem;
   animation: slideIn 0.2s ease-out;
+  max-height: 90vh;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
 
   .closing & {
     animation: scaleOut 0.15s ease-in forwards;
@@ -33,12 +37,25 @@
 
 .content {
   margin-top: 1rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .actions {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+}
+
+.s {
+  width: 40vw;
+}
+.m {
+  width: 50vw;
+}
+.l {
+  width: 80vw;
 }
 
 @keyframes fadeIn {

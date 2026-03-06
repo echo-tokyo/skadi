@@ -1,1 +1,1 @@
-export type { TProfile, TRole } from './types/types'
+export type { TProfile, TRole, TClass } from './types/types'

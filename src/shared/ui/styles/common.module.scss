@@ -32,3 +32,15 @@
     background-color: var(--color-gray-ultra-light);
   }
 }
+
+.invalidText {
+  --input-text-color: var(--color-red);
+  p {
+    color: var(--input-text-color);
+  }
+}
+
+.invalid {
+  --input-border-color: var(--color-red);
+  border: 1px solid var(--input-border-color);
+}

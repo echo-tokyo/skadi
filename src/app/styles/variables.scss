@@ -5,7 +5,11 @@
   --color-gray-ultra-light: #f6f6f6;
   --color-gray-light: #e9e9e9;
   --color-gray: #777777;
-  --color-delete: #ff0000;
+  --color-gray-hover: rgba(128, 128, 128, 0.315);
+  --color-red: #ff0000;
   --box-shadow: 0 0 15px 4px rgba(146, 146, 146, 0.15);
   --header-height: 56px;
+  --transition-duration: 0.2s;
+  --transition-duration-fast: 0.15s;
+  --transition-timing: ease-in-out;
 }
