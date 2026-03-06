@@ -14,11 +14,13 @@ export const createMemberSchema = z.object({
   role: z.enum(ROLES, { message: 'Выберите роль' }),
   username: z
     .string()
+    .min(1, 'Обязательное поле')
     .min(3, 'Минимум 3 символа')
     .max(50, 'Максимум 50 символов')
     .regex(/^[a-zA-Z0-9_-]+$/, 'Только латиница, цифры, _ и -'),
   password: z
     .string()
+    .min(1, 'Обязательное поле')
     .min(8, 'Минимум 8 символов')
     .max(40, 'Максимум 40 символов'),
   address: z.string().max(200, 'Максимум 200 символов'),

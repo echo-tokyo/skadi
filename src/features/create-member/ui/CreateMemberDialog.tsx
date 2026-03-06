@@ -75,7 +75,7 @@ const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
             label={title}
             placeholder='Ввод..'
             isValid={!errors[name]}
-            required={true}
+            required={required}
             fluid
             description={errors[name]?.message}
             resize='none'
