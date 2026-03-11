@@ -7,4 +7,4 @@ export type {
 
 export { ROLE_OPTIONS, ROLES } from './config/role-options'
 
-export { useCreateMemberMutation } from './api/member-api'
+export { useCreateMemberMutation, useGetMembersQuery } from './api/member-api'

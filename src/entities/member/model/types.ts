@@ -1,6 +1,9 @@
 import { TClass, TProfile, TRole } from '@/shared/model'
 
+type TPagination = { page: number; per_page: number }
+
 export interface IMember {
+  class?: TClass
   id: number
   profile?: TProfile
   role: TRole
@@ -25,4 +28,16 @@ export interface ICreateMemberResponse {
   profile?: TProfile
   role: TRole
   username: string
+}
+
+export interface IMembersResponse {
+  data: IMember[]
+  pagination: TPagination
+}
+
+export interface IMembersRequest {
+  free: boolean
+  page: number
+  perPage: number
+  roles: TRole[]
 }

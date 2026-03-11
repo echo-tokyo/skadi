@@ -1,15 +1,21 @@
 import { baseApi } from '@/shared/api'
-import { ICreateMemberRequest, ICreateMemberResponse } from '../model/types'
+import {
+  ICreateMemberRequest,
+  ICreateMemberResponse,
+  IMembersRequest,
+  IMembersResponse,
+} from '../model/types'
 
 export const memberApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // getMembers: builder.query<IMemberResponse[], void>({
-    //   query: () => ({
-    //     url: '/admin/user',
-    //     method: 'GET',
-    //   }),
-    //   providesTags: ['Member'],
-    // }),
+    getMembers: builder.query<IMembersResponse, IMembersRequest>({
+      query: (params) => ({
+        url: '/admin/user',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Member'],
+    }),
 
     // getMemberById: builder.query<IMemberResponse, string>({
     //   query: (id) => ({
@@ -52,4 +58,4 @@ export const memberApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useCreateMemberMutation } = memberApi
+export const { useCreateMemberMutation, useGetMembersQuery } = memberApi

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { Dialog } from '@/shared/ui'
 import { DialogContext } from './context'
 import { DialogParams, DialogState } from './types'
@@ -12,14 +12,14 @@ export const DialogProvider = ({
 }): ReactNode => {
   const [dialogs, setDialogs] = useState<DialogState[]>([])
 
-  const show = (params: DialogParams): string => {
+  const show = useCallback((params: DialogParams): string => {
     const id = crypto.randomUUID()
     setDialogs((prev) => [
       ...prev,
       { ...params, id, isClosing: false, isLoading: false },
     ])
     return id
-  }
+  }, [])
 
   const hide = (id: string): void => {
     setDialogs((prev) =>
@@ -57,8 +57,10 @@ export const DialogProvider = ({
     }
   }
 
+  const contextValue = useMemo(() => ({ show }), [show])
+
   return (
-    <DialogContext value={{ show }}>
+    <DialogContext value={contextValue}>
       {children}
       {dialogs.map((dialog) => (
         <Dialog
