@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router'
 import { setUserData } from '@/entities/user'
 import { useAppDispatch } from '@/shared/lib'
 import { ISignInRequest } from '../types'
+import { toast } from 'sonner'
+import { getErrorMessage } from '@/shared/api'
 
 export const useSignIn = () => {
-  const [signInMutation, { isLoading }] = useSignInMutation()
+  const [signInMutation, { isLoading, error }] = useSignInMutation()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -18,9 +20,8 @@ export const useSignIn = () => {
       dispatch(setUserData(result))
 
       navigate('/personal-area')
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Login failed:', err)
+    } catch {
+      toast.error(getErrorMessage(error))
     }
   }
 

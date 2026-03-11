@@ -1,7 +1,7 @@
 import { FC, ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { Text } from '@/shared/ui'
-import { ITabConfig, TAB_CONFIG } from '../model/tabs'
+import { ITabConfig, TAB_CONFIG } from '../config/tabs'
 import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
 

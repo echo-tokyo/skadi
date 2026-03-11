@@ -1,11 +1,12 @@
 import { useGetMembersQuery } from '@/entities/member'
 import { IMembersRequest } from '@/entities/member/model/types'
+import { getErrorMessage } from '@/shared/api'
+import { toast } from 'sonner'
 
-// FIXME: refactor: этот и подобный хук вынести в api
 export const useGetMembers = (params: IMembersRequest) => {
   const { data, isLoading, error } = useGetMembersQuery(params)
   if (error) {
-    console.log(error)
+    toast.error(getErrorMessage(error))
   }
 
   return { members: data, isLoading }

@@ -3,7 +3,7 @@ import { ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
 import { ROLE_OPTIONS } from '@/entities/member'
-import { useGetMembers } from '../api/get-members'
+import { useGetMembers } from '../model/get-members'
 import { IMembersRequest } from '@/entities/member/model/types'
 
 const RoleManagement = (): ReactNode => {
