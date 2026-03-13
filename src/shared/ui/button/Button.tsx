@@ -4,12 +4,12 @@ import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
 
 interface IProps {
-  children: string
+  children: ReactNode
   onClick?: () => void
   fluid?: boolean
   size?: 's' | 'm'
   disabled?: boolean
-  type?: 'button' | 'submit'
+  type?: 'button' | 'submit' | 'icon'
   color?: 'primary' | 'secondary' | 'ghost'
 }
 
@@ -40,7 +40,7 @@ const Button = (props: IProps): ReactNode => {
     {
       fluid,
       size,
-      additionalClasses: [commonStyles[color]],
+      additionalClasses: [commonStyles[color], styles[type]],
     },
     commonStyles,
   )
@@ -50,7 +50,7 @@ const Button = (props: IProps): ReactNode => {
       disabled={disabled}
       onClick={(e) => handleClick(e)}
       className={buttonClassName}
-      type={type}
+      type={type !== 'icon' ? type : undefined}
     >
       {children}
     </button>

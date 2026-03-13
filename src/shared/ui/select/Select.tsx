@@ -15,10 +15,11 @@ import {
 } from 'react'
 import * as Popover from '@radix-ui/react-popover'
 import clsx from 'clsx'
-import { ChevronDown, Check } from '@/shared/ui/icons'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
+import ChevronIcon from '../icons/ChevronIcon'
+import Check from '../icons/CheckIcon'
 
 export interface SelectOption<T extends string = string> {
   label: string
@@ -386,7 +387,7 @@ const SingleSelect = <T extends string>({
             {selectedLabel ?? placeholder}
           </span>
           <span className={styles.icon}>
-            <ChevronDown />
+            <ChevronIcon />
           </span>
         </Popover.Trigger>
         <Popover.Portal>
@@ -511,7 +512,7 @@ const MultiSelect = <T extends string>({
             {triggerLabel ?? placeholder}
           </span>
           <span className={styles.icon}>
-            <ChevronDown />
+            <ChevronIcon />
           </span>
         </Popover.Trigger>
         <Popover.Portal>

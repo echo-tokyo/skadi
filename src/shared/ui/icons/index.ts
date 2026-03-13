@@ -1,2 +1,2 @@
-export { default as ChevronDown } from './ChevronDown'
-export { default as Check } from './Check'
+export { default as ChevronIcon } from './ChevronIcon'
+export { default as CheckIcon } from './CheckIcon'

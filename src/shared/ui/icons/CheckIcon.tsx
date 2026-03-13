@@ -1,6 +1,6 @@
 import { memo, type SVGProps } from 'react'
 
-const Check = memo((props: SVGProps<SVGSVGElement>) => (
+const CheckIcon = memo((props: SVGProps<SVGSVGElement>) => (
   <svg
     width='12'
     height='12'
@@ -17,6 +17,6 @@ const Check = memo((props: SVGProps<SVGSVGElement>) => (
   </svg>
 ))
 
-Check.displayName = 'Check'
+CheckIcon.displayName = 'Check'
 
-export default Check
+export default CheckIcon

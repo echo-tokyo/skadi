@@ -5,6 +5,7 @@ type TPagination = { page: number; per_page: number }
 export interface IMember {
   class?: TClass
   id: number
+  // TODO: как profile может быть undefined?
   profile?: TProfile
   role: TRole
   username: string
