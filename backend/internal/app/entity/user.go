@@ -19,7 +19,7 @@ type User struct {
 	ClassID *int `json:"-"`
 
 	// user profile
-	Profile *Profile `gorm:"foreignKey:ID" json:"profile,omitempty" validate:"omitempty"`
+	Profile *Profile `gorm:"foreignKey:ID" json:"profile" validate:"required"`
 	// student's class
 	Class *Class `gorm:"foreignKey:ClassID" json:"class,omitempty" validate:"omitempty"`
 }
