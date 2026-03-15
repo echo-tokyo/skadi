@@ -59,7 +59,9 @@ const RoleManagement = (): ReactNode => {
         <Button onClick={show}>Создать роль</Button>
       </div>
 
-      <div className={roles}>{renderMemberCard}</div>
+      <div className={styles.rolesWrapper}>
+        <div className={roles}>{renderMemberCard}</div>
+      </div>
     </>
   )
 }

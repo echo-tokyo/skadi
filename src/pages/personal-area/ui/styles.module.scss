@@ -4,6 +4,7 @@
   gap: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  min-height: 0;
 }
 
 .left,
@@ -24,6 +25,9 @@
   }
 }
 .right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   width: 100%;
 }
 
