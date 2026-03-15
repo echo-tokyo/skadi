@@ -13,6 +13,7 @@ export const useCreateMember = (): {
   const submit = async (formData: TCreateMemberFormData): Promise<boolean> => {
     try {
       await createMember(transformToRequest(formData)).unwrap()
+      toast.info('Пользователь создан')
       return true
     } catch {
       toast.error(getErrorMessage(error))

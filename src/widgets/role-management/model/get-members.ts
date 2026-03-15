@@ -1,13 +1,15 @@
-import { useGetMembersQuery } from '@/entities/member'
-import { IMembersRequest } from '@/entities/member/model/types'
+import { IMembersRequest, useGetMembersQuery } from '@/entities/member'
 import { getErrorMessage } from '@/shared/api'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
 
 export const useGetMembers = (params: IMembersRequest) => {
   const { data, isLoading, error, isError } = useGetMembersQuery(params)
-  if (isError) {
-    toast.error(getErrorMessage(error))
-  }
+  useEffect(() => {
+    if (isError) {
+      toast.error(getErrorMessage(error))
+    }
+  }, [error])
 
   return { members: data?.data ?? [], isLoading }
 }

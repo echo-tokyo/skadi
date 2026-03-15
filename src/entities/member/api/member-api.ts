@@ -48,14 +48,18 @@ export const memberApi = baseApi.injectEndpoints({
     //   invalidatesTags: ['Member'],
     // }),
 
-    // deleteMember: builder.mutation<void, string>({
-    //   query: (id) => ({
-    //     url: `/admin/user/${id}`,
-    //     method: 'DELETE',
-    //   }),
-    //   invalidatesTags: ['Member'],
-    // }),
+    deleteMember: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/admin/user/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Member'],
+    }),
   }),
 })
 
-export const { useCreateMemberMutation, useGetMembersQuery } = memberApi
+export const {
+  useCreateMemberMutation,
+  useGetMembersQuery,
+  useDeleteMemberMutation,
+} = memberApi

@@ -10,7 +10,7 @@ interface IProps {
   size?: 's' | 'm'
   disabled?: boolean
   type?: 'button' | 'submit' | 'icon'
-  color?: 'primary' | 'secondary' | 'ghost'
+  color?: 'primary' | 'secondary' | 'ghost' | 'inverted'
 }
 
 const Button = (props: IProps): ReactNode => {

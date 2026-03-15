@@ -2,15 +2,16 @@ import { Button, Input, Select, Text } from '@/shared/ui'
 import { ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
-import { MemberCard, ROLE_OPTIONS } from '@/entities/member'
+import { IMembersRequest, MemberCard, ROLE_OPTIONS } from '@/entities/member'
 import { useGetMembers } from '../model/get-members'
-import { IMembersRequest } from '@/entities/member/model/types'
+import { DeleteMember } from '@/features/delete-member'
 
 const RoleManagement = (): ReactNode => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
   const { actions, roles } = styles
   const [role, setRole] = useState<string>('')
   const { show } = useCreateMemberDialog()
+
   const params: IMembersRequest = useMemo(
     () => ({
       free: true,
@@ -21,6 +22,21 @@ const RoleManagement = (): ReactNode => {
     [],
   )
   const { members } = useGetMembers(params)
+
+  const renderMemberCard = useMemo(
+    () =>
+      members.map((el) => (
+        <MemberCard
+          key={el.id}
+          fullname={el.profile?.fullname}
+          group={el.profile?.class?.name}
+          memberRole={el.role}
+          actions={<DeleteMember fullname={el.profile?.fullname} id={el.id} />}
+        />
+      )),
+    [members],
+  )
+
   return (
     <>
       <Text weight='bold' size='20'>
@@ -43,16 +59,7 @@ const RoleManagement = (): ReactNode => {
         <Button onClick={show}>Создать роль</Button>
       </div>
 
-      <div className={roles}>
-        {members.map((el) => (
-          <MemberCard
-            key={el.id}
-            fullname={el.profile?.fullname}
-            group={el.profile?.class?.name}
-            role={el.role}
-          />
-        ))}
-      </div>
+      <div className={roles}>{renderMemberCard}</div>
     </>
   )
 }

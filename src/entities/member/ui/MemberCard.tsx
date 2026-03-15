@@ -3,10 +3,10 @@ import Accordion from '@/shared/ui/accordion/Accordion'
 import { ReactNode } from 'react'
 import styles from './styles.module.scss'
 
-// FIXME: fullname и role не должны быть undefined
+// FIXME: fullname и memberRole не должны быть undefined. как бэк обновится - обновить в остальных местах
 interface IMemberCardProps {
   fullname?: string
-  role?: string
+  memberRole?: string
   group?: string
   actions?: ReactNode
 }
@@ -14,15 +14,16 @@ interface IMemberCardProps {
 type TAccordionContentProps = Omit<IMemberCardProps, 'fullname'>
 
 const AccordionContent = (props: TAccordionContentProps): ReactNode => {
-  const { role, group, actions } = props
+  const { memberRole, group, actions } = props
   return (
     <div className={styles.content}>
-      <div className={styles.contentItem}>
-        <Text>{`Статус: ${role ? role : ''}`}</Text>
+      <div>
+        <Text>{`Статус: ${memberRole ?? '-'}`}</Text>
         <Divider />
       </div>
-      <div className={styles.contentItem}>
-        <Text>{`Группа: ${group ? group : ''}`}</Text>
+      <div>
+        <Text>{`Группа: ${group ?? '-'}`}</Text>
+        <Divider />
       </div>
       {actions}
     </div>
@@ -32,13 +33,12 @@ const AccordionContent = (props: TAccordionContentProps): ReactNode => {
 const MemberCard = (props: IMemberCardProps) => {
   const { fullname, ...contentProps } = props
   return (
-    <>
-      <Accordion
-        label={fullname ? fullname : '-'}
-        content={<AccordionContent {...contentProps} />}
-      />
-    </>
+    <Accordion
+      label={fullname ?? '-'}
+      content={<AccordionContent {...contentProps} />}
+    />
   )
 }
 
+AccordionContent.displayName = 'AccordionContent'
 export default MemberCard
