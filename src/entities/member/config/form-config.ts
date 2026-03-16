@@ -1,14 +1,9 @@
-import { TMemberFullSchema } from '@/entities/member'
+import { TMemberFullSchema } from '../model/member-form-schema'
 
 type TInputFieldName = Exclude<keyof TMemberFullSchema, 'role' | 'extra'>
 
 export type TFieldConfig =
-  | {
-      type: 'input'
-      name: TInputFieldName
-      title: string
-      required?: boolean
-    }
+  | { type: 'input'; name: TInputFieldName; title: string; required?: boolean }
   | { type: 'select'; name: 'role'; title: string; required?: boolean }
   | { type: 'textarea'; name: 'extra'; title: string; required?: boolean }
 
@@ -37,3 +32,10 @@ export const FIELD_CONFIG: TFieldConfig[] = [
   { type: 'input', name: 'parentPhone', title: 'Телефон родителя' },
   { type: 'textarea', name: 'extra', title: 'Дополнительная информация' },
 ]
+
+export const BASE_DISABLED_FIELDS: Array<keyof TMemberFullSchema> = [
+  'role',
+  'username',
+  'password',
+]
+

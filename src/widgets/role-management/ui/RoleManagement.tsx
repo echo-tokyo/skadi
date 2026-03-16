@@ -2,9 +2,10 @@ import { Button, Input, Select, Text } from '@/shared/ui'
 import { ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
-import { IMembersRequest, MemberCard, ROLE_OPTIONS } from '@/entities/member'
+import { IMembersRequest, MemberCard, ROLE_OPTIONS, ROLES } from '@/entities/member'
 import { useGetMembers } from '../model/get-members'
 import { DeleteMember } from '@/features/delete-member'
+import { EditMember } from '@/features/edit-member'
 
 const RoleManagement = (): ReactNode => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
@@ -17,25 +18,11 @@ const RoleManagement = (): ReactNode => {
       free: true,
       page: 1,
       perPage: 20,
-      roles: ['admin', 'student', 'teacher'],
+      roles: ROLES,
     }),
     [],
   )
   const { members } = useGetMembers(params)
-
-  const renderMemberCard = useMemo(
-    () =>
-      members.map((el) => (
-        <MemberCard
-          key={el.id}
-          fullname={el.profile?.fullname}
-          group={el.profile?.class?.name}
-          memberRole={el.role}
-          actions={<DeleteMember fullname={el.profile?.fullname} id={el.id} />}
-        />
-      )),
-    [members],
-  )
 
   return (
     <>
@@ -60,7 +47,25 @@ const RoleManagement = (): ReactNode => {
       </div>
 
       <div className={styles.rolesWrapper}>
-        <div className={roles}>{renderMemberCard}</div>
+        <div className={roles}>
+          {members.map((member) => (
+            <MemberCard
+              key={member.id}
+              fullname={member.profile?.fullname}
+              group={member.profile?.class?.name}
+              memberRole={member.role}
+              actions={
+                <div className={styles.cardActions}>
+                  <DeleteMember
+                    fullname={member.profile?.fullname}
+                    id={member.id}
+                  />
+                  <EditMember member={member} />
+                </div>
+              }
+            />
+          ))}
+        </div>
       </div>
     </>
   )

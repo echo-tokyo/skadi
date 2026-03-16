@@ -1,10 +1,12 @@
-import { ROLE_OPTIONS } from '@/entities/member'
-import { TRole } from '@/shared/model'
-import { Input, Select, Textarea } from '@/shared/ui'
-import { ReactNode, useImperativeHandle, forwardRef, useState } from 'react'
+import { ReactNode, forwardRef, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createMemberSchema, TCreateMemberFormData } from '../model/schemas'
+import { ZodObject, ZodRawShape } from 'zod'
+import type { Resolver } from 'react-hook-form'
+import { Input, Select, Textarea } from '@/shared/ui'
+import { TRole } from '@/shared/model'
+import { ROLE_OPTIONS } from '../config/role-options'
+import { TMemberFullSchema } from '../model/member-form-schema'
 import {
   FIELD_CONFIG,
   INITIAL_FORM_DATA,
@@ -12,21 +14,31 @@ import {
 } from '../config/form-config'
 import styles from './styles.module.scss'
 
-export interface ICreateMemberDialogRef {
+export interface IMemberFormRef {
   validate: () => Promise<boolean>
-  getFormData: () => TCreateMemberFormData
+  getFormData: () => TMemberFullSchema
   reset: () => void
 }
 
+interface IMemberFormProps {
+  schema: ZodObject<ZodRawShape>
+  fieldData?: TMemberFullSchema
+  disabledFields?: Array<keyof TMemberFullSchema>
+}
+
+// TODO: нужно добавить проверку на то, изменялись ли поля
 // FIXME: deprecated forwardRef
-const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
-  (_, ref): ReactNode => {
+const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
+  (
+    { schema, fieldData = INITIAL_FORM_DATA, disabledFields = [] },
+    ref,
+  ): ReactNode => {
     const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
 
     const { watch, setValue, trigger, reset, formState } =
-      useForm<TCreateMemberFormData>({
-        resolver: zodResolver(createMemberSchema),
-        defaultValues: INITIAL_FORM_DATA,
+      useForm<TMemberFullSchema>({
+        resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
+        defaultValues: fieldData,
       })
 
     const formData = watch()
@@ -46,6 +58,7 @@ const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
 
     const renderField = (field: TFieldConfig) => {
       const { name, title, required } = field
+      const disabled = disabledFields.includes(name)
 
       if (field.type === 'select') {
         return (
@@ -56,6 +69,7 @@ const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
             isValid={!errors[name]}
             required={required}
             fluid
+            disabled={disabled}
             description={errors[name]?.message}
             options={ROLE_OPTIONS}
             value={formData[name]}
@@ -77,6 +91,7 @@ const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
             isValid={!errors[name]}
             required={required}
             fluid
+            disabled={disabled}
             description={errors[name]?.message}
             resize='none'
             value={formData[name]}
@@ -97,6 +112,7 @@ const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
           isValid={!errors[name]}
           required={required}
           fluid
+          disabled={disabled}
           description={errors[name]?.message}
           onChange={(v) =>
             setValue(name, v, { shouldValidate: hasAttemptedValidation })
@@ -109,6 +125,6 @@ const CreateMemberDialog = forwardRef<ICreateMemberDialogRef>(
   },
 )
 
-CreateMemberDialog.displayName = 'CreateMemberDialog'
+MemberForm.displayName = 'MemberForm'
 
-export default CreateMemberDialog
+export default MemberForm

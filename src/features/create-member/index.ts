@@ -1,1 +1,1 @@
-export { useCreateMemberDialog } from './model/hooks/useCreateMemberDialog'
+export { useCreateMemberDialog } from './model/useCreateMemberDialog'

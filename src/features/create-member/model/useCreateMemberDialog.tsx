@@ -1,19 +1,22 @@
 import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
-import CreateMemberDialog, {
-  ICreateMemberDialogRef,
-} from '../../ui/CreateMemberDialog'
+import {
+  MemberForm,
+  IMemberFormRef,
+  INITIAL_FORM_DATA,
+  memberFullSchema,
+} from '@/entities/member'
 import { useCreateMember } from './use-create-member'
 
 export const useCreateMemberDialog = (): { show: () => void } => {
   const showDialog = useDialog()
   const { submit } = useCreateMember()
-  const formRef = useRef<ICreateMemberDialogRef>(null)
+  const formRef = useRef<IMemberFormRef>(null)
 
   const show = (): void => {
     showDialog({
       title: 'Создание пользователя',
-      content: <CreateMemberDialog ref={formRef} />,
+      content: <MemberForm ref={formRef} schema={memberFullSchema} fieldData={INITIAL_FORM_DATA} />,
       positiveText: 'Создать',
       negativeText: 'Отмена',
       size: 'm',

@@ -2,8 +2,10 @@ import { baseApi } from '@/shared/api'
 import {
   ICreateMemberRequest,
   ICreateMemberResponse,
+  IMember,
   IMembersRequest,
   IMembersResponse,
+  IUpdateMemberRequest,
 } from '../model/types'
 
 export const memberApi = baseApi.injectEndpoints({
@@ -36,17 +38,17 @@ export const memberApi = baseApi.injectEndpoints({
       },
     ),
 
-    // updateMemberProfile: builder.mutation<
-    //   IUpdateMemberRequest,
-    //   { id: string; data: IUpdateMemberRequest }
-    // >({
-    //   query: ({ id, data }) => ({
-    //     url: `/admin/user/${id}/profile`,
-    //     method: 'PUT',
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ['Member'],
-    // }),
+    updateMember: builder.mutation<
+      IMember,
+      { id: number; data: IUpdateMemberRequest }
+    >({
+      query: ({ id, data }) => ({
+        url: `/admin/user/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Member'],
+    }),
 
     deleteMember: builder.mutation<void, number>({
       query: (id) => ({
@@ -62,4 +64,5 @@ export const {
   useCreateMemberMutation,
   useGetMembersQuery,
   useDeleteMemberMutation,
+  useUpdateMemberMutation,
 } = memberApi

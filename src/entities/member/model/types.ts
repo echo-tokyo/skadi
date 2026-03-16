@@ -12,11 +12,12 @@ export interface IMember {
 }
 
 export interface IUpdateMemberRequest {
+  classId?: number
   profile: TProfile
 }
 
 export interface ICreateMemberRequest {
-  class_id?: number
+  classId?: number
   password: string
   profile: TProfile
   role: TRole
