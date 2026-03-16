@@ -36,7 +36,7 @@ func NewClassController(classUCClient class.UsecaseClient,
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			id	path		string	true	"ID группы"
+// @param			id	path		int	true	"ID группы"
 // @success		200	{object}	entity.Class
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404	"группа не найдена"

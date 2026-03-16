@@ -99,7 +99,7 @@ func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			id			path		string		true	"ID группы"
+// @param			id			path		int			true	"ID группы"
 // @param			updateBody	body		updateBody	true	"updateBody"
 // @success		200			{object}	entity.Class
 // @failure		400			"неверный ученик"
@@ -167,7 +167,7 @@ func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			id	path	string	true	"ID юзера"
+// @param			id	path	int	true	"ID юзера"
 // @success		204	"No Content"
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassControllerAdmin) Delete(ctx *fiber.Ctx) error {

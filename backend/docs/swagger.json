@@ -88,7 +88,7 @@
                 "operationId": "admin-class-delete",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID юзера",
                         "name": "id",
                         "in": "path",
@@ -124,7 +124,7 @@
                 "operationId": "admin-class-update",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID группы",
                         "name": "id",
                         "in": "path",
@@ -298,7 +298,7 @@
                 "operationId": "admin-user-read",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID юзера",
                         "name": "id",
                         "in": "path",
@@ -340,7 +340,7 @@
                 "operationId": "admin-user-update",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID юзера",
                         "name": "id",
                         "in": "path",
@@ -394,7 +394,7 @@
                 "operationId": "admin-user-delete",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID юзера",
                         "name": "id",
                         "in": "path",
@@ -632,7 +632,7 @@
                 "operationId": "class-read",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID группы",
                         "name": "id",
                         "in": "path",
@@ -838,6 +838,96 @@
                     },
                     "404": {
                         "description": "Юзер не преподаватель, доступ запрещён"
+                    }
+                }
+            }
+        },
+        "/solution/get/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение всех данных о решении задания с полной инфой о задании и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют это задание.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение решения задания по id.",
+                "operationId": "solution-read",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID решения задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.solutionOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "решение задания не найдено"
+                    }
+                }
+            }
+        },
+        "/teacher/task": {
+            "post": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Создание нового задания для переданных учеников и учеников из переданных групп.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Создание нового задания. [Только преподаватель]",
+                "operationId": "teacher-task-create",
+                "parameters": [
+                    {
+                        "description": "taskBody",
+                        "name": "taskBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.taskBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/v1.taskOut"
+                        }
+                    },
+                    "400": {
+                        "description": "преподаватель не найден ErrNotFoundUser"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
                     }
                 }
             }
@@ -1053,6 +1143,105 @@
                 },
                 "parent_contact": {
                     "$ref": "#/definitions/entity.Contact"
+                }
+            }
+        },
+        "entity.Solution": {
+            "type": "object",
+            "required": [
+                "id",
+                "status",
+                "student",
+                "task",
+                "updated_at"
+            ],
+            "properties": {
+                "answer": {
+                    "description": "solution text answer",
+                    "type": "string"
+                },
+                "grade": {
+                    "description": "solution grade",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "solution id",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "status object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Status"
+                        }
+                    ]
+                },
+                "student": {
+                    "description": "student object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Profile"
+                        }
+                    ]
+                },
+                "task": {
+                    "description": "task object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Task"
+                        }
+                    ]
+                },
+                "updated_at": {
+                    "description": "last-update datetime of solution",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Status": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "description": "status id",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "status name",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Task": {
+            "type": "object",
+            "required": [
+                "description",
+                "id",
+                "teacher",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "description": "task description",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "task id",
+                    "type": "integer"
+                },
+                "teacher": {
+                    "description": "teacher object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Profile"
+                        }
+                    ]
+                },
+                "title": {
+                    "description": "task title",
+                    "type": "string"
                 }
             }
         },
@@ -1341,6 +1530,99 @@
                     "allOf": [
                         {
                             "$ref": "#/definitions/v1.contactBody"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.solutionOut": {
+            "description": "solutionOut represents a solution data with students (solving the same task).",
+            "type": "object",
+            "required": [
+                "solutions"
+            ],
+            "properties": {
+                "other_students": {
+                    "description": "other students solving the same task",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Profile"
+                    }
+                },
+                "solutions": {
+                    "description": "solution object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Solution"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.taskBody": {
+            "description": "taskBody represents a data with task.",
+            "type": "object",
+            "required": [
+                "description",
+                "title"
+            ],
+            "properties": {
+                "classes": {
+                    "description": "classes for task solutions",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        3,
+                        6,
+                        9
+                    ]
+                },
+                "description": {
+                    "description": "task description",
+                    "type": "string",
+                    "example": "ООП в Python - это ..."
+                },
+                "students": {
+                    "description": "students for task solutions",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        22,
+                        32,
+                        14
+                    ]
+                },
+                "title": {
+                    "description": "task title",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "ООП в Python"
+                }
+            }
+        },
+        "v1.taskOut": {
+            "description": "taskOut represents a task data with solutions.",
+            "type": "object",
+            "required": [
+                "task"
+            ],
+            "properties": {
+                "solutions": {
+                    "description": "task solutions",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Solution"
+                    }
+                },
+                "task": {
+                    "description": "task object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Task"
                         }
                     ]
                 }

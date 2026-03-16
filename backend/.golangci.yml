@@ -107,6 +107,12 @@ linters:
       - linters: # swagger struct tags
           - lll
         path: "internal/app/class/controller/http/v1/data_input.*?.go"
+      - linters: # swagger struct tags
+          - lll
+        path: "internal/app/task/controller/http/v1/data_input.*?.go"
+      - linters: # swagger struct tags
+          - lll
+        path: "internal/app/task/controller/http/v1/controller.*?.go"
       - linters: # struct tags
           - lll
         path: "internal/app/entity"

@@ -4,6 +4,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+
 	"skadi/backend/config"
 	"skadi/backend/internal/app/class"
 	"skadi/backend/internal/app/entity"

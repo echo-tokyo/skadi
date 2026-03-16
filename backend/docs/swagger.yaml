@@ -64,6 +64,71 @@ definitions:
     required:
     - fullname
     type: object
+  entity.Solution:
+    properties:
+      answer:
+        description: solution text answer
+        type: string
+      grade:
+        description: solution grade
+        type: string
+      id:
+        description: solution id
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/entity.Status'
+        description: status object
+      student:
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: student object
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+      updated_at:
+        description: last-update datetime of solution
+        type: string
+    required:
+    - id
+    - status
+    - student
+    - task
+    - updated_at
+    type: object
+  entity.Status:
+    properties:
+      id:
+        description: status id
+        type: integer
+      name:
+        description: status name
+        type: string
+    required:
+    - name
+    type: object
+  entity.Task:
+    properties:
+      description:
+        description: task description
+        type: string
+      id:
+        description: task id
+        type: integer
+      teacher:
+        allOf:
+        - $ref: '#/definitions/entity.Profile'
+        description: teacher object
+      title:
+        description: task title
+        type: string
+    required:
+    - description
+    - id
+    - teacher
+    - title
+    type: object
   entity.User:
     properties:
       class:
@@ -264,6 +329,71 @@ definitions:
     required:
     - fullname
     type: object
+  v1.solutionOut:
+    description: solutionOut represents a solution data with students (solving the
+      same task).
+    properties:
+      other_students:
+        description: other students solving the same task
+        items:
+          $ref: '#/definitions/entity.Profile'
+        type: array
+      solutions:
+        allOf:
+        - $ref: '#/definitions/entity.Solution'
+        description: solution object
+    required:
+    - solutions
+    type: object
+  v1.taskBody:
+    description: taskBody represents a data with task.
+    properties:
+      classes:
+        description: classes for task solutions
+        example:
+        - 3
+        - 6
+        - 9
+        items:
+          type: integer
+        type: array
+      description:
+        description: task description
+        example: ООП в Python - это ...
+        type: string
+      students:
+        description: students for task solutions
+        example:
+        - 22
+        - 32
+        - 14
+        items:
+          type: integer
+        type: array
+      title:
+        description: task title
+        example: ООП в Python
+        maxLength: 100
+        type: string
+    required:
+    - description
+    - title
+    type: object
+  v1.taskOut:
+    description: taskOut represents a task data with solutions.
+    properties:
+      solutions:
+        description: task solutions
+        items:
+          $ref: '#/definitions/entity.Solution'
+        type: array
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+    required:
+    - task
+    type: object
   v1.updatePasswordAdminBody:
     description: updatePasswordAdminBody represents a data to update user password
       by admin.
@@ -382,7 +512,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -405,7 +535,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: updateBody
         in: body
         name: updateBody
@@ -519,7 +649,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -544,7 +674,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -572,7 +702,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: updateBody
         in: body
         name: updateBody
@@ -736,7 +866,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -871,6 +1001,66 @@ paths:
       summary: Проверка. Только преподаватели.
       tags:
       - example
+  /solution/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о решении задания с полной инфой о задании
+        и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют
+        это задание.
+      operationId: solution-read
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.solutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: решение задания не найдено
+      security:
+      - JWTAccess: []
+      summary: Получение решения задания по id.
+      tags:
+      - task
+  /teacher/task:
+    post:
+      consumes:
+      - application/json
+      description: Создание нового задания для переданных учеников и учеников из переданных
+        групп.
+      operationId: teacher-task-create
+      parameters:
+      - description: taskBody
+        in: body
+        name: taskBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.taskBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.taskOut'
+        "400":
+          description: преподаватель не найден ErrNotFoundUser
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Создание нового задания. [Только преподаватель]
+      tags:
+      - task
   /user/me:
     get:
       consumes:

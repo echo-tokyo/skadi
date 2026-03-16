@@ -6,13 +6,8 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/service/server/errhandler"
+	"skadi/backend/internal/pkg/roles"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
-)
-
-const (
-	_roleAdmin   = "admin"   // admin role name
-	_roleTeacher = "teacher" // teacher role name
-	_roleStudent = "student" // student role name
 )
 
 // Admin represents a middleware that provides access to resources only for admins.
@@ -22,7 +17,7 @@ func Admin() fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for admin
-		if userClaims.Role == _roleAdmin {
+		if userClaims.Role == roles.Admin {
 			return ctx.Next()
 		}
 		// not found error for non-admin
@@ -38,7 +33,7 @@ func Teacher() fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for teacher
-		if userClaims.Role == _roleTeacher {
+		if userClaims.Role == roles.Teacher {
 			return ctx.Next()
 		}
 		// not found error for non-teacher
@@ -54,7 +49,7 @@ func Student() fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for student
-		if userClaims.Role == _roleStudent {
+		if userClaims.Role == roles.Student {
 			return ctx.Next()
 		}
 		// not found error for non-student

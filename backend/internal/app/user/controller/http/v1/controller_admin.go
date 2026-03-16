@@ -101,7 +101,7 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			id	path		string	true	"ID юзера"
+// @param			id	path		int	true	"ID юзера"
 // @success		200	{object}	entity.User
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404	"пользователь не найден"
@@ -133,7 +133,7 @@ func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			id			path		string		true	"ID юзера"
+// @param			id			path		int			true	"ID юзера"
 // @param			updateBody	body		updateBody	true	"updateBody"
 // @success		200			{object}	entity.User
 // @failure		400			"группа не найдена"
@@ -201,7 +201,7 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @param			id	path	string	true	"ID юзера"
+// @param			id	path	int	true	"ID юзера"
 // @success		204	"No Content"
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404	"пользователь не найден"
