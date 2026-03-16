@@ -1063,6 +1063,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id",
+                "profile",
                 "role",
                 "username"
             ],

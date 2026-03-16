@@ -85,6 +85,7 @@ definitions:
         type: string
     required:
     - id
+    - profile
     - role
     - username
     type: object
