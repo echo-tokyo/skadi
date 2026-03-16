@@ -16,16 +16,16 @@ type Solution struct {
 	Grade *string `json:"grade,omitempty" validate:"omitempty"`
 	// solution text answer
 	Answer *string `json:"answer,omitempty" validate:"omitempty"`
-	// task creating datetime
+	// last-update datetime of solution
 	UpdatedAt time.Time `json:"updated_at" validate:"required"`
 
 	// task object
-	Task *Task `gorm:"foreignKey:TaskID;references:ID" json:"task" validate:"required"`
+	Task *Task `gorm:"foreignKey:TaskID;references:ID" json:"task,omitempty" validate:"required"`
 	// student object
 	Student     *Profile `gorm:"-" json:"student" validate:"required"`
 	StudentUser *User    `gorm:"foreignKey:StudentID;references:ID" json:"-"`
 	// status object
-	Status *Status `gorm:"foreignKey:StudentID;references:ID" json:"status" validate:"required"`
+	Status *Status `gorm:"foreignKey:StatusID;references:ID" json:"status" validate:"required"`
 }
 
 // TableName determines DB table name for the solution object.

@@ -12,6 +12,9 @@ import (
 	classuc "skadi/backend/internal/app/class/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
 	"skadi/backend/internal/app/service/server/middleware"
+	taskhttpv1 "skadi/backend/internal/app/task/controller/http/v1"
+	taskrepo "skadi/backend/internal/app/task/repository"
+	taskuc "skadi/backend/internal/app/task/usecase"
 	userhttpv1 "skadi/backend/internal/app/user/controller/http/v1"
 	userrepo "skadi/backend/internal/app/user/repository"
 	useruc "skadi/backend/internal/app/user/usecase"
@@ -27,11 +30,14 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	authRepoCache := authrepo.NewRepoCache(cfg, cacheStorage)
 	userRepoDB := userrepo.NewRepoDB(dbStorage)
 	classRepoDB := classrepo.NewRepoDB(dbStorage)
+	taskRepoDB := taskrepo.NewRepoDB(dbStorage)
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB, classRepoDB)
 	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
+	taskUCClient := taskuc.NewUCClient(cfg, taskRepoDB)
+	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, userRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
@@ -39,6 +45,9 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	userController := userhttpv1.NewUserController(userUCAdminClient, valid)
 	classControllerAdmin := classhttpv1.NewClassControllerAdmin(classUCAdminClient, valid)
 	classController := classhttpv1.NewClassController(classUCAdminClient, valid)
+	taskControllerTeacher := taskhttpv1.NewTaskControllerTeacher(taskUCTeacher, valid)
+	var taskControllerStudent *taskhttpv1.TaskControllerStudent // TODO: init controller
+	taskController := taskhttpv1.NewTaskController(taskUCClient, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
@@ -57,4 +66,6 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	userhttpv1.RegisterEndpoints(apiV1, userController, userControllerAdmin, mwJWTAccess, mwAdmin)
 	classhttpv1.RegisterEndpoints(apiV1, classController, classControllerAdmin,
 		mwJWTAccess, mwAdmin)
+	taskhttpv1.RegisterEndpoints(apiV1, taskController, taskControllerStudent,
+		taskControllerTeacher, mwJWTAccess, mwStudent, mwTeacher)
 }

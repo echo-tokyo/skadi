@@ -5,11 +5,11 @@ import "time"
 // Task represents a task data.
 type Task struct {
 	// task id
-	ID int `gorm:"primaryKey;autoIncrement" json:"-"`
+	ID int `gorm:"primaryKey;autoIncrement" json:"id" validate:"required"`
 	// task title
 	Title string `json:"title" validate:"required"`
 	// task description
-	Desc string `json:"description" validate:"required"`
+	Desc string `gorm:"column:description" json:"description" validate:"required"`
 	// task teacher id
 	TeacherID int `json:"-"`
 	// task creating datetime
