@@ -15,7 +15,7 @@ type taskOut struct {
 // @description solutionOut represents a solution data with students (solving the same task).
 type solutionOut struct {
 	// solution object
-	Solution *entity.Solution `json:"solutions" validate:"required"`
+	Solution *entity.Solution `json:"solution" validate:"required"`
 	// other students solving the same task
 	OtherStudents []entity.Profile `json:"other_students,omitempty" validate:"omitempty"`
 }
