@@ -2,15 +2,9 @@ import { Button, Input, Select, Text } from '@/shared/ui'
 import { ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
-import {
-  IMembersRequest,
-  MemberCard,
-  ROLE_OPTIONS,
-  ROLES,
-} from '@/entities/member'
+import { IMembersRequest, ROLE_OPTIONS, ROLES } from '@/entities/member'
 import { useGetMembers } from '../model/get-members'
-import { DeleteMember } from '@/features/delete-member'
-import { EditMember } from '@/features/edit-member'
+import { MemberCardItem } from './MemberCardItem'
 
 const RoleManagement = (): ReactNode => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
@@ -28,6 +22,15 @@ const RoleManagement = (): ReactNode => {
     [],
   )
   const { members } = useGetMembers(params)
+
+  const filteredMembers = useMemo(() => {
+    const searchValue = userSearchValue.toLowerCase()
+    return members.filter((el) => {
+      const matchesFullname = el.profile?.fullname?.toLowerCase().includes(searchValue) ?? false
+      const matchesUsername = el.username.toLowerCase().includes(searchValue)
+      return matchesFullname || matchesUsername
+    })
+  }, [members, userSearchValue])
 
   return (
     <>
@@ -53,22 +56,8 @@ const RoleManagement = (): ReactNode => {
 
       <div className={styles.rolesWrapper}>
         <div className={roles}>
-          {members.map((member) => (
-            <MemberCard
-              key={member.id}
-              fullname={member.profile?.fullname}
-              group={member.profile?.class?.name}
-              memberRole={member.role}
-              actions={
-                <div className={styles.cardActions}>
-                  <DeleteMember
-                    fullname={member.profile?.fullname}
-                    id={member.id}
-                  />
-                  <EditMember member={member} />
-                </div>
-              }
-            />
+          {filteredMembers.map((member) => (
+            <MemberCardItem key={member.id} member={member} />
           ))}
         </div>
       </div>
