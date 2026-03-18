@@ -37,9 +37,7 @@ export interface IMembersResponse {
   pagination: TPagination
 }
 
-export interface IMembersRequest {
+export interface IMembersFilter {
   free: boolean
-  page: number
-  perPage: number
   roles: TRole[]
 }

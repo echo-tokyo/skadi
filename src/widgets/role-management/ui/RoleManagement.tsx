@@ -1,9 +1,9 @@
-import { Button, Input, Select, Text } from '@/shared/ui'
-import { ReactNode, useMemo, useState } from 'react'
+import { Button, Input, PlugDefault, Select, Text } from '@/shared/ui'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
-import { IMembersRequest, ROLE_OPTIONS, ROLES } from '@/entities/member'
-import { useGetMembers } from '../model/get-members'
+import { ROLE_OPTIONS, ROLES } from '@/entities/member'
+import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
 
 const RoleManagement = (): ReactNode => {
@@ -12,16 +12,12 @@ const RoleManagement = (): ReactNode => {
   const [role, setRole] = useState<string>('')
   const { showDialog } = useCreateMemberDialog()
 
-  const params: IMembersRequest = useMemo(
-    () => ({
-      free: true,
-      page: 1,
-      perPage: 20,
+  const { members, isFetchingNextPage, loadMore, hasMore } = useInfiniteMembers(
+    {
+      free: false,
       roles: ROLES,
-    }),
-    [],
+    },
   )
-  const { members } = useGetMembers(params)
 
   const filteredMembers = useMemo(() => {
     const searchValue = userSearchValue.toLowerCase()
@@ -33,6 +29,30 @@ const RoleManagement = (): ReactNode => {
       return matchesRole && (matchesFullname || matchesUsername)
     })
   }, [members, userSearchValue, role])
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
+          loadMore()
+        }
+      },
+      { threshold: 1 },
+    )
+
+    observer.observe(sentinel)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [hasMore, isFetchingNextPage, loadMore])
 
   return (
     <>
@@ -56,13 +76,16 @@ const RoleManagement = (): ReactNode => {
         <Button onClick={showDialog}>Создать роль</Button>
       </div>
 
-      <div className={styles.rolesWrapper}>
-        <div className={roles}>
-          {filteredMembers.map((member) => (
+      <div className={roles}>
+        {filteredMembers.length > 0 &&
+          filteredMembers.map((member) => (
             <MemberCardItem key={member.id} member={member} />
           ))}
-        </div>
+
+        {filteredMembers.length === 0 && <PlugDefault />}
       </div>
+
+      <div ref={sentinelRef} />
     </>
   )
 }

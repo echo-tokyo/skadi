@@ -19,7 +19,8 @@ export type { IMemberFormRef } from './ui/MemberForm'
 
 export {
   useCreateMemberMutation,
-  useGetMembersQuery,
+  useGetMembersInfiniteQuery,
   useDeleteMemberMutation,
   useUpdateMemberMutation,
 } from './api/member-api'
+export type { IMembersFilter } from './api/member-api'

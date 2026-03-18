@@ -1,6 +1,7 @@
 .accordion {
-  box-shadow: var(--box-shadow);
+  // box-shadow: var(--box-shadow);
   border-radius: 0.5rem;
+  border: 1px solid var(--color-gray-light);
 }
 
 .accordionHeader {
