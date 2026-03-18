@@ -26,11 +26,13 @@ const RoleManagement = (): ReactNode => {
   const filteredMembers = useMemo(() => {
     const searchValue = userSearchValue.toLowerCase()
     return members.filter((el) => {
-      const matchesFullname = el.profile?.fullname?.toLowerCase().includes(searchValue) ?? false
+      const matchesFullname =
+        el.profile?.fullname?.toLowerCase().includes(searchValue) ?? false
       const matchesUsername = el.username.toLowerCase().includes(searchValue)
-      return matchesFullname || matchesUsername
+      const matchesRole = role ? el.role === role : true
+      return matchesRole && (matchesFullname || matchesUsername)
     })
-  }, [members, userSearchValue])
+  }, [members, userSearchValue, role])
 
   return (
     <>
