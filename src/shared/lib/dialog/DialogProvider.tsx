@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { Dialog } from '@/shared/ui'
 import { DialogContext } from './context'
-import { DialogParams, DialogState } from './types'
+import { DialogContextType, DialogParams, DialogState, TPatch } from './types'
 
 const ANIMATION_DURATION = 150
 
@@ -30,6 +30,12 @@ export const DialogProvider = ({
     }, ANIMATION_DURATION)
   }
 
+  const update = useCallback((id: string, patch: TPatch) => {
+    setDialogs((prev) =>
+      prev.map((el) => (el.id === id ? { ...el, ...patch } : el)),
+    )
+  }, [])
+
   const setLoading = (id: string, isLoading: boolean): void => {
     setDialogs((prev) =>
       prev.map((d) => (d.id === id ? { ...d, isLoading } : d)),
@@ -57,7 +63,10 @@ export const DialogProvider = ({
     }
   }
 
-  const contextValue = useMemo(() => ({ show }), [show])
+  const contextValue: DialogContextType = useMemo(
+    () => ({ show, update }),
+    [show, update],
+  )
 
   return (
     <DialogContext value={contextValue}>

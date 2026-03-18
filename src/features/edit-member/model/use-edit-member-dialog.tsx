@@ -11,13 +11,14 @@ import { toFormData } from '../lib/to-form-data'
 import { useEditMember } from './use-edit-member'
 
 export const useEditMemberDialog = (member: IMember) => {
-  const showDialog = useDialog()
+  const { show, update } = useDialog()
   const formRef = useRef<IMemberFormRef>(null)
   const { editMember } = useEditMember(member.id)
   const fieldData = useMemo(() => toFormData(member), [member])
+  const dialogIdRef = useRef<string | null>(null)
 
-  const show = () => {
-    showDialog({
+  const showDialog = () => {
+    const id = show({
       title: 'Редактирование пользователя',
       content: (
         <MemberForm
@@ -25,6 +26,13 @@ export const useEditMemberDialog = (member: IMember) => {
           schema={memberBaseSchema}
           fieldData={fieldData}
           disabledFields={BASE_DISABLED_FIELDS}
+          onDirtyChange={(isDirty) => {
+            if (dialogIdRef.current) {
+              update(dialogIdRef.current, {
+                isConfirmDisabled: !isDirty,
+              })
+            }
+          }}
         />
       ),
       positiveText: 'Сохранить',
@@ -45,11 +53,10 @@ export const useEditMemberDialog = (member: IMember) => {
             throw new Error('Failed to update member')
           }
         }
-
-        formRef.current?.reset()
       },
     })
+    dialogIdRef.current = id
   }
 
-  return { show }
+  return { showDialog }
 }

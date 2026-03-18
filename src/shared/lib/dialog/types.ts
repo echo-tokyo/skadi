@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 type TSize = 's' | 'm' | 'l'
+export type TPatch = Pick<DialogParams, 'isConfirmDisabled'>
 export interface DialogParams {
   title?: string
   content: ReactNode
@@ -20,4 +21,5 @@ export interface DialogState extends DialogParams {
 
 export interface DialogContextType {
   show: (params: DialogParams) => string
+  update: (id: string, patch: TPatch) => void
 }

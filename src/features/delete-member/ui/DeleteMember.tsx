@@ -7,11 +7,11 @@ interface IDeleteMemberProps {
 }
 
 export const DeleteMember = (props: IDeleteMemberProps) => {
-  const { show } = useDeleteMemberDialog()
+  const { showDialog } = useDeleteMemberDialog()
   const { fullname = 'пользователь', id } = props
 
   const handleClick = () => {
-    show({ fullname, id })
+    showDialog({ fullname, id })
   }
 
   return (

@@ -2,7 +2,12 @@ import { Button, Input, Select, Text } from '@/shared/ui'
 import { ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
-import { IMembersRequest, MemberCard, ROLE_OPTIONS, ROLES } from '@/entities/member'
+import {
+  IMembersRequest,
+  MemberCard,
+  ROLE_OPTIONS,
+  ROLES,
+} from '@/entities/member'
 import { useGetMembers } from '../model/get-members'
 import { DeleteMember } from '@/features/delete-member'
 import { EditMember } from '@/features/edit-member'
@@ -11,7 +16,7 @@ const RoleManagement = (): ReactNode => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
   const { actions, roles } = styles
   const [role, setRole] = useState<string>('')
-  const { show } = useCreateMemberDialog()
+  const { showDialog } = useCreateMemberDialog()
 
   const params: IMembersRequest = useMemo(
     () => ({
@@ -43,7 +48,7 @@ const RoleManagement = (): ReactNode => {
           value={role}
           onChange={setRole}
         />
-        <Button onClick={show}>Создать роль</Button>
+        <Button onClick={showDialog}>Создать роль</Button>
       </div>
 
       <div className={styles.rolesWrapper}>

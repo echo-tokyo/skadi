@@ -8,18 +8,31 @@ import {
 } from '@/entities/member'
 import { useCreateMember } from './use-create-member'
 
-export const useCreateMemberDialog = (): { show: () => void } => {
-  const showDialog = useDialog()
+export const useCreateMemberDialog = () => {
+  const { show, update } = useDialog()
   const { submit } = useCreateMember()
   const formRef = useRef<IMemberFormRef>(null)
+  const dialogIdRef = useRef<string | null>(null)
 
-  const show = (): void => {
-    showDialog({
+  const showDialog = (): void => {
+    const id = show({
       title: 'Создание пользователя',
-      content: <MemberForm ref={formRef} schema={memberFullSchema} fieldData={INITIAL_FORM_DATA} />,
+      content: (
+        <MemberForm
+          ref={formRef}
+          schema={memberFullSchema}
+          fieldData={INITIAL_FORM_DATA}
+          onDirtyChange={(isDirty) => {
+            if (dialogIdRef.current) {
+              update(dialogIdRef.current, { isConfirmDisabled: !isDirty })
+            }
+          }}
+        />
+      ),
       positiveText: 'Создать',
       negativeText: 'Отмена',
       size: 'm',
+      isConfirmDisabled: true,
       onConfirm: async () => {
         const isValid = await formRef.current?.validate()
 
@@ -35,11 +48,11 @@ export const useCreateMemberDialog = (): { show: () => void } => {
             throw new Error('Failed to create member')
           }
         }
-
-        formRef.current?.reset()
       },
     })
+
+    dialogIdRef.current = id
   }
 
-  return { show }
+  return { showDialog }
 }

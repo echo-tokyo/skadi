@@ -1,13 +1,13 @@
 import { useContext } from 'react'
 import { DialogContext } from './context'
-import { DialogParams } from './types'
+import { DialogContextType } from './types'
 
-export const useDialog = (): ((params: DialogParams) => string) => {
+export const useDialog = (): DialogContextType => {
   const ctx = useContext(DialogContext)
 
   if (!ctx) {
     throw new Error('useDialog must be used within DialogProvider')
   }
 
-  return ctx.show
+  return ctx
 }

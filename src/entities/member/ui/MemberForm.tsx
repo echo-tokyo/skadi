@@ -1,4 +1,10 @@
-import { ReactNode, forwardRef, useImperativeHandle, useState } from 'react'
+import {
+  ReactNode,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ZodObject, ZodRawShape } from 'zod'
@@ -24,25 +30,41 @@ interface IMemberFormProps {
   schema: ZodObject<ZodRawShape>
   fieldData?: TMemberFullSchema
   disabledFields?: Array<keyof TMemberFullSchema>
+  onDirtyChange?: (isDirty: boolean) => void
 }
 
 // TODO: нужно добавить проверку на то, изменялись ли поля
 // FIXME: deprecated forwardRef
 const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
   (
-    { schema, fieldData = INITIAL_FORM_DATA, disabledFields = [] },
+    {
+      schema,
+      fieldData = INITIAL_FORM_DATA,
+      disabledFields = [],
+      onDirtyChange,
+    },
     ref,
   ): ReactNode => {
     const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
 
-    const { watch, setValue, trigger, reset, formState } =
-      useForm<TMemberFullSchema>({
-        resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
-        defaultValues: fieldData,
-      })
+    const {
+      watch,
+      setValue,
+      trigger,
+      reset,
+      formState: { errors, isDirty },
+    } = useForm<TMemberFullSchema>({
+      resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
+      defaultValues: fieldData,
+    })
 
     const formData = watch()
-    const { errors } = formState
+
+    useEffect(() => {
+      if (onDirtyChange) {
+        onDirtyChange(isDirty)
+      }
+    }, [formData])
 
     useImperativeHandle(ref, () => ({
       validate: async () => {
@@ -76,6 +98,7 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
             onChange={(v) =>
               setValue(name, v as TRole, {
                 shouldValidate: hasAttemptedValidation,
+                shouldDirty: true,
               })
             }
           />
@@ -98,6 +121,7 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
             onChange={(v) =>
               setValue(name, v, {
                 shouldValidate: hasAttemptedValidation,
+                shouldDirty: true,
               })
             }
           />
@@ -115,7 +139,10 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
           disabled={disabled}
           description={errors[name]?.message}
           onChange={(v) =>
-            setValue(name, v, { shouldValidate: hasAttemptedValidation })
+            setValue(name, v, {
+              shouldValidate: hasAttemptedValidation,
+              shouldDirty: true,
+            })
           }
         />
       )

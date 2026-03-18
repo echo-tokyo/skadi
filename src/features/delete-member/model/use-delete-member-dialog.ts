@@ -7,11 +7,11 @@ interface IProps {
 }
 
 export const useDeleteMemberDialog = () => {
-  const showDialog = useDialog()
+  const { show } = useDialog()
   const { deleteMemberById } = useDeleteMember()
 
-  const show = (props: IProps): void => {
-    showDialog({
+  const showDialog = (props: IProps): void => {
+    show({
       title: 'Подтвердите',
       content: `Удалить пользователя ${props.fullname}?`,
       positiveText: 'Удалить',
@@ -24,5 +24,5 @@ export const useDeleteMemberDialog = () => {
     })
   }
 
-  return { show }
+  return { showDialog }
 }

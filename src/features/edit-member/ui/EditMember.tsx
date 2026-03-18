@@ -7,10 +7,10 @@ interface IEditMemberProps {
 }
 
 export const EditMember = (props: IEditMemberProps) => {
-  const { show } = useEditMemberDialog(props.member)
+  const { showDialog } = useEditMemberDialog(props.member)
 
   const handleClick = () => {
-    show()
+    showDialog()
   }
 
   return (
