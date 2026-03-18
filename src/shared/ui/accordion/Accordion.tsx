@@ -21,9 +21,9 @@ const Accordion = (props: IAccordionProps) => {
 
   return (
     <div className={accordion}>
-      <div className={accordionHeader}>
+      <div className={accordionHeader} onClick={toggle}>
         <Text>{label}</Text>
-        <Button color='secondary' type='icon' size='s' onClick={toggle}>
+        <Button color='secondary' type='icon' size='s'>
           <span className={`${chevron}${isOpen ? ` ${chevronOpen}` : ''}`}>
             <ChevronIcon />
           </span>
