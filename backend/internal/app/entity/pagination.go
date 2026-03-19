@@ -4,7 +4,10 @@ import (
 	"gorm.io/gorm"
 )
 
-const _defPerPage = 10 // default per page value for pagination
+const (
+	_defPage    = 1  // default page value for pagination
+	_defPerPage = 10 // default per page value for pagination
+)
 
 // Pagination represents a pagination parameters for DB list data.
 type Pagination struct {
@@ -16,7 +19,7 @@ type Pagination struct {
 // If the given page is null (zero) it returns nil.
 func NewPagination(page, perPage int) *Pagination {
 	var pageParams *Pagination // init nil params
-	if page == 0 {
+	if page == 0 && perPage == 0 {
 		return nil
 	}
 
@@ -26,6 +29,9 @@ func NewPagination(page, perPage int) *Pagination {
 	}
 	if pageParams.PerPage == 0 {
 		pageParams.PerPage = _defPerPage
+	}
+	if pageParams.Page == 0 {
+		pageParams.Page = _defPage
 	}
 	return pageParams
 }

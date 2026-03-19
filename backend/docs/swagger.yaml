@@ -338,12 +338,12 @@ definitions:
         items:
           $ref: '#/definitions/entity.Profile'
         type: array
-      solutions:
+      solution:
         allOf:
         - $ref: '#/definitions/entity.Solution'
         description: solution object
     required:
-    - solutions
+    - solution
     type: object
   v1.taskBody:
     description: taskBody represents a data with task.

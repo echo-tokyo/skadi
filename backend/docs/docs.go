@@ -1542,7 +1542,7 @@ const docTemplate = `{
             "description": "solutionOut represents a solution data with students (solving the same task).",
             "type": "object",
             "required": [
-                "solutions"
+                "solution"
             ],
             "properties": {
                 "other_students": {
@@ -1552,7 +1552,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/entity.Profile"
                     }
                 },
-                "solutions": {
+                "solution": {
                     "description": "solution object",
                     "allOf": [
                         {
