@@ -1,7 +1,7 @@
 export type {
   IMember,
-  IMembersFilter,
   ICreateMemberRequest,
+  IMembersQuery,
   IUpdateMemberRequest,
 } from './model/types'
 

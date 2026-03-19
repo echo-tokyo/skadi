@@ -5,9 +5,9 @@ import { useCreateMemberDialog } from '@/features/create-member'
 import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
 import { ROLES, ROLE_OPTIONS } from '@/shared/config'
-import { IMembersFilter } from '@/entities/member'
+import { IMembersQuery } from '@/entities/member'
 
-const MEMBERS_PARAMS: IMembersFilter = {
+const MEMBERS_PARAMS: IMembersQuery = {
   free: false,
   roles: ROLES,
   perPage: 3,

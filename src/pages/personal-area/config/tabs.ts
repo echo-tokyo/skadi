@@ -1,4 +1,5 @@
 import { TRole } from '@/shared/model'
+import { ClassManagement } from '@/widgets/class-management'
 import { RoleManagement } from '@/widgets/role-management'
 import { FC } from 'react'
 
@@ -9,11 +10,11 @@ export interface ITabConfig {
 }
 
 export const TAB_CONFIG: ITabConfig[] = [
-  // {
-  //   name: 'Менеджмент групп',
-  //   component: RoleManagement,
-  //   role: 'admin',
-  // },
+  {
+    name: 'Менеджмент групп',
+    component: ClassManagement,
+    role: 'admin',
+  },
   {
     name: 'Менеджмент ролей',
     component: RoleManagement,
