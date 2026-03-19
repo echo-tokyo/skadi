@@ -1,4 +1,6 @@
-export type TRole = 'admin' | 'teacher' | 'student'
+import { ROLES } from '@/shared/config'
+
+export type TRole = (typeof ROLES)[number]
 
 type TContact = { email: string; phone: string }
 

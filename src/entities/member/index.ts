@@ -1,15 +1,16 @@
 export type {
   IMember,
-  IMembersRequest,
+  IMembersFilter,
   ICreateMemberRequest,
-  ICreateMemberResponse,
   IUpdateMemberRequest,
 } from './model/types'
 
 export { memberFullSchema, memberBaseSchema } from './model/member-form-schema'
-export type { TMemberFullSchema, TMemberBaseSchema } from './model/member-form-schema'
+export type {
+  TMemberFullSchema,
+  TMemberBaseSchema,
+} from './model/member-form-schema'
 
-export { ROLE_OPTIONS, ROLES } from './config/role-options'
 export { INITIAL_FORM_DATA, BASE_DISABLED_FIELDS } from './config/form-config'
 export { toProfile } from './lib/to-profile'
 
@@ -23,4 +24,3 @@ export {
   useDeleteMemberMutation,
   useUpdateMemberMutation,
 } from './api/member-api'
-export type { IMembersFilter } from './api/member-api'

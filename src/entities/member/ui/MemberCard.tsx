@@ -1,5 +1,4 @@
-import { Divider, Text } from '@/shared/ui'
-import Accordion from '@/shared/ui/accordion/Accordion'
+import { Accordion, Divider, Text } from '@/shared/ui'
 import { ReactNode } from 'react'
 import styles from './styles.module.scss'
 

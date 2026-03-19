@@ -11,7 +11,6 @@ import { ZodObject, ZodRawShape } from 'zod'
 import type { Resolver } from 'react-hook-form'
 import { Input, Select, Textarea } from '@/shared/ui'
 import { TRole } from '@/shared/model'
-import { ROLE_OPTIONS } from '../config/role-options'
 import { TMemberFullSchema } from '../model/member-form-schema'
 import {
   FIELD_CONFIG,
@@ -19,6 +18,7 @@ import {
   TFieldConfig,
 } from '../config/form-config'
 import styles from './styles.module.scss'
+import { ROLE_OPTIONS } from '@/shared/config/role-options'
 
 export interface IMemberFormRef {
   validate: () => Promise<boolean>
@@ -63,7 +63,7 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
       if (onDirtyChange) {
         onDirtyChange(isDirty)
       }
-    }, [formData])
+    }, [formData, onDirtyChange])
 
     useImperativeHandle(ref, () => ({
       validate: async () => {

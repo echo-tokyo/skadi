@@ -1,51 +1,45 @@
 import { baseApi } from '@/shared/api'
 import {
   ICreateMemberRequest,
-  ICreateMemberResponse,
   IMember,
-  IMembersFilter,
+  IMembersQuery,
   IMembersResponse,
   IUpdateMemberRequest,
 } from '../model/types'
 
-const PER_PAGE = 3
+const DEFAULT_PER_PAGE = 20
 
 export const memberApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMembers: builder.infiniteQuery<IMembersResponse, IMembersFilter, number>(
-      {
-        infiniteQueryOptions: {
-          initialPageParam: 1,
-          getNextPageParam: (lastPage, _allPages, lastPageParam) =>
-            lastPage.data.length < PER_PAGE ? undefined : lastPageParam + 1,
+    getMembers: builder.infiniteQuery<IMembersResponse, IMembersQuery, number>({
+      query: ({ queryArg, pageParam }) => ({
+        url: '/admin/user',
+        method: 'GET',
+        params: {
+          ...queryArg,
+          page: pageParam,
+          perPage: queryArg.perPage ?? DEFAULT_PER_PAGE,
         },
-        query: ({ queryArg, pageParam }) => ({
-          url: '/admin/user',
-          method: 'GET',
-          params: { ...queryArg, page: pageParam, perPage: PER_PAGE },
-        }),
-        providesTags: ['Member'],
+      }),
+      // TODO: сравнить по total из пагинации
+      infiniteQueryOptions: {
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, _allPages, lastPageParam) =>
+          lastPage.data.length < lastPage.pagination.perPage
+            ? undefined
+            : lastPageParam + 1,
       },
-    ),
+      providesTags: ['Member'],
+    }),
 
-    // getMemberById: builder.query<IMemberResponse, string>({
-    //   query: (id) => ({
-    //     url: `/admin/user/${id}`,
-    //     method: 'GET',
-    //   }),
-    //   providesTags: ['Member'],
-    // }),
-
-    createMember: builder.mutation<ICreateMemberResponse, ICreateMemberRequest>(
-      {
-        query: (data) => ({
-          url: '/admin/user',
-          method: 'POST',
-          body: data,
-        }),
-        invalidatesTags: ['Member'],
-      },
-    ),
+    createMember: builder.mutation<IMember, ICreateMemberRequest>({
+      query: (data) => ({
+        url: '/admin/user',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Member'],
+    }),
 
     updateMember: builder.mutation<
       IMember,

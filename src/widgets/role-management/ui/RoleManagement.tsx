@@ -1,24 +1,29 @@
 import { Button, Input, PlugDefault, Select, Text } from '@/shared/ui'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import styles from './styles.module.scss'
 import { useCreateMemberDialog } from '@/features/create-member'
-import { ROLE_OPTIONS, ROLES } from '@/entities/member'
 import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
+import { ROLES, ROLE_OPTIONS } from '@/shared/config'
+import { IMembersFilter } from '@/entities/member'
 
-const RoleManagement = (): ReactNode => {
+const MEMBERS_PARAMS: IMembersFilter = {
+  free: false,
+  roles: ROLES,
+  perPage: 3,
+}
+
+const { actions, roles } = styles
+
+const RoleManagement = () => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
-  const { actions, roles } = styles
   const [role, setRole] = useState<string>('')
   const { showDialog } = useCreateMemberDialog()
 
-  const { members, isFetchingNextPage, loadMore, hasMore } = useInfiniteMembers(
-    {
-      free: false,
-      roles: ROLES,
-    },
-  )
+  const { members, isFetchingNextPage, loadMore, hasMore } =
+    useInfiniteMembers(MEMBERS_PARAMS)
 
+  // FIXME: должна быть серверная фильтрация. Проблема: если в поиск что-то ввести, а потом скроллить, то обсервер не срабатывает
   const filteredMembers = useMemo(() => {
     const searchValue = userSearchValue.toLowerCase()
     return members.filter((el) => {
@@ -37,7 +42,6 @@ const RoleManagement = (): ReactNode => {
     if (!sentinel) {
       return
     }
-
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
@@ -84,9 +88,7 @@ const RoleManagement = (): ReactNode => {
 
         {filteredMembers.length === 0 && <PlugDefault />}
 
-        {filteredMembers.length > 0 && (
-          <div ref={sentinelRef} style={{ minHeight: '1px' }} />
-        )}
+        <div ref={sentinelRef} style={{ minHeight: '1px' }}></div>
       </div>
     </>
   )

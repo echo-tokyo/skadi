@@ -1,5 +1,5 @@
+import { ROLES } from '@/shared/config'
 import { z } from 'zod'
-import { ROLES } from '../config/role-options'
 
 const phoneSchema = z
   .string()

@@ -1,11 +1,11 @@
 import { TClass, TProfile, TRole } from '@/shared/model'
 
-type TPagination = { page: number; per_page: number }
+type TPagination = { page: number; perPage: number }
 
+// TODO: как profile может быть undefined?
 export interface IMember {
   class?: TClass
   id: number
-  // TODO: как profile может быть undefined?
   profile?: TProfile
   role: TRole
   username: string
@@ -24,20 +24,13 @@ export interface ICreateMemberRequest {
   username: string
 }
 
-export interface ICreateMemberResponse {
-  class?: TClass
-  id: number
-  profile?: TProfile
-  role: TRole
-  username: string
-}
-
 export interface IMembersResponse {
   data: IMember[]
   pagination: TPagination
 }
 
-export interface IMembersFilter {
+export interface IMembersQuery {
   free: boolean
   roles: TRole[]
+  perPage?: number
 }

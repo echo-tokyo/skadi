@@ -1,9 +1,9 @@
-import { TRole } from '@/shared/model'
-import { SelectOption } from '@/shared/ui'
+import { SelectOption } from '../ui'
 
+// Поля для селекта, admin не нужен
 export const ROLE_OPTIONS: SelectOption[] = [
   { value: 'teacher', label: 'Преподаватель' },
   { value: 'student', label: 'Студент' },
 ]
 
-export const ROLES: TRole[] = ['admin', 'teacher', 'student']
+export const ROLES = ['admin', 'teacher', 'student'] as const
