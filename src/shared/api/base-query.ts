@@ -19,9 +19,7 @@ const baseQuery = fetchBaseQuery({
   credentials: 'include',
 })
 
-export const initializeAuthActions = (
-  actions: IAuthActions,
-): void => {
+export const initializeAuthActions = (actions: IAuthActions): void => {
   authActions = actions
 }
 

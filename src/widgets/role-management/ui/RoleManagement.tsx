@@ -44,7 +44,7 @@ const RoleManagement = (): ReactNode => {
           loadMore()
         }
       },
-      { threshold: 1 },
+      { threshold: 0 },
     )
 
     observer.observe(sentinel)
@@ -83,9 +83,11 @@ const RoleManagement = (): ReactNode => {
           ))}
 
         {filteredMembers.length === 0 && <PlugDefault />}
-      </div>
 
-      <div ref={sentinelRef} />
+        {filteredMembers.length > 0 && (
+          <div ref={sentinelRef} style={{ minHeight: '1px' }} />
+        )}
+      </div>
     </>
   )
 }

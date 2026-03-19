@@ -12,11 +12,11 @@
   margin-top: 2rem;
   flex: 1;
   min-height: 0;
-  overflow: scroll;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  gap: 0.5rem;
+  overflow-y: scroll;
+
+  & > *:not(:last-child):not(:nth-last-child(2)) {
+    margin-bottom: 0.5rem;
+  }
 }
 
 .cardActions {

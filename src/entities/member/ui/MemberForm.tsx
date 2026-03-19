@@ -33,7 +33,6 @@ interface IMemberFormProps {
   onDirtyChange?: (isDirty: boolean) => void
 }
 
-// TODO: нужно добавить проверку на то, изменялись ли поля
 // FIXME: deprecated forwardRef
 const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
   (
