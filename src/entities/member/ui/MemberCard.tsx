@@ -17,11 +17,11 @@ const AccordionContent = (props: TAccordionContentProps): ReactNode => {
   return (
     <div className={styles.content}>
       <div>
-        <Text>{`Статус: ${memberRole ?? '-'}`}</Text>
+        <Text size='14'>{`Статус: ${memberRole ?? '-'}`}</Text>
         <Divider />
       </div>
       <div>
-        <Text>{`Группа: ${group ?? '-'}`}</Text>
+        <Text size='14'>{`Группа: ${group ?? '-'}`}</Text>
         <Divider />
       </div>
       {actions}
