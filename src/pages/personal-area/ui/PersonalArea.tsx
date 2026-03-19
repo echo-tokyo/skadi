@@ -5,11 +5,13 @@ import { ITabConfig, TAB_CONFIG } from '../config/tabs'
 import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
 import { useNavigate } from 'react-router'
+import { useLogout } from '@/features/authorization'
 
 const PersonalArea: FC = (): ReactNode => {
   const user = useAppSelector(selectAuthenticatedUser)
   const role = user.role
   const navigate = useNavigate()
+  const { logout } = useLogout()
 
   const tabs = useMemo(
     () => TAB_CONFIG.filter((tab) => tab.role === role),
@@ -48,7 +50,7 @@ const PersonalArea: FC = (): ReactNode => {
           <Button color='secondary' fluid onClick={() => navigate('/')}>
             На главную
           </Button>
-          <Button color='inverted' fluid>
+          <Button color='inverted' fluid onClick={logout}>
             Выйти
           </Button>
         </div>

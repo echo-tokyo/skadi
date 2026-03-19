@@ -12,8 +12,8 @@ export const useDeleteMemberDialog = () => {
 
   const showDialog = (props: IProps): void => {
     show({
-      title: 'Подтвердите',
-      content: `Удалить пользователя ${props.fullname}?`,
+      title: 'Удаление пользователя',
+      content: `Удалить пользователя ${props.fullname} ?`,
       positiveText: 'Удалить',
       onConfirm: async () => {
         const success = await deleteMemberById(props.id)
