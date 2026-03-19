@@ -1,7 +1,6 @@
 import { useAppDispatch } from '@/shared/lib'
 import { useLogoutMutation } from '../../api/auth-api'
 import { clearUserData } from '@/entities/user'
-import { logout as logoutActions } from '../slices/auth-slice'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
 
@@ -15,7 +14,6 @@ export const useLogout = () => {
     } catch {
       toast.error(getErrorMessage(error))
     } finally {
-      dispatch(logoutActions())
       dispatch(clearUserData())
     }
   }

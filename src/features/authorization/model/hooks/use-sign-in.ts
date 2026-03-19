@@ -1,5 +1,4 @@
 import { useSignInMutation } from '../../api/auth-api'
-import { setCredentials } from '../slices/auth-slice'
 import { useNavigate } from 'react-router'
 import { setUserData } from '@/entities/user'
 import { useAppDispatch } from '@/shared/lib'
@@ -16,7 +15,6 @@ export const useSignIn = () => {
     try {
       const result = await signInMutation(formData).unwrap()
 
-      dispatch(setCredentials())
       dispatch(setUserData(result))
 
       navigate('/personal-area')

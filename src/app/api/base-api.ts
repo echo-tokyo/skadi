@@ -1,11 +1,11 @@
 import { initializeAuthActions } from '@/shared/api'
-import { logout } from '@/features/authorization'
 import { router } from '../routes/Routes'
 import { store } from '../store/store'
+import { clearUserData } from '@/entities/user'
 
 initializeAuthActions({
   onAuthFailure: () => {
-    store.dispatch(logout())
+    store.dispatch(clearUserData())
     router.navigate('/authorization', { replace: true })
   },
 })

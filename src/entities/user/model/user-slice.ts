@@ -3,30 +3,30 @@ import { IUser, IUserResponse } from './types'
 
 interface IUserState {
   user: IUser | null
+  isAuthenticated: boolean
 }
 
 const initialState: IUserState = {
   user: null,
+  isAuthenticated: false,
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUserData: (
-      state,
-      { payload }: PayloadAction<IUserResponse>,
-    ) => {
+    setUserData: (state, { payload }: PayloadAction<IUserResponse>) => {
       state.user = payload
+      state.isAuthenticated = true
     },
     clearUserData: (state) => {
       state.user = null
+      state.isAuthenticated = false
     },
   },
 })
 
 export const { setUserData, clearUserData } = userSlice.actions
 export default userSlice.reducer
-export const selectAuthenticatedUser = (state: {
-  user: IUserState
-}): IUser => state.user.user!
+export const selectAuthenticatedUser = (state: { user: IUserState }): IUser =>
+  state.user.user!
