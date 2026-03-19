@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router'
 
 const MainPage: FC = (): ReactNode => {
   const nav = useNavigate()
-  return <Button onClick={() => nav('/authorization')}>Test</Button>
+  return <Button onClick={() => nav('/personal-area')}>Войти</Button>
 }
 
 export default MainPage

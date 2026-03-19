@@ -36,6 +36,9 @@
 .inverted {
   background-color: var(--color-gray-ultra-light);
   color: var(--color-red);
+  &:hover:not(:disabled) {
+    background-color: var(--color-gray-light);
+  }
 }
 
 .invalidText {

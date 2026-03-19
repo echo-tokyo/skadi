@@ -1,4 +1,3 @@
-import { ROLES } from '@/shared/config'
 import { TRole } from '@/shared/model'
 import { RoleManagement } from '@/widgets/role-management'
 import { FC } from 'react'
@@ -18,7 +17,7 @@ export const TAB_CONFIG: ITabConfig[] = [
   {
     name: 'Менеджмент ролей',
     component: RoleManagement,
-    role: ROLES[0],
+    role: 'admin',
   },
   // {
   //   name: 'Домашние задания',

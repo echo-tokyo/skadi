@@ -13,18 +13,36 @@
   border-radius: 1rem;
   padding: 1rem;
 }
+
 .left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 30%;
-  button {
-    text-align: justify;
-    display: block;
-    border: 0;
-    background-color: transparent;
-    font-family: 'Montserrat', sans-serif;
-    padding: 0;
-    outline: none;
+  &Items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  &Actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1rem;
   }
 }
+
+.tabButton {
+  text-align: justify;
+  display: block;
+  border: 0;
+  background-color: transparent;
+  font-family: 'Montserrat', sans-serif;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+}
+
 .right {
   display: flex;
   flex-direction: column;

@@ -5,16 +5,18 @@
   width: var(--ui-width, fit-content);
   border-radius: 0.5rem;
   font-size: 14px;
+  font-family: 'Montserrat';
   font-weight: 600;
   letter-spacing: 0.5px;
   cursor: pointer;
+  transition: transform 0.1s ease;
 
   &:hover:not(:disabled) {
     opacity: 85%;
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.99);
+    transform: scale(0.95);
   }
 
   &:disabled {
