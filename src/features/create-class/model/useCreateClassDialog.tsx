@@ -1,4 +1,4 @@
-import { ClassForm } from '@/entities/class'
+import { ClassFields } from '@/entities/class'
 import { useDialog } from '@/shared/lib'
 
 export const useCreateClassDialog = () => {
@@ -7,7 +7,7 @@ export const useCreateClassDialog = () => {
   const showDialog = (): void => {
     show({
       title: 'Создание группы',
-      content: <ClassForm />,
+      content: <ClassFields />,
       positiveText: 'Создать',
       negativeText: 'Отмена',
       size: 'm',

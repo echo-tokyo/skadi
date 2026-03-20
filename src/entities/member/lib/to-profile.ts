@@ -1,5 +1,5 @@
 import { TProfile } from '@/shared/model'
-import { TMemberFullSchema } from '../model/member-form-schema'
+import { TMemberFullSchema } from '../model/member-fields-schema'
 
 export const toProfile = (data: TMemberFullSchema): TProfile => ({
   fullname: data.fullname,

@@ -11,18 +11,18 @@ import { ZodObject, ZodRawShape } from 'zod'
 import type { Resolver } from 'react-hook-form'
 import { Input, Select, Textarea } from '@/shared/ui'
 import { TRole } from '@/shared/model'
-import { TMemberFullSchema } from '../model/member-form-schema'
+import { TMemberFullSchema } from '../model/member-fields-schema'
 import {
   FIELD_CONFIG,
-  INITIAL_FORM_DATA,
+  INITIAL_FIELDS_DATA,
   TFieldConfig,
-} from '../config/form-config'
+} from '../config/fields-config'
 import styles from './styles.module.scss'
 import { ROLE_OPTIONS } from '@/shared/config/role-options'
 
-export interface IMemberFormRef {
+export interface IMemberFieldsRef {
   validate: () => Promise<boolean>
-  getFormData: () => TMemberFullSchema
+  getFieldsData: () => TMemberFullSchema
   reset: () => void
 }
 
@@ -34,11 +34,11 @@ interface IMemberFormProps {
 }
 
 // FIXME: deprecated forwardRef
-const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
+const MemberFields = forwardRef<IMemberFieldsRef, IMemberFormProps>(
   (
     {
       schema,
-      fieldData = INITIAL_FORM_DATA,
+      fieldData = INITIAL_FIELDS_DATA,
       disabledFields = [],
       onDirtyChange,
     },
@@ -57,20 +57,20 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
       defaultValues: fieldData,
     })
 
-    const formData = watch()
+    const fieldsData = watch()
 
     useEffect(() => {
       if (onDirtyChange) {
         onDirtyChange(isDirty)
       }
-    }, [formData, onDirtyChange])
+    }, [fieldsData, onDirtyChange])
 
     useImperativeHandle(ref, () => ({
       validate: async () => {
         setHasAttemptedValidation(true)
         return trigger()
       },
-      getFormData: () => formData,
+      getFieldsData: () => fieldsData,
       reset: () => {
         reset()
         setHasAttemptedValidation(false)
@@ -93,7 +93,7 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
             disabled={disabled}
             description={errors[name]?.message}
             options={ROLE_OPTIONS}
-            value={formData[name]}
+            value={fieldsData[name]}
             onChange={(v) =>
               setValue(name, v as TRole, {
                 shouldValidate: hasAttemptedValidation,
@@ -116,7 +116,7 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
             disabled={disabled}
             description={errors[name]?.message}
             resize='none'
-            value={formData[name]}
+            value={fieldsData[name]}
             onChange={(v) =>
               setValue(name, v, {
                 shouldValidate: hasAttemptedValidation,
@@ -131,7 +131,7 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
         <Input
           key={name}
           title={title}
-          value={formData[name]}
+          value={fieldsData[name]}
           isValid={!errors[name]}
           required={required}
           fluid
@@ -151,6 +151,6 @@ const MemberForm = forwardRef<IMemberFormRef, IMemberFormProps>(
   },
 )
 
-MemberForm.displayName = 'MemberForm'
+MemberFields.displayName = 'MemberFields'
 
-export default MemberForm
+export default MemberFields

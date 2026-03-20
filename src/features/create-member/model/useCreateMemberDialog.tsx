@@ -1,27 +1,22 @@
 import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
-import {
-  MemberForm,
-  IMemberFormRef,
-  INITIAL_FORM_DATA,
-  memberFullSchema,
-} from '@/entities/member'
+import { memberFullSchema, MemberFields } from '@/entities/member'
 import { useCreateMember } from './use-create-member'
+import { IMemberFieldsRef } from '@/entities/member/ui/MemberFields'
 
 export const useCreateMemberDialog = () => {
   const { show, update } = useDialog()
   const { submit } = useCreateMember()
-  const formRef = useRef<IMemberFormRef>(null)
+  const formRef = useRef<IMemberFieldsRef>(null)
   const dialogIdRef = useRef<string | null>(null)
 
   const showDialog = (): void => {
     const id = show({
       title: 'Создание пользователя',
       content: (
-        <MemberForm
+        <MemberFields
           ref={formRef}
           schema={memberFullSchema}
-          fieldData={INITIAL_FORM_DATA}
           onDirtyChange={(isDirty) => {
             if (dialogIdRef.current) {
               update(dialogIdRef.current, { isConfirmDisabled: !isDirty })
@@ -40,7 +35,7 @@ export const useCreateMemberDialog = () => {
           throw new Error('Validation failed')
         }
 
-        const formData = formRef.current?.getFormData()
+        const formData = formRef.current?.getFieldsData()
 
         if (formData) {
           const success = await submit(formData)

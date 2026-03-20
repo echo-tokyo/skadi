@@ -1,1 +1,1 @@
-export { default as ClassForm } from './ui/ClassForm'
+export { default as ClassFields } from './ui/ClassFields'
