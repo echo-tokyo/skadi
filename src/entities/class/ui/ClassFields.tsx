@@ -2,16 +2,16 @@ import { Input, Select } from '@/shared/ui'
 import styles from './styles.module.scss'
 import { useForm } from 'react-hook-form'
 import { TClassSchema } from '../model/class-form-schema'
-import { INITIAL_FORM_DATA } from '../config/form-config'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { classSchema } from '../model/class-form-schema'
+import { INITIAL_FIELDS_DATA } from '../config/fields-config'
 
 interface IClassFieldsProps {
   fieldData?: TClassSchema
 }
 
 const ClassFields = (props: IClassFieldsProps) => {
-  const { fieldData = INITIAL_FORM_DATA } = props
+  const { fieldData = INITIAL_FIELDS_DATA } = props
   const {
     watch,
     setValue,
