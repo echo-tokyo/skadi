@@ -44,6 +44,17 @@ interface BaseProps<T extends string = string> {
   searchPlaceholder?: string
   /** Текст когда ничего не найдено */
   noResultsText?: string
+  /**
+   * Callback для серверного поиска. Вызывается с дебаунсом (300ms).
+   * Когда передан — клиентская фильтрация отключается.
+   */
+  onSearchChange?: (query: string) => void
+  /** Callback для загрузки следующей страницы */
+  onLoadMore?: () => void
+  /** Есть ли ещё страницы для загрузки */
+  hasMore?: boolean
+  /** Идёт ли загрузка следующей страницы */
+  isLoadingMore?: boolean
 }
 
 interface SingleProps<T extends string = string> extends BaseProps<T> {
@@ -189,7 +200,12 @@ interface SelectContentProps<T extends string> {
   searchPlaceholder?: string
   noResultsText?: string
   onSearchChange?: (query: string) => void
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
 }
+
+const SEARCH_DEBOUNCE_MS = 300
 
 const SelectContent = <T extends string>({
   options,
@@ -200,19 +216,28 @@ const SelectContent = <T extends string>({
   searchPlaceholder = 'Поиск...',
   noResultsText = 'Ничего не найдено',
   onSearchChange,
+  onLoadMore,
+  hasMore,
+  isLoadingMore,
 }: SelectContentProps<T>): ReactNode => {
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  // Фильтрация опций
+  // Серверный поиск: дебаунс перед вызовом колбэка
+  useEffect(() => {
+    if (!onSearchChange) return
+    const timer = setTimeout(() => onSearchChange(searchQuery), SEARCH_DEBOUNCE_MS)
+    return () => clearTimeout(timer)
+  }, [searchQuery, onSearchChange])
+
+  // Клиентская фильтрация — только когда нет серверного поиска
   const filteredOptions = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return options
-    }
+    if (onSearchChange) return options
+    if (!searchQuery.trim()) return options
     const query = searchQuery.toLowerCase()
     return options.filter((o) => o.label.toLowerCase().includes(query))
-  }, [options, searchQuery])
+  }, [options, searchQuery, onSearchChange])
 
   // Инициализация highlighted на выбранном элементе (или 0)
   const [highlightedIndex, setHighlightedIndex] = useState(() => {
@@ -229,11 +254,9 @@ const SelectContent = <T extends string>({
 
   const handleSearchChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      setSearchQuery(value)
-      onSearchChange?.(value)
+      setSearchQuery(e.target.value)
     },
-    [onSearchChange],
+    [],
   )
 
   const { handleKeyDown } = useSelectKeyboard({
@@ -241,12 +264,9 @@ const SelectContent = <T extends string>({
     highlightedIndex,
     setHighlightedIndex,
     onSelect: (value) => onSelect(value as T),
-    onClose: () => {
-      // Popover закроется автоматически при Escape
-    },
+    onClose: () => {},
   })
 
-  // Обработка клавиш в поле поиска
   const handleSearchKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -260,7 +280,6 @@ const SelectContent = <T extends string>({
         }
       } else if (e.key === 'Escape') {
         e.preventDefault()
-        // Сбросить поиск и закрыть
         setSearchQuery('')
       }
     },
@@ -307,6 +326,17 @@ const SelectContent = <T extends string>({
           ))
         )}
       </div>
+      {onLoadMore && hasMore && (
+        <div className={styles.load_more_wrapper}>
+          <button
+            className={styles.load_more}
+            onClick={onLoadMore}
+            disabled={isLoadingMore}
+          >
+            {isLoadingMore ? 'Загрузка...' : 'Загрузить ещё'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -335,6 +365,10 @@ const SingleSelect = <T extends string>({
   searchable,
   searchPlaceholder,
   noResultsText,
+  onSearchChange,
+  onLoadMore,
+  hasMore,
+  isLoadingMore,
 }: SingleSelectInternalProps<T>): ReactNode => {
   const [open, setOpen] = useState(false)
   const triggerId = useId()
@@ -349,7 +383,6 @@ const SingleSelect = <T extends string>({
 
   const handleSelect = useCallback(
     (optionValue: T): void => {
-      // Toggle: клик на выбранный — сбрасываем, иначе выбираем
       onChange(value === optionValue ? '' : optionValue)
       setOpen(false)
     },
@@ -397,7 +430,6 @@ const SingleSelect = <T extends string>({
             sideOffset={4}
             align='start'
             onOpenAutoFocus={(e) => {
-              // Если searchable — фокус на input, иначе на listbox
               if (!searchable) {
                 e.preventDefault()
                 const listbox = document.getElementById(listboxId)
@@ -413,6 +445,10 @@ const SingleSelect = <T extends string>({
               searchable={searchable}
               searchPlaceholder={searchPlaceholder}
               noResultsText={noResultsText}
+              onSearchChange={onSearchChange}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
             />
           </Popover.Content>
         </Popover.Portal>
@@ -451,6 +487,10 @@ const MultiSelect = <T extends string>({
   searchable,
   searchPlaceholder,
   noResultsText,
+  onSearchChange,
+  onLoadMore,
+  hasMore,
+  isLoadingMore,
 }: MultiSelectInternalProps<T>): ReactNode => {
   const triggerId = useId()
   const labelId = `${triggerId}-label`
@@ -537,6 +577,10 @@ const MultiSelect = <T extends string>({
               searchable={searchable}
               searchPlaceholder={searchPlaceholder}
               noResultsText={noResultsText}
+              onSearchChange={onSearchChange}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
             />
           </Popover.Content>
         </Popover.Portal>

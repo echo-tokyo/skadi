@@ -1,7 +1,7 @@
-import { Button, Input, PlugDefault, Select, Text } from '@/shared/ui'
+import { Input, PlugDefault, Select, Text } from '@/shared/ui'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import styles from './styles.module.scss'
-import { useCreateMemberDialog } from '@/features/create-member'
+import { CreateRoleButton } from '@/features/create-member'
 import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
 import { ROLES, ROLE_OPTIONS } from '@/shared/config'
@@ -10,7 +10,7 @@ import { IMembersQuery } from '@/entities/member'
 const MEMBERS_PARAMS: IMembersQuery = {
   free: false,
   roles: ROLES,
-  perPage: 3,
+  perPage: 10,
 }
 
 const { actions, roles } = styles
@@ -18,7 +18,6 @@ const { actions, roles } = styles
 const RoleManagement = () => {
   const [userSearchValue, setUserSearchValue] = useState<string>('')
   const [role, setRole] = useState<string>('')
-  const { showDialog } = useCreateMemberDialog()
 
   const { members, isFetchingNextPage, loadMore, hasMore } =
     useInfiniteMembers(MEMBERS_PARAMS)
@@ -77,7 +76,7 @@ const RoleManagement = () => {
           value={role}
           onChange={setRole}
         />
-        <Button onClick={showDialog}>Создать роль</Button>
+        <CreateRoleButton />
       </div>
 
       <div className={roles}>

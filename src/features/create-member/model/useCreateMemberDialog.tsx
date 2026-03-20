@@ -13,7 +13,7 @@ export const useCreateMemberDialog = () => {
   const showDialog = (): void => {
     const id = show({
       title: 'Создание пользователя',
-      content: (
+      content: () => (
         <MemberFields
           ref={formRef}
           schema={memberFullSchema}

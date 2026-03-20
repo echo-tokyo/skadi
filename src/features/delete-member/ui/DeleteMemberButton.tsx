@@ -6,7 +6,7 @@ interface IDeleteMemberProps {
   fullname?: string
 }
 
-export const DeleteMember = (props: IDeleteMemberProps) => {
+export const DeleteMemberButton = (props: IDeleteMemberProps) => {
   const { showDialog } = useDeleteMemberDialog()
   const { fullname = 'пользователь', id } = props
 
@@ -21,4 +21,4 @@ export const DeleteMember = (props: IDeleteMemberProps) => {
   )
 }
 
-DeleteMember.displayName = 'DeleteMember'
+DeleteMemberButton.displayName = 'DeleteMemberButton'

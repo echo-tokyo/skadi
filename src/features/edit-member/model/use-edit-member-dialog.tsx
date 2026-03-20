@@ -20,7 +20,7 @@ export const useEditMemberDialog = (member: IMember) => {
   const showDialog = () => {
     const id = show({
       title: 'Редактирование пользователя',
-      content: (
+      content: () => (
         <MemberFields
           ref={formRef}
           schema={memberBaseSchema}

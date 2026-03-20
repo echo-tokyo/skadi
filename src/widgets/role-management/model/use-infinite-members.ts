@@ -1,9 +1,9 @@
-import { IMembersFilter, useGetMembersInfiniteQuery } from '@/entities/member'
+import { IMembersQuery, useGetMembersInfiniteQuery } from '@/entities/member'
 import { getErrorMessage } from '@/shared/api'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 
-export const useInfiniteMembers = (params: IMembersFilter) => {
+export const useInfiniteMembers = (params: IMembersQuery) => {
   const {
     data,
     isFetchingNextPage,

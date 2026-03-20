@@ -1,1 +1,1 @@
-export { DeleteMember } from './ui/DeleteMember'
+export { DeleteMemberButton } from './ui/DeleteMemberButton'

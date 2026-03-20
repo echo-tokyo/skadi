@@ -13,3 +13,5 @@ export const classApi = baseApi.injectEndpoints({
     }),
   }),
 })
+
+export const { useCreateClassMutation } = classApi

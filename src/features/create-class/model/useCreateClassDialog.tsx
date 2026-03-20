@@ -1,5 +1,5 @@
-import { ClassFields } from '@/entities/class'
 import { useDialog } from '@/shared/lib'
+import DialogContent from '../ui/DialogContent'
 
 export const useCreateClassDialog = () => {
   const { show } = useDialog()
@@ -7,7 +7,7 @@ export const useCreateClassDialog = () => {
   const showDialog = (): void => {
     show({
       title: 'Создание группы',
-      content: <ClassFields />,
+      content: () => <DialogContent />,
       positiveText: 'Создать',
       negativeText: 'Отмена',
       size: 'm',

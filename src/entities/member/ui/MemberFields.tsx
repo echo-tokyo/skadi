@@ -3,6 +3,7 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
 import { useForm } from 'react-hook-form'
@@ -59,11 +60,11 @@ const MemberFields = forwardRef<IMemberFieldsRef, IMemberFormProps>(
 
     const fieldsData = watch()
 
+    const onDirtyChangeRef = useRef(onDirtyChange)
+
     useEffect(() => {
-      if (onDirtyChange) {
-        onDirtyChange(isDirty)
-      }
-    }, [fieldsData, onDirtyChange])
+      onDirtyChangeRef.current?.(isDirty)
+    }, [isDirty])
 
     useImperativeHandle(ref, () => ({
       validate: async () => {

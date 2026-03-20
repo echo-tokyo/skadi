@@ -6,7 +6,7 @@ interface IEditMemberProps {
   member: IMember
 }
 
-export const EditMember = (props: IEditMemberProps) => {
+export const EditMemberButton = (props: IEditMemberProps) => {
   const { showDialog } = useEditMemberDialog(props.member)
 
   const handleClick = () => {
@@ -20,4 +20,4 @@ export const EditMember = (props: IEditMemberProps) => {
   )
 }
 
-EditMember.displayName = 'EditMember'
+EditMemberButton.displayName = 'EditMemberButton'
