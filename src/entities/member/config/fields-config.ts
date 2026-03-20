@@ -7,7 +7,7 @@ export type TFieldConfig =
   | { type: 'select'; name: 'role'; title: string; required?: boolean }
   | { type: 'textarea'; name: 'extra'; title: string; required?: boolean }
 
-export const INITIAL_FIELDS_DATA: TMemberFullSchema = {
+export const INITIAL_FIELDS_VALUES: TMemberFullSchema = {
   fullname: '',
   role: 'student',
   username: '',

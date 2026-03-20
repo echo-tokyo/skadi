@@ -4,21 +4,21 @@ import { useForm } from 'react-hook-form'
 import { TClassSchema } from '../model/class-form-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { classSchema } from '../model/class-form-schema'
-import { INITIAL_FIELDS_DATA } from '../config/fields-config'
+import { INITIAL_FIELDS_VALUES } from '../config/fields-config'
 
 interface IClassFieldsProps {
-  fieldData?: TClassSchema
+  fieldValues?: TClassSchema
 }
 
 const ClassFields = (props: IClassFieldsProps) => {
-  const { fieldData = INITIAL_FIELDS_DATA } = props
+  const { fieldValues = INITIAL_FIELDS_VALUES } = props
   const {
     watch,
     setValue,
     formState: { errors },
   } = useForm<TClassSchema>({
     resolver: zodResolver(classSchema),
-    defaultValues: fieldData,
+    defaultValues: fieldValues,
   })
 
   const fieldsData = watch()

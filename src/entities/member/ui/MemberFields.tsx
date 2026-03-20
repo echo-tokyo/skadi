@@ -14,7 +14,7 @@ import { TRole } from '@/shared/model'
 import { TMemberFullSchema } from '../model/member-fields-schema'
 import {
   FIELD_CONFIG,
-  INITIAL_FIELDS_DATA,
+  INITIAL_FIELDS_VALUES,
   TFieldConfig,
 } from '../config/fields-config'
 import styles from './styles.module.scss'
@@ -38,7 +38,7 @@ const MemberFields = forwardRef<IMemberFieldsRef, IMemberFormProps>(
   (
     {
       schema,
-      fieldData = INITIAL_FIELDS_DATA,
+      fieldData = INITIAL_FIELDS_VALUES,
       disabledFields = [],
       onDirtyChange,
     },
