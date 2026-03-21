@@ -3,30 +3,64 @@ import { useGetMembersInfiniteQuery } from '@/entities/member'
 import { memo, useMemo } from 'react'
 
 const DialogContent = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetMembersInfiniteQuery({
-      roles: ['teacher'],
-      free: false,
-      perPage: 5,
-    })
+  const {
+    data: teachersData,
+    fetchNextPage: fetchNextTeachersPage,
+    hasNextPage: hasNextTeachersPage,
+    isFetchingNextPage: isFetchingNextTeachersPage,
+  } = useGetMembersInfiniteQuery({
+    roles: ['teacher'],
+    free: false,
+    perPage: 5,
+  })
+
+  const {
+    data: studentsData,
+    fetchNextPage: fetchNextStudentsPage,
+    hasNextPage: hasNextStudentsPage,
+    isFetchingNextPage: isFetchingNextStudentsPage,
+  } = useGetMembersInfiniteQuery({
+    roles: ['student'],
+    free: false,
+    perPage: 5,
+  })
 
   const teacherOptions = useMemo(
     () =>
-      data?.pages
+      teachersData?.pages
         .flatMap((el) => el.data)
         .map((el) => ({
           label: el.profile?.fullname as string,
           value: String(el.id),
         })) ?? [],
-    [data],
+    [teachersData],
+  )
+
+  const studentOptions = useMemo(
+    () =>
+      studentsData?.pages
+        .flatMap((el) => el.data)
+        .map((el) => ({
+          label: el.profile?.fullname as string,
+          value: String(el.id),
+        })) ?? [],
+    [studentsData],
   )
 
   return (
     <ClassFields
-      teacherFieldData={teacherOptions}
-      onLoadMore={fetchNextPage}
-      hasMore={hasNextPage}
-      isLoadingMore={isFetchingNextPage}
+      teacherField={{
+        data: teacherOptions,
+        hasMore: hasNextTeachersPage,
+        isLoadingMore: isFetchingNextTeachersPage,
+        onLoadMore: fetchNextTeachersPage,
+      }}
+      studentField={{
+        data: studentOptions,
+        hasMore: hasNextStudentsPage,
+        isLoadingMore: isFetchingNextStudentsPage,
+        onLoadMore: fetchNextStudentsPage,
+      }}
     />
   )
 }

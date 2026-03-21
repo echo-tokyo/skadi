@@ -1,11 +1,11 @@
 import {
   ReactNode,
-  forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react'
+import type { Ref } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ZodObject, ZodRawShape } from 'zod'
@@ -28,116 +28,93 @@ export interface IMemberFieldsRef {
 }
 
 interface IMemberFormProps {
+  ref?: Ref<IMemberFieldsRef>
   schema: ZodObject<ZodRawShape>
   fieldData?: TMemberFullSchema
   disabledFields?: Array<keyof TMemberFullSchema>
   onDirtyChange?: (isDirty: boolean) => void
 }
 
-// FIXME: deprecated forwardRef
-const MemberFields = forwardRef<IMemberFieldsRef, IMemberFormProps>(
-  (
-    {
-      schema,
-      fieldData = INITIAL_FIELDS_VALUES,
-      disabledFields = [],
-      onDirtyChange,
+const MemberFields = ({
+  schema,
+  fieldData = INITIAL_FIELDS_VALUES,
+  disabledFields = [],
+  onDirtyChange,
+  ref,
+}: IMemberFormProps): ReactNode => {
+  const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
+
+  const {
+    watch,
+    setValue,
+    trigger,
+    reset,
+    formState: { errors, isDirty },
+  } = useForm<TMemberFullSchema>({
+    resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
+    defaultValues: fieldData,
+  })
+
+  const fieldsData = watch()
+
+  const onDirtyChangeRef = useRef(onDirtyChange)
+
+  useEffect(() => {
+    onDirtyChangeRef.current?.(isDirty)
+  }, [isDirty])
+
+  useImperativeHandle(ref, () => ({
+    validate: async () => {
+      setHasAttemptedValidation(true)
+      return trigger()
     },
-    ref,
-  ): ReactNode => {
-    const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
+    getFieldsData: () => fieldsData,
+    reset: () => {
+      reset()
+      setHasAttemptedValidation(false)
+    },
+  }))
 
-    const {
-      watch,
-      setValue,
-      trigger,
-      reset,
-      formState: { errors, isDirty },
-    } = useForm<TMemberFullSchema>({
-      resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
-      defaultValues: fieldData,
-    })
+  const renderField = (field: TFieldConfig) => {
+    const { name, title, required } = field
+    const disabled = disabledFields.includes(name)
 
-    const fieldsData = watch()
-
-    const onDirtyChangeRef = useRef(onDirtyChange)
-
-    useEffect(() => {
-      onDirtyChangeRef.current?.(isDirty)
-    }, [isDirty])
-
-    useImperativeHandle(ref, () => ({
-      validate: async () => {
-        setHasAttemptedValidation(true)
-        return trigger()
-      },
-      getFieldsData: () => fieldsData,
-      reset: () => {
-        reset()
-        setHasAttemptedValidation(false)
-      },
-    }))
-
-    const renderField = (field: TFieldConfig) => {
-      const { name, title, required } = field
-      const disabled = disabledFields.includes(name)
-
-      if (field.type === 'select') {
-        return (
-          <Select
-            key={name}
-            label={title}
-            placeholder='Выберите'
-            isValid={!errors[name]}
-            required={required}
-            fluid
-            disabled={disabled}
-            description={errors[name]?.message}
-            options={ROLE_OPTIONS}
-            value={fieldsData[name]}
-            onChange={(v) =>
-              setValue(name, v as TRole, {
-                shouldValidate: hasAttemptedValidation,
-                shouldDirty: true,
-              })
-            }
-          />
-        )
-      }
-
-      if (field.type === 'textarea') {
-        return (
-          <Textarea
-            key={name}
-            label={title}
-            placeholder='Ввод..'
-            isValid={!errors[name]}
-            required={required}
-            fluid
-            disabled={disabled}
-            description={errors[name]?.message}
-            resize='none'
-            value={fieldsData[name]}
-            onChange={(v) =>
-              setValue(name, v, {
-                shouldValidate: hasAttemptedValidation,
-                shouldDirty: true,
-              })
-            }
-          />
-        )
-      }
-
+    if (field.type === 'select') {
       return (
-        <Input
+        <Select
           key={name}
-          title={title}
-          value={fieldsData[name]}
+          label={title}
+          placeholder='Выберите'
           isValid={!errors[name]}
           required={required}
           fluid
           disabled={disabled}
           description={errors[name]?.message}
+          options={ROLE_OPTIONS}
+          value={fieldsData[name]}
+          onChange={(v) =>
+            setValue(name, v as TRole, {
+              shouldValidate: hasAttemptedValidation,
+              shouldDirty: true,
+            })
+          }
+        />
+      )
+    }
+
+    if (field.type === 'textarea') {
+      return (
+        <Textarea
+          key={name}
+          label={title}
+          placeholder='Ввод..'
+          isValid={!errors[name]}
+          required={required}
+          fluid
+          disabled={disabled}
+          description={errors[name]?.message}
+          resize='none'
+          value={fieldsData[name]}
           onChange={(v) =>
             setValue(name, v, {
               shouldValidate: hasAttemptedValidation,
@@ -148,10 +125,27 @@ const MemberFields = forwardRef<IMemberFieldsRef, IMemberFormProps>(
       )
     }
 
-    return <div className={styles.wrapper}>{FIELD_CONFIG.map(renderField)}</div>
-  },
-)
+    return (
+      <Input
+        key={name}
+        title={title}
+        value={fieldsData[name]}
+        isValid={!errors[name]}
+        required={required}
+        fluid
+        disabled={disabled}
+        description={errors[name]?.message}
+        onChange={(v) =>
+          setValue(name, v, {
+            shouldValidate: hasAttemptedValidation,
+            shouldDirty: true,
+          })
+        }
+      />
+    )
+  }
 
-MemberFields.displayName = 'MemberFields'
+  return <div className={styles.wrapper}>{FIELD_CONFIG.map(renderField)}</div>
+}
 
 export default MemberFields
