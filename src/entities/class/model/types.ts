@@ -1,4 +1,5 @@
 import { TProfile } from '@/shared/model'
+import { TClassSchema } from './class-form-schema'
 
 export interface ICreateClassRequest {
   name: string
@@ -13,4 +14,10 @@ export interface IClass {
   schedule?: string
   students?: TProfile[]
   teacher?: TProfile
+}
+
+export interface IClassFieldsRef {
+  validate: () => Promise<boolean>
+  getFieldsData: () => TClassSchema
+  reset: () => void
 }

@@ -1,8 +1,16 @@
-import { ClassFields } from '@/entities/class'
+import { ClassFields, IClassFieldsRef } from '@/entities/class'
 import { useGetMembersInfiniteQuery } from '@/entities/member'
 import { memo, useMemo } from 'react'
+import type { Ref } from 'react'
 
-const DialogContent = () => {
+interface DialogContentProps {
+  classFieldsRef: Ref<IClassFieldsRef>
+  onDirtyChange: (isDirty: boolean) => void
+}
+
+const DialogContent = (props: DialogContentProps) => {
+  const { classFieldsRef, onDirtyChange } = props
+
   const {
     data: teachersData,
     fetchNextPage: fetchNextTeachersPage,
@@ -49,6 +57,8 @@ const DialogContent = () => {
 
   return (
     <ClassFields
+      ref={classFieldsRef}
+      onDirtyChange={onDirtyChange}
       teacherField={{
         data: teacherOptions,
         hasMore: hasNextTeachersPage,

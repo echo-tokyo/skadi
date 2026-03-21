@@ -1,10 +1,19 @@
+import {
+  ReactNode,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
+import type { Ref } from 'react'
 import { Input, Select, SelectOption } from '@/shared/ui'
 import styles from './styles.module.scss'
 import { useForm } from 'react-hook-form'
-import type { TClassSchema } from '../model/class-form-schema'
-import { classSchema } from '../model/class-form-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { classSchema } from '../model/class-form-schema'
+import type { TClassSchema } from '../model/class-form-schema'
 import { INITIAL_FIELDS_VALUES } from '../config/fields-config'
+import { IClassFieldsRef } from '../model/types'
 
 type TPaginatedSelectField = {
   data: SelectOption[]
@@ -14,28 +23,60 @@ type TPaginatedSelectField = {
 }
 
 interface IClassFieldsProps {
+  ref?: Ref<IClassFieldsRef>
   fieldValues?: TClassSchema
   teacherField: TPaginatedSelectField
   studentField: TPaginatedSelectField
+  onDirtyChange?: (isDirty: boolean) => void
 }
 
-const ClassFields = (props: IClassFieldsProps) => {
-  const {
-    fieldValues = INITIAL_FIELDS_VALUES,
-    teacherField,
-    studentField,
-  } = props
+const ClassFields = ({
+  fieldValues = INITIAL_FIELDS_VALUES,
+  teacherField,
+  studentField,
+  onDirtyChange,
+  ref,
+}: IClassFieldsProps): ReactNode => {
+  const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
 
   const {
     watch,
     setValue,
-    formState: { errors },
+    trigger,
+    reset,
+    formState: { errors, isDirty },
   } = useForm<TClassSchema>({
     resolver: zodResolver(classSchema),
     defaultValues: fieldValues,
   })
 
-  const fieldsData = watch()
+  const className = watch('className')
+  const teacher = watch('teacher')
+  const students = watch('students')
+  const schedule = watch('schedule')
+
+  const onDirtyChangeRef = useRef(onDirtyChange)
+
+  useEffect(() => {
+    onDirtyChangeRef.current?.(isDirty)
+  }, [isDirty])
+
+  useImperativeHandle(ref, () => ({
+    validate: async () => {
+      setHasAttemptedValidation(true)
+      return trigger()
+    },
+    getFieldsData: () => ({
+      className,
+      teacher,
+      students,
+      schedule,
+    }),
+    reset: () => {
+      reset()
+      setHasAttemptedValidation(false)
+    },
+  }))
 
   return (
     <div className={styles.wrapper}>
@@ -45,10 +86,11 @@ const ClassFields = (props: IClassFieldsProps) => {
         required
         isValid={!errors['className']}
         description={errors['className']?.message}
-        value={fieldsData['className']}
+        value={className}
         onChange={(val) =>
           setValue('className', val, {
-            shouldValidate: true,
+            shouldValidate: hasAttemptedValidation,
+            shouldDirty: true,
           })
         }
       />
@@ -59,14 +101,15 @@ const ClassFields = (props: IClassFieldsProps) => {
         placeholder='Выберите'
         description={errors['teacher']?.message}
         options={teacherField.data}
-        value={fieldsData['teacher']}
+        value={teacher}
         searchable
         onLoadMore={teacherField.onLoadMore}
         hasMore={teacherField.hasMore}
         isLoadingMore={teacherField.isLoadingMore}
         onChange={(v) =>
           setValue('teacher', v, {
-            shouldValidate: true,
+            shouldValidate: hasAttemptedValidation,
+            shouldDirty: true,
           })
         }
       />
@@ -78,14 +121,15 @@ const ClassFields = (props: IClassFieldsProps) => {
         placeholder='Выберите'
         description={errors['students']?.message}
         options={studentField.data}
-        value={fieldsData['students']}
+        value={students}
         searchable
         onLoadMore={studentField.onLoadMore}
         hasMore={studentField.hasMore}
         isLoadingMore={studentField.isLoadingMore}
         onChange={(v) =>
           setValue('students', v, {
-            shouldValidate: true,
+            shouldValidate: hasAttemptedValidation,
+            shouldDirty: true,
           })
         }
       />
@@ -95,10 +139,11 @@ const ClassFields = (props: IClassFieldsProps) => {
         placeholder='Каждый четверг, 18:00 - 19:00'
         isValid={!errors['schedule']}
         description={errors['schedule']?.message}
-        value={fieldsData['schedule']}
+        value={schedule}
         onChange={(val) =>
           setValue('schedule', val, {
-            shouldValidate: true,
+            shouldValidate: hasAttemptedValidation,
+            shouldDirty: true,
           })
         }
       />

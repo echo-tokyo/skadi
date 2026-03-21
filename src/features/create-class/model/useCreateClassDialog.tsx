@@ -1,18 +1,51 @@
+import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
+import { IClassFieldsRef } from '@/entities/class'
 import DialogContent from '../ui/DialogContent'
+import { useCreateClass } from './useCreateClass'
 
 export const useCreateClassDialog = () => {
-  const { show } = useDialog()
+  const { show, update } = useDialog()
+  const formRef = useRef<IClassFieldsRef>(null)
+  const dialogIdRef = useRef<string | null>(null)
+  const { submit } = useCreateClass()
 
   const showDialog = (): void => {
-    show({
+    const id = show({
       title: 'Создание группы',
-      content: () => <DialogContent />,
+      content: () => (
+        <DialogContent
+          classFieldsRef={formRef}
+          onDirtyChange={(isDirty) => {
+            if (dialogIdRef.current) {
+              update(dialogIdRef.current, { isConfirmDisabled: !isDirty })
+            }
+          }}
+        />
+      ),
       positiveText: 'Создать',
       negativeText: 'Отмена',
       size: 'm',
-      onConfirm: async () => {},
+      isConfirmDisabled: true,
+      onConfirm: async () => {
+        const isValid = await formRef.current?.validate()
+
+        if (!isValid) {
+          throw new Error('Validation failed')
+        }
+
+        const formData = formRef.current?.getFieldsData()
+
+        if (formData) {
+          const success = await submit(formData)
+          if (!success) {
+            throw new Error('Failed to create member')
+          }
+        }
+      },
     })
+
+    dialogIdRef.current = id
   }
 
   return { showDialog }
