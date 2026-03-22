@@ -245,7 +245,8 @@ func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
 
 	// get users
-	userListResp, err := c.userUCAdmin.GetByRoles(inputQuery.Roles, inputQuery.Free, pageParams)
+	userListResp, err := c.userUCAdmin.GetByRoles(inputQuery.Roles, inputQuery.Free,
+		inputQuery.Search, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

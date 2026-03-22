@@ -31,7 +31,9 @@ type RepositoryDB interface {
 
 	// GetByRoles returns user (with class if set and profile) list with given roles.
 	// Free param appends condition (if only student role was given) to get class-free students.
-	GetByRoles(roles []string, free bool, page *entity.Pagination) ([]entity.User, error)
+	// Search params appends condition to filter users by username and fullname (substring).
+	GetByRoles(roles []string, free bool, search string,
+		page *entity.Pagination) ([]entity.User, error)
 
 	// GetManyWithProfilesShort returns users by given IDs with short profiles (ID and fullname).
 	GetManyWithProfilesShort(ids []int) ([]entity.User, error)

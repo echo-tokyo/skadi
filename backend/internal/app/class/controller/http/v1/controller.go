@@ -98,7 +98,7 @@ func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
 	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
 
 	// get classes
-	classListResp, err := c.classUCClient.ListFull(pageParams)
+	classListResp, err := c.classUCClient.ListFull(inputQuery.Search, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

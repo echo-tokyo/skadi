@@ -125,8 +125,9 @@ func (u *UCAdminClient) ListShort() ([]entity.Class, error) {
 }
 
 // ListFull returns slice of class objects with full data.
-func (u *UCAdminClient) ListFull(page *entity.Pagination) ([]entity.Class, error) {
-	return u.classRepoDB.ListFull(page)
+// Search param used to filter classes by name (substring).
+func (u *UCAdminClient) ListFull(search string, page *entity.Pagination) ([]entity.Class, error) {
+	return u.classRepoDB.ListFull(search, page)
 }
 
 // setTeacherProfile sets teacher profile for given class object if teacher ID is presented.

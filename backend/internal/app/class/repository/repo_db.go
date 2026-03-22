@@ -152,17 +152,23 @@ func (r *RepoDB) ListShort() ([]entity.Class, error) {
 }
 
 // ListFull returns slice of class objects with full data.
-func (r *RepoDB) ListFull(page *entity.Pagination) ([]entity.Class, error) {
+// Search params appends condition to filter classes by name (substring).
+func (r *RepoDB) ListFull(search string, page *entity.Pagination) ([]entity.Class, error) {
 	classes := []entity.Class{}
 	// create query
 	query := r.dbStorage.
+		Model(&entity.Class{}).
 		Preload(_preloadTeacher).
 		Preload(_preloadTeacherProfile, func(db *gorm.DB) *gorm.DB {
 			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
 		})
+	if search != "" {
+		query = query.Where("name REGEXP ?", search)
+	}
 	query = query.Order("id ASC")
 	// apply pagination if it's not nil
 	if page != nil {
+		page.CountTotal(query)
 		query = page.Query(query)
 	}
 	// exec query

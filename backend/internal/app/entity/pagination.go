@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"math"
+
 	"gorm.io/gorm"
 )
 
@@ -11,8 +13,14 @@ const (
 
 // Pagination represents a pagination parameters for DB list data.
 type Pagination struct {
-	Page    int `json:"page" validate:"omitempty" example:"1"`
-	PerPage int `json:"per_page" validate:"omitempty" example:"5" default:"10"`
+	// current page
+	Page int `json:"page" validate:"required" example:"1"`
+	// per page objects
+	PerPage int `json:"per_page" validate:"required" example:"5" default:"10"`
+	// total objects amount
+	Total int64 `json:"total" validate:"required" example:"32"`
+	// total pages amount
+	Pages int `json:"pages"  validate:"required" example:"7"`
 }
 
 // NewPagination returns a new instance of Pagination if the given page is not null (zero).
@@ -39,4 +47,13 @@ func NewPagination(page, perPage int) *Pagination {
 // Query takes a DB tx and applies a limit and offset to it with pagination values.
 func (p *Pagination) Query(tx *gorm.DB) *gorm.DB {
 	return tx.Limit(p.PerPage).Offset((p.Page - 1) * p.PerPage)
+}
+
+// CountTotal counts total objects that will be recieved with
+// the given query and counts total pages amount.
+// Total value will not counts if the given tx has not Model()/Table() statement
+func (p *Pagination) CountTotal(tx *gorm.DB) {
+	tx.Count(&p.Total)
+	// calc pages amount
+	p.Pages = int(math.Ceil(float64(p.Total) / float64(p.PerPage)))
 }

@@ -227,7 +227,8 @@ func (r *RepoDB) Delete(data *entity.User) error {
 
 // GetByRoles returns user (with class if set and profile) list with given roles.
 // Free param appends condition (if only student role was given) to get class-free students.
-func (r *RepoDB) GetByRoles(roles []string, free bool,
+// Search params appends condition to filter users by username and fullname (substring).
+func (r *RepoDB) GetByRoles(roles []string, free bool, search string,
 	page *entity.Pagination) ([]entity.User, error) {
 
 	if len(roles) == 0 {
@@ -236,19 +237,25 @@ func (r *RepoDB) GetByRoles(roles []string, free bool,
 	var userList []entity.User
 	// create query
 	query := r.dbStorage.
+		Model(&entity.User{}).
 		Preload(_preloadClass, func(db *gorm.DB) *gorm.DB {
 			return db.Select(_fieldID, _fieldName) // preload only ID and name
 		}).
 		Preload(_preloadProfile).
 		Preload(_preloadContact).
 		Preload(_preloadParentContact).
+		Joins("INNER JOIN profile ON user.id = profile.id").
 		Where("role IN ?", roles)
 	if free {
 		query = query.Where("class_id IS NULL")
 	}
+	if search != "" {
+		query = query.Where("username REGEXP ?", search).Or("fullname REGEXP ?", search)
+	}
 	query = query.Order("id ASC")
 	// apply pagination if it's not nil
 	if page != nil {
+		page.CountTotal(query)
 		query = page.Query(query)
 	}
 	// execute query

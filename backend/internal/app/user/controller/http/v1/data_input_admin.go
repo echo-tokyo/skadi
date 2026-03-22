@@ -116,14 +116,16 @@ func (u *updateBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 // @description listUserQuery represents a data with optional query-params to get users list.
 type listUserQuery struct {
 	// user roles (accepted: "teacher", "student")
-	Roles []string `query:"role,omitempty" example:"student"`
+	Roles []string `query:"role,omitempty" json:"role" example:"student"`
 	// return only class-free students (only if param role=student)
-	Free bool `query:"free,omitempty" example:"true"`
+	Free bool `query:"free,omitempty" json:"free" example:"true"`
+	// substring to filter users by username and fullname (case-insensitive)
+	Search string `query:"search,omitempty" json:"search" example:"иванов"`
 
 	// page pagination param
-	Page int `query:"page,omitempty" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
+	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
 	// per page pagination param (default: 10)
-	PerPage int `query:"perPage,omitempty" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
+	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
 }
 
 // Parse parses listUserQuery request data and validates it.

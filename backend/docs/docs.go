@@ -203,7 +203,7 @@ const docTemplate = `{
                         "default": 10,
                         "example": 1,
                         "description": "per page pagination param (default: 10)",
-                        "name": "perPage",
+                        "name": "per-page",
                         "in": "query"
                     },
                     {
@@ -216,7 +216,14 @@ const docTemplate = `{
                             "student"
                         ],
                         "description": "user roles (accepted: \"teacher\", \"student\")",
-                        "name": "roles",
+                        "name": "role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "иванов",
+                        "description": "substring to filter users by username and fullname (case-insensitive)",
+                        "name": "search",
                         "in": "query"
                     }
                 ],
@@ -597,7 +604,14 @@ const docTemplate = `{
                         "default": 10,
                         "example": 1,
                         "description": "per page pagination param (default: 10)",
-                        "name": "perPage",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "F26",
+                        "description": "substring to filter classes by name (case-insensitive)",
+                        "name": "search",
                         "in": "query"
                     }
                 ],
@@ -1107,15 +1121,33 @@ const docTemplate = `{
         },
         "entity.Pagination": {
             "type": "object",
+            "required": [
+                "page",
+                "pages",
+                "per_page",
+                "total"
+            ],
             "properties": {
                 "page": {
+                    "description": "current page",
                     "type": "integer",
                     "example": 1
                 },
+                "pages": {
+                    "description": "total pages amount",
+                    "type": "integer",
+                    "example": 7
+                },
                 "per_page": {
+                    "description": "per page objects",
                     "type": "integer",
                     "default": 10,
                     "example": 5
+                },
+                "total": {
+                    "description": "total objects amount",
+                    "type": "integer",
+                    "example": 32
                 }
             }
         },

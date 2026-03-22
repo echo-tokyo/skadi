@@ -69,7 +69,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 
 // GetAdmins returns all admins.
 func (u *UCManager) GetAdmins() ([]entity.User, error) {
-	userList, err := u.userRepoDB.GetByRoles([]string{roles.Admin}, false, nil)
+	userList, err := u.userRepoDB.GetByRoles([]string{roles.Admin}, false, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}

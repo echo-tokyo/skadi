@@ -149,14 +149,15 @@ func (u *UCAdminClient) DeleteByID(id int) error {
 
 // GetByRoles returns user list with given roles.
 // Free param (if only student role was given) used to get class-free students.
-func (u *UCAdminClient) GetByRoles(roleList []string, free bool,
+// Search param used to filter users by username and fullname (substring).
+func (u *UCAdminClient) GetByRoles(roleList []string, free bool, search string,
 	page *entity.Pagination) ([]entity.User, error) {
 
 	if !(len(roleList) == 1 && roleList[0] == roles.Student) {
 		free = false
 	}
 
-	userList, err := u.userRepoDB.GetByRoles(roleList, free, page)
+	userList, err := u.userRepoDB.GetByRoles(roleList, free, search, page)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}
