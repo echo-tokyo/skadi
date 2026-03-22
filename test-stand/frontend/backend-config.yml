@@ -4,7 +4,7 @@ server:
   cors:
     allowed_origins: "*" # comma-separated allowed origins for cors
     allowed_methods: "GET,HEAD,POST,OPTIONS" # comma-separated allowed methods for cors
-    allow_credentials: false # set allow credentials for cors if true
+    allow_credentials: true # set allow credentials for cors if true
   auth:
     access_token:
       ttl: 1m # access JWT-token expiration duration
