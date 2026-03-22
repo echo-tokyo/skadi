@@ -1,3 +1,4 @@
 export { useDialog } from './dialog/useDialog'
 export { DialogProvider } from './dialog/DialogProvider'
 export { useAppDispatch, useAppSelector } from './hooks/redux-hooks'
+export { useInfiniteScroll } from './hooks/use-infinite-scroll'

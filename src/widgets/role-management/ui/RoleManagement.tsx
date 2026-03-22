@@ -1,11 +1,12 @@
 import { Input, PlugDefault, Select, Text } from '@/shared/ui'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { CreateRoleButton } from '@/features/create-member'
 import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
 import { ROLES, ROLE_OPTIONS } from '@/shared/config'
 import { IMembersQuery } from '@/entities/member'
+import { useInfiniteScroll } from '@/shared/lib'
 
 const MEMBERS_PARAMS: IMembersQuery = {
   free: false,
@@ -34,28 +35,11 @@ const RoleManagement = () => {
     })
   }, [members, userSearchValue, role])
 
-  const sentinelRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel) {
-      return
-    }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
-          loadMore()
-        }
-      },
-      { threshold: 0 },
-    )
-
-    observer.observe(sentinel)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [hasMore, isFetchingNextPage, loadMore])
+  const { sentinelRef } = useInfiniteScroll({
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+  })
 
   return (
     <>
