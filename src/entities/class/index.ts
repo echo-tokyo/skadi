@@ -1,2 +1,4 @@
 export { default as ClassFields } from './ui/ClassFields'
-export type { IClassFieldsRef } from './model/types'
+export { default as ClassCard } from './ui/ClassCard'
+export type { IClassFieldsRef, IClass } from './model/types'
+export { useGetClassesInfiniteQuery } from './api/class-api'

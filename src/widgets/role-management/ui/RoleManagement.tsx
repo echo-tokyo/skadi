@@ -1,4 +1,4 @@
-import { Input, PlugDefault, Select, Text } from '@/shared/ui'
+import { Input, PlugDefault, Select, Sentinel, Text } from '@/shared/ui'
 import { useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { CreateRoleButton } from '@/features/create-member'
@@ -71,7 +71,7 @@ const RoleManagement = () => {
 
         {filteredMembers.length === 0 && <PlugDefault />}
 
-        <div ref={sentinelRef} style={{ minHeight: '1px' }}></div>
+        <Sentinel ref={sentinelRef} />
       </div>
     </>
   )

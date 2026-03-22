@@ -8,7 +8,7 @@ interface IInfiniteScrollProps {
 
 export const useInfiniteScroll = (props: IInfiniteScrollProps) => {
   const { hasMore, isFetchingNextPage, loadMore } = props
-  const sentinelRef = useRef<HTMLDivElement | null>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const sentinel = sentinelRef.current

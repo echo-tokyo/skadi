@@ -1,12 +1,39 @@
-import { Input, Text } from '@/shared/ui'
-import { memo, useState } from 'react'
+import { Input, PlugDefault, Sentinel, Text } from '@/shared/ui'
+import { useMemo, useState } from 'react'
 import styles from './styles.module.scss'
 import { CreateClassButton } from '@/features/create-class'
+import { useInfiniteClasses } from '../model/use-infinite-classes'
+import { useInfiniteScroll } from '@/shared/lib'
+import { ClassCardItem } from './ClassCardItem'
 
-const { actions } = styles
+const CLASSES_PARAMS = { perPage: 5 }
+
+const { actions, classes } = styles
 
 const ClassManagement = () => {
   const [classSearchValue, setClassSearchValue] = useState<string>('')
+  const {
+    classes: classItems,
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+  } = useInfiniteClasses(CLASSES_PARAMS)
+
+  const filteredMembers = useMemo(() => {
+    const searchValue = classSearchValue.toLowerCase()
+    return classItems.filter((el) => {
+      const matchesFullname =
+        el.name.toLowerCase().includes(searchValue) ?? false
+      return matchesFullname
+    })
+  }, [classItems, classSearchValue])
+
+  const { sentinelRef } = useInfiniteScroll({
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+  })
+
   return (
     <>
       <Text weight='bold' size='20'>
@@ -21,8 +48,19 @@ const ClassManagement = () => {
         />
         <CreateClassButton />
       </div>
+
+      <div className={classes}>
+        {filteredMembers.length > 0 ? (
+          filteredMembers.map((classElem) => (
+            <ClassCardItem classData={classElem} key={classElem.id} />
+          ))
+        ) : (
+          <PlugDefault />
+        )}
+        <Sentinel ref={sentinelRef} />
+      </div>
     </>
   )
 }
 
-export default memo(ClassManagement)
+export default ClassManagement
