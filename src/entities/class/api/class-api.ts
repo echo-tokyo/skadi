@@ -38,7 +38,18 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
+    deleteClass: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `admin/class/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Class'],
+    }),
   }),
 })
 
-export const { useGetClassesInfiniteQuery, useCreateClassMutation } = classApi
+export const {
+  useGetClassesInfiniteQuery,
+  useCreateClassMutation,
+  useDeleteClassMutation,
+} = classApi

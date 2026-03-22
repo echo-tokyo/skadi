@@ -1,10 +1,10 @@
 import { Input, PlugDefault, Sentinel, Text } from '@/shared/ui'
 import { useMemo, useState } from 'react'
-import styles from './styles.module.scss'
 import { CreateClassButton } from '@/features/create-class'
 import { useInfiniteClasses } from '../model/use-infinite-classes'
 import { useInfiniteScroll } from '@/shared/lib'
 import { ClassCardItem } from './ClassCardItem'
+import styles from './styles.module.scss'
 
 const CLASSES_PARAMS = { perPage: 5 }
 

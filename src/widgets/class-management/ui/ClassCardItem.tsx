@@ -2,6 +2,7 @@ import { IClass, ClassCard } from '@/entities/class'
 import { Button } from '@/shared/ui'
 import { memo } from 'react'
 import styles from './styles.module.scss'
+import { DeleteClassButton } from '@/features/delete-class'
 
 interface IClassCardItemProps {
   classData: IClass
@@ -16,8 +17,8 @@ export const ClassCardItem = memo(({ classData }: IClassCardItemProps) => {
       teacherName={classData.teacher?.fullname}
       actions={
         <div className={styles.actions}>
-          <Button color='inverted'>Удалить группу</Button>
-          <Button color='secondary'>Редактировать группу</Button>
+          <DeleteClassButton id={classData.id} name={classData.name} />
+          <Button color='secondary'>Редактировать</Button>
         </div>
       }
     />
