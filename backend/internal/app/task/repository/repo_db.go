@@ -82,7 +82,6 @@ func (r *RepoDB) CreateTaskForStudents(taskObj *entity.Task,
 				Status:    statusObj,
 			}
 		}
-		// TODO: maybe check unique index
 		if err = tx.Omit(_preloadStudent, _preloadStatus).Create(solutions).Error; err != nil {
 			return fmt.Errorf("solution for students: %w", err)
 		}

@@ -18,5 +18,6 @@ type UsecaseStudent interface {
 
 type UsecaseClient interface {
 	// GetByID returns a full solution info and all students linked to the solution task.
-	GetByID(id int) (*entity.Solution, []entity.Profile, error)
+	GetByID(solutionID int,
+		userClaims *entity.UserClaims) (*entity.Solution, []entity.Profile, error)
 }

@@ -1049,6 +1049,8 @@ paths:
             $ref: '#/definitions/v1.solutionOut'
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
         "404":
           description: решение задания не найдено
       security:

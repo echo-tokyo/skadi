@@ -8,6 +8,7 @@ import (
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
+	"skadi/backend/internal/pkg/roles"
 )
 
 // Ensure UCClient implements interfaces.
@@ -29,8 +30,10 @@ func NewUCClient(cfg *config.Config, taskRepoDB task.RepositoryDB) *UCClient {
 }
 
 // GetByID returns a full solution info and all students linked to the solution task.
-func (u *UCClient) GetByID(id int) (*entity.Solution, []entity.Profile, error) {
-	solution, err := u.taskRepoDB.GetByID(id)
+func (u *UCClient) GetByID(solutionID int,
+	userClaims *entity.UserClaims) (*entity.Solution, []entity.Profile, error) {
+
+	solution, err := u.taskRepoDB.GetByID(solutionID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get solution: %w", err)
 	}
@@ -38,10 +41,17 @@ func (u *UCClient) GetByID(id int) (*entity.Solution, []entity.Profile, error) {
 	solution.Student = solution.StudentUser.Profile
 	solution.Task.Teacher = solution.Task.TeacherUser.Profile
 
+	// role checks
+	if userClaims.Role == roles.Teacher && solution.Task.TeacherID != userClaims.ID {
+		return nil, nil, fmt.Errorf("%w: user (teacher) is not a task owner", task.ErrForbidden)
+	}
+	if userClaims.Role == roles.Student && solution.StudentID != userClaims.ID {
+		return nil, nil, fmt.Errorf("%w: user (stud) is not a solution owner", task.ErrForbidden)
+	}
+
 	studProfiles, err := u.taskRepoDB.GetTaskStudents(solution.TaskID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get task students: %w", err)
 	}
-	// TODO: may be remove the student of the gotten solution from task's students list
 	return solution, studProfiles, nil
 }

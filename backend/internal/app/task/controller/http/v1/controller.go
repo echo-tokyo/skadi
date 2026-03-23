@@ -6,9 +6,9 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
-	"skadi/backend/internal/app/class"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
+	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -41,17 +41,27 @@ func NewTaskController(taskUCClient task.UsecaseClient,
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404	"решение задания не найдено"
 func (c *TaskController) Read(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
 	inputPath := &solutionIDPath{}
 	if err := inputPath.Parse(ctx, c.valid); err != nil {
 		return err
 	}
 
-	solution, students, err := c.taskUCClient.GetByID(inputPath.ID)
-	if errors.Is(err, class.ErrNotFound) {
+	solution, students, err := c.taskUCClient.GetByID(inputPath.ID, userClaims)
+	if errors.Is(err, task.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusNotFound,
 			Message:    "решение задания не найдено",
+		}
+	}
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
 		}
 	}
 	if err != nil {
