@@ -47,6 +47,18 @@ cd ./skadi
 2. `./test-stand/frontend/mysql.env` в файл `./mysql/.env`
 3. `./test-stand/frontend/backend-config.yml` в файл `./backend/config.yml`
 
+Команды для `linux`
+
+```shell
+mv ./backend/.env ./backend/.env.backup
+mv ./mysql/.env ./mysql/.env.backup
+mv ./backend/config.yml ./backend/config.yml.backup
+
+cp ./test-stand/frontend/backend.env ./backend/.env
+cp ./test-stand/frontend/mysql.env ./mysql/.env
+cp ./test-stand/frontend/backend-config.yml ./backend/config.yml
+```
+
 #### 3. Запустить `compose` файл для frontend'а
 
 ```shell
