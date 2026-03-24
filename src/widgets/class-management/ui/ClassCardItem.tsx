@@ -1,8 +1,8 @@
 import { IClass, ClassCard } from '@/entities/class'
-import { Button } from '@/shared/ui'
 import { memo } from 'react'
 import styles from './styles.module.scss'
 import { DeleteClassButton } from '@/features/delete-class'
+import { EditClassButton } from '@/features/edit-class'
 
 interface IClassCardItemProps {
   classData: IClass
@@ -18,7 +18,7 @@ export const ClassCardItem = memo(({ classData }: IClassCardItemProps) => {
       actions={
         <div className={styles.actions}>
           <DeleteClassButton id={classData.id} name={classData.name} />
-          <Button color='secondary'>Редактировать</Button>
+          <EditClassButton classData={classData} />
         </div>
       }
     />

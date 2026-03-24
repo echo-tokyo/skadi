@@ -6,11 +6,11 @@ type TClassPagination = {
   perPage: number
 }
 
-export interface ICreateClassRequest {
+export interface IClassRequest {
   name: string
   schedule: string
   students: number[]
-  teacherId: number
+  teacher_id: number
 }
 
 export interface IClass {

@@ -19,7 +19,7 @@ const ClassManagement = () => {
     loadMore,
   } = useInfiniteClasses(CLASSES_PARAMS)
 
-  const filteredMembers = useMemo(() => {
+  const filteredClasses = useMemo(() => {
     const searchValue = classSearchValue.toLowerCase()
     return classItems.filter((el) => {
       const matchesFullname =
@@ -50,8 +50,8 @@ const ClassManagement = () => {
       </div>
 
       <div className={classes}>
-        {filteredMembers.length > 0 ? (
-          filteredMembers.map((classElem) => (
+        {filteredClasses.length > 0 ? (
+          filteredClasses.map((classElem) => (
             <ClassCardItem classData={classElem} key={classElem.id} />
           ))
         ) : (

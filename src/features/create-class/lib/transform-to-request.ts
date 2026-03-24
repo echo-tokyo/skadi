@@ -7,5 +7,5 @@ export const transformToRequest = (
   name: data.className,
   schedule: data.schedule,
   students: data.students.map((el) => Number(el)),
-  teacherId: Number(data.teacher),
+  teacher_id: Number(data.teacher),
 })

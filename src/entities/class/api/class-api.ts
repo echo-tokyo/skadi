@@ -3,7 +3,7 @@ import {
   IClass,
   IClassQuery,
   IClassResponse,
-  ICreateClassRequest,
+  IClassRequest,
 } from '../model/types'
 
 const DEFAULT_PER_PAGE = 20
@@ -30,10 +30,18 @@ export const classApi = baseApi.injectEndpoints({
       },
       providesTags: ['Class'],
     }),
-    createClass: builder.mutation<IClass, ICreateClassRequest>({
+    createClass: builder.mutation<IClass, IClassRequest>({
       query: (data) => ({
         url: '/admin/class',
         method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Class'],
+    }),
+    editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
+      query: ({ id, data }) => ({
+        url: `/admin/class/${id}`,
+        method: 'PATCH',
         body: data,
       }),
       invalidatesTags: ['Class'],
@@ -52,4 +60,5 @@ export const {
   useGetClassesInfiniteQuery,
   useCreateClassMutation,
   useDeleteClassMutation,
+  useEditClassMutation,
 } = classApi
