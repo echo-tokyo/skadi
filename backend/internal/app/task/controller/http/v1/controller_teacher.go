@@ -2,6 +2,7 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 
 	fiber "github.com/gofiber/fiber/v2"
 
@@ -160,28 +161,73 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 // 	return ctx.Status(fiber.StatusOK).JSON(classObj)
 // }
 
-// // @summary		Удаление группы по id. [Только админ]
-// // @description	Удаление группы по её id.
-// // @router			/admin/class/{id} [delete]
-// // @id				admin-class-delete
-// // @tags			class
-// // @accept			json
-// // @produce		json
-// // @security		JWTAccess
-// // @param			id	path	string	true	"ID юзера"
-// // @success		204	"No Content"
-// // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
-// func (c *ClassControllerAdmin) Delete(ctx *fiber.Ctx) error {
-// 	inputPath := &classIDPath{}
-// 	if err := inputPath.Parse(ctx, c.valid); err != nil {
-// 		return err
-// 	}
-// 	err := c.classUCAdmin.DeleteByID(inputPath.ID)
-// 	if err != nil {
-// 		return fmt.Errorf("delete: %w", err)
-// 	}
-// 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
-// }
+// @summary		Удаление задания по id. [Только преподаватель]
+// @description	Удаление задания целиком (со всеми его решениями) по его id.
+// @router			/teacher/task/{id} [delete]
+// @id				teacher-task-delete
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id	path	string	true	"ID задания"
+// @success		204	"No Content"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"доступ запрещён"
+func (c *TaskControllerTeacher) DeleteTask(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
+	inputPath := &taskIDPath{}
+	if err := inputPath.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	err := c.taskUCTeacher.DeleteTaskByID(userClaims.ID, inputPath.ID)
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
+		}
+	}
+	if err != nil {
+		return fmt.Errorf("delete task: %w", err)
+	}
+	return ctx.Status(fiber.StatusNoContent).JSON(nil)
+}
+
+// @summary		Удаление решения по id. [Только преподаватель]
+// @description	Удаление решения (не задания целиком) по его id.
+// @router			/teacher/solution/{id} [delete]
+// @id				teacher-solution-delete
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id	path	string	true	"ID решения"
+// @success		204	"No Content"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"доступ запрещён"
+func (c *TaskControllerTeacher) DeleteSolution(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
+	inputPath := &solutionIDPath{}
+	if err := inputPath.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	err := c.taskUCTeacher.DeleteSolutionByID(userClaims.ID, inputPath.ID)
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
+		}
+	}
+	if err != nil {
+		return fmt.Errorf("delete solution: %w", err)
+	}
+	return ctx.Status(fiber.StatusNoContent).JSON(nil)
+}
 
 // // @summary		Получение списка групп.
 // // @description	Получение списка групп со всеми данными (ID и имена препода и учеников).

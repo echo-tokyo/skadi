@@ -49,3 +49,22 @@ func (u *solutionIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error 
 	}
 	return nil
 }
+
+// @description taskIDPath represents a data with task ID in path params.
+type taskIDPath struct {
+	// task id
+	ID int `params:"id" validate:"required" example:"2"`
+}
+
+// Parse parses taskIDPath request data and validates it.
+func (u *taskIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+	// parse path-params
+	if err := ctx.ParamsParser(u); err != nil {
+		return err
+	}
+	// validate parsed data
+	if err := valid.Validate(u); err != nil {
+		return err
+	}
+	return nil
+}

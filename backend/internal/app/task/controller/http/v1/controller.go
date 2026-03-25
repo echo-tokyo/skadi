@@ -39,6 +39,7 @@ func NewTaskController(taskUCClient task.UsecaseClient,
 // @param			id	path		int	true	"ID решения задания"
 // @success		200	{object}	solutionOut
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"доступ запрещён"
 // @failure		404	"решение задания не найдено"
 func (c *TaskController) Read(ctx *fiber.Ctx) error {
 	// parse user claims
@@ -49,7 +50,7 @@ func (c *TaskController) Read(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	solution, students, err := c.taskUCClient.GetByID(inputPath.ID, userClaims)
+	solution, students, err := c.taskUCClient.GetByIDFull(inputPath.ID, userClaims)
 	if errors.Is(err, task.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,

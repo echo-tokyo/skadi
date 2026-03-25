@@ -49,7 +49,7 @@ func (p *Pagination) Query(tx *gorm.DB) *gorm.DB {
 	return tx.Limit(p.PerPage).Offset((p.Page - 1) * p.PerPage)
 }
 
-// CountTotal counts total objects that will be recieved with
+// CountTotal counts total objects that will be received with
 // the given query and counts total pages amount.
 // Total value will not counts if the given tx has not Model()/Table() statement
 func (p *Pagination) CountTotal(tx *gorm.DB) {

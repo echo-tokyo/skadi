@@ -1058,6 +1058,32 @@ paths:
       summary: Получение решения задания по id.
       tags:
       - task
+  /teacher/solution/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление решения (не задания целиком) по его id.
+      operationId: teacher-solution-delete
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Удаление решения по id. [Только преподаватель]
+      tags:
+      - task
   /teacher/task:
     post:
       consumes:
@@ -1086,6 +1112,32 @@ paths:
       security:
       - JWTAccess: []
       summary: Создание нового задания. [Только преподаватель]
+      tags:
+      - task
+  /teacher/task/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление задания целиком (со всеми его решениями) по его id.
+      operationId: teacher-task-delete
+      parameters:
+      - description: ID задания
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Удаление задания по id. [Только преподаватель]
       tags:
       - task
   /user/me:

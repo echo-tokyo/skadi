@@ -10,6 +10,10 @@ type UsecaseTeacher interface {
 	// for all given students and for all students linked to the given classes.
 	CreateTaskWithSolutions(taskObj *entity.Task, studentIDs []int,
 		classIDs []int) ([]entity.Solution, error)
+	// DeleteTaskByID deletes task object by given ID.
+	DeleteTaskByID(userID, taskID int) error
+	// DeleteSolutionByID deletes solution object by given ID.
+	DeleteSolutionByID(userID, solutionID int) error
 }
 
 type UsecaseStudent interface {
@@ -17,7 +21,7 @@ type UsecaseStudent interface {
 }
 
 type UsecaseClient interface {
-	// GetByID returns a full solution info and all students linked to the solution task.
-	GetByID(solutionID int,
+	// GetByIDFull returns a full solution info and all students linked to the solution task.
+	GetByIDFull(solutionID int,
 		userClaims *entity.UserClaims) (*entity.Solution, []entity.Profile, error)
 }

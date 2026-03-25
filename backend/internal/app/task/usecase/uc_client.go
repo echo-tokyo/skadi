@@ -30,10 +30,10 @@ func NewUCClient(cfg *config.Config, taskRepoDB task.RepositoryDB) *UCClient {
 }
 
 // GetByID returns a full solution info and all students linked to the solution task.
-func (u *UCClient) GetByID(solutionID int,
+func (u *UCClient) GetByIDFull(solutionID int,
 	userClaims *entity.UserClaims) (*entity.Solution, []entity.Profile, error) {
 
-	solution, err := u.taskRepoDB.GetByID(solutionID)
+	solution, err := u.taskRepoDB.GetSolutionByIDFull(solutionID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get solution: %w", err)
 	}

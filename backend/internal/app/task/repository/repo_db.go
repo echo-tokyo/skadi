@@ -90,8 +90,33 @@ func (r *RepoDB) CreateTaskForStudents(taskObj *entity.Task,
 	return solutions, err // err OR nil
 }
 
-// GetByID returns a full solution info by the given ID.
-func (r *RepoDB) GetByID(id int) (*entity.Solution, error) {
+// GetTaskByID returns task info by the given ID.
+func (r *RepoDB) GetTaskByID(id int) (*entity.Task, error) {
+	var taskObj entity.Task
+	err := r.dbStorage.
+		Where(id).First(&taskObj).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// task object with such id not found
+		return nil, fmt.Errorf("task with id: %w", task.ErrNotFound)
+	}
+	return &taskObj, err // err OR nil
+}
+
+// GetSolutionByID returns solution info (with task only) by the given ID.
+func (r *RepoDB) GetSolutionByID(id int) (*entity.Solution, error) {
+	var solObj entity.Solution
+	err := r.dbStorage.
+		Preload(_preloadTask).
+		Where(id).First(&solObj).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// solution object with such id not found
+		return nil, fmt.Errorf("solution with id: %w", task.ErrNotFound)
+	}
+	return &solObj, err // err OR nil
+}
+
+// GetSolutionByIDFull returns a full solution info by the given ID.
+func (r *RepoDB) GetSolutionByIDFull(id int) (*entity.Solution, error) {
 	var solObj entity.Solution
 	err := r.dbStorage.
 		Preload(_preloadTask).
@@ -120,6 +145,11 @@ func (r *RepoDB) UpdateTask(taskObj *entity.Task) error {
 // UpdateSolution updates the given solution.
 func (r *RepoDB) UpdateSolution(solution *entity.Solution) error {
 	panic("unimplemented")
+}
+
+// DeleteTaskByID deletes task by given id.
+func (r *RepoDB) DeleteTaskByID(id int) error {
+	return r.dbStorage.Delete(&entity.Task{}, id).Error
 }
 
 // DeleteSolutionByID deletes solution by given id.

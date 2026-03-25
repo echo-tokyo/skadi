@@ -15,7 +15,10 @@ func RegisterEndpoints(router fiber.Router, controller *TaskController,
 	{
 		teacherGroup.Post("/task", controllerTeacher.Create)
 		// teacherGroup.Patch("/solution/:id", controllerTeacher.Update)
-		// teacherGroup.Delete("/solution/:id", controllerTeacher.Delete)
+		// teacherGroup.Post("/solution/:id/approve", controllerTeacher.Approve)
+		teacherGroup.Delete("/task/:id", controllerTeacher.DeleteTask)
+		teacherGroup.Delete("/solution/:id", controllerTeacher.DeleteSolution)
+		// teacherGroup.Get("/task", controllerTeacher.GetTaskMany)
 		// teacherGroup.Get("/solution", controllerTeacher.GetManyTeacher)
 	}
 

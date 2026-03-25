@@ -6,12 +6,18 @@ import "skadi/backend/internal/app/entity"
 type RepositoryDB interface {
 	// CreateTaskForStudents create a new task and empty solutions for every student.
 	CreateTaskForStudents(taskObj *entity.Task, students []entity.Profile) ([]entity.Solution, error)
-	// GetByID returns a full solution info by the given ID.
-	GetByID(id int) (*entity.Solution, error)
+	// GetTaskByID returns task info by the given ID.
+	GetTaskByID(id int) (*entity.Task, error)
+	// GetSolutionByID returns solution info (with task only) by the given ID.
+	GetSolutionByID(id int) (*entity.Solution, error)
+	// GetSolutionByIDFull returns a full solution info by the given ID.
+	GetSolutionByIDFull(id int) (*entity.Solution, error)
 	// UpdateTask updates the given task.
 	UpdateTask(taskObj *entity.Task) error
 	// UpdateSolution updates the given solution.
 	UpdateSolution(solution *entity.Solution) error
+	// DeleteTaskByID deletes task by given id.
+	DeleteTaskByID(id int) error
 	// DeleteSolutionByID deletes solution by given id.
 	DeleteSolutionByID(id int) error
 

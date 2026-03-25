@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 
 	"skadi/backend/config"
@@ -84,4 +85,42 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 		return nil, fmt.Errorf("create task for students: %w", err)
 	}
 	return solutions, nil
+}
+
+// DeleteTaskByID deletes task object by given ID.
+func (u *UCTeacher) DeleteTaskByID(userID, taskID int) error {
+	// get task info
+	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
+	// return nil error if task was not found
+	if errors.Is(err, task.ErrNotFound) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	// check that given user (teacher) is a task owner
+	if userID != taskObj.TeacherID {
+		return fmt.Errorf("%w: user (teacher) is not a task owner", task.ErrForbidden)
+	}
+	// delete task
+	return u.taskRepoDB.DeleteTaskByID(taskID)
+}
+
+// DeleteSolutionByID deletes solution object by given ID.
+func (u *UCTeacher) DeleteSolutionByID(userID, solutionID int) error {
+	// get short solution info
+	solObj, err := u.taskRepoDB.GetSolutionByID(solutionID)
+	// return nil error if solution was not found
+	if errors.Is(err, task.ErrNotFound) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	// check that given user (teacher) is a solution task owner
+	if userID != solObj.Task.TeacherID {
+		return fmt.Errorf("%w: user (teacher) is not a solution task owner", task.ErrForbidden)
+	}
+	// delete solution
+	return u.taskRepoDB.DeleteSolutionByID(solutionID)
 }

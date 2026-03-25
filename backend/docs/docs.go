@@ -906,6 +906,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/teacher/solution/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление решения (не задания целиком) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Удаление решения по id. [Только преподаватель]",
+                "operationId": "teacher-solution-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    }
+                }
+            }
+        },
         "/teacher/task": {
             "post": {
                 "security": [
@@ -948,6 +989,47 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/teacher/task/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление задания целиком (со всеми его решениями) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Удаление задания по id. [Только преподаватель]",
+                "operationId": "teacher-task-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
                     }
                 }
             }
