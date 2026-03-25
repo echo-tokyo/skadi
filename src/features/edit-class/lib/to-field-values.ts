@@ -5,5 +5,5 @@ export const toFieldValues = (classData: IClass): TClassSchema => ({
   className: classData.name,
   schedule: classData.schedule ?? '',
   students: classData.students?.map((el) => String(el.id)) ?? [''],
-  teacher: String(classData.teacher?.id),
+  teacher: classData.teacher ? String(classData.teacher.id) : '',
 })

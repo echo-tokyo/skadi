@@ -1,6 +1,6 @@
 import { ClassFields, IClassFieldsRef } from '@/entities/class'
-import { useGetMembersInfiniteQuery } from '@/entities/member'
-import { memo, useMemo } from 'react'
+import { useMemberSelectOptions } from '@/entities/member'
+import { memo } from 'react'
 import type { Ref } from 'react'
 
 interface DialogContentProps {
@@ -12,48 +12,17 @@ const DialogContent = (props: DialogContentProps) => {
   const { classFieldsRef, onDirtyChange } = props
 
   const {
-    data: teachersData,
-    fetchNextPage: fetchNextTeachersPage,
-    hasNextPage: hasNextTeachersPage,
-    isFetchingNextPage: isFetchingNextTeachersPage,
-  } = useGetMembersInfiniteQuery({
-    roles: ['teacher'],
-    free: false,
-    perPage: 5,
-  })
-
-  const {
-    data: studentsData,
+    options: studentOptions,
     fetchNextPage: fetchNextStudentsPage,
     hasNextPage: hasNextStudentsPage,
     isFetchingNextPage: isFetchingNextStudentsPage,
-  } = useGetMembersInfiniteQuery({
-    roles: ['student'],
-    free: false,
-    perPage: 5,
-  })
-
-  const teacherOptions = useMemo(
-    () =>
-      teachersData?.pages
-        .flatMap((el) => el.data)
-        .map((el) => ({
-          label: el.profile?.fullname as string,
-          value: String(el.id),
-        })) ?? [],
-    [teachersData],
-  )
-
-  const studentOptions = useMemo(
-    () =>
-      studentsData?.pages
-        .flatMap((el) => el.data)
-        .map((el) => ({
-          label: el.profile?.fullname as string,
-          value: String(el.id),
-        })) ?? [],
-    [studentsData],
-  )
+  } = useMemberSelectOptions('student')
+  const {
+    options: teacherOptions,
+    fetchNextPage: fetchNextTeachersPage,
+    hasNextPage: hasNextTeachersPage,
+    isFetchingNextPage: isFetchingNextTeachersPage,
+  } = useMemberSelectOptions('teacher')
 
   return (
     <ClassFields

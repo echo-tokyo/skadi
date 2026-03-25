@@ -1,5 +1,5 @@
 import { Button } from '@/shared/ui'
-import { useEditClassDialog } from '../model/use-edit-class-dialog'
+import { useEditClassDialog } from '../model/useEditClassDialog'
 import { IClass } from '@/entities/class'
 
 export const EditClassButton = ({ classData }: { classData: IClass }) => {

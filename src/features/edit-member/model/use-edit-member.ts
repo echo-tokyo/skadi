@@ -6,7 +6,7 @@ import { transformToUpdateRequest } from '../lib/transform-to-update-request'
 export const useEditMember = (id: number) => {
   const [updateMember, { isLoading }] = useUpdateMemberMutation()
 
-  const editMember = async (formData: TMemberFullSchema): Promise<boolean> => {
+  const submit = async (formData: TMemberFullSchema): Promise<boolean> => {
     const data = transformToUpdateRequest(formData)
     try {
       await updateMember({ id, data }).unwrap()
@@ -18,5 +18,5 @@ export const useEditMember = (id: number) => {
     }
   }
 
-  return { editMember, isLoading }
+  return { submit, isLoading }
 }

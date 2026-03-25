@@ -13,7 +13,7 @@ import { useEditMember } from './use-edit-member'
 export const useEditMemberDialog = (member: IMember) => {
   const { show, update } = useDialog()
   const formRef = useRef<IMemberFieldsRef>(null)
-  const { editMember } = useEditMember(member.id)
+  const { submit } = useEditMember(member.id)
   const fieldData = useMemo(() => toFormData(member), [member])
   const dialogIdRef = useRef<string | null>(null)
 
@@ -48,7 +48,7 @@ export const useEditMemberDialog = (member: IMember) => {
         const formData = formRef.current?.getFieldsData()
 
         if (formData) {
-          const success = await editMember(formData)
+          const success = await submit(formData)
           if (!success) {
             throw new Error('Failed to update member')
           }

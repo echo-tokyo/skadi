@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
 import { IClassFieldsRef } from '@/entities/class'
 import DialogContent from '../ui/DialogContent'
-import { useCreateClass } from './useCreateClass'
+import { useCreateClass } from './use-сreate-сlass'
 
 export const useCreateClassDialog = () => {
   const { show, update } = useDialog()

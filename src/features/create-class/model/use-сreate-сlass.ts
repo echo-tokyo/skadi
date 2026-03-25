@@ -1,7 +1,10 @@
-import { transformToRequest } from '../lib/transform-to-request'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
-import { TClassSchema, useCreateClassMutation } from '@/entities/class'
+import {
+  TClassSchema,
+  transformToRequest,
+  useCreateClassMutation,
+} from '@/entities/class'
 
 export const useCreateClass = () => {
   const [createClass, { isLoading }] = useCreateClassMutation()

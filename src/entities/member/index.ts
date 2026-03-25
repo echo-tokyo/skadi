@@ -9,6 +9,7 @@ export {
   memberFullSchema,
   memberBaseSchema,
 } from './model/member-fields-schema'
+export { useMemberSelectOptions } from './model/useMemberSelectOptions'
 export type {
   TMemberFullSchema,
   TMemberBaseSchema,

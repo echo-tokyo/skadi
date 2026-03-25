@@ -7,13 +7,13 @@ import { useEditClass } from './use-edit-class'
 export const useEditClassDialog = (classData: IClass) => {
   const { show, update } = useDialog()
   const formRef = useRef<IClassFieldsRef>(null)
-  const { updateClass } = useEditClass(classData.id)
-  // const fieldData = useMemo(() => toFormData(member), [member])
+  const { submit } = useEditClass(classData.id)
   const dialogIdRef = useRef<string | null>(null)
 
   const showDialog = () => {
     const id = show({
       title: 'Редактирование группы',
+      isConfirmDisabled: true,
       content: () => (
         <DialogContent
           classData={classData}
@@ -38,7 +38,7 @@ export const useEditClassDialog = (classData: IClass) => {
         const formData = formRef.current?.getFieldsData()
 
         if (formData) {
-          const success = await updateClass(formData)
+          const success = await submit(formData)
           if (!success) {
             throw new Error('Failed to update class')
           }
