@@ -1,8 +1,11 @@
 import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
-import { memberFullSchema, MemberFields } from '@/entities/member'
+import {
+  memberFullSchema,
+  MemberFields,
+  IMemberFieldsRef,
+} from '@/entities/member'
 import { useCreateMember } from './use-create-member'
-import { IMemberFieldsRef } from '@/entities/member/ui/MemberFields'
 
 export const useCreateMemberDialog = () => {
   const { show, update } = useDialog()

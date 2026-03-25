@@ -1,4 +1,8 @@
-import { ICreateMemberRequest, TMemberFullSchema, toProfile } from '@/entities/member'
+import {
+  ICreateMemberRequest,
+  TMemberFullSchema,
+  toProfile,
+} from '@/entities/member'
 
 export const transformToRequest = (
   data: TMemberFullSchema,

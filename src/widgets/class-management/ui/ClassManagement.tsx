@@ -22,8 +22,7 @@ const ClassManagement = () => {
   const filteredClasses = useMemo(() => {
     const searchValue = classSearchValue.toLowerCase()
     return classItems.filter((el) => {
-      const matchesFullname =
-        el.name.toLowerCase().includes(searchValue) ?? false
+      const matchesFullname = el.name.toLowerCase().includes(searchValue)
       return matchesFullname
     })
   }, [classItems, classSearchValue])

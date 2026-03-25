@@ -1,5 +1,5 @@
 import { TMemberFullSchema, useCreateMemberMutation } from '@/entities/member'
-import { transformToRequest } from '../lib/transformToRequest'
+import { transformToRequest } from '../lib/transform-to-request'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
 

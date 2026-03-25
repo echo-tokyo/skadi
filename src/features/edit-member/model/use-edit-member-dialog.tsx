@@ -20,6 +20,7 @@ export const useEditMemberDialog = (member: IMember) => {
   const showDialog = () => {
     const id = show({
       title: 'Редактирование пользователя',
+      isConfirmDisabled: true,
       content: () => (
         <MemberFields
           ref={formRef}
