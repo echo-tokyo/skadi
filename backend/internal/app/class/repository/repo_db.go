@@ -146,13 +146,13 @@ func (r *RepoDB) ListShort() ([]entity.Class, error) {
 	classes := []entity.Class{}
 	err := r.dbStorage.
 		Select(_fieldID, _fieldName).
-		Order("id ASC").
+		Order("id DESC").
 		Find(&classes).Error
 	return classes, err // err OR nil
 }
 
 // ListFull returns slice of class objects with full data.
-// Search params appends condition to filter classes by name (substring).
+// Search param appends condition to filter classes by name (substring).
 func (r *RepoDB) ListFull(search string, page *entity.Pagination) ([]entity.Class, error) {
 	classes := []entity.Class{}
 	// create query
@@ -165,7 +165,7 @@ func (r *RepoDB) ListFull(search string, page *entity.Pagination) ([]entity.Clas
 	if search != "" {
 		query = query.Where("name REGEXP ?", search)
 	}
-	query = query.Order("id ASC")
+	query = query.Order("id DESC")
 	// apply pagination if it's not nil
 	if page != nil {
 		page.CountTotal(query)

@@ -252,7 +252,7 @@ func (r *RepoDB) GetByRoles(roles []string, free bool, search string,
 	if search != "" {
 		query = query.Where("username REGEXP ?", search).Or("fullname REGEXP ?", search)
 	}
-	query = query.Order("id ASC")
+	query = query.Order("id DESC")
 	// apply pagination if it's not nil
 	if page != nil {
 		page.CountTotal(query)
