@@ -2,11 +2,13 @@ package v1
 
 import (
 	"fmt"
-	"skadi/backend/internal/app/task"
-	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
-	"skadi/backend/internal/pkg/validator"
 
 	fiber "github.com/gofiber/fiber/v2"
+
+	"skadi/backend/internal/app/task"
+	"skadi/backend/internal/pkg/serialize"
+	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
+	"skadi/backend/internal/pkg/validator"
 )
 
 // TaskControllerStudent represents a controller for task routes accepted for students only.
@@ -109,7 +111,7 @@ func (c *TaskControllerStudent) SolutionList(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputQuery := &listSolutionStudentQuery{}
-	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputQuery, ctx.QueryParser, c.valid.Validate); err != nil {
 		return err
 	}
 	// get pagination object OR nil

@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"slices"
 
-	fiber "github.com/gofiber/fiber/v2"
-
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/roles"
+	"skadi/backend/internal/pkg/serialize"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -48,49 +47,10 @@ type contactBody struct {
 	Email string `json:"email" validate:"omitempty,email,max=50" example:"ivanovvp@gmail.com" maxLength:"50"`
 }
 
-// Parse parses userBody request data and validates it.
-func (u *userBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-	// parse JSON-body
-	if err := ctx.BodyParser(u); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := valid.Validate(u); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Parse parses profileBody request data and validates it.
-func (p *profileBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-	// parse JSON-body
-	if err := ctx.BodyParser(p); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := valid.Validate(p); err != nil {
-		return err
-	}
-	return nil
-}
-
 // @description userIDPath represents a data with user ID in path params.
 type userIDPath struct {
 	// user (and profile) id
 	ID int `params:"id" validate:"required,numeric" example:"2"`
-}
-
-// Parse parses userIDPath request data and validates it.
-func (u *userIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-	// parse path-params
-	if err := ctx.ParamsParser(u); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := valid.Validate(u); err != nil {
-		return err
-	}
-	return nil
 }
 
 // @description updateBody represents a data to update user and profile.
@@ -99,19 +59,6 @@ type updateBody struct {
 	ClassID *int `json:"class_id,omitempty" validate:"omitempty,numeric" example:"3"`
 	// user profile
 	Profile profileBody `json:"profile" validate:"required"`
-}
-
-// Parse parses updateBody request data and validates it.
-func (u *updateBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-	// parse JSON-body
-	if err := ctx.BodyParser(u); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := valid.Validate(u); err != nil {
-		return err
-	}
-	return nil
 }
 
 // @description listUserQuery represents a data with optional query-params to get users list.
@@ -127,43 +74,28 @@ type listUserQuery struct {
 }
 
 // Parse parses listUserQuery request data and validates it.
-func (u *listUserQuery) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-	// parse query-params
-	if err := ctx.QueryParser(u); err != nil {
-		return err
-	}
-	// validate parsed roles list
-	for _, role := range u.Roles {
-		if !slices.Contains(_acceptedRoles, role) {
-			return fmt.Errorf("%w: invalid user role %s", validator.ErrValidate, role)
+func (u *listUserQuery) Validate(valid validator.Validator) serialize.Validator {
+	return func(_ any) error {
+		// validate parsed roles list
+		for _, role := range u.Roles {
+			if !slices.Contains(_acceptedRoles, role) {
+				return fmt.Errorf("%w: invalid user role %s", validator.ErrValidate, role)
+			}
 		}
+		// set all roles if no one role specified
+		if len(u.Roles) == 0 {
+			u.Roles = _acceptedRoles
+		}
+		// validate parsed data
+		if err := valid.Validate(u); err != nil {
+			return err
+		}
+		return nil
 	}
-	// set all roles if no one role specified
-	if len(u.Roles) == 0 {
-		u.Roles = _acceptedRoles
-	}
-	// validate parsed data
-	if err := valid.Validate(u); err != nil {
-		return err
-	}
-	return nil
 }
 
 // @description updatePasswordAdminBody represents a data to update user password by admin.
 type updatePasswordAdminBody struct {
 	// new password for user
 	NewPasswd string `json:"new" validate:"required,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
-}
-
-// Parse parses updatePasswordAdminBody request data and validates it.
-func (u *updatePasswordAdminBody) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
-	// parse JSON-body
-	if err := ctx.BodyParser(u); err != nil {
-		return err
-	}
-	// validate parsed data
-	if err := valid.Validate(u); err != nil {
-		return err
-	}
-	return nil
 }

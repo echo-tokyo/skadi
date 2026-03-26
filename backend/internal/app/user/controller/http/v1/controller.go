@@ -9,6 +9,7 @@ import (
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -63,7 +64,7 @@ func (c *UserController) GetMe(ctx *fiber.Ctx) error {
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 func (c *UserController) UpdateMeProfile(ctx *fiber.Ctx) error {
 	inputBody := &profileBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 	// parse user claims
@@ -111,7 +112,7 @@ func (c *UserController) UpdateMeProfile(ctx *fiber.Ctx) error {
 // @failure		409					"пароли не должны совпадать"
 func (c *UserController) ChangePassword(ctx *fiber.Ctx) error {
 	inputBody := &updatePasswordBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 	// parse user claims

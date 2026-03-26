@@ -9,6 +9,7 @@ import (
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -48,7 +49,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputBody := &taskBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -178,7 +179,7 @@ func (c *TaskControllerTeacher) DeleteTask(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputPath := &taskIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 	err := c.taskUCTeacher.DeleteTaskByID(userClaims.ID, inputPath.ID)
@@ -212,7 +213,7 @@ func (c *TaskControllerTeacher) DeleteSolution(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputPath := &solutionIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 	err := c.taskUCTeacher.DeleteSolutionByID(userClaims.ID, inputPath.ID)
@@ -245,11 +246,10 @@ func (c *TaskControllerTeacher) TaskList(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputQuery := &listTaskQuery{}
-	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputQuery, ctx.QueryParser, c.valid.Validate); err != nil {
 		return err
 	}
 	// get pagination object OR nil
-	// pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
 	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get tasks
@@ -280,7 +280,7 @@ func (c *TaskControllerTeacher) SolutionList(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputQuery := &listSolutionTeacherQuery{}
-	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputQuery, ctx.QueryParser, c.valid.Validate); err != nil {
 		return err
 	}
 	// get pagination object OR nil

@@ -9,6 +9,8 @@ import (
 	"skadi/backend/internal/app/class"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
+	"skadi/backend/internal/pkg/utils/slices"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -45,7 +47,7 @@ func NewClassControllerAdmin(classUCAdmin class.UsecaseAdmin,
 // @failure		409			"группа с введенным названием уже существует"
 func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 	inputBody := &classBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -109,11 +111,11 @@ func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 // @failure		404			"группа не найдена"
 func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
 	inputPath := &classIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 	inputBody := &updateBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -122,7 +124,7 @@ func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
 		Name:            inputBody.Name,
 		TeacherID:       inputBody.TeacherID,
 		Schedule:        inputBody.Schedule,
-		NewFullStudents: inputBody.Students,
+		NewFullStudents: slices.DelDupls(inputBody.Students), // delete duplicates from list
 	}
 	classObj, err := c.classUCAdmin.Update(inputPath.ID, newData)
 	if errors.Is(err, class.ErrNotFound) {
@@ -172,9 +174,11 @@ func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassControllerAdmin) Delete(ctx *fiber.Ctx) error {
 	inputPath := &classIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
+
+	// delete class
 	err := c.classUCAdmin.DeleteByID(inputPath.ID)
 	if err != nil {
 		return fmt.Errorf("delete: %w", err)

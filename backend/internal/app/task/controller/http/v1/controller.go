@@ -8,6 +8,7 @@ import (
 
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -46,7 +47,7 @@ func (c *TaskController) Read(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
 	inputPath := &solutionIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 

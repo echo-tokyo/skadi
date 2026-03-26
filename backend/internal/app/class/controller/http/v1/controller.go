@@ -8,6 +8,7 @@ import (
 
 	"skadi/backend/internal/app/class"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -41,7 +42,7 @@ func NewClassController(classUCClient class.UsecaseClient,
 // @failure		404	"группа не найдена"
 func (c *ClassController) Read(ctx *fiber.Ctx) error {
 	inputPath := &classIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -90,7 +91,7 @@ func (c *ClassController) ListShort(ctx *fiber.Ctx) error {
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
 	inputQuery := &listClassQuery{}
-	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputQuery, ctx.QueryParser, c.valid.Validate); err != nil {
 		return err
 	}
 	// get pagination object OR nil

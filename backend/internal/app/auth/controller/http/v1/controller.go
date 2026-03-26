@@ -11,6 +11,7 @@ import (
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/cookie"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -61,7 +62,7 @@ func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
 // @failure		404			"пользователь с введенным логином не найден"
 func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 	inputBody := &authBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 

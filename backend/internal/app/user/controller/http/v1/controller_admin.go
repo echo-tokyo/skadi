@@ -9,6 +9,7 @@ import (
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/httperror"
+	"skadi/backend/internal/pkg/serialize"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -43,7 +44,7 @@ func NewUserControllerAdmin(userUCAdmin user.UsecaseAdmin,
 // @failure		409			"пользователь с введенным логином уже существует"
 func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 	inputBody := &userBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -107,7 +108,7 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 // @failure		404	"пользователь не найден"
 func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 	inputPath := &userIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -141,11 +142,11 @@ func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 // @failure		404			"пользователь не найден"
 func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 	inputPath := &userIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 	inputBody := &updateBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -207,7 +208,7 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 // @failure		404	"пользователь не найден"
 func (c *UserControllerAdmin) Delete(ctx *fiber.Ctx) error {
 	inputPath := &userIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 
@@ -238,7 +239,8 @@ func (c *UserControllerAdmin) Delete(ctx *fiber.Ctx) error {
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 	inputQuery := &listUserQuery{}
-	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+	err := serialize.Deserialize(inputQuery, ctx.QueryParser, inputQuery.Validate(c.valid))
+	if err != nil {
 		return err
 	}
 	// get pagination object OR nil
@@ -273,11 +275,11 @@ func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 // @failure		404						"пользователь не найден"
 func (c *UserControllerAdmin) ChangePassword(ctx *fiber.Ctx) error {
 	inputPath := &userIDPath{}
-	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
 	inputBody := &updatePasswordAdminBody{}
-	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
 
