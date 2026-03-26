@@ -17,6 +17,17 @@ let authActions: IAuthActions | null = null
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL || '',
   credentials: 'include',
+  paramsSerializer: (params) => {
+    const searchParams = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item) => searchParams.append(key, item))
+      } else if (value !== undefined && value !== null) {
+        searchParams.append(key, String(value))
+      }
+    })
+    return searchParams.toString()
+  },
 })
 
 export const initializeAuthActions = (actions: IAuthActions): void => {

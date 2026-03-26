@@ -4,6 +4,7 @@ import { store } from '../store/store'
 import { clearUserData } from '@/entities/user'
 import { toast } from 'sonner'
 
+// FIXME: появляется 3 уведомления, если токен истекает
 initializeAuthActions({
   onAuthFailure: () => {
     store.dispatch(clearUserData())

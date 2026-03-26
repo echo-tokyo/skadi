@@ -231,12 +231,25 @@ const SelectContent = <T extends string>({
     return () => clearTimeout(timer)
   }, [searchQuery, onSearchChange])
 
+  // Фиксируем выбранные значения при открытии — чтобы элементы не прыгали
+  // сразу при выборе, а поднимались вверх только при следующем открытии
+  const initialSelectedRef = useRef<Set<string>>(
+    new Set(options.filter((o) => isSelected(o.value)).map((o) => o.value)),
+  )
+
   // Клиентская фильтрация — только когда нет серверного поиска
   const filteredOptions = useMemo(() => {
-    if (onSearchChange) return options
-    if (!searchQuery.trim()) return options
-    const query = searchQuery.toLowerCase()
-    return options.filter((o) => o.label.toLowerCase().includes(query))
+    const base = (() => {
+      if (onSearchChange) return options
+      if (!searchQuery.trim()) return options
+      const query = searchQuery.toLowerCase()
+      return options.filter((o) => o.label.toLowerCase().includes(query))
+    })()
+    return [...base].sort((a, b) => {
+      const aSelected = initialSelectedRef.current.has(a.value) ? 0 : 1
+      const bSelected = initialSelectedRef.current.has(b.value) ? 0 : 1
+      return aSelected - bSelected
+    })
   }, [options, searchQuery, onSearchChange])
 
   // Инициализация highlighted на выбранном элементе (или 0)

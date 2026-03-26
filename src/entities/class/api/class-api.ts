@@ -12,7 +12,7 @@ export const classApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getClasses: builder.infiniteQuery<IClassResponse, IClassQuery, number>({
       query: ({ queryArg, pageParam }) => {
-        const { perPage, ...rest } = queryArg
+        const { 'per-page': perPage, ...rest } = queryArg
         return {
           url: '/class',
           method: 'GET',

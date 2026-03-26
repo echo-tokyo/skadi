@@ -1,7 +1,6 @@
-import { useGetClassesInfiniteQuery } from '@/entities/class'
-import { IClassQuery } from '@/entities/class/model/types'
+import { IClassQuery, useGetClassesInfiniteQuery } from '@/entities/class'
 import { getErrorMessage } from '@/shared/api'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 
 export const useInfiniteClasses = (params: IClassQuery) => {
@@ -20,7 +19,10 @@ export const useInfiniteClasses = (params: IClassQuery) => {
     }
   }, [error, isError])
 
-  const classes = data?.pages.flatMap((page) => page.data) ?? []
+  const classes = useMemo(
+    () => data?.pages.flatMap((page) => page.data) ?? [],
+    [data?.pages],
+  )
 
   return {
     classes,

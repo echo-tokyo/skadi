@@ -1,12 +1,21 @@
 import { TRole } from '@/shared/model'
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useGetMembersInfiniteQuery } from '../api/member-api'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
+import { useDebounce } from '@/shared/lib'
 
 export const useMemberSelectOptions = (role: TRole) => {
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search)
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error } =
-    useGetMembersInfiniteQuery({ roles: [role], free: false, perPage: 5 })
+    useGetMembersInfiniteQuery({
+      role: [role],
+      free: false,
+      'per-page': 1,
+      search: debouncedSearch || undefined,
+    })
 
   if (error) {
     toast.error(getErrorMessage(error))
@@ -17,16 +26,21 @@ export const useMemberSelectOptions = (role: TRole) => {
       data?.pages
         .flatMap((p) => p.data)
         .map((el) => ({
-          label: el.profile?.fullname ?? '',
+          label: el.profile.fullname,
           value: String(el.id),
         })) ?? [],
-    [data],
+    [data?.pages],
   )
+
+  const onSearchChange = useCallback((query: string) => {
+    setSearch(query)
+  }, [])
 
   return {
     options,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    onSearchChange,
   }
 }

@@ -16,12 +16,14 @@ const DialogContent = (props: DialogContentProps) => {
     fetchNextPage: fetchNextStudentsPage,
     hasNextPage: hasNextStudentsPage,
     isFetchingNextPage: isFetchingNextStudentsPage,
+    onSearchChange: onStudentSearchChange,
   } = useMemberSelectOptions('student')
   const {
     options: teacherOptions,
     fetchNextPage: fetchNextTeachersPage,
     hasNextPage: hasNextTeachersPage,
     isFetchingNextPage: isFetchingNextTeachersPage,
+    onSearchChange: onTeacherSearchChange,
   } = useMemberSelectOptions('teacher')
 
   return (
@@ -33,12 +35,14 @@ const DialogContent = (props: DialogContentProps) => {
         hasMore: hasNextTeachersPage,
         isLoadingMore: isFetchingNextTeachersPage,
         onLoadMore: fetchNextTeachersPage,
+        onSearchChange: onTeacherSearchChange,
       }}
       studentField={{
         data: studentOptions,
         hasMore: hasNextStudentsPage,
         isLoadingMore: isFetchingNextStudentsPage,
         onLoadMore: fetchNextStudentsPage,
+        onSearchChange: onStudentSearchChange,
       }}
     />
   )

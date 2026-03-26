@@ -20,6 +20,7 @@ type TPaginatedSelectField = {
   onLoadMore?: () => void
   hasMore?: boolean
   isLoadingMore?: boolean
+  onSearchChange?: (query: string) => void
 }
 
 interface IClassFieldsProps {
@@ -106,6 +107,7 @@ const ClassFields = ({
         onLoadMore={teacherField.onLoadMore}
         hasMore={teacherField.hasMore}
         isLoadingMore={teacherField.isLoadingMore}
+        onSearchChange={teacherField.onSearchChange}
         onChange={(v) =>
           setValue('teacher', v, {
             shouldValidate: hasAttemptedValidation,
@@ -126,6 +128,7 @@ const ClassFields = ({
         onLoadMore={studentField.onLoadMore}
         hasMore={studentField.hasMore}
         isLoadingMore={studentField.isLoadingMore}
+        onSearchChange={studentField.onSearchChange}
         onChange={(v) =>
           setValue('students', v, {
             shouldValidate: hasAttemptedValidation,

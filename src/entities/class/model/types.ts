@@ -29,8 +29,7 @@ export interface IClassResponse {
 }
 
 export interface IClassQuery {
-  page: number
-  perPage: number
+  'per-page': number
   search: string
 }
 
