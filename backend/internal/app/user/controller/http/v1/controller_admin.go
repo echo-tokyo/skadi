@@ -242,7 +242,7 @@ func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 		return err
 	}
 	// get pagination object OR nil
-	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get users
 	userListResp, err := c.userUCAdmin.GetByRoles(inputQuery.Roles, inputQuery.Free,

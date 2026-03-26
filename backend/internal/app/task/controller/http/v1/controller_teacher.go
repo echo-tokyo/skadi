@@ -249,7 +249,8 @@ func (c *TaskControllerTeacher) TaskList(ctx *fiber.Ctx) error {
 		return err
 	}
 	// get pagination object OR nil
-	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+	// pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get tasks
 	taskListResp, err := c.taskUCTeacher.GetTasks(userClaims.ID, inputQuery.Search, pageParams)
@@ -283,7 +284,7 @@ func (c *TaskControllerTeacher) SolutionList(ctx *fiber.Ctx) error {
 		return err
 	}
 	// get pagination object OR nil
-	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get solutions
 	solListResp, err := c.taskUCTeacher.GetSolutions(userClaims.ID, inputQuery.Search,

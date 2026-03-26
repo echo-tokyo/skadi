@@ -201,8 +201,8 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "default": 10,
-                        "example": 1,
-                        "description": "per page pagination param (default: 10)",
+                        "example": 5,
+                        "description": "per page pagination param",
                         "name": "per-page",
                         "in": "query"
                     },
@@ -602,8 +602,8 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "default": 10,
-                        "example": 1,
-                        "description": "per page pagination param (default: 10)",
+                        "example": 5,
+                        "description": "per page pagination param",
                         "name": "per-page",
                         "in": "query"
                     },
@@ -945,8 +945,8 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "default": 10,
-                        "example": 1,
-                        "description": "per page pagination param (default: 10)",
+                        "example": 5,
+                        "description": "per page pagination param",
                         "name": "per-page",
                         "in": "query"
                     }
@@ -1003,8 +1003,8 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "default": 10,
-                        "example": 1,
-                        "description": "per page pagination param (default: 10)",
+                        "example": 5,
+                        "description": "per page pagination param",
                         "name": "per-page",
                         "in": "query"
                     },
@@ -1102,8 +1102,8 @@ const docTemplate = `{
                         "minimum": 1,
                         "type": "integer",
                         "default": 10,
-                        "example": 1,
-                        "description": "per page pagination param (default: 10)",
+                        "example": 5,
+                        "description": "per page pagination param",
                         "name": "per-page",
                         "in": "query"
                     },
@@ -1450,7 +1450,6 @@ const docTemplate = `{
             "required": [
                 "id",
                 "status",
-                "student",
                 "task"
             ],
             "properties": {

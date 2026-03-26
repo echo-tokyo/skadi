@@ -7,7 +7,6 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/class"
-	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -95,7 +94,7 @@ func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
 		return err
 	}
 	// get pagination object OR nil
-	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get classes
 	classListResp, err := c.classUCClient.ListFull(inputQuery.Search, pageParams)

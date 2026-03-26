@@ -3,6 +3,7 @@ package v1
 import (
 	fiber "github.com/gofiber/fiber/v2"
 
+	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -71,12 +72,10 @@ func (u *taskIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 
 // @description listTaskQuery represents a data with optional query-params to get tasks list.
 type listTaskQuery struct {
-	// page pagination param
-	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
-	// per page pagination param (default: 10)
-	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
 	// substring to filter data by substring (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"F26"`
+	// pagination params
+	*entity.PaginationQuery
 }
 
 // Parse parses listTaskQuery request data and validates it.
@@ -95,14 +94,12 @@ func (u *listTaskQuery) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 // @description listSolutionTeacherQuery represents a data with
 // optional query-params to get solutions list for a teacher tasks.
 type listSolutionTeacherQuery struct {
-	// page pagination param
-	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
-	// per page pagination param (default: 10)
-	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
 	// filter for checked solutions if true
 	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
 	// substring to filter data by substring (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"F26"`
+	// pagination params
+	*entity.PaginationQuery
 }
 
 // Parse parses listSolutionTeacherQuery request data and validates it.
@@ -121,12 +118,10 @@ func (u *listSolutionTeacherQuery) Parse(ctx *fiber.Ctx, valid validator.Validat
 // @description listSolutionStudentQuery represents a data with
 // optional query-params to get solutions list for a student.
 type listSolutionStudentQuery struct {
-	// page pagination param
-	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
-	// per page pagination param (default: 10)
-	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
 	// filter for checked solutions if true
 	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
+	// pagination params
+	*entity.PaginationQuery
 }
 
 // Parse parses listSolutionStudentQuery request data and validates it.

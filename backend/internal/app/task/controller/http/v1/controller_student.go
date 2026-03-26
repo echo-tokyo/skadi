@@ -2,7 +2,6 @@ package v1
 
 import (
 	"fmt"
-	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
@@ -94,17 +93,17 @@ func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
 // 	return ctx.Status(fiber.StatusOK).JSON(classObj)
 // }
 
-//	@summary		Получение списка решений [только студент].
-//	@description	Получение списка решений конкретного студента.
-//	@router			/student/solution [get]
-//	@id				student-solution-list
-//	@tags			task
-//	@accept			json
-//	@produce		json
-//	@security		JWTAccess
-//	@param			listSolutionStudentQuery	query		listSolutionStudentQuery	false	"listSolutionStudentQuery"
-//	@success		200							{object}	listSolutionOut
-//	@failure		401							"неверный токен (пустой, истекший или неверный формат)"
+// @summary		Получение списка решений [только студент].
+// @description	Получение списка решений конкретного студента.
+// @router			/student/solution [get]
+// @id				student-solution-list
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			listSolutionStudentQuery	query		listSolutionStudentQuery	false	"listSolutionStudentQuery"
+// @success		200							{object}	listSolutionOut
+// @failure		401							"неверный токен (пустой, истекший или неверный формат)"
 func (c *TaskControllerStudent) SolutionList(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -114,7 +113,7 @@ func (c *TaskControllerStudent) SolutionList(ctx *fiber.Ctx) error {
 		return err
 	}
 	// get pagination object OR nil
-	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get solutions
 	solListResp, err := c.taskUCStudent.GetSolutions(userClaims.ID,

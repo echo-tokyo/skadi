@@ -6,6 +6,7 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
+	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/roles"
 	"skadi/backend/internal/pkg/validator"
 )
@@ -121,11 +122,8 @@ type listUserQuery struct {
 	Free bool `query:"free,omitempty" json:"free" example:"true"`
 	// substring to filter users by username and fullname (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"иванов"`
-
-	// page pagination param
-	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
-	// per page pagination param (default: 10)
-	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
+	// pagination params
+	*entity.PaginationQuery
 }
 
 // Parse parses listUserQuery request data and validates it.

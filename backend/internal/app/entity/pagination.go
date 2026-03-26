@@ -11,6 +11,14 @@ const (
 	_defPerPage = 10 // default per page value for pagination
 )
 
+// PaginationQuery represents a pagination query-params.
+type PaginationQuery struct {
+	// page pagination param
+	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
+	// per page pagination param
+	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"5" min:"1" default:"10"`
+}
+
 // Pagination represents a pagination parameters for DB list data.
 type Pagination struct {
 	// current page
@@ -25,15 +33,15 @@ type Pagination struct {
 
 // NewPagination returns a new instance of Pagination if the given page is not null (zero).
 // If the given page is null (zero) it returns nil.
-func NewPagination(page, perPage int) *Pagination {
+func (p PaginationQuery) ToPagination() *Pagination {
 	var pageParams *Pagination // init nil params
-	if page == 0 && perPage == 0 {
+	if p.Page == 0 && p.PerPage == 0 {
 		return nil
 	}
 
 	pageParams = &Pagination{
-		Page:    page,
-		PerPage: perPage,
+		Page:    p.Page,
+		PerPage: p.PerPage,
 	}
 	if pageParams.PerPage == 0 {
 		pageParams.PerPage = _defPerPage

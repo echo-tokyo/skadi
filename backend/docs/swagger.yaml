@@ -108,7 +108,6 @@ definitions:
     required:
     - id
     - status
-    - student
     - task
     type: object
   entity.Status:
@@ -621,8 +620,8 @@ paths:
         name: page
         type: integer
       - default: 10
-        description: 'per page pagination param (default: 10)'
-        example: 1
+        description: per page pagination param
+        example: 5
         in: query
         minimum: 1
         name: per-page
@@ -881,8 +880,8 @@ paths:
         name: page
         type: integer
       - default: 10
-        description: 'per page pagination param (default: 10)'
-        example: 1
+        description: per page pagination param
+        example: 5
         in: query
         minimum: 1
         name: per-page
@@ -1104,8 +1103,8 @@ paths:
         name: page
         type: integer
       - default: 10
-        description: 'per page pagination param (default: 10)'
-        example: 1
+        description: per page pagination param
+        example: 5
         in: query
         minimum: 1
         name: per-page
@@ -1143,8 +1142,8 @@ paths:
         name: page
         type: integer
       - default: 10
-        description: 'per page pagination param (default: 10)'
-        example: 1
+        description: per page pagination param
+        example: 5
         in: query
         minimum: 1
         name: per-page
@@ -1208,8 +1207,8 @@ paths:
         name: page
         type: integer
       - default: 10
-        description: 'per page pagination param (default: 10)'
-        example: 1
+        description: per page pagination param
+        example: 5
         in: query
         minimum: 1
         name: per-page
