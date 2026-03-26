@@ -1,39 +1,29 @@
 import { Input, PlugDefault, Select, Sentinel, Text } from '@/shared/ui'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import styles from './styles.module.scss'
 import { CreateRoleButton } from '@/features/create-member'
 import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
-import { ROLES, ROLE_OPTIONS } from '@/shared/config'
-import { IMembersQuery } from '@/entities/member'
-import { useInfiniteScroll } from '@/shared/lib'
-
-const MEMBERS_PARAMS: IMembersQuery = {
-  free: false,
-  roles: ROLES,
-  perPage: 10,
-}
+import { ROLE_OPTIONS, ROLE_VALUES } from '@/shared/config'
+import { TRole } from '@/shared/model'
+import { useDebounce, useInfiniteScroll } from '@/shared/lib'
 
 const { actions, roles } = styles
 
 const RoleManagement = () => {
-  const [userSearchValue, setUserSearchValue] = useState<string>('')
-  const [role, setRole] = useState<string>('')
+  const [searchValue, setSearchValue] = useState('')
+  const [role, setRole] = useState<TRole | ''>('')
 
-  const { members, isFetchingNextPage, loadMore, hasMore } =
-    useInfiniteMembers(MEMBERS_PARAMS)
+  const debouncedSearch = useDebounce(searchValue)
 
-  // FIXME: должна быть серверная фильтрация. Проблема: если в поиск что-то ввести, а потом скроллить, то обсервер не срабатывает
-  const filteredMembers = useMemo(() => {
-    const searchValue = userSearchValue.toLowerCase()
-    return members.filter((el) => {
-      const matchesFullname =
-        el.profile?.fullname?.toLowerCase().includes(searchValue) ?? false
-      const matchesUsername = el.username.toLowerCase().includes(searchValue)
-      const matchesRole = role ? el.role === role : true
-      return matchesRole && (matchesFullname || matchesUsername)
-    })
-  }, [members, userSearchValue, role])
+  const { members, isFetchingNextPage, loadMore, hasMore } = useInfiniteMembers(
+    {
+      free: false,
+      role: role ? [role] : ROLE_VALUES,
+      search: debouncedSearch || undefined,
+      'per-page': 10,
+    },
+  )
 
   const { sentinelRef } = useInfiniteScroll({
     hasMore,
@@ -50,26 +40,27 @@ const RoleManagement = () => {
         <Input
           fluid
           title='Найти пользователя'
-          onChange={setUserSearchValue}
-          value={userSearchValue}
+          onChange={setSearchValue}
+          value={searchValue}
         />
         <Select
           label='Фильтровать по:'
           placeholder='Выберите'
           options={ROLE_OPTIONS}
           value={role}
-          onChange={setRole}
+          onChange={(val) => setRole(val as TRole)}
         />
         <CreateRoleButton />
       </div>
 
       <div className={roles}>
-        {filteredMembers.length > 0 &&
-          filteredMembers.map((member) => (
+        {members.length === 0 ? (
+          <PlugDefault />
+        ) : (
+          members.map((member) => (
             <MemberCardItem key={member.id} member={member} />
-          ))}
-
-        {filteredMembers.length === 0 && <PlugDefault />}
+          ))
+        )}
 
         <Sentinel ref={sentinelRef} />
       </div>

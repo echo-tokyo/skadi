@@ -1,12 +1,16 @@
 import { TClass, TProfile, TRole } from '@/shared/model'
 
-type TPagination = { page: number; perPage: number }
+type TPagination = {
+  page: number
+  per_page: number
+  pages: number
+  total: number
+}
 
-// TODO: как profile может быть undefined? после обновления бэка убрать все "?" у .profile
 export interface IMember {
   class?: TClass
   id: number
-  profile?: TProfile
+  profile: TProfile
   role: TRole
   username: string
 }
@@ -26,12 +30,12 @@ export interface ICreateMemberRequest {
 
 export interface IMembersResponse {
   data: IMember[]
-  pagination: TPagination
+  pagination?: TPagination
 }
 
 export interface IMembersQuery {
   free: boolean
-  roles: TRole[]
-  perPage?: number
+  role: TRole[]
+  'per-page'?: number
   search?: string
 }

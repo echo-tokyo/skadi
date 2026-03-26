@@ -1,4 +1,4 @@
-import { ROLES } from '@/shared/config'
+import { ROLE_VALUES } from '@/shared/config'
 import { z } from 'zod'
 
 const phoneSchema = z
@@ -20,7 +20,7 @@ export const memberBaseSchema = z.object({
 })
 
 const memberIdentitySchema = z.object({
-  role: z.enum(ROLES, { message: 'Выберите роль' }),
+  role: z.enum(ROLE_VALUES, { message: 'Выберите роль' }),
   username: z
     .string()
     .min(1, 'Обязательное поле')

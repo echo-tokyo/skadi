@@ -11,22 +11,29 @@ const DEFAULT_PER_PAGE = 20
 export const classApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getClasses: builder.infiniteQuery<IClassResponse, IClassQuery, number>({
-      query: ({ queryArg, pageParam }) => ({
-        url: '/class',
-        method: 'GET',
-        params: {
-          ...queryArg,
-          page: pageParam,
-          perPage: queryArg.perPage ?? DEFAULT_PER_PAGE,
-        },
-      }),
+      query: ({ queryArg, pageParam }) => {
+        const { perPage, ...rest } = queryArg
+        return {
+          url: '/class',
+          method: 'GET',
+          params: {
+            ...rest,
+            page: pageParam,
+            'per-page': perPage ?? DEFAULT_PER_PAGE,
+          },
+        }
+      },
       infiniteQueryOptions: {
         initialPageParam: 1,
-        getNextPageParam: (lastPage, _allPages, lastPageParam) =>
-          lastPage.data.length <
-          (lastPage.pagination?.perPage ?? DEFAULT_PER_PAGE)
-            ? undefined
-            : lastPageParam + 1,
+        getNextPageParam: (lastPage) => {
+          const { pagination } = lastPage
+          if (!pagination) {
+            return undefined
+          }
+          return pagination.page < pagination.pages
+            ? pagination.page + 1
+            : undefined
+        },
       },
       providesTags: ['Class'],
     }),

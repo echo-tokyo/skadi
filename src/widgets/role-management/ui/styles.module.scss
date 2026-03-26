@@ -4,7 +4,7 @@
   gap: 1rem;
   margin-top: 2rem;
   button {
-    text-wrap: nowrap;
+    white-space: nowrap;
   }
 }
 
@@ -12,7 +12,7 @@
   margin-top: 2rem;
   flex: 1;
   min-height: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   & > *:not(:last-child):not(:nth-last-child(2)) {
     margin-bottom: 0.5rem;

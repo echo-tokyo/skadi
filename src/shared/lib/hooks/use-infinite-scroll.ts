@@ -9,6 +9,8 @@ interface IInfiniteScrollProps {
 export const useInfiniteScroll = (props: IInfiniteScrollProps) => {
   const { hasMore, isFetchingNextPage, loadMore } = props
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const loadMoreRef = useRef(loadMore)
+  loadMoreRef.current = loadMore
 
   useEffect(() => {
     const sentinel = sentinelRef.current
@@ -18,7 +20,7 @@ export const useInfiniteScroll = (props: IInfiniteScrollProps) => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
-          loadMore()
+          loadMoreRef.current()
         }
       },
       { threshold: 0 },
@@ -29,7 +31,7 @@ export const useInfiniteScroll = (props: IInfiniteScrollProps) => {
     return () => {
       observer.disconnect()
     }
-  }, [hasMore, isFetchingNextPage, loadMore])
+  }, [hasMore, isFetchingNextPage])
 
   return { sentinelRef }
 }

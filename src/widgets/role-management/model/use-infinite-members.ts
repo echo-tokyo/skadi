@@ -1,6 +1,6 @@
 import { IMembersQuery, useGetMembersInfiniteQuery } from '@/entities/member'
 import { getErrorMessage } from '@/shared/api'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 
 export const useInfiniteMembers = (params: IMembersQuery) => {
@@ -17,9 +17,12 @@ export const useInfiniteMembers = (params: IMembersQuery) => {
     if (isError) {
       toast.error(getErrorMessage(error))
     }
-  }, [error, isError])
+  }, [isError])
 
-  const members = data?.pages.flatMap((page) => page.data) ?? []
+  const members = useMemo(
+    () => data?.pages.flatMap((page) => page.data) ?? [],
+    [data?.pages],
+  )
 
   return {
     members,

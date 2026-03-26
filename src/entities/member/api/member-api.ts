@@ -12,22 +12,29 @@ const DEFAULT_PER_PAGE = 20
 export const memberApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMembers: builder.infiniteQuery<IMembersResponse, IMembersQuery, number>({
-      query: ({ queryArg, pageParam }) => ({
-        url: '/admin/user',
-        method: 'GET',
-        params: {
-          ...queryArg,
-          page: pageParam,
-          perPage: queryArg.perPage ?? DEFAULT_PER_PAGE,
-        },
-      }),
-      // TODO: сравнить по total из пагинации
+      query: ({ queryArg, pageParam }) => {
+        const { 'per-page': perPage, ...rest } = queryArg
+        return {
+          url: '/admin/user',
+          method: 'GET',
+          params: {
+            ...rest,
+            page: pageParam,
+            'per-page': perPage ?? DEFAULT_PER_PAGE,
+          },
+        }
+      },
       infiniteQueryOptions: {
         initialPageParam: 1,
-        getNextPageParam: (lastPage, _allPages, lastPageParam) =>
-          lastPage.data.length < lastPage.pagination.perPage
-            ? undefined
-            : lastPageParam + 1,
+        getNextPageParam: (lastPage) => {
+          const { pagination } = lastPage
+          if (!pagination) {
+            return undefined
+          }
+          return pagination.page < pagination.pages
+            ? pagination.page + 1
+            : undefined
+        },
       },
       providesTags: ['Member'],
     }),

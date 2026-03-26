@@ -1,10 +1,10 @@
 import { TRole } from '../model'
 import { SelectOption } from '../ui'
 
-// Поля для селекта, admin не нужен
+// Селекту не нужен admin
 export const ROLE_OPTIONS: SelectOption[] = [
   { value: 'teacher', label: 'Преподаватель' },
   { value: 'student', label: 'Студент' },
 ]
 
-export const ROLES: TRole[] = ['admin', 'teacher', 'student']
+export const ROLE_VALUES: TRole[] = ['teacher', 'student']

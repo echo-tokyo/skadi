@@ -3,7 +3,9 @@ import { TClassSchema } from './class-form-schema'
 
 type TClassPagination = {
   page: number
-  perPage: number
+  pages: number
+  per_page: number
+  total: number
 }
 
 export interface IClassRequest {
@@ -26,9 +28,10 @@ export interface IClassResponse {
   pagination?: TClassPagination
 }
 
-// TODO: должно быть больше query параметров после обновления бэка
 export interface IClassQuery {
+  page: number
   perPage: number
+  search: string
 }
 
 export interface IClassFieldsRef {
