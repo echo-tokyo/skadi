@@ -17,6 +17,7 @@ import { IClassFieldsRef } from '../model/types'
 
 type TPaginatedSelectField = {
   data: SelectOption[]
+  selectedOptions?: SelectOption[]
   onLoadMore?: () => void
   hasMore?: boolean
   isLoadingMore?: boolean
@@ -102,6 +103,7 @@ const ClassFields = ({
         placeholder='Выберите'
         description={errors['teacher']?.message}
         options={teacherField.data}
+        selectedOptions={teacherField.selectedOptions}
         value={teacher}
         searchable
         onLoadMore={teacherField.onLoadMore}
@@ -123,6 +125,7 @@ const ClassFields = ({
         placeholder='Выберите'
         description={errors['students']?.message}
         options={studentField.data}
+        selectedOptions={studentField.selectedOptions}
         value={students}
         searchable
         onLoadMore={studentField.onLoadMore}

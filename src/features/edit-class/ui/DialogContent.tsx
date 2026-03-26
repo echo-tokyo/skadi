@@ -52,36 +52,22 @@ const DialogContent = (props: DialogContentProps) => {
     [classData.students],
   )
 
-  const mergedTeacherOptions = useMemo(() => {
-    const fetchedIds = new Set(teacherOptions.map((o) => o.value))
-    return [
-      ...teacherOptions,
-      ...seedTeacherOptions.filter((o) => !fetchedIds.has(o.value)),
-    ]
-  }, [teacherOptions, seedTeacherOptions])
-
-  const mergedStudentOptions = useMemo(() => {
-    const fetchedIds = new Set(studentOptions.map((o) => o.value))
-    return [
-      ...studentOptions,
-      ...seedStudentOptions.filter((o) => !fetchedIds.has(o.value)),
-    ]
-  }, [studentOptions, seedStudentOptions])
-
   return (
     <ClassFields
       ref={classFieldsRef}
       fieldValues={fieldValues}
       onDirtyChange={onDirtyChange}
       teacherField={{
-        data: mergedTeacherOptions,
+        data: teacherOptions,
+        selectedOptions: seedTeacherOptions,
         hasMore: hasNextTeachersPage,
         isLoadingMore: isFetchingNextTeachersPage,
         onLoadMore: fetchNextTeachersPage,
         onSearchChange: onTeacherSearchChange,
       }}
       studentField={{
-        data: mergedStudentOptions,
+        data: studentOptions,
+        selectedOptions: seedStudentOptions,
         hasMore: hasNextStudentsPage,
         isLoadingMore: isFetchingNextStudentsPage,
         onLoadMore: fetchNextStudentsPage,
