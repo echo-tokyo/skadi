@@ -14,10 +14,20 @@ type UsecaseTeacher interface {
 	DeleteTaskByID(userID, taskID int) error
 	// DeleteSolutionByID deletes solution object by given ID.
 	DeleteSolutionByID(userID, solutionID int) error
+	// GetTasks returns all teacher tasks.
+	// Search param appends condition to filter tasks by title (substring).
+	GetTasks(teacherID int, search string, page *entity.Pagination) ([]entity.Task, error)
+	// GetSolutions returns all solutions for the teacher tasks.
+	// Search param appends condition to filter solutions by task title (substring).
+	// It returns checked solutions if archived is true.
+	GetSolutions(teacherID int, search string, archived bool,
+		page *entity.Pagination) ([]entity.Solution, error)
 }
 
 type UsecaseStudent interface {
-	// CreateSolution()
+	// GetSolutions returns all student solutions.
+	// It returns checked solutions if archived is true.
+	GetSolutions(studID int, archived bool, page *entity.Pagination) ([]entity.Solution, error)
 }
 
 type UsecaseClient interface {

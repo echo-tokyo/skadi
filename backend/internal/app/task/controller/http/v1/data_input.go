@@ -68,3 +68,76 @@ func (u *taskIDPath) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
 	}
 	return nil
 }
+
+// @description listTaskQuery represents a data with optional query-params to get tasks list.
+type listTaskQuery struct {
+	// page pagination param
+	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
+	// per page pagination param (default: 10)
+	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
+	// substring to filter data by substring (case-insensitive)
+	Search string `query:"search,omitempty" json:"search" example:"F26"`
+}
+
+// Parse parses listTaskQuery request data and validates it.
+func (u *listTaskQuery) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+	// parse query-params
+	if err := ctx.QueryParser(u); err != nil {
+		return err
+	}
+	// validate parsed data
+	if err := valid.Validate(u); err != nil {
+		return err
+	}
+	return nil
+}
+
+// @description listSolutionTeacherQuery represents a data with
+// optional query-params to get solutions list for a teacher tasks.
+type listSolutionTeacherQuery struct {
+	// page pagination param
+	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
+	// per page pagination param (default: 10)
+	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
+	// filter for checked solutions if true
+	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
+	// substring to filter data by substring (case-insensitive)
+	Search string `query:"search,omitempty" json:"search" example:"F26"`
+}
+
+// Parse parses listSolutionTeacherQuery request data and validates it.
+func (u *listSolutionTeacherQuery) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+	// parse query-params
+	if err := ctx.QueryParser(u); err != nil {
+		return err
+	}
+	// validate parsed data
+	if err := valid.Validate(u); err != nil {
+		return err
+	}
+	return nil
+}
+
+// @description listSolutionStudentQuery represents a data with
+// optional query-params to get solutions list for a student.
+type listSolutionStudentQuery struct {
+	// page pagination param
+	Page int `query:"page,omitempty" json:"page" validate:"omitempty,numeric,min=1" example:"1" min:"1"`
+	// per page pagination param (default: 10)
+	PerPage int `query:"per-page,omitempty" json:"per-page" validate:"omitempty,numeric,min=1" example:"1" min:"1" default:"10"`
+	// filter for checked solutions if true
+	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
+}
+
+// Parse parses listSolutionStudentQuery request data and validates it.
+func (u *listSolutionStudentQuery) Parse(ctx *fiber.Ctx, valid validator.Validator) error {
+	// parse query-params
+	if err := ctx.QueryParser(u); err != nil {
+		return err
+	}
+	// validate parsed data
+	if err := valid.Validate(u); err != nil {
+		return err
+	}
+	return nil
+}

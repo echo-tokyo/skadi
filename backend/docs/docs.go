@@ -906,6 +906,129 @@ const docTemplate = `{
                 }
             }
         },
+        "/student/solution": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка решений конкретного студента.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение списка решений [только студент].",
+                "operationId": "student-solution-list",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "filter for checked solutions if true",
+                        "name": "archived",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 1,
+                        "description": "per page pagination param (default: 10)",
+                        "name": "per-page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listSolutionOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/teacher/solution": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка решений для заданий конкретного преподавателя.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение списка решений [только преподаватель].",
+                "operationId": "teacher-solution-list",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "filter for checked solutions if true",
+                        "name": "archived",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 1,
+                        "description": "per page pagination param (default: 10)",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "F26",
+                        "description": "substring to filter data by substring (case-insensitive)",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listSolutionOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
         "/teacher/solution/{id}": {
             "delete": {
                 "security": [
@@ -948,6 +1071,62 @@ const docTemplate = `{
             }
         },
         "/teacher/task": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка заданий конкретного преподавателя.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение списка заданий [только преподаватель].",
+                "operationId": "task-list",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 1,
+                        "description": "per page pagination param (default: 10)",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "F26",
+                        "description": "substring to filter data by substring (case-insensitive)",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listTaskOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1272,8 +1451,7 @@ const docTemplate = `{
                 "id",
                 "status",
                 "student",
-                "task",
-                "updated_at"
+                "task"
             ],
             "properties": {
                 "answer": {
@@ -1337,9 +1515,7 @@ const docTemplate = `{
         "entity.Task": {
             "type": "object",
             "required": [
-                "description",
                 "id",
-                "teacher",
                 "title"
             ],
             "properties": {
@@ -1577,6 +1753,54 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Class"
+                    }
+                },
+                "pagination": {
+                    "description": "pagination params",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Pagination"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.listSolutionOut": {
+            "description": "listSolutionOut represents a solution list data.",
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "description": "solutions list",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Solution"
+                    }
+                },
+                "pagination": {
+                    "description": "pagination params",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Pagination"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.listTaskOut": {
+            "description": "listTaskOut represents a task list data.",
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "description": "tasks list",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Task"
                     }
                 },
                 "pagination": {

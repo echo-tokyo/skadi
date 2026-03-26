@@ -38,6 +38,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
 	taskUCClient := taskuc.NewUCClient(cfg, taskRepoDB)
 	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, userRepoDB)
+	taskUCStudent := taskuc.NewUCStudent(cfg, taskRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
@@ -46,7 +47,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	classControllerAdmin := classhttpv1.NewClassControllerAdmin(classUCAdminClient, valid)
 	classController := classhttpv1.NewClassController(classUCAdminClient, valid)
 	taskControllerTeacher := taskhttpv1.NewTaskControllerTeacher(taskUCTeacher, valid)
-	var taskControllerStudent *taskhttpv1.TaskControllerStudent // TODO: init controller
+	taskControllerStudent := taskhttpv1.NewTaskControllerStudent(taskUCStudent, valid)
 	taskController := taskhttpv1.NewTaskController(taskUCClient, valid)
 
 	// middlewares

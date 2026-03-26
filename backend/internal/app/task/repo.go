@@ -21,12 +21,18 @@ type RepositoryDB interface {
 	// DeleteSolutionByID deletes solution by given id.
 	DeleteSolutionByID(id int) error
 
+	// GetTasks returns all teacher tasks.
+	// Search param appends condition to filter tasks by title (substring).
+	GetTasks(teacherID int, search string, page *entity.Pagination) ([]entity.Task, error)
 	// GetTeacherSolutions returns all solutions for the teacher tasks.
-	// It returns completed solutions if archived is true.
-	GetTeacherSolutions(archived bool, page *entity.Pagination) ([]entity.Solution, error)
+	// Search param appends condition to filter solutions by task title (substring).
+	// It returns checked solutions if archived is true.
+	GetTeacherSolutions(teacherID int, search string, archived bool,
+		page *entity.Pagination) ([]entity.Solution, error)
 	// GetStudentSolutions returns all student solutions.
-	// It returns completed solutions if archived is true.
-	GetStudentSolutions(archived bool, page *entity.Pagination) ([]entity.Solution, error)
+	// It returns checked solutions if archived is true.
+	GetStudentSolutions(studID int, archived bool,
+		page *entity.Pagination) ([]entity.Solution, error)
 	// GetTaskStudents returns all students linked to the given task.
 	GetTaskStudents(taskID int) ([]entity.Profile, error)
 }

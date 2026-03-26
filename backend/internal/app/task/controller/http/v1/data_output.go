@@ -19,3 +19,19 @@ type solutionOut struct {
 	// other students solving the same task
 	OtherStudents []entity.Profile `json:"other_students,omitempty" validate:"omitempty"`
 }
+
+// @description listTaskOut represents a task list data.
+type listTaskOut struct {
+	// tasks list
+	Data []entity.Task `json:"data" validate:"required"`
+	// pagination params
+	Pagination *entity.Pagination `json:"pagination,omitempty" validate:"omitempty"`
+}
+
+// @description listSolutionOut represents a solution list data.
+type listSolutionOut struct {
+	// solutions list
+	Data []entity.Solution `json:"data" validate:"required"`
+	// pagination params
+	Pagination *entity.Pagination `json:"pagination,omitempty" validate:"omitempty"`
+}

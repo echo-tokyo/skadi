@@ -1,8 +1,13 @@
 package v1
 
 import (
+	"fmt"
+	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
+	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
+
+	fiber "github.com/gofiber/fiber/v2"
 )
 
 // TaskControllerStudent represents a controller for task routes accepted for students only.
@@ -89,33 +94,37 @@ func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
 // 	return ctx.Status(fiber.StatusOK).JSON(classObj)
 // }
 
-// // @summary		Получение списка групп.
-// // @description	Получение списка групп со всеми данными (ID и имена препода и учеников).
-// // @router			/class [get]
-// // @id				class-list
-// // @tags			class
-// // @accept			json
-// // @produce		json
-// // @security		JWTAccess
-// // @param			listClassQuery	query		listClassQuery	false	"listClassQuery"
-// // @success		200				{object}	listClassOut
-// // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
-// func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
-// 	inputQuery := &listClassQuery{}
-// 	if err := inputQuery.Parse(ctx, c.valid); err != nil {
-// 		return err
-// 	}
-// 	// get pagination object OR nil
-// 	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+//	@summary		Получение списка решений [только студент].
+//	@description	Получение списка решений конкретного студента.
+//	@router			/student/solution [get]
+//	@id				student-solution-list
+//	@tags			task
+//	@accept			json
+//	@produce		json
+//	@security		JWTAccess
+//	@param			listSolutionStudentQuery	query		listSolutionStudentQuery	false	"listSolutionStudentQuery"
+//	@success		200							{object}	listSolutionOut
+//	@failure		401							"неверный токен (пустой, истекший или неверный формат)"
+func (c *TaskControllerStudent) SolutionList(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
-// 	// get classes
-// 	classListResp, err := c.classUCClient.ListFull(pageParams)
-// 	if err != nil {
-// 		return fmt.Errorf("list: %w", err)
-// 	}
-// 	output := &listClassOut{
-// 		Data:       classListResp,
-// 		Pagination: pageParams,
-// 	}
-// 	return ctx.Status(fiber.StatusOK).JSON(output)
-// }
+	inputQuery := &listSolutionStudentQuery{}
+	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	// get pagination object OR nil
+	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+
+	// get solutions
+	solListResp, err := c.taskUCStudent.GetSolutions(userClaims.ID,
+		inputQuery.Archived, pageParams)
+	if err != nil {
+		return fmt.Errorf("list: %w", err)
+	}
+	output := &listSolutionOut{
+		Data:       solListResp,
+		Pagination: pageParams,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(output)
+}

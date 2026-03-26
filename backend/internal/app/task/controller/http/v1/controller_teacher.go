@@ -229,33 +229,71 @@ func (c *TaskControllerTeacher) DeleteSolution(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
-// // @summary		Получение списка групп.
-// // @description	Получение списка групп со всеми данными (ID и имена препода и учеников).
-// // @router			/class [get]
-// // @id				class-list
-// // @tags			class
-// // @accept			json
-// // @produce		json
-// // @security		JWTAccess
-// // @param			listClassQuery	query		listClassQuery	false	"listClassQuery"
-// // @success		200				{object}	listClassOut
-// // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
-// func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
-// 	inputQuery := &listClassQuery{}
-// 	if err := inputQuery.Parse(ctx, c.valid); err != nil {
-// 		return err
-// 	}
-// 	// get pagination object OR nil
-// 	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+// @summary		Получение списка заданий [только преподаватель].
+// @description	Получение списка заданий конкретного преподавателя.
+// @router			/teacher/task [get]
+// @id				task-list
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			listTaskQuery	query		listTaskQuery	false	"listTaskQuery"
+// @success		200				{object}	listTaskOut
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
+func (c *TaskControllerTeacher) TaskList(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
-// 	// get classes
-// 	classListResp, err := c.classUCClient.ListFull(pageParams)
-// 	if err != nil {
-// 		return fmt.Errorf("list: %w", err)
-// 	}
-// 	output := &listClassOut{
-// 		Data:       classListResp,
-// 		Pagination: pageParams,
-// 	}
-// 	return ctx.Status(fiber.StatusOK).JSON(output)
-// }
+	inputQuery := &listTaskQuery{}
+	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	// get pagination object OR nil
+	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+
+	// get tasks
+	taskListResp, err := c.taskUCTeacher.GetTasks(userClaims.ID, inputQuery.Search, pageParams)
+	if err != nil {
+		return fmt.Errorf("list: %w", err)
+	}
+	output := &listTaskOut{
+		Data:       taskListResp,
+		Pagination: pageParams,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(output)
+}
+
+// @summary		Получение списка решений [только преподаватель].
+// @description	Получение списка решений для заданий конкретного преподавателя.
+// @router			/teacher/solution [get]
+// @id				teacher-solution-list
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			listSolutionTeacherQuery	query		listSolutionTeacherQuery	false	"listSolutionTeacherQuery"
+// @success		200							{object}	listSolutionOut
+// @failure		401							"неверный токен (пустой, истекший или неверный формат)"
+func (c *TaskControllerTeacher) SolutionList(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
+	inputQuery := &listSolutionTeacherQuery{}
+	if err := inputQuery.Parse(ctx, c.valid); err != nil {
+		return err
+	}
+	// get pagination object OR nil
+	pageParams := entity.NewPagination(inputQuery.Page, inputQuery.PerPage)
+
+	// get solutions
+	solListResp, err := c.taskUCTeacher.GetSolutions(userClaims.ID, inputQuery.Search,
+		inputQuery.Archived, pageParams)
+	if err != nil {
+		return fmt.Errorf("list: %w", err)
+	}
+	output := &listSolutionOut{
+		Data:       solListResp,
+		Pagination: pageParams,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(output)
+}

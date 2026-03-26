@@ -18,15 +18,15 @@ func RegisterEndpoints(router fiber.Router, controller *TaskController,
 		// teacherGroup.Post("/solution/:id/approve", controllerTeacher.Approve)
 		teacherGroup.Delete("/task/:id", controllerTeacher.DeleteTask)
 		teacherGroup.Delete("/solution/:id", controllerTeacher.DeleteSolution)
-		// teacherGroup.Get("/task", controllerTeacher.GetTaskMany)
-		// teacherGroup.Get("/solution", controllerTeacher.GetManyTeacher)
+		teacherGroup.Get("/task", controllerTeacher.TaskList)
+		teacherGroup.Get("/solution", controllerTeacher.SolutionList)
 	}
 
-	// studentGroup := router.Group("/student", mwJWTAccess, mwStudent)
-	// {
-	// 	studentGroup.Patch("/solution/:id", controllerStudent.Update)
-	// 	studentGroup.Get("/solution", controllerStudent.GetManyStudent)
-	// }
+	studentGroup := router.Group("/student", mwJWTAccess, mwStudent)
+	{
+		// 	studentGroup.Patch("/solution/:id", controllerStudent.Update)
+		studentGroup.Get("/solution", controllerStudent.SolutionList)
+	}
 
 	authGroup := router.Group("/solution", mwJWTAccess)
 	authGroup.Get("/get/:id", controller.Read)

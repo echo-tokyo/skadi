@@ -17,12 +17,12 @@ type Solution struct {
 	// solution text answer
 	Answer *string `json:"answer,omitempty" validate:"omitempty"`
 	// last-update datetime of solution
-	UpdatedAt time.Time `json:"updated_at" validate:"required"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty" validate:"omitempty"`
 
 	// task object
 	Task *Task `gorm:"foreignKey:TaskID;references:ID" json:"task,omitempty" validate:"required"`
 	// student object
-	Student     *Profile `gorm:"-" json:"student" validate:"required"`
+	Student     *Profile `gorm:"-" json:"student,omitempty" validate:"omitempty"`
 	StudentUser *User    `gorm:"foreignKey:StudentID;references:ID" json:"-"`
 	// status object
 	Status *Status `gorm:"foreignKey:StatusID;references:ID" json:"status" validate:"required"`

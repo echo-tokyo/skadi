@@ -110,7 +110,6 @@ definitions:
     - status
     - student
     - task
-    - updated_at
     type: object
   entity.Status:
     properties:
@@ -139,9 +138,7 @@ definitions:
         description: task title
         type: string
     required:
-    - description
     - id
-    - teacher
     - title
     type: object
   entity.User:
@@ -293,6 +290,36 @@ definitions:
         description: classes list
         items:
           $ref: '#/definitions/entity.Class'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listSolutionOut:
+    description: listSolutionOut represents a solution list data.
+    properties:
+      data:
+        description: solutions list
+        items:
+          $ref: '#/definitions/entity.Solution'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listTaskOut:
+    description: listTaskOut represents a task list data.
+    properties:
+      data:
+        description: tasks list
+        items:
+          $ref: '#/definitions/entity.Task'
         type: array
       pagination:
         allOf:
@@ -1058,6 +1085,89 @@ paths:
       summary: Получение решения задания по id.
       tags:
       - task
+  /student/solution:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка решений конкретного студента.
+      operationId: student-solution-list
+      parameters:
+      - description: filter for checked solutions if true
+        example: true
+        in: query
+        name: archived
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: 'per page pagination param (default: 10)'
+        example: 1
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listSolutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка решений [только студент].
+      tags:
+      - task
+  /teacher/solution:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка решений для заданий конкретного преподавателя.
+      operationId: teacher-solution-list
+      parameters:
+      - description: filter for checked solutions if true
+        example: true
+        in: query
+        name: archived
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: 'per page pagination param (default: 10)'
+        example: 1
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter data by substring (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listSolutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка решений [только преподаватель].
+      tags:
+      - task
   /teacher/solution/{id}:
     delete:
       consumes:
@@ -1085,6 +1195,44 @@ paths:
       tags:
       - task
   /teacher/task:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка заданий конкретного преподавателя.
+      operationId: task-list
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: 'per page pagination param (default: 10)'
+        example: 1
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter data by substring (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listTaskOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка заданий [только преподаватель].
+      tags:
+      - task
     post:
       consumes:
       - application/json

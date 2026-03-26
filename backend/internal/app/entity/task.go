@@ -9,14 +9,14 @@ type Task struct {
 	// task title
 	Title string `json:"title" validate:"required"`
 	// task description
-	Desc string `gorm:"column:description" json:"description" validate:"required"`
+	Desc string `gorm:"column:description" json:"description,omitempty" validate:"omitempty"`
 	// task teacher id
 	TeacherID int `json:"-"`
 	// task creating datetime
 	CreatedAt time.Time `json:"-"`
 
 	// teacher object
-	Teacher     *Profile `gorm:"-" json:"teacher" validate:"required"`
+	Teacher     *Profile `gorm:"-" json:"teacher,omitempty" validate:"omitempty"`
 	TeacherUser *User    `gorm:"foreignKey:TeacherID;references:ID" json:"-"`
 }
 

@@ -124,3 +124,30 @@ func (u *UCTeacher) DeleteSolutionByID(userID, solutionID int) error {
 	// delete solution
 	return u.taskRepoDB.DeleteSolutionByID(solutionID)
 }
+
+// GetTasks returns all teacher tasks.
+// Search param appends condition to filter tasks by title (substring).
+func (u *UCTeacher) GetTasks(teacherID int, search string,
+	page *entity.Pagination) ([]entity.Task, error) {
+
+	taskList, err := u.taskRepoDB.GetTasks(teacherID, search, page)
+	// TODO: may be select students for each task
+	return taskList, err // err OR nil
+}
+
+// GetSolutions returns all solutions for the teacher tasks.
+// Search param appends condition to filter solutions by task title (substring).
+// It returns checked solutions if archived is true.
+func (u *UCTeacher) GetSolutions(teacherID int, search string, archived bool,
+	page *entity.Pagination) ([]entity.Solution, error) {
+
+	solList, err := u.taskRepoDB.GetTeacherSolutions(teacherID, search, archived, page)
+	if err != nil {
+		return nil, err
+	}
+	// set student field for each solution to serialize it
+	for idx := range solList {
+		solList[idx].Student = solList[idx].StudentUser.Profile
+	}
+	return solList, nil
+}

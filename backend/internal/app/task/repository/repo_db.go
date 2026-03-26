@@ -19,11 +19,15 @@ const (
 	_preloadStudentProfile = "StudentUser.Profile"      // object field name
 	_preloadStatus         = "Status"                   // object field name
 
-	_fieldID       = "id"       // table field name
-	_fieldFullname = "fullname" // table field name
-)
+	_fieldID        = "id"          // table field name
+	_fieldFullname  = "fullname"    // table field name
+	_fieldTitle     = "title"       // table field name
+	_fieldDesc      = "description" // table field name
+	_fieldUpdatedAt = "updated_at"  // table field name
 
-var _defaultStatusID = 1 // ID of default solution status "backlog"
+	_defaultStatusID  = 1 // ID of default solution status "backlog"
+	_archivedStatusID = 4 // ID of archived solution status "checked"
+)
 
 // Ensure RepoDB implements interface.
 var _ task.RepositoryDB = (*RepoDB)(nil)
@@ -157,18 +161,101 @@ func (r *RepoDB) DeleteSolutionByID(id int) error {
 	return r.dbStorage.Delete(&entity.Solution{}, id).Error
 }
 
+// GetTasks returns all teacher tasks.
+// Search param appends condition to filter tasks by title (substring).
+func (r *RepoDB) GetTasks(teacherID int, search string,
+	page *entity.Pagination) ([]entity.Task, error) {
+
+	var taskList []entity.Task
+	query := r.dbStorage.Model(&entity.Task{}).
+		Where("teacher_id = ?", teacherID)
+	if search != "" {
+		query = query.Where("title REGEXP ?", search)
+	}
+	query = query.Order("id DESC")
+	// apply pagination if it's not nil
+	if page != nil {
+		page.CountTotal(query)
+		query = page.Query(query)
+	}
+	// exec query
+	if err := query.Find(&taskList).Error; err != nil {
+		return nil, err
+	}
+	return taskList, nil
+}
+
 // GetTeacherSolutions returns all solutions for the teacher tasks.
-// It returns completed solutions if archived is true.
-func (r *RepoDB) GetTeacherSolutions(archived bool,
+// Search param appends condition to filter solutions by task title (substring).
+// It returns checked solutions if archived is true.
+func (r *RepoDB) GetTeacherSolutions(teacherID int, search string, archived bool,
 	page *entity.Pagination) ([]entity.Solution, error) {
-	panic("unimplemented")
+
+	solList := make([]entity.Solution, 0)
+	query := r.dbStorage.Model(entity.Solution{}).
+		Omit("grade", "answer", "updated_at").
+		Preload(_preloadTask, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldTitle) // preload only ID and title
+		}).
+		Preload(_preloadStudent).
+		Preload(_preloadStudentProfile, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
+		}).
+		Preload(_preloadStatus).
+		Joins("INNER JOIN task ON task.id = solution.task_id").
+		Where("task.teacher_id = ?", teacherID)
+	// select only checked solutions or all solutions apart of checked ones
+	if archived {
+		query = query.Where("status_id = ?", _archivedStatusID)
+	} else {
+		query = query.Where("status_id <> ?", _archivedStatusID)
+	}
+	if search != "" {
+		query = query.Where("title REGEXP ?", search)
+	}
+	query = query.Order("id DESC")
+	// apply pagination if it's not nil
+	if page != nil {
+		page.CountTotal(query)
+		query = page.Query(query)
+	}
+	// exec query
+	if err := query.Find(&solList).Error; err != nil {
+		return nil, err
+	}
+	return solList, nil
 }
 
 // GetStudentSolutions returns all student solutions.
-// It returns completed solutions if archived is true.
-func (r *RepoDB) GetStudentSolutions(archived bool,
+// It returns checked solutions if archived is true.
+func (r *RepoDB) GetStudentSolutions(studID int, archived bool,
 	page *entity.Pagination) ([]entity.Solution, error) {
-	panic("unimplemented")
+
+	solList := make([]entity.Solution, 0)
+	query := r.dbStorage.Model(entity.Solution{}).
+		Omit("grade", "answer", "student_id").
+		Preload(_preloadTask, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldTitle, _fieldDesc) // preload only ID, title and desc
+		}).
+		Preload(_preloadStatus).
+		Where("student_id = ?", studID)
+	// select only checked solutions or all solutions apart of checked ones
+	if archived {
+		query = query.Where("status_id = ?", _archivedStatusID)
+	} else {
+		query = query.Where("status_id <> ?", _archivedStatusID)
+	}
+	query = query.Order("id DESC")
+	// apply pagination if it's not nil
+	if page != nil {
+		page.CountTotal(query)
+		query = page.Query(query)
+	}
+	// exec query
+	if err := query.Find(&solList).Error; err != nil {
+		return nil, err
+	}
+	return solList, nil
 }
 
 // GetTaskStudents returns all students linked to the given task.
