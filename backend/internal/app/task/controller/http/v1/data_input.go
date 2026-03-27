@@ -28,12 +28,30 @@ type solutionIDPath struct {
 	ID int `params:"id" validate:"required" example:"2"`
 }
 
+// @description updateTaskBody represents a data with optional body to update task.
+type updateTaskBody struct {
+	// new task title
+	Title *string `json:"title,omitempty" validate:"omitempty,max=100" example:"Понятие ООП" maxLength:"100"`
+	// new task description
+	Desc *string `json:"description,omitempty" validate:"omitempty" example:"Что такое ООП? Перечислить принципы ООП"`
+}
+
+// @description updateSolutionBody represents a data with optional body to update solution.
+type updateSolutionBody struct {
+	// new status ID
+	StatusID *int `json:"status_id,omitempty" validate:"omitempty" example:"2"`
+	// new grade
+	Grade *string `json:"grade,omitempty" validate:"omitempty,max=5" example:"5+" maxLength:"50"`
+	// new answer
+	Answer *string `json:"answer,omitempty" validate:"omitempty" example:"ООП - это объектно-ориентированное программирование"`
+}
+
 // @description listTaskQuery represents a data with optional query-params to get tasks list.
 type listTaskQuery struct {
 	// substring to filter data by substring (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"F26"`
 	// pagination params
-	*entity.PaginationQuery
+	entity.PaginationQuery
 }
 
 // @description listSolutionTeacherQuery represents a data with
@@ -44,7 +62,7 @@ type listSolutionTeacherQuery struct {
 	// substring to filter data by substring (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"F26"`
 	// pagination params
-	*entity.PaginationQuery
+	entity.PaginationQuery
 }
 
 // @description listSolutionStudentQuery represents a data with
@@ -53,5 +71,5 @@ type listSolutionStudentQuery struct {
 	// filter for checked solutions if true
 	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
 	// pagination params
-	*entity.PaginationQuery
+	entity.PaginationQuery
 }

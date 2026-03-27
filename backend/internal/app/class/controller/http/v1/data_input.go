@@ -37,5 +37,5 @@ type listClassQuery struct {
 	// substring to filter classes by name (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"F26"`
 	// pagination params
-	*entity.PaginationQuery
+	entity.PaginationQuery
 }
