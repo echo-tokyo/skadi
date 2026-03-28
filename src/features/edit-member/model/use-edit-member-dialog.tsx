@@ -4,11 +4,11 @@ import {
   IMember,
   memberBaseSchema,
   BASE_DISABLED_FIELDS,
-  MemberFields,
   IMemberFieldsRef,
 } from '@/entities/member'
 import { toFormData } from '../lib/to-form-data'
 import { useEditMember } from './use-edit-member'
+import DialogContent from '../ui/DialogContent'
 
 export const useEditMemberDialog = (member: IMember) => {
   const { show, update } = useDialog()
@@ -21,8 +21,8 @@ export const useEditMemberDialog = (member: IMember) => {
     const id = show({
       title: 'Редактирование пользователя',
       isConfirmDisabled: true,
-      content: () => (
-        <MemberFields
+      content: (
+        <DialogContent
           ref={formRef}
           schema={memberBaseSchema}
           fieldData={fieldData}

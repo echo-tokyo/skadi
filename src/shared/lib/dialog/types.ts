@@ -4,7 +4,7 @@ type TSize = 's' | 'm' | 'l'
 export type TPatch = Pick<DialogParams, 'isConfirmDisabled'>
 export interface DialogParams {
   title?: string
-  content: () => ReactNode
+  content: ReactNode
   positiveText?: string
   negativeText?: string
   onConfirm?: () => Promise<void>

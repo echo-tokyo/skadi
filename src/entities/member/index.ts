@@ -3,6 +3,7 @@ export type {
   ICreateMemberRequest,
   IMembersQuery,
   IUpdateMemberRequest,
+  IMemberFieldsRef,
 } from './model/types'
 
 export {
@@ -20,7 +21,6 @@ export { toProfile } from './lib/to-profile'
 
 export { default as MemberCard } from './ui/MemberCard'
 export { default as MemberFields } from './ui/MemberFields'
-export type { IMemberFieldsRef } from './ui/MemberFields'
 
 export {
   useCreateMemberMutation,

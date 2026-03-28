@@ -65,6 +65,7 @@ const Input = forwardRef<HTMLInputElement, IProps>((props, ref): ReactNode => {
         </label>
       )}
       <input
+        autoComplete='off'
         ref={ref}
         id={inputId}
         value={value}

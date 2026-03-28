@@ -10,8 +10,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ZodObject, ZodRawShape } from 'zod'
 import type { Resolver } from 'react-hook-form'
-import { Input, Select, Textarea } from '@/shared/ui'
-import { TRole } from '@/shared/model'
+import { Input, Select, SelectOption, Textarea } from '@/shared/ui'
 import { TMemberFullSchema } from '../model/member-fields-schema'
 import {
   FIELD_CONFIG,
@@ -19,12 +18,15 @@ import {
   TFieldConfig,
 } from '../config/fields-config'
 import styles from './styles.module.scss'
-import { ROLE_OPTIONS } from '@/shared/config/role-options'
+import { ROLE_OPTIONS } from '@/shared/config'
+import { IMemberFieldsRef } from '../model/types'
 
-export interface IMemberFieldsRef {
-  validate: () => Promise<boolean>
-  getFieldsData: () => TMemberFullSchema
-  reset: () => void
+export type TPaginatedClassField = {
+  data: SelectOption[]
+  onSearchChange?: (query: string) => void
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
 }
 
 interface IMemberFormProps {
@@ -32,6 +34,7 @@ interface IMemberFormProps {
   schema: ZodObject<ZodRawShape>
   fieldData?: TMemberFullSchema
   disabledFields?: Array<keyof TMemberFullSchema>
+  classField: TPaginatedClassField
   onDirtyChange?: (isDirty: boolean) => void
 }
 
@@ -41,6 +44,7 @@ const MemberFields = ({
   disabledFields = [],
   onDirtyChange,
   ref,
+  classField,
 }: IMemberFormProps): ReactNode => {
   const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
 
@@ -58,91 +62,111 @@ const MemberFields = ({
   const fieldsData = watch()
 
   const onDirtyChangeRef = useRef(onDirtyChange)
+  useEffect(() => {
+    onDirtyChangeRef.current = onDirtyChange
+  })
 
   useEffect(() => {
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  useImperativeHandle(ref, () => ({
-    validate: async () => {
-      setHasAttemptedValidation(true)
-      return trigger()
-    },
-    getFieldsData: () => fieldsData,
-    reset: () => {
-      reset()
-      setHasAttemptedValidation(false)
-    },
-  }))
+  const formDataRef = useRef<TMemberFullSchema>(fieldsData)
+  formDataRef.current = fieldsData
 
-  const renderField = (field: TFieldConfig) => {
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate: async () => {
+        setHasAttemptedValidation(true)
+        return trigger()
+      },
+      getFieldsData: () => formDataRef.current,
+      reset: () => {
+        reset()
+        setHasAttemptedValidation(false)
+      },
+    }),
+    [trigger, reset],
+  )
+
+  const renderField = (field: TFieldConfig): ReactNode => {
     const { name, title, required } = field
     const disabled = disabledFields.includes(name)
 
-    if (field.type === 'select') {
-      return (
-        <Select
-          key={name}
-          label={title}
-          placeholder='Выберите'
-          isValid={!errors[name]}
-          required={required}
-          fluid
-          disabled={disabled}
-          description={errors[name]?.message}
-          options={ROLE_OPTIONS}
-          value={fieldsData[name]}
-          onChange={(v) =>
-            setValue(name, v as TRole, {
-              shouldValidate: hasAttemptedValidation,
-              shouldDirty: true,
-            })
-          }
-        />
-      )
+    const commonProps = {
+      required,
+      fluid: true,
+      disabled,
+      isValid: !errors[name],
+      description: errors[name]?.message,
     }
 
-    if (field.type === 'textarea') {
-      return (
-        <Textarea
-          key={name}
-          label={title}
-          placeholder='Ввод..'
-          isValid={!errors[name]}
-          required={required}
-          fluid
-          disabled={disabled}
-          description={errors[name]?.message}
-          resize='none'
-          value={fieldsData[name]}
-          onChange={(v) =>
-            setValue(name, v, {
-              shouldValidate: hasAttemptedValidation,
-              shouldDirty: true,
-            })
-          }
-        />
-      )
-    }
+    const onChange = (v: string) =>
+      setValue(name, v, {
+        shouldValidate: hasAttemptedValidation,
+        shouldDirty: true,
+      })
 
-    return (
-      <Input
-        key={name}
-        title={title}
-        value={fieldsData[name]}
-        isValid={!errors[name]}
-        required={required}
-        fluid
-        disabled={disabled}
-        description={errors[name]?.message}
-        onChange={(v) =>
-          setValue(name, v, {
-            shouldValidate: hasAttemptedValidation,
-            shouldDirty: true,
-          })
+    switch (field.type) {
+      case 'select':
+        if (field.name === 'class') {
+          return (
+            <Select
+              key={name}
+              {...commonProps}
+              label={title}
+              placeholder='Выберите'
+              options={classField.data}
+              searchable
+              hasMore={classField.hasMore}
+              isLoadingMore={classField.isLoadingMore}
+              onLoadMore={classField.onLoadMore}
+              onSearchChange={classField.onSearchChange}
+              value={fieldsData[name]}
+              onChange={onChange}
+            />
+          )
         }
-      />
-    )
+        return (
+          <Select
+            key={name}
+            {...commonProps}
+            label={title}
+            placeholder='Выберите'
+            options={ROLE_OPTIONS}
+            value={fieldsData[name]}
+            onChange={onChange}
+          />
+        )
+
+      case 'textarea':
+        return (
+          <Textarea
+            key={name}
+            {...commonProps}
+            label={title}
+            placeholder='Ввод..'
+            resize='none'
+            value={fieldsData[name]}
+            onChange={onChange}
+          />
+        )
+
+      case 'input':
+        return (
+          <Input
+            key={name}
+            {...commonProps}
+            title={title}
+            value={fieldsData[name]}
+            onChange={onChange}
+          />
+        )
+
+      default: {
+        return null
+      }
+    }
   }
 
   return <div className={styles.wrapper}>{FIELD_CONFIG.map(renderField)}</div>

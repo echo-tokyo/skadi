@@ -1,25 +1,22 @@
 import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
-import {
-  memberFullSchema,
-  MemberFields,
-  IMemberFieldsRef,
-} from '@/entities/member'
+import { IMemberFieldsRef } from '@/entities/member'
 import { useCreateMember } from './use-create-member'
+import DialogContent from '../ui/DialogContent'
 
 export const useCreateMemberDialog = () => {
   const { show, update } = useDialog()
   const { submit } = useCreateMember()
   const formRef = useRef<IMemberFieldsRef>(null)
   const dialogIdRef = useRef<string | null>(null)
+  console.log('useCreateMemberDialog')
 
   const showDialog = (): void => {
     const id = show({
       title: 'Создание пользователя',
-      content: () => (
-        <MemberFields
+      content: (
+        <DialogContent
           ref={formRef}
-          schema={memberFullSchema}
           onDirtyChange={(isDirty) => {
             if (dialogIdRef.current) {
               update(dialogIdRef.current, { isConfirmDisabled: !isDirty })

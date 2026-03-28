@@ -13,7 +13,7 @@ export const useDeleteClassDialog = () => {
   const showDialog = (props: IProps): void => {
     show({
       title: 'Удаление группы',
-      content: () => `Удалить группу ${props.name} ?`,
+      content: `Удалить группу ${props.name} ?`,
       positiveText: 'Удалить',
       onConfirm: async () => {
         const success = await deleteClassById(props.id)

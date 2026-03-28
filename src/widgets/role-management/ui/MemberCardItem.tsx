@@ -8,7 +8,7 @@ export const MemberCardItem = memo(({ member }: { member: IMember }) => {
   return (
     <MemberCard
       fullname={member.profile.fullname}
-      group={member.profile.class?.name}
+      group={member.class?.name}
       memberRole={member.role}
       actions={
         <div className={styles.cardActions}>

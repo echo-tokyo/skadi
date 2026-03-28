@@ -13,7 +13,7 @@ export const useCreateClassDialog = () => {
   const showDialog = (): void => {
     const id = show({
       title: 'Создание группы',
-      content: () => (
+      content: (
         <DialogContent
           classFieldsRef={formRef}
           onDirtyChange={(isDirty) => {

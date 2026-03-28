@@ -14,7 +14,6 @@ export type TClass = {
 
 export type TProfile = {
   id: number
-  class?: TClass
   address?: string
   contact?: TContact
   extra?: string

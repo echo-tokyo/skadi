@@ -7,8 +7,7 @@ import {
 export const transformToRequest = (
   data: TMemberFullSchema,
 ): ICreateMemberRequest => ({
-  // TODO: добавить class_id
-  classId: undefined,
+  class_id: Number(data.class),
   username: data.username,
   password: data.password,
   role: data.role,

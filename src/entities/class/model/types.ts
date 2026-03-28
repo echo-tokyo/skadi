@@ -29,8 +29,8 @@ export interface IClassResponse {
 }
 
 export interface IClassQuery {
-  'per-page': number
-  search: string
+  'per-page'?: number
+  search?: string
 }
 
 export interface IClassFieldsRef {

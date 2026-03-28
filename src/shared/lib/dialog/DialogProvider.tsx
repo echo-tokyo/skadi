@@ -84,7 +84,7 @@ export const DialogProvider = ({
           isConfirmLoading={dialog.isLoading}
           size={dialog.size}
         >
-          {dialog.content()}
+          {dialog.content}
         </Dialog>
       ))}
     </DialogContext>

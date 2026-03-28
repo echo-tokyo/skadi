@@ -1,4 +1,5 @@
 import { TClass, TProfile, TRole } from '@/shared/model'
+import { TMemberFullSchema } from './member-fields-schema'
 
 type TPagination = {
   page: number
@@ -16,12 +17,12 @@ export interface IMember {
 }
 
 export interface IUpdateMemberRequest {
-  classId?: number
+  class_id?: number
   profile: TProfile
 }
 
 export interface ICreateMemberRequest {
-  classId?: number
+  class_id?: number
   password: string
   profile: TProfile
   role: TRole
@@ -34,8 +35,14 @@ export interface IMembersResponse {
 }
 
 export interface IMembersQuery {
-  free: boolean
-  role: TRole[]
+  free?: boolean
+  role?: TRole[]
   'per-page'?: number
   search?: string
+}
+
+export interface IMemberFieldsRef {
+  validate: () => Promise<boolean>
+  getFieldsData: () => TMemberFullSchema
+  reset: () => void
 }
