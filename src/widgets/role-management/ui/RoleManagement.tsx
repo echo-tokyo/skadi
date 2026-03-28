@@ -1,4 +1,11 @@
-import { Input, PlugDefault, Select, Sentinel, Text } from '@/shared/ui'
+import {
+  Input,
+  PlugDefault,
+  Select,
+  Sentinel,
+  Skeleton,
+  Text,
+} from '@/shared/ui'
 import { useState } from 'react'
 import styles from './styles.module.scss'
 import { CreateRoleButton } from '@/features/create-member'
@@ -6,9 +13,10 @@ import { useInfiniteMembers } from '../model/use-infinite-members'
 import { MemberCardItem } from './MemberCardItem'
 import { ROLE_OPTIONS, ROLE_VALUES } from '@/shared/config'
 import { TRole } from '@/shared/model'
-import { useDebounce, useInfiniteScroll } from '@/shared/lib'
+import { useDebounce, useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
 
 const { actions, roles } = styles
+const SKELETON_CARDS = Array.from({ length: 10 })
 
 const RoleManagement = () => {
   const [searchValue, setSearchValue] = useState('')
@@ -16,14 +24,15 @@ const RoleManagement = () => {
 
   const debouncedSearch = useDebounce(searchValue)
 
-  const { members, isFetchingNextPage, loadMore, hasMore } = useInfiniteMembers(
-    {
+  const { members, isFetchingNextPage, loadMore, hasMore, isLoading } =
+    useInfiniteMembers({
       free: false,
       role: role ? [role] : ROLE_VALUES,
       search: debouncedSearch || undefined,
       'per-page': 10,
-    },
-  )
+    })
+
+  const showSkeleton = useShowSkeleton(isLoading)
 
   const { sentinelRef } = useInfiniteScroll({
     hasMore,
@@ -54,8 +63,10 @@ const RoleManagement = () => {
       </div>
 
       <div className={roles}>
-        {members.length === 0 ? (
+        {members.length === 0 && !isLoading ? (
           <PlugDefault />
+        ) : isLoading && showSkeleton ? (
+          SKELETON_CARDS.map((_, i) => <Skeleton key={i} height={'64px'} />)
         ) : (
           members.map((member) => (
             <MemberCardItem key={member.id} member={member} />

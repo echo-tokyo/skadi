@@ -11,6 +11,7 @@ export const useInfiniteMembers = (params: IMembersQuery) => {
     hasNextPage,
     error,
     isError,
+    isLoading,
   } = useGetMembersInfiniteQuery(params)
 
   useEffect(() => {
@@ -29,5 +30,6 @@ export const useInfiniteMembers = (params: IMembersQuery) => {
     isFetchingNextPage,
     loadMore: fetchNextPage,
     hasMore: hasNextPage,
+    isLoading,
   }
 }
