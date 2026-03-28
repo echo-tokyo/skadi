@@ -5,14 +5,14 @@ import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
 
 export const useLogout = () => {
-  const [logoutMutation, { isLoading, error }] = useLogoutMutation()
+  const [logoutMutation, { isLoading }] = useLogoutMutation()
   const dispatch = useAppDispatch()
 
   const logout = async (): Promise<void> => {
     try {
       await logoutMutation().unwrap()
-    } catch {
-      toast.error(getErrorMessage(error))
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     } finally {
       dispatch(clearUserData())
     }

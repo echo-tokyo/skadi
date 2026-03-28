@@ -7,11 +7,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
-      '@/shared': '/src/shared',
+      '@/shared': '/src/shared/',
       '@/entities': '/src/entities/',
-      '@/features': '/src/features',
-      '@/pages': '/src/pages',
-      '@/app': '/src/app',
+      '@/features': '/src/features/',
+      '@/widgets': '/src/widgets/',
+      '@/pages': '/src/pages/',
+      '@/app': '/src/app/',
     },
   },
   server: {

@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
 
 export const useSignIn = () => {
-  const [signInMutation, { isLoading, error }] = useSignInMutation()
+  const [signInMutation, { isLoading }] = useSignInMutation()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -18,8 +18,8 @@ export const useSignIn = () => {
       dispatch(setUserData(result))
 
       navigate('/personal-area')
-    } catch {
-      toast.error(getErrorMessage(error))
+    } catch (err) {
+      toast.error(getErrorMessage(err))
     }
   }
 

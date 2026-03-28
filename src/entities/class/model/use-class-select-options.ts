@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
 import { useDebounce } from '@/shared/lib'
@@ -14,9 +14,9 @@ export const useClassSelectOptions = () => {
       search: debouncedSearch,
     })
 
-  if (error) {
-    toast.error(getErrorMessage(error))
-  }
+  useEffect(() => {
+    if (error) toast.error(getErrorMessage(error))
+  }, [error])
 
   const options = useMemo(
     () =>
