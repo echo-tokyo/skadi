@@ -1,20 +1,12 @@
 import { useDeleteMemberMutation } from '@/entities/member'
-import { getErrorMessage } from '@/shared/api'
-import { toast } from 'sonner'
+import { useMutationAction } from '@/shared/lib'
 
 export const useDeleteMember = () => {
-  const [deleteMember, { isLoading }] = useDeleteMemberMutation()
-
-  const deleteMemberById = async (id: number) => {
-    try {
-      await deleteMember(id).unwrap()
-      toast.info('Пользователь удалён')
-      return true
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-      return false
-    }
-  }
+  const { submit: deleteMemberById, isLoading } = useMutationAction<number, number>({
+    mutation: useDeleteMemberMutation(),
+    prepare: (id) => id,
+    successMessage: 'Пользователь удалён',
+  })
 
   return { deleteMemberById, isLoading }
 }

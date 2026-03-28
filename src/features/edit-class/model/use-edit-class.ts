@@ -1,25 +1,10 @@
-import {
-  TClassSchema,
-  transformToRequest,
-  useEditClassMutation,
-} from '@/entities/class'
-import { getErrorMessage } from '@/shared/api'
-import { toast } from 'sonner'
+import { TClassSchema, transformToRequest, useEditClassMutation } from '@/entities/class'
+import { useMutationAction } from '@/shared/lib'
 
 export const useEditClass = (id: number) => {
-  const [editClass, { isLoading }] = useEditClassMutation()
-
-  const submit = async (formData: TClassSchema): Promise<boolean> => {
-    const data = transformToRequest(formData)
-    try {
-      await editClass({ id, data }).unwrap()
-      toast.info('Группа обновлена')
-      return true
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-      return false
-    }
-  }
-
-  return { submit, isLoading }
+  return useMutationAction<TClassSchema, { id: number; data: ReturnType<typeof transformToRequest> }>({
+    mutation: useEditClassMutation(),
+    prepare: (formData) => ({ id, data: transformToRequest(formData) }),
+    successMessage: 'Группа обновлена',
+  })
 }

@@ -1,22 +1,11 @@
 import { TMemberFullSchema, useUpdateMemberMutation } from '@/entities/member'
-import { getErrorMessage } from '@/shared/api'
-import { toast } from 'sonner'
 import { transformToUpdateRequest } from '../lib/transform-to-update-request'
+import { useMutationAction } from '@/shared/lib'
 
 export const useEditMember = (id: number) => {
-  const [updateMember, { isLoading }] = useUpdateMemberMutation()
-
-  const submit = async (formData: TMemberFullSchema): Promise<boolean> => {
-    const data = transformToUpdateRequest(formData)
-    try {
-      await updateMember({ id, data }).unwrap()
-      toast.info('Пользователь обновлён')
-      return true
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-      return false
-    }
-  }
-
-  return { submit, isLoading }
+  return useMutationAction<TMemberFullSchema, { id: number; data: ReturnType<typeof transformToUpdateRequest> }>({
+    mutation: useUpdateMemberMutation(),
+    prepare: (formData) => ({ id, data: transformToUpdateRequest(formData) }),
+    successMessage: 'Пользователь обновлён',
+  })
 }
