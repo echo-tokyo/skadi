@@ -9,7 +9,6 @@ export const useCreateMemberDialog = () => {
   const { submit } = useCreateMember()
   const formRef = useRef<IMemberFieldsRef>(null)
   const dialogIdRef = useRef<string | null>(null)
-
   const showDialog = (): void => {
     const id = show({
       title: 'Создание пользователя',

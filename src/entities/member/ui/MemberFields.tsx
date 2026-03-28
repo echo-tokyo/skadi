@@ -47,7 +47,6 @@ const MemberFields = ({
   classField,
 }: IMemberFormProps): ReactNode => {
   const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
-
   const {
     watch,
     setValue,
@@ -58,7 +57,6 @@ const MemberFields = ({
     resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
     defaultValues: fieldData,
   })
-
   const fieldsData = watch()
 
   const onDirtyChangeRef = useRef(onDirtyChange)

@@ -22,8 +22,6 @@ const DialogContent = (props: IDialogContentProps) => {
     options,
   } = useClassSelectOptions()
 
-  console.log('DialogContent')
-
   return (
     <MemberFields
       ref={formRef}
