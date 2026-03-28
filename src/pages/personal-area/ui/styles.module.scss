@@ -42,6 +42,28 @@
   outline: none;
   cursor: pointer;
 }
+.tabButton span {
+  position: relative;
+  transition: color 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1.5px;
+    background-color: var(--color-primary);
+    transition: width 0.25s ease;
+  }
+}
+.tabButton span:hover {
+  color: var(--color-primary) !important;
+
+  &::after {
+    width: 100%;
+  }
+}
 
 .right {
   display: flex;
