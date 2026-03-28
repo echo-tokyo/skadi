@@ -51,7 +51,7 @@ export const classApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ['Class'],
+      invalidatesTags: ['Class', 'Member'],
     }),
     deleteClass: builder.mutation<void, number>({
       query: (id) => ({
