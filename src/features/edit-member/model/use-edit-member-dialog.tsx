@@ -2,7 +2,6 @@ import { useRef, useMemo } from 'react'
 import { useDialog } from '@/shared/lib'
 import {
   IMember,
-  memberBaseSchema,
   BASE_DISABLED_FIELDS,
   IMemberFieldsRef,
 } from '@/entities/member'
@@ -24,7 +23,6 @@ export const useEditMemberDialog = (member: IMember) => {
       content: (
         <DialogContent
           ref={formRef}
-          schema={memberBaseSchema}
           fieldData={fieldData}
           disabledFields={BASE_DISABLED_FIELDS}
           onDirtyChange={(isDirty) => {

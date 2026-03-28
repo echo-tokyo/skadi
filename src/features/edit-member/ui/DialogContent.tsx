@@ -1,15 +1,13 @@
 import { useClassSelectOptions } from '@/entities/class'
 import {
   IMemberFieldsRef,
+  memberBaseSchema,
   MemberFields,
-  memberFullSchema,
   TMemberFullSchema,
 } from '@/entities/member'
 import { memo, Ref } from 'react'
-import { ZodObject, ZodRawShape } from 'zod'
 
 interface IDialogContentProps {
-  schema: ZodObject<ZodRawShape>
   fieldData: TMemberFullSchema
   disabledFields: Array<keyof TMemberFullSchema>
   ref: Ref<IMemberFieldsRef>
@@ -30,7 +28,7 @@ const DialogContent = (props: IDialogContentProps) => {
   return (
     <MemberFields
       ref={formRef}
-      schema={memberFullSchema}
+      schema={memberBaseSchema}
       onDirtyChange={onDirtyChange}
       disabledFields={disabledFields}
       fieldData={fieldData}

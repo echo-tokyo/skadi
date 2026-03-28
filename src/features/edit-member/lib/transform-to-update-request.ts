@@ -7,7 +7,6 @@ import {
 export const transformToUpdateRequest = (
   data: TMemberFullSchema,
 ): IUpdateMemberRequest => ({
-  // TODO: добавить классы, как появятся
-  class_id: undefined,
+  class_id: Number(data.class),
   profile: toProfile(data),
 })

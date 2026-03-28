@@ -5,6 +5,7 @@ export const toFormData = (member: IMember): TMemberFullSchema => ({
   role: member.role,
   username: member.username,
   password: '',
+  class: String(member.class?.id),
   address: member.profile.address ?? '',
   email: member.profile.contact?.email ?? '',
   phone: member.profile.contact?.phone ?? '',
