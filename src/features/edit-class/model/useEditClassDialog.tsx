@@ -4,6 +4,7 @@ import { IClass, IClassFieldsRef } from '@/entities/class'
 import DialogContent from '../ui/DialogContent'
 import { useEditClass } from './use-edit-class'
 
+// FIXME: если убрать юзера из группы, это не обновится в листе юзеров (нужно перезагрузить страницу)
 export const useEditClassDialog = (classData: IClass) => {
   const { show, update } = useDialog()
   const formRef = useRef<IClassFieldsRef>(null)
@@ -14,7 +15,7 @@ export const useEditClassDialog = (classData: IClass) => {
     const id = show({
       title: 'Редактирование группы',
       isConfirmDisabled: true,
-      content: () => (
+      content: (
         <DialogContent
           classData={classData}
           classFieldsRef={formRef}
