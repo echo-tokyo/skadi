@@ -54,18 +54,20 @@ func (u *UCStudent) UpdateSolution(studID, solutionID int,
 	}
 
 	newData.Grade = nil
-	if newData.Answer != nil {
-		solObj.Answer = newData.Answer
-	}
 	if newData.StatusID != nil {
 		if err := u.getStatusToUpdate(solObj, *newData.StatusID); err != nil {
 			return nil, err
 		}
 	}
+	// TODO: only if status is "in process"
+	if newData.Answer != nil {
+		solObj.Answer = newData.Answer
+	}
 
 	if err := u.taskRepoDB.UpdateSolution(solutionID, newData); err != nil {
 		return nil, fmt.Errorf("update: %w", err)
 	}
+	solObj.UpdatedAt = newData.UpdatedAt
 	return solObj, nil
 }
 

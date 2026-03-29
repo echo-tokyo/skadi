@@ -140,6 +140,10 @@ func (r *RepoDB) GetSolutionByIDFull(id int) (*entity.Solution, error) {
 		// solution object with such id not found
 		return nil, fmt.Errorf("solution with id: %w: %s", task.ErrNotFound, err.Error())
 	}
+
+	// set student and teacher profiles
+	solObj.Student = solObj.StudentUser.Profile
+	solObj.Task.Teacher = solObj.Task.TeacherUser.Profile
 	return &solObj, err // err OR nil
 }
 
@@ -168,7 +172,7 @@ func (r *RepoDB) UpdateSolution(taskID int, newData *entity.SolutionUpdate) erro
 	updates := make(map[string]any)
 	// set new grade
 	if newData.Grade != nil {
-		updates["name"] = *newData.Grade
+		updates["grade"] = *newData.Grade
 	}
 	// set new answer
 	if newData.Answer != nil {
@@ -178,11 +182,18 @@ func (r *RepoDB) UpdateSolution(taskID int, newData *entity.SolutionUpdate) erro
 	if newData.StatusID != nil {
 		updates["status_id"] = newData.StatusID
 	}
+
+	var updatedSol *entity.Solution
 	// update class
 	err := r.dbStorage.Model(&entity.Solution{}).
 		Where(_fieldID+" = ?", taskID).
-		Updates(updates).Error
-	return err // err OR nil
+		Updates(updates).
+		Scan(&updatedSol).Error
+	if err != nil {
+		return err
+	}
+	newData.UpdatedAt = updatedSol.UpdatedAt
+	return nil
 }
 
 // DeleteTaskByID deletes task by given id.

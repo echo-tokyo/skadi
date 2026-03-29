@@ -37,9 +37,6 @@ func (u *UCClient) GetByIDFull(solutionID int,
 	if err != nil {
 		return nil, nil, fmt.Errorf("get solution: %w", err)
 	}
-	// set student and teacher profiles
-	solution.Student = solution.StudentUser.Profile
-	solution.Task.Teacher = solution.Task.TeacherUser.Profile
 
 	// role checks
 	if userClaims.Role == roles.Teacher && solution.Task.TeacherID != userClaims.ID {

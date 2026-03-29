@@ -41,4 +41,6 @@ type SolutionUpdate struct {
 	Grade *string
 	// new answer
 	Answer *string
+	// last-update datetime of solution
+	UpdatedAt *time.Time
 }

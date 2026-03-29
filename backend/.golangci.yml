@@ -120,6 +120,14 @@ linters:
           - gocritic
         path: "internal/app/.*?/controller/http/v1/register.go"
         text: "unnecessaryBlock: block doesn't have definitions, can be simply deleted"
+      - linters: # similar but different endpoints
+          - dupl
+        path: "internal/app/task/controller/http/v1/controller_student.go"
+        text: "48-93 lines are duplicate of `internal/app/task/controller/http/v1/controller_teacher.go:166-211"
+      - linters: # similar but different endpoints
+          - dupl
+        path: "internal/app/task/controller/http/v1/controller_teacher.go"
+        text: "166-211 lines are duplicate of `internal/app/task/controller/http/v1/controller_student.go:48-93"
 
 issues:
   fix: false

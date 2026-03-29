@@ -1,11 +1,14 @@
 package v1
 
 import (
+	"errors"
 	"fmt"
 
 	fiber "github.com/gofiber/fiber/v2"
 
+	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
+	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
@@ -43,7 +46,50 @@ func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
 // @failure		403					"доступ запрещён"
 // @failure		404					"решение не найдено"
 func (c *TaskControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
-	panic("unimplemented")
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
+	inputPath := &solutionIDPath{}
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
+		return err
+	}
+	inputBody := &updateSolutionBody{}
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
+		return err
+	}
+
+	// data reshaping
+	newData := &entity.SolutionUpdate{
+		StatusID: inputBody.StatusID,
+		Answer:   inputBody.Answer,
+	}
+
+	solObj, err := c.taskUCStudent.UpdateSolution(userClaims.ID, inputPath.ID, newData)
+	if errors.Is(err, task.ErrInvalidData) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusBadRequest,
+			Message:    "неверный статус",
+		}
+	}
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
+		}
+	}
+	if errors.Is(err, task.ErrNotFound) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusNotFound,
+			Message:    "решение не найдено",
+		}
+	}
+	if err != nil {
+		return err
+	}
+	return ctx.Status(fiber.StatusOK).JSON(solObj)
 }
 
 // @summary		Получение списка решений [только ученик].

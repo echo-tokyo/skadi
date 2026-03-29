@@ -109,9 +109,43 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 // @failure		403				"доступ запрещён"
 // @failure		404				"задание не найдено"
 func (c *TaskControllerTeacher) UpdateTask(ctx *fiber.Ctx) error {
-	// // parse user claims
-	// userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
-	panic("unimplemented")
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
+	inputPath := &taskIDPath{}
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
+		return err
+	}
+	inputBody := &updateTaskBody{}
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
+		return err
+	}
+
+	// data reshaping
+	newData := &entity.TaskUpdate{
+		Title: inputBody.Title,
+		Desc:  inputBody.Desc,
+	}
+
+	taskObj, err := c.taskUCTeacher.UpdateTask(userClaims.ID, inputPath.ID, newData)
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
+		}
+	}
+	if errors.Is(err, task.ErrNotFound) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusNotFound,
+			Message:    "задание не найдено",
+		}
+	}
+	if err != nil {
+		return err
+	}
+	return ctx.Status(fiber.StatusOK).JSON(taskObj)
 }
 
 // @summary		Обновление решения. [Только преподаватель]
@@ -130,27 +164,50 @@ func (c *TaskControllerTeacher) UpdateTask(ctx *fiber.Ctx) error {
 // @failure		403					"доступ запрещён"
 // @failure		404					"решение не найдено"
 func (c *TaskControllerTeacher) UpdateSolution(ctx *fiber.Ctx) error {
-	panic("unimplemented")
-	// 	inputPath := &classIDPath{}
-	// 	if err := inputPath.Parse(ctx, c.valid); err != nil {
-	// 		return err
-	// 	}
-	// 	inputBody := &updateBody{}
-	// 	if err := inputBody.Parse(ctx, c.valid); err != nil {
-	// 		return err
-	// 	}
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
-	// // data reshaping
-	//
-	//	newData := &entity.ClassUpdate{
-	//		Name:            inputBody.Name,
-	//		TeacherID:       inputBody.TeacherID,
-	//		Schedule:        inputBody.Schedule,
-	//		NewFullStudents: inputBody.Students,
-	//	}
-	//
-	// classObj, err := c.classUCAdmin.Update(inputPath.ID, newData)
-	// return ctx.Status(fiber.StatusOK).JSON(classObj)
+	inputPath := &solutionIDPath{}
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
+		return err
+	}
+	inputBody := &updateSolutionBody{}
+	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
+		return err
+	}
+
+	// data reshaping
+	newData := &entity.SolutionUpdate{
+		StatusID: inputBody.StatusID,
+		Grade:    inputBody.Grade,
+	}
+
+	solObj, err := c.taskUCTeacher.UpdateSolution(userClaims.ID, inputPath.ID, newData)
+	if errors.Is(err, task.ErrInvalidData) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusBadRequest,
+			Message:    "неверный статус",
+		}
+	}
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
+		}
+	}
+	if errors.Is(err, task.ErrNotFound) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusNotFound,
+			Message:    "решение не найдено",
+		}
+	}
+	if err != nil {
+		return err
+	}
+	return ctx.Status(fiber.StatusOK).JSON(solObj)
 }
 
 // @summary		Удаление задания по id. [Только преподаватель]

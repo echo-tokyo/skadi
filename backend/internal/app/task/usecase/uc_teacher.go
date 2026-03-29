@@ -139,18 +139,20 @@ func (u *UCTeacher) UpdateSolution(teacherID, solutionID int,
 	}
 
 	newData.Answer = nil
-	if newData.Grade != nil {
-		solObj.Grade = newData.Grade
-	}
 	if newData.StatusID != nil {
 		if err := u.getStatusToUpdate(solObj, *newData.StatusID); err != nil {
 			return nil, err
 		}
 	}
+	// TODO: only if status is "checked" and the previous status is "ready"
+	if newData.Grade != nil {
+		solObj.Grade = newData.Grade
+	}
 
 	if err := u.taskRepoDB.UpdateSolution(solutionID, newData); err != nil {
 		return nil, fmt.Errorf("update: %w", err)
 	}
+	solObj.UpdatedAt = newData.UpdatedAt
 	return solObj, nil
 }
 
