@@ -12,7 +12,7 @@ export const useMemberSelectOptions = (role: TRole) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error } =
     useGetMembersInfiniteQuery({
       role: [role],
-      free: false,
+      free: true,
       'per-page': 10,
       search: debouncedSearch || undefined,
     })
