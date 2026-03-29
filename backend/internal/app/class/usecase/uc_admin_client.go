@@ -120,8 +120,8 @@ func (u *UCAdminClient) DeleteByID(id int) error {
 }
 
 // ListShort returns slice of class objects (IDs and names only).
-func (u *UCAdminClient) ListShort() ([]entity.Class, error) {
-	return u.classRepoDB.ListShort()
+func (u *UCAdminClient) ListShort(search string, page *entity.Pagination) ([]entity.Class, error) {
+	return u.classRepoDB.ListShort(search, page)
 }
 
 // ListFull returns slice of class objects with full data.

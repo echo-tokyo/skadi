@@ -7,6 +7,7 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/class"
+	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
 	"skadi/backend/internal/pkg/validator"
@@ -68,14 +69,11 @@ func (c *ClassController) Read(ctx *fiber.Ctx) error {
 // @accept			json
 // @produce		json
 // @security		JWTAccess
-// @success		200	{array}	entity.Class
-// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @param			listClassQuery	query	listClassQuery	false	"listClassQuery"
+// @success		200				{array}	entity.Class
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassController) ListShort(ctx *fiber.Ctx) error {
-	classListResp, err := c.classUCClient.ListShort()
-	if err != nil {
-		return fmt.Errorf("list: %w", err)
-	}
-	return ctx.Status(fiber.StatusOK).JSON(classListResp)
+	return getClassList(ctx, c.valid, c.classUCClient.ListShort)
 }
 
 // @summary		Получение списка групп.
@@ -90,15 +88,23 @@ func (c *ClassController) ListShort(ctx *fiber.Ctx) error {
 // @success		200				{object}	listClassOut
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 func (c *ClassController) ListFull(ctx *fiber.Ctx) error {
+	return getClassList(ctx, c.valid, c.classUCClient.ListFull)
+}
+
+// getListFunc represents a func to get classes list.
+type getListFunc func(search string, page *entity.Pagination) ([]entity.Class, error)
+
+// getClassList handles short/full class list endpoints.
+func getClassList(ctx *fiber.Ctx, valid validator.Validator, getList getListFunc) error {
 	inputQuery := &listClassQuery{}
-	if err := serialize.Deserialize(inputQuery, ctx.QueryParser, c.valid.Validate); err != nil {
+	if err := serialize.Deserialize(inputQuery, ctx.QueryParser, valid.Validate); err != nil {
 		return err
 	}
 	// get pagination object OR nil
 	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get classes
-	classListResp, err := c.classUCClient.ListFull(inputQuery.Search, pageParams)
+	classListResp, err := getList(inputQuery.Search, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

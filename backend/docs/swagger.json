@@ -688,6 +688,32 @@
                 ],
                 "summary": "Получение списка групп (кратко).",
                 "operationId": "class-list-short",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "F26",
+                        "description": "substring to filter classes by name (case-insensitive)",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

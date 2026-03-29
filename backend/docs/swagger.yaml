@@ -971,6 +971,25 @@ paths:
       - application/json
       description: Получение списка групп (только ID и названия).
       operationId: class-list-short
+      parameters:
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter classes by name (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:

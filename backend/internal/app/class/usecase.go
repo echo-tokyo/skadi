@@ -21,7 +21,8 @@ type UsecaseClient interface {
 	// GetByID returns a class object by given ID.
 	GetByID(id int) (*entity.Class, error)
 	// ListShort returns slice of class objects (IDs and names only).
-	ListShort() ([]entity.Class, error)
+	// Search param used to filter classes by name (substring).
+	ListShort(search string, page *entity.Pagination) ([]entity.Class, error)
 	// ListFull returns slice of class objects with full data.
 	// Search param used to filter classes by name (substring).
 	ListFull(search string, page *entity.Pagination) ([]entity.Class, error)

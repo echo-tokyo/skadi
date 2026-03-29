@@ -17,7 +17,8 @@ type RepositoryDB interface {
 	DeleteByID(id int) error
 
 	// ListShort returns slice of class objects (IDs and names only).
-	ListShort() ([]entity.Class, error)
+	// Search param appends condition to filter classes by name (substring).
+	ListShort(search string, page *entity.Pagination) ([]entity.Class, error)
 	// ListFull returns slice of class objects with full data.
 	// Search param appends condition to filter classes by name (substring).
 	ListFull(search string, page *entity.Pagination) ([]entity.Class, error)

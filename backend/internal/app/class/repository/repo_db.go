@@ -142,13 +142,23 @@ func (r *RepoDB) DeleteByID(id int) error {
 }
 
 // ListShort returns slice of class objects (IDs and names only).
-func (r *RepoDB) ListShort() ([]entity.Class, error) {
+func (r *RepoDB) ListShort(search string, page *entity.Pagination) ([]entity.Class, error) {
 	classes := []entity.Class{}
-	err := r.dbStorage.
-		Select(_fieldID, _fieldName).
-		Order("id DESC").
-		Find(&classes).Error
-	return classes, err // err OR nil
+	query := r.dbStorage.Model(&entity.Class{}).Select(_fieldID, _fieldName)
+	if search != "" {
+		query = query.Where("name REGEXP ?", search)
+	}
+	query = query.Order("id DESC")
+	// apply pagination if it's not nil
+	if page != nil {
+		page.CountTotal(query)
+		query = page.Query(query)
+	}
+	// exec query
+	if err := query.Find(&classes).Error; err != nil {
+		return nil, err
+	}
+	return classes, nil
 }
 
 // ListFull returns slice of class objects with full data.
