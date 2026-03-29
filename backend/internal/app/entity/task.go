@@ -24,3 +24,11 @@ type Task struct {
 func (*Task) TableName() string {
 	return "task"
 }
+
+// TaskUpdate represents a data to update task.
+type TaskUpdate struct {
+	// new task title
+	Title *string
+	// new task description
+	Desc *string
+}

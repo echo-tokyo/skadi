@@ -32,3 +32,13 @@ type Solution struct {
 func (*Solution) TableName() string {
 	return "solution"
 }
+
+// SolutionUpdate represents a data to update solution.
+type SolutionUpdate struct {
+	// new status ID
+	StatusID *int
+	// new grade
+	Grade *string
+	// new answer
+	Answer *string
+}

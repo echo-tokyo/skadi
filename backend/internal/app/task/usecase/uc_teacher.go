@@ -6,10 +6,18 @@ import (
 
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/status"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/roles"
 	"skadi/backend/internal/pkg/utils/slices"
+)
+
+const (
+	_defaultStatusID  = 1 // ID of solution status "backlog"
+	_inWorkStatusID   = 2 // ID of solution status "in-work"
+	_readyStatusID    = 3 // ID of solution status "ready"
+	_archivedStatusID = 4 // ID of solution status "checked"
 )
 
 // Ensure UCAdmin implements interfaces.
@@ -18,19 +26,21 @@ var _ task.UsecaseTeacher = (*UCTeacher)(nil)
 // UCTeacher represents a task usecase for teacher.
 // It implements the task.UsecaseTeacher interface.
 type UCTeacher struct {
-	cfg        *config.Config
-	taskRepoDB task.RepositoryDB
-	userRepoDB user.RepositoryDB
+	cfg          *config.Config
+	taskRepoDB   task.RepositoryDB
+	statusRepoDB status.RepositoryDB
+	userRepoDB   user.RepositoryDB
 }
 
 // NewUCTeacher returns a new instance of UCTeacher.
 func NewUCTeacher(cfg *config.Config, taskRepoDB task.RepositoryDB,
-	userRepoDB user.RepositoryDB) *UCTeacher {
+	statusRepoDB status.RepositoryDB, userRepoDB user.RepositoryDB) *UCTeacher {
 
 	return &UCTeacher{
-		cfg:        cfg,
-		taskRepoDB: taskRepoDB,
-		userRepoDB: userRepoDB,
+		cfg:          cfg,
+		taskRepoDB:   taskRepoDB,
+		statusRepoDB: statusRepoDB,
+		userRepoDB:   userRepoDB,
 	}
 }
 
@@ -85,6 +95,63 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 		return nil, fmt.Errorf("create task for students: %w", err)
 	}
 	return solutions, nil
+}
+
+// UpdateTask updates the given task by given ID with the new data.
+// It returns the updated task object.
+// Allows to update the title, desc and task files.
+func (u *UCTeacher) UpdateTask(teacherID, taskID int,
+	newData *entity.TaskUpdate) (*entity.Task, error) {
+
+	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
+	if err != nil {
+		return nil, fmt.Errorf("get task: %w", err)
+	}
+	if teacherID != taskObj.TeacherID {
+		return nil, fmt.Errorf("%w: user is not a task owner", task.ErrForbidden)
+	}
+
+	if err := u.taskRepoDB.UpdateTask(taskID, newData); err != nil {
+		return nil, fmt.Errorf("update: %w", err)
+	}
+
+	if newData.Title != nil {
+		taskObj.Title = *newData.Title
+	}
+	if newData.Desc != nil {
+		taskObj.Desc = *newData.Desc
+	}
+	return taskObj, nil
+}
+
+// UpdateSolution updates the given solution by given ID with the new data.
+// It returns the updated solution object.
+// Allows to update the grade and status (only ready and archived).
+func (u *UCTeacher) UpdateSolution(teacherID, solutionID int,
+	newData *entity.SolutionUpdate) (*entity.Solution, error) {
+
+	solObj, err := u.taskRepoDB.GetSolutionByIDFull(solutionID)
+	if err != nil {
+		return nil, fmt.Errorf("get task: %w", err)
+	}
+	if teacherID != solObj.Task.TeacherID {
+		return nil, fmt.Errorf("%w: user is not a solution task owner", task.ErrForbidden)
+	}
+
+	newData.Answer = nil
+	if newData.Grade != nil {
+		solObj.Grade = newData.Grade
+	}
+	if newData.StatusID != nil {
+		if err := u.getStatusToUpdate(solObj, *newData.StatusID); err != nil {
+			return nil, err
+		}
+	}
+
+	if err := u.taskRepoDB.UpdateSolution(solutionID, newData); err != nil {
+		return nil, fmt.Errorf("update: %w", err)
+	}
+	return solObj, nil
 }
 
 // DeleteTaskByID deletes task object by given ID.
@@ -150,4 +217,24 @@ func (u *UCTeacher) GetSolutions(teacherID int, search string, archived bool,
 		solList[idx].Student = solList[idx].StudentUser.Profile
 	}
 	return solList, nil
+}
+
+// getStatusToUpdate sets the new status object to updated solution.
+func (u *UCTeacher) getStatusToUpdate(solObj *entity.Solution, newStatusID int) error {
+	solObj.StatusID = newStatusID
+	// only ready and archived statuses
+	if newStatusID != _readyStatusID && newStatusID != _archivedStatusID {
+		return fmt.Errorf("%w: teacher cannot set the given status", task.ErrInvalidData)
+	}
+	// get status object
+	var err error
+	solObj.Status, err = u.statusRepoDB.GetByID(newStatusID)
+	// if status object with such id not found
+	if errors.Is(err, task.ErrNotFound) {
+		return fmt.Errorf("%w: status: %s", task.ErrInvalidData, err.Error())
+	}
+	if err != nil {
+		return fmt.Errorf("get status: %w", err)
+	}
+	return nil
 }

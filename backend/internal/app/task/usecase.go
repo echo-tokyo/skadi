@@ -10,10 +10,22 @@ type UsecaseTeacher interface {
 	// for all given students and for all students linked to the given classes.
 	CreateTaskWithSolutions(taskObj *entity.Task, studentIDs []int,
 		classIDs []int) ([]entity.Solution, error)
+
+	// UpdateTask updates the given task by given ID with the new data.
+	// It returns the updated task object.
+	// Allows to update the title, desc and task files.
+	UpdateTask(teacherID, taskID int, newData *entity.TaskUpdate) (*entity.Task, error)
+	// UpdateSolution updates the given solution by given ID with the new data.
+	// It returns the updated solution object.
+	// Allows to update the grade and status (only ready and archived).
+	UpdateSolution(teacherID, solutionID int,
+		newData *entity.SolutionUpdate) (*entity.Solution, error)
+
 	// DeleteTaskByID deletes task object by given ID.
 	DeleteTaskByID(userID, taskID int) error
 	// DeleteSolutionByID deletes solution object by given ID.
 	DeleteSolutionByID(userID, solutionID int) error
+
 	// GetTasks returns all teacher tasks.
 	// Search param appends condition to filter tasks by title (substring).
 	GetTasks(teacherID int, search string, page *entity.Pagination) ([]entity.Task, error)
@@ -28,6 +40,11 @@ type UsecaseStudent interface {
 	// GetSolutions returns all student solutions.
 	// It returns checked solutions if archived is true.
 	GetSolutions(studID int, archived bool, page *entity.Pagination) ([]entity.Solution, error)
+	// UpdateSolution updates the given solution by given ID with the new data.
+	// It returns the updated solution object.
+	// Allows to update the status (apart of archived), answer and solution files.
+	UpdateSolution(studID, solutionID int,
+		newData *entity.SolutionUpdate) (*entity.Solution, error)
 }
 
 type UsecaseClient interface {

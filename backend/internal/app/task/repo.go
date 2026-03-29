@@ -12,10 +12,14 @@ type RepositoryDB interface {
 	GetSolutionByID(id int) (*entity.Solution, error)
 	// GetSolutionByIDFull returns a full solution info by the given ID.
 	GetSolutionByIDFull(id int) (*entity.Solution, error)
-	// UpdateTask updates the given task.
-	UpdateTask(taskObj *entity.Task) error
-	// UpdateSolution updates the given solution.
-	UpdateSolution(solution *entity.Solution) error
+
+	// UpdateTask updates the given task by given ID with the new data.
+	// It returns the updated task object.
+	UpdateTask(taskID int, newData *entity.TaskUpdate) error
+	// UpdateSolution updates the given solution by given ID with the new data.
+	// It returns the updated solution object.
+	UpdateSolution(solutionID int, newData *entity.SolutionUpdate) error
+
 	// DeleteTaskByID deletes task by given id.
 	DeleteTaskByID(id int) error
 	// DeleteSolutionByID deletes solution by given id.

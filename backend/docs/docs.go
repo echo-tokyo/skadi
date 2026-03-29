@@ -913,7 +913,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Получение списка решений конкретного студента.",
+                "description": "Получение списка решений конкретного ученика.",
                 "consumes": [
                     "application/json"
                 ],
@@ -923,7 +923,7 @@ const docTemplate = `{
                 "tags": [
                     "task"
                 ],
-                "summary": "Получение списка решений [только студент].",
+                "summary": "Получение списка решений [только ученик].",
                 "operationId": "student-solution-list",
                 "parameters": [
                     {
@@ -960,6 +960,65 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/student/solution/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление решения (только переданные поля: статус, кроме \"проверено\", ответ, файл ответа) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Обновление решения. [Только ученик]",
+                "operationId": "student-solution-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateSolutionBody",
+                        "name": "updateSolutionBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateSolutionBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Solution"
+                        }
+                    },
+                    "400": {
+                        "description": "неверный статус"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение не найдено"
                     }
                 }
             }
@@ -1066,6 +1125,63 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "доступ запрещён"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление решения (только переданные поля: статус - \"готово\"/\"проверено\" - и оценка) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Обновление решения. [Только преподаватель]",
+                "operationId": "teacher-solution-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateSolutionBody",
+                        "name": "updateSolutionBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateSolutionBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Solution"
+                        }
+                    },
+                    "400": {
+                        "description": "неверный статус"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение не найдено"
                     }
                 }
             }
@@ -1209,6 +1325,60 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "доступ запрещён"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление задания (только переданные поля: название, описание, прикреплённые файлы) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Обновление задания. [Только преподаватель]",
+                "operationId": "task-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateTaskBody",
+                        "name": "updateTaskBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateTaskBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Task"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "задание не найдено"
                     }
                 }
             }
@@ -2008,6 +2178,45 @@ const docTemplate = `{
                     "maxLength": 40,
                     "minLength": 8,
                     "example": "qwerty123"
+                }
+            }
+        },
+        "v1.updateSolutionBody": {
+            "description": "updateSolutionBody represents a data with optional body to update solution.",
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "description": "new answer",
+                    "type": "string",
+                    "example": "ООП - это объектно-ориентированное программирование"
+                },
+                "grade": {
+                    "description": "new grade",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "5+"
+                },
+                "status_id": {
+                    "description": "new status ID",
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
+        "v1.updateTaskBody": {
+            "description": "updateTaskBody represents a data with optional body to update task.",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "new task description",
+                    "type": "string",
+                    "example": "Что такое ООП? Перечислить принципы ООП"
+                },
+                "title": {
+                    "description": "new task title",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Понятие ООП"
                 }
             }
         },

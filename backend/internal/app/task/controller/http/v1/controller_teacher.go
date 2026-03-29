@@ -94,73 +94,64 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(res)
 }
 
-// // @summary		Обновление группы по id. [Только админ]
-// // @description	Частичное обновление группы (только переданные поля) по её id.
-// // @router			/admin/class/{id} [patch]
-// // @id				admin-class-update
-// // @tags			class
-// // @accept			json
-// // @produce		json
-// // @security		JWTAccess
-// // @param			id			path		string		true	"ID группы"
-// // @param			updateBody	body		updateBody	true	"updateBody"
-// // @success		200			{object}	entity.Class
-// // @failure		400			"неверный ученик"
-// // @failure		400			"неверный преподаватель"
-// // @failure		400			"преподаватель не найден"
-// // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
-// // @failure		404			"группа не найдена"
-// func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
-// 	inputPath := &classIDPath{}
-// 	if err := inputPath.Parse(ctx, c.valid); err != nil {
-// 		return err
-// 	}
-// 	inputBody := &updateBody{}
-// 	if err := inputBody.Parse(ctx, c.valid); err != nil {
-// 		return err
-// 	}
+// @summary		Обновление задания. [Только преподаватель]
+// @description	Частичное обновление задания (только переданные поля: название, описание, прикреплённые файлы) по его id.
+// @router			/teacher/task/{id} [patch]
+// @id				task-update
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id				path		string			true	"ID задания"
+// @param			updateTaskBody	body		updateTaskBody	true	"updateTaskBody"
+// @success		200				{object}	entity.Task
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403				"доступ запрещён"
+// @failure		404				"задание не найдено"
+func (c *TaskControllerTeacher) UpdateTask(ctx *fiber.Ctx) error {
+	// // parse user claims
+	// userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+	panic("unimplemented")
+}
 
-// 	// data reshaping
-// 	newData := &entity.ClassUpdate{
-// 		Name:            inputBody.Name,
-// 		TeacherID:       inputBody.TeacherID,
-// 		Schedule:        inputBody.Schedule,
-// 		NewFullStudents: inputBody.Students,
-// 	}
-// 	classObj, err := c.classUCAdmin.Update(inputPath.ID, newData)
-// 	if errors.Is(err, class.ErrNotFound) {
-// 		return &httperror.HTTPError{
-// 			CauseErr:   err,
-// 			StatusCode: fiber.StatusConflict,
-// 			Message:    "группа не найдена",
-// 		}
-// 	}
-// 	if errors.Is(err, class.ErrNotFoundUser) {
-// 		return &httperror.HTTPError{
-// 			CauseErr:   err,
-// 			StatusCode: fiber.StatusBadRequest,
-// 			Message:    "преподаватель не найден",
-// 		}
-// 	}
-// 	if errors.Is(err, class.ErrInvalidTeacher) {
-// 		return &httperror.HTTPError{
-// 			CauseErr:   err,
-// 			StatusCode: fiber.StatusBadRequest,
-// 			Message:    "неверный преподаватель",
-// 		}
-// 	}
-// 	if errors.Is(err, class.ErrInvalidStud) {
-// 		return &httperror.HTTPError{
-// 			CauseErr:   err,
-// 			StatusCode: fiber.StatusBadRequest,
-// 			Message:    "неверный ученик",
-// 		}
-// 	}
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return ctx.Status(fiber.StatusOK).JSON(classObj)
-// }
+// @summary		Обновление решения. [Только преподаватель]
+// @description	Частичное обновление решения (только переданные поля: статус - "готово"/"проверено" - и оценка) по его id.
+// @router			/teacher/solution/{id} [patch]
+// @id				teacher-solution-update
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id					path		string				true	"ID решения"
+// @param			updateSolutionBody	body		updateSolutionBody	true	"updateSolutionBody"
+// @success		200					{object}	entity.Solution
+// @failure		400					"неверный статус"
+// @failure		401					"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403					"доступ запрещён"
+// @failure		404					"решение не найдено"
+func (c *TaskControllerTeacher) UpdateSolution(ctx *fiber.Ctx) error {
+	panic("unimplemented")
+	// 	inputPath := &classIDPath{}
+	// 	if err := inputPath.Parse(ctx, c.valid); err != nil {
+	// 		return err
+	// 	}
+	// 	inputBody := &updateBody{}
+	// 	if err := inputBody.Parse(ctx, c.valid); err != nil {
+	// 		return err
+	// 	}
+
+	// // data reshaping
+	//
+	//	newData := &entity.ClassUpdate{
+	//		Name:            inputBody.Name,
+	//		TeacherID:       inputBody.TeacherID,
+	//		Schedule:        inputBody.Schedule,
+	//		NewFullStudents: inputBody.Students,
+	//	}
+	//
+	// classObj, err := c.classUCAdmin.Update(inputPath.ID, newData)
+	// return ctx.Status(fiber.StatusOK).JSON(classObj)
+}
 
 // @summary		Удаление задания по id. [Только преподаватель]
 // @description	Удаление задания целиком (со всеми его решениями) по его id.

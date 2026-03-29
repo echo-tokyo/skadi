@@ -468,6 +468,37 @@ definitions:
     - new
     - old
     type: object
+  v1.updateSolutionBody:
+    description: updateSolutionBody represents a data with optional body to update
+      solution.
+    properties:
+      answer:
+        description: new answer
+        example: ООП - это объектно-ориентированное программирование
+        type: string
+      grade:
+        description: new grade
+        example: 5+
+        maxLength: 50
+        type: string
+      status_id:
+        description: new status ID
+        example: 2
+        type: integer
+    type: object
+  v1.updateTaskBody:
+    description: updateTaskBody represents a data with optional body to update task.
+    properties:
+      description:
+        description: new task description
+        example: Что такое ООП? Перечислить принципы ООП
+        type: string
+      title:
+        description: new task title
+        example: Понятие ООП
+        maxLength: 100
+        type: string
+    type: object
   v1.userBody:
     description: userBody represents a data with user.
     properties:
@@ -1088,7 +1119,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Получение списка решений конкретного студента.
+      description: Получение списка решений конкретного ученика.
       operationId: student-solution-list
       parameters:
       - description: filter for checked solutions if true
@@ -1120,7 +1151,46 @@ paths:
           description: неверный токен (пустой, истекший или неверный формат)
       security:
       - JWTAccess: []
-      summary: Получение списка решений [только студент].
+      summary: Получение списка решений [только ученик].
+      tags:
+      - task
+  /student/solution/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 'Частичное обновление решения (только переданные поля: статус,
+        кроме "проверено", ответ, файл ответа) по его id.'
+      operationId: student-solution-update
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateSolutionBody
+        in: body
+        name: updateSolutionBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateSolutionBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Solution'
+        "400":
+          description: неверный статус
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление решения. [Только ученик]
       tags:
       - task
   /teacher/solution:
@@ -1191,6 +1261,44 @@ paths:
       security:
       - JWTAccess: []
       summary: Удаление решения по id. [Только преподаватель]
+      tags:
+      - task
+    patch:
+      consumes:
+      - application/json
+      description: 'Частичное обновление решения (только переданные поля: статус -
+        "готово"/"проверено" - и оценка) по его id.'
+      operationId: teacher-solution-update
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateSolutionBody
+        in: body
+        name: updateSolutionBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateSolutionBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Solution'
+        "400":
+          description: неверный статус
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление решения. [Только преподаватель]
       tags:
       - task
   /teacher/task:
@@ -1285,6 +1393,42 @@ paths:
       security:
       - JWTAccess: []
       summary: Удаление задания по id. [Только преподаватель]
+      tags:
+      - task
+    patch:
+      consumes:
+      - application/json
+      description: 'Частичное обновление задания (только переданные поля: название,
+        описание, прикреплённые файлы) по его id.'
+      operationId: task-update
+      parameters:
+      - description: ID задания
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateTaskBody
+        in: body
+        name: updateTaskBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateTaskBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Task'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: задание не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление задания. [Только преподаватель]
       tags:
       - task
   /user/me:

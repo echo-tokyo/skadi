@@ -25,6 +25,8 @@ const (
 	_fieldDesc      = "description" // table field name
 	_fieldUpdatedAt = "updated_at"  // table field name
 
+	_orderByIDDESC = "id DESC" // condition to order data by id DESC
+
 	_defaultStatusID  = 1 // ID of default solution status "backlog"
 	_archivedStatusID = 4 // ID of archived solution status "checked"
 )
@@ -141,14 +143,46 @@ func (r *RepoDB) GetSolutionByIDFull(id int) (*entity.Solution, error) {
 	return &solObj, err // err OR nil
 }
 
-// UpdateTask updates the given task.
-func (r *RepoDB) UpdateTask(taskObj *entity.Task) error {
-	panic("unimplemented")
+// UpdateTask updates the given task by given ID with the new data.
+// It returns the updated task object.
+func (r *RepoDB) UpdateTask(taskID int, newData *entity.TaskUpdate) error {
+	updates := make(map[string]any)
+	// set new title
+	if newData.Title != nil {
+		updates["title"] = *newData.Title
+	}
+	// set new desctiption
+	if newData.Desc != nil {
+		updates["description"] = newData.Desc
+	}
+	// update task
+	err := r.dbStorage.Model(&entity.Task{}).
+		Where(_fieldID+" = ?", taskID).
+		Updates(updates).Error
+	return err // err OR nil
 }
 
-// UpdateSolution updates the given solution.
-func (r *RepoDB) UpdateSolution(solution *entity.Solution) error {
-	panic("unimplemented")
+// UpdateSolution updates the given solution by given ID with the new data.
+// It returns the updated solution object.
+func (r *RepoDB) UpdateSolution(taskID int, newData *entity.SolutionUpdate) error {
+	updates := make(map[string]any)
+	// set new grade
+	if newData.Grade != nil {
+		updates["name"] = *newData.Grade
+	}
+	// set new answer
+	if newData.Answer != nil {
+		updates["answer"] = newData.Answer
+	}
+	// set new teacher ID
+	if newData.StatusID != nil {
+		updates["status_id"] = newData.StatusID
+	}
+	// update class
+	err := r.dbStorage.Model(&entity.Solution{}).
+		Where(_fieldID+" = ?", taskID).
+		Updates(updates).Error
+	return err // err OR nil
 }
 
 // DeleteTaskByID deletes task by given id.
@@ -172,7 +206,7 @@ func (r *RepoDB) GetTasks(teacherID int, search string,
 	if search != "" {
 		query = query.Where("title REGEXP ?", search)
 	}
-	query = query.Order("id DESC")
+	query = query.Order(_orderByIDDESC)
 	// apply pagination if it's not nil
 	if page != nil {
 		page.CountTotal(query)
@@ -213,7 +247,7 @@ func (r *RepoDB) GetTeacherSolutions(teacherID int, search string, archived bool
 	if search != "" {
 		query = query.Where("title REGEXP ?", search)
 	}
-	query = query.Order("id DESC")
+	query = query.Order(_orderByIDDESC)
 	// apply pagination if it's not nil
 	if page != nil {
 		page.CountTotal(query)
@@ -245,7 +279,7 @@ func (r *RepoDB) GetStudentSolutions(studID int, archived bool,
 	} else {
 		query = query.Where("status_id <> ?", _archivedStatusID)
 	}
-	query = query.Order("id DESC")
+	query = query.Order(_orderByIDDESC)
 	// apply pagination if it's not nil
 	if page != nil {
 		page.CountTotal(query)

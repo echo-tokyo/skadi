@@ -12,6 +12,7 @@ import (
 	classuc "skadi/backend/internal/app/class/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
 	"skadi/backend/internal/app/service/server/middleware"
+	statusrepo "skadi/backend/internal/app/status/repository"
 	taskhttpv1 "skadi/backend/internal/app/task/controller/http/v1"
 	taskrepo "skadi/backend/internal/app/task/repository"
 	taskuc "skadi/backend/internal/app/task/usecase"
@@ -31,14 +32,15 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	userRepoDB := userrepo.NewRepoDB(dbStorage)
 	classRepoDB := classrepo.NewRepoDB(dbStorage)
 	taskRepoDB := taskrepo.NewRepoDB(dbStorage)
+	statusRepoDB := statusrepo.NewRepoDB(dbStorage)
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB, classRepoDB)
 	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
 	taskUCClient := taskuc.NewUCClient(cfg, taskRepoDB)
-	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, userRepoDB)
-	taskUCStudent := taskuc.NewUCStudent(cfg, taskRepoDB)
+	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, statusRepoDB, userRepoDB)
+	taskUCStudent := taskuc.NewUCStudent(cfg, taskRepoDB, statusRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
