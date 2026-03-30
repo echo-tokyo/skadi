@@ -40,9 +40,7 @@ func NewTaskControllerTeacher(taskUCTeacher task.UsecaseTeacher,
 // @security		JWTAccess
 // @param			taskBody	body		taskBody	true	"taskBody"
 // @success		201			{object}	taskOut
-// @failure		400			"неверный ученик ErrInvalidStudent"
-// @failure		400			"неверный преподаватель ErrInvalidTeacher"
-// @failure		400			"преподаватель не найден ErrNotFoundUser"
+// @failure		400			"неверный ученик | неверный преподаватель | преподаватель не найден"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 	// parse user claims

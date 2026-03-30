@@ -40,9 +40,7 @@ func NewClassControllerAdmin(classUCAdmin class.UsecaseAdmin,
 // @security		JWTAccess
 // @param			classBody	body		classBody	true	"classBody"
 // @success		201			{object}	entity.Class
-// @failure		400			"неверный ученик"
-// @failure		400			"неверный преподаватель"
-// @failure		400			"преподаватель не найден"
+// @failure		400			"неверный ученик | неверный преподаватель | преподаватель не найден"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 // @failure		409			"группа с введенным названием уже существует"
 func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
@@ -104,9 +102,7 @@ func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 // @param			id			path		int			true	"ID группы"
 // @param			updateBody	body		updateBody	true	"updateBody"
 // @success		200			{object}	entity.Class
-// @failure		400			"неверный ученик"
-// @failure		400			"неверный преподаватель"
-// @failure		400			"преподаватель не найден"
+// @failure		400			"неверный ученик | неверный преподаватель | преподаватель не найден"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404			"группа не найдена"
 func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
