@@ -1,0 +1,15 @@
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.card {
+  border: 1px solid var(--color-gray-light);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  &Fields {
+    margin-top: 1rem;
+    gap: 1rem;
+    display: flex;
+  }
+}

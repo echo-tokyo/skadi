@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 interface IProps {
-  children: string
+  children: string[] | string
   size?: '64' | '20' | '16' | '14' | '12'
   weight?: '900' | 'bold' | 'normal'
   color?: '--color-primary' | '--color-secondary'

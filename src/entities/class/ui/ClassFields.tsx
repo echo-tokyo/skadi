@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react'
 import type { Ref } from 'react'
-import { Input, Select, SelectOption } from '@/shared/ui'
+import { Input, Select } from '@/shared/ui'
 import styles from './styles.module.scss'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -14,15 +14,7 @@ import { classSchema } from '../model/class-form-schema'
 import type { TClassSchema } from '../model/class-form-schema'
 import { INITIAL_FIELDS_VALUES } from '../config/fields-config'
 import { IClassFieldsRef } from '../model/types'
-
-type TPaginatedSelectField = {
-  data: SelectOption[]
-  selectedOptions?: SelectOption[]
-  onLoadMore?: () => void
-  hasMore?: boolean
-  isLoadingMore?: boolean
-  onSearchChange?: (query: string) => void
-}
+import { TPaginatedSelectField } from '@/shared/model'
 
 interface IClassFieldsProps {
   ref?: Ref<IClassFieldsRef>

@@ -1,3 +1,5 @@
+import { SelectOption } from '@/shared/ui'
+
 export type TRole = 'admin' | 'teacher' | 'student'
 
 type TContact = { email: string; phone: string }
@@ -19,4 +21,13 @@ export type TProfile = {
   extra?: string
   fullname: string
   parentContact?: TContact
+}
+
+export type TPaginatedSelectField = {
+  data: SelectOption[]
+  selectedOptions?: SelectOption[]
+  onSearchChange?: (query: string) => void
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
 }

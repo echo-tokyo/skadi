@@ -7,9 +7,11 @@ type TTask = {
   title: string
 }
 
+export type TStatusName = 'Бэклог' | 'В работе' | 'На проверке' | 'Проверено'
+
 type TStatus = {
   id?: number
-  name: string
+  name: TStatusName
 }
 
 type TSolution = {

@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ZodObject, ZodRawShape } from 'zod'
 import type { Resolver } from 'react-hook-form'
-import { Input, Select, SelectOption, Textarea } from '@/shared/ui'
+import { Input, Select, Textarea } from '@/shared/ui'
 import { TMemberFullSchema } from '../model/member-fields-schema'
 import {
   FIELD_CONFIG,
@@ -20,21 +20,14 @@ import {
 import styles from './styles.module.scss'
 import { ROLE_OPTIONS } from '@/shared/config'
 import { IMemberFieldsRef } from '../model/types'
-
-export type TPaginatedClassField = {
-  data: SelectOption[]
-  onSearchChange?: (query: string) => void
-  onLoadMore?: () => void
-  hasMore?: boolean
-  isLoadingMore?: boolean
-}
+import { TPaginatedSelectField } from '@/shared/model'
 
 interface IMemberFormProps {
   ref?: Ref<IMemberFieldsRef>
   schema: ZodObject<ZodRawShape>
   fieldData?: TMemberFullSchema
   disabledFields?: Array<keyof TMemberFullSchema>
-  classField: TPaginatedClassField
+  classField: TPaginatedSelectField
   onDirtyChange?: (isDirty: boolean) => void
 }
 

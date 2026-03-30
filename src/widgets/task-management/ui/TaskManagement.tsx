@@ -1,13 +1,13 @@
-import { Input, Text } from '@/shared/ui'
+import { Button, Input, Text } from '@/shared/ui'
 import { useState } from 'react'
 import styles from './styles.module.scss'
-import { CreateRoleButton } from '@/features/create-member'
+import { useNavigate } from 'react-router'
 
 const { actions, tasks } = styles
 
 const RoleManagement = () => {
   const [searchValue, setSearchValue] = useState('')
-
+  const nav = useNavigate()
   // const debouncedSearch = useDebounce(searchValue)
 
   // const { members, isFetchingNextPage, loadMore, hasMore } = useInfiniteMembers(
@@ -37,7 +37,9 @@ const RoleManagement = () => {
           onChange={setSearchValue}
           value={searchValue}
         />
-        <CreateRoleButton />
+        <Button onClick={() => nav('/personal-area/tasks/new')}>
+          Создать задание
+        </Button>
       </div>
 
       <div className={tasks}>

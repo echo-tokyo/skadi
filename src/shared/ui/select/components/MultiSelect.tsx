@@ -23,7 +23,7 @@ const MultiSelect = <T extends string>({
   selectedOptions,
   label,
   description,
-  placeholder,
+  placeholder = 'Выберите',
   disabled,
   required,
   isValid = true,
@@ -73,7 +73,9 @@ const MultiSelect = <T extends string>({
   const triggerLabel = useMemo(() => {
     if (value.length === 0) return null
     if (value.length <= 2) {
-      const labels = value.map((v) => knownOptionsMap.current.get(v)?.label).filter(Boolean)
+      const labels = value
+        .map((v) => knownOptionsMap.current.get(v)?.label)
+        .filter(Boolean)
       return labels.length > 0 ? labels.join(', ') : null
     }
     return `${value.length} выбрано`

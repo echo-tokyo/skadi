@@ -23,7 +23,7 @@ const SingleSelect = <T extends string>({
   selectedOptions,
   label,
   description,
-  placeholder,
+  placeholder = 'Выберите',
   disabled,
   required,
   isValid = true,
