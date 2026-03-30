@@ -11,7 +11,11 @@ interface ITaskGeneralSectionProps {
 const TaskGeneral = (props: ITaskGeneralSectionProps) => {
   const { studentOptions } = props
 
-  const { watch, setValue } = useFormContext()
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext()
   const fieldsData = watch()
 
   return (
@@ -24,7 +28,11 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
           title='Название задания'
           fluid
           value={fieldsData.title}
-          onChange={(v) => setValue('title', v)}
+          isValid={!errors.title}
+          description={errors.title?.message as string}
+          onChange={(v) =>
+            setValue('title', v, { shouldDirty: true, shouldValidate: true })
+          }
         />
         <Select
           label='Проверяющий'
@@ -45,14 +53,20 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
           isLoadingMore={studentOptions.isLoadingMore}
           onLoadMore={studentOptions.onLoadMore}
           onSearchChange={studentOptions.onSearchChange}
-          onChange={(v) => setValue('students', v)}
+          isValid={!errors.students}
+          description={errors.students?.message as string}
+          onChange={(v) =>
+            setValue('students', v, { shouldDirty: true, shouldValidate: true })
+          }
         />
         <Select
           label='Статус'
           fluid
           value={fieldsData.status}
           options={STATUS_OPTIONS}
-          onChange={(v) => setValue('status', v)}
+          onChange={(v) =>
+            setValue('status', v, { shouldDirty: true, shouldValidate: true })
+          }
           disabled
         />
       </div>

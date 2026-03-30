@@ -1,9 +1,9 @@
 import { baseApi } from '@/shared/api'
-import { ICreateTaskResponse } from '../model/types'
+import { ICreateTaskRequest, ICreateTaskResponse } from '../model/types'
 
 export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createTask: builder.mutation<ICreateTaskResponse, ICreateTaskResponse>({
+    createTask: builder.mutation<ICreateTaskResponse, ICreateTaskRequest>({
       query: (data) => ({
         url: '/teacher/task',
         method: 'POST',

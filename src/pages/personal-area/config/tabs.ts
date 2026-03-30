@@ -24,8 +24,7 @@ export const TAB_CONFIG: ITabConfig[] = [
   {
     name: 'Домашние задания',
     component: TaskManagement,
-    role: 'admin',
-    // role: 'teacher',
+    role: 'teacher',
   },
   // {
   //   name: 'Дашборд',

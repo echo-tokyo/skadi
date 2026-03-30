@@ -3,7 +3,7 @@ import styles from '../styles.module.scss'
 
 const TaskAnswer = () => {
   return (
-    <div className={styles.card}>
+    <div className={styles.cardAnswer}>
       <Text size='20' weight='bold'>
         Ответ
       </Text>

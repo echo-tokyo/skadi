@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styles from './styles.module.scss'
-import { TaskCard } from '@/widgets/task-card'
+import { TaskCard, TMode } from '@/widgets/task-card'
 import { useMemberSelectOptions } from '@/entities/member'
 import { useParams } from 'react-router'
 
@@ -14,8 +14,7 @@ const Task: FC = () => {
   } = useMemberSelectOptions('student')
 
   const { id } = useParams()
-  // TODO: препод может быть в двух режимах, а ученик только в edit
-  const mode = id ? 'edit' : 'create'
+  const mode: TMode = id ? 'edit' : 'create'
 
   return (
     <div className={styles.wrapper}>
@@ -28,13 +27,13 @@ const Task: FC = () => {
           onLoadMore: fetchNextPage,
           onSearchChange,
         }}
-        fieldData={{
-          description: 'fefe',
-          status: '3',
-          students: ['68'],
-          teacher: 'fef',
-          title: 'kek',
-        }}
+        // fieldData={{
+        //   description: 'fefe',
+        //   status: '3',
+        //   students: ['68'],
+        //   teacher: 'fef',
+        //   title: 'kek',
+        // }}
       />
     </div>
   )

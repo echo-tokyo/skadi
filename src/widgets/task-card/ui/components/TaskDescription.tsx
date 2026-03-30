@@ -3,7 +3,11 @@ import styles from '../styles.module.scss'
 import { useFormContext } from 'react-hook-form'
 
 const TaskDescription = () => {
-  const { watch, setValue } = useFormContext()
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext()
   const fieldsData = watch()
 
   return (
@@ -16,7 +20,14 @@ const TaskDescription = () => {
           label='Описание задания'
           fluid
           value={fieldsData.description}
-          onChange={(v) => setValue('description', v)}
+          isValid={!errors.description}
+          description={errors.description?.message as string}
+          onChange={(v) =>
+            setValue('description', v, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
+          }
         />
       </div>
     </div>

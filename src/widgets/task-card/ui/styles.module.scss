@@ -1,9 +1,16 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
 .cards {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  height: 100%;
+  margin-top: 1rem;
 }
-.card {
+.card,
+.cardAnswer {
   border: 1px solid var(--color-gray-light);
   border-radius: 0.5rem;
   padding: 1rem;
@@ -11,5 +18,8 @@
     margin-top: 1rem;
     gap: 1rem;
     display: flex;
+  }
+  &Answer {
+    height: 100%;
   }
 }

@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { TTaskFullSchema } from '../model/schemas'
+import { taskCreateSchema, TTaskCreateSchema } from '../model/schemas'
 import { initialFormValues } from '../config/form-config'
 import styles from './styles.module.scss'
 import TaskDescription from './components/TaskDescription'
@@ -7,29 +7,40 @@ import TaskGeneral from './components/TaskGeneral'
 import TaskMaterials from './components/TaskMaterials'
 import TaskAnswer from './components/TaskAnswer'
 import { TPaginatedSelectField } from '@/shared/model'
+import { TMode } from '../model/types'
+import { CreateTaskButton } from '@/features/create-task'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 interface ITaskCardProps {
   studentOptions: TPaginatedSelectField
-  fieldData?: TTaskFullSchema
-  mode: 'create' | 'edit'
+  fieldData?: TTaskCreateSchema
+  mode: TMode
 }
 
 const TaskCard = (props: ITaskCardProps) => {
-  const { studentOptions, fieldData } = props
-  const methods = useForm<TTaskFullSchema>({
+  const { studentOptions, fieldData, mode } = props
+
+  // const user = useAppSelector(selectAuthenticatedUser)
+  // const role = user.role
+  // const schema = useGetSchema(mode, role)
+
+  const methods = useForm<TTaskCreateSchema>({
     defaultValues: fieldData || initialFormValues,
+    resolver: zodResolver(taskCreateSchema),
   })
 
   return (
-    <div className={styles.cards}>
-      {/* TODO: в зависимости от mode будет конкретная фича: сохранить/одобрить/создать */}
-      <FormProvider {...methods}>
+    <FormProvider {...methods}>
+      <div className={styles.actions}>
+        {mode === 'create' && <CreateTaskButton />}
+      </div>
+      <div className={styles.cards}>
         <TaskGeneral studentOptions={studentOptions} />
         <TaskDescription />
         <TaskMaterials />
         <TaskAnswer />
-      </FormProvider>
-    </div>
+      </div>
+    </FormProvider>
   )
 }
 

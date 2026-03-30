@@ -1,8 +1,9 @@
-import { TProfile, TRole } from '@/shared/model'
+import { TClass, TProfile, TRole } from '@/shared/model'
 
 export interface IUser {
+  class?: TClass
   id: string
-  profile?: TProfile
+  profile: TProfile
   role: TRole
   username: string
 }

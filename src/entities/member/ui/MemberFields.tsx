@@ -40,6 +40,7 @@ const MemberFields = ({
   classField,
 }: IMemberFormProps): ReactNode => {
   const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
+
   const {
     watch,
     setValue,
