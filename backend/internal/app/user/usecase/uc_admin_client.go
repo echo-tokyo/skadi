@@ -76,13 +76,22 @@ func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
 // Update updates user (class and profile) by given ID with given data.
 // It returns user object with updated user data.
 func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, error) {
+	oldUserObj, err := u.userRepoDB.GetByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("get by id: %w", err)
+	}
+	// return error if class is updated for non-student users
+	if newUser.ClassID != nil && !roles.IsStudent(oldUserObj) {
+		return nil, fmt.Errorf("update class for teacher: %w", user.ErrUnsupportedData)
+	}
+
 	userObj, err := u.UpdateProfile(id, newUser.Profile)
 	if err != nil {
 		return nil, fmt.Errorf("profile: %w", err)
 	}
 
 	// skip class update for non-student users and not updated data
-	if !roles.IsStudent(userObj) || userObj.ClassID == newUser.ClassID {
+	if userObj.ClassID == newUser.ClassID {
 		return userObj, nil
 	}
 

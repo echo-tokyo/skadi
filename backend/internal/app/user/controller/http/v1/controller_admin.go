@@ -138,6 +138,7 @@ func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 // @param			updateBody	body		updateBody	true	"updateBody"
 // @success		200			{object}	entity.User
 // @failure		400			"группа не найдена"
+// @failure		400			"неподдерживаемые данные для роли обновляемого пользователя"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404			"пользователь не найден"
 func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
@@ -174,18 +175,25 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 
 	// update user
 	newUser, err := c.userUCAdmin.Update(inputPath.ID, oldUser)
-	if errors.Is(err, user.ErrNotFound) {
-		return &httperror.HTTPError{
-			CauseErr:   err,
-			StatusCode: fiber.StatusNotFound,
-			Message:    "пользователь не найден",
-		}
-	}
 	if errors.Is(err, user.ErrInvalidData) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusBadRequest,
 			Message:    "группа не найдена",
+		}
+	}
+	if errors.Is(err, user.ErrUnsupportedData) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusBadRequest,
+			Message:    "неподдерживаемые данные для роли обновляемого пользователя",
+		}
+	}
+	if errors.Is(err, user.ErrNotFound) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusNotFound,
+			Message:    "пользователь не найден",
 		}
 	}
 	if err != nil {
