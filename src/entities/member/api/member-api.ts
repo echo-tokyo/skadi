@@ -1,4 +1,4 @@
-import { baseApi } from '@/shared/api'
+import { baseApi, DEFAULT_PER_PAGE, paginatedInfiniteQueryOptions } from '@/shared/api'
 import {
   ICreateMemberRequest,
   IMember,
@@ -6,8 +6,6 @@ import {
   IMembersResponse,
   IUpdateMemberRequest,
 } from '../model/types'
-
-const DEFAULT_PER_PAGE = 20
 
 export const memberApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -24,18 +22,7 @@ export const memberApi = baseApi.injectEndpoints({
           },
         }
       },
-      infiniteQueryOptions: {
-        initialPageParam: 1,
-        getNextPageParam: (lastPage) => {
-          const { pagination } = lastPage
-          if (!pagination) {
-            return undefined
-          }
-          return pagination.page < pagination.pages
-            ? pagination.page + 1
-            : undefined
-        },
-      },
+      infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Member'],
     }),
 

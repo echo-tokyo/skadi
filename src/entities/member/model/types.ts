@@ -1,12 +1,5 @@
-import { TClass, TProfile, TRole } from '@/shared/model'
+import { TClass, TPagination, TProfile, TRole } from '@/shared/model'
 import { TMemberFullSchema } from './member-fields-schema'
-
-type TPagination = {
-  page: number
-  per_page: number
-  pages: number
-  total: number
-}
 
 export interface IMember {
   class?: TClass

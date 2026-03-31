@@ -3,4 +3,8 @@ export type {
   TRole,
   TClass,
   TPaginatedSelectField,
+  TSolution,
+  TStatusName,
+  TTask,
+  TPagination,
 } from './types/types'

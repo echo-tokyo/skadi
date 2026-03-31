@@ -1,29 +1,41 @@
-import { Button, Input, Text } from '@/shared/ui'
+import {
+  Button,
+  Input,
+  PlugDefault,
+  Sentinel,
+  Skeleton,
+  Text,
+} from '@/shared/ui'
 import { useState } from 'react'
 import styles from './styles.module.scss'
 import { useNavigate } from 'react-router'
+import { useInfiniteTasks } from '../model/use-infinite-tasks'
+import { useDebounce, useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
+import { TaskCardItem } from './TaskCardItem'
 
 const { actions, tasks } = styles
+const SKELETON_CARDS = Array.from({ length: 10 })
 
-const RoleManagement = () => {
+const TaskManagement = () => {
   const [searchValue, setSearchValue] = useState('')
   const nav = useNavigate()
-  // const debouncedSearch = useDebounce(searchValue)
+  const debouncedSearch = useDebounce(searchValue)
 
-  // const { members, isFetchingNextPage, loadMore, hasMore } = useInfiniteMembers(
-  //   {
-  //     free: false,
-  //     role: role ? [role] : ROLE_VALUES,
-  //     search: debouncedSearch || undefined,
-  //     'per-page': 10,
-  //   },
-  // )
+  const {
+    tasks: taskList,
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+    isLoading,
+  } = useInfiniteTasks({ 'per-page': 10, search: debouncedSearch })
 
-  // const { sentinelRef } = useInfiniteScroll({
-  //   hasMore,
-  //   isFetchingNextPage,
-  //   loadMore,
-  // })
+  const showSkeleton = useShowSkeleton(isLoading)
+
+  const { sentinelRef } = useInfiniteScroll({
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+  })
 
   return (
     <>
@@ -43,18 +55,18 @@ const RoleManagement = () => {
       </div>
 
       <div className={tasks}>
-        {/* {members.length === 0 ? (
+        {taskList.length === 0 && !isLoading ? (
           <PlugDefault />
+        ) : isLoading && showSkeleton ? (
+          SKELETON_CARDS.map((_, i) => <Skeleton key={i} height={'64px'} />)
         ) : (
-          members.map((member) => (
-            <MemberCardItem key={member.id} member={member} />
-          ))
-        )} */}
+          taskList.map((task) => <TaskCardItem taskData={task} key={task.id} />)
+        )}
 
-        {/* <Sentinel ref={sentinelRef} /> */}
+        <Sentinel ref={sentinelRef} />
       </div>
     </>
   )
 }
 
-export default RoleManagement
+export default TaskManagement

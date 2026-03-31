@@ -23,6 +23,37 @@ export type TProfile = {
   parentContact?: TContact
 }
 
+export type TTask = {
+  description?: string
+  id: number
+  teacher?: TProfile
+  title: string
+}
+
+export type TStatusName = 'Бэклог' | 'В работе' | 'На проверке' | 'Проверено'
+
+type TStatus = {
+  id?: number
+  name: TStatusName
+}
+
+export type TSolution = {
+  answer?: string
+  grade?: string
+  id: number
+  status: TStatus
+  student?: TProfile
+  task: TTask
+  updated_at: string
+}
+
+export type TPagination = {
+  page: number
+  per_page: number
+  pages: number
+  total: number
+}
+
 export type TPaginatedSelectField = {
   data: SelectOption[]
   selectedOptions?: SelectOption[]

@@ -1,12 +1,10 @@
-import { baseApi } from '@/shared/api'
+import { baseApi, DEFAULT_PER_PAGE, paginatedInfiniteQueryOptions } from '@/shared/api'
 import {
   IClass,
   IClassQuery,
   IClassResponse,
   IClassRequest,
 } from '../model/types'
-
-const DEFAULT_PER_PAGE = 20
 
 export const classApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,18 +21,7 @@ export const classApi = baseApi.injectEndpoints({
           },
         }
       },
-      infiniteQueryOptions: {
-        initialPageParam: 1,
-        getNextPageParam: (lastPage) => {
-          const { pagination } = lastPage
-          if (!pagination) {
-            return undefined
-          }
-          return pagination.page < pagination.pages
-            ? pagination.page + 1
-            : undefined
-        },
-      },
+      infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Class'],
     }),
     createClass: builder.mutation<IClass, IClassRequest>({

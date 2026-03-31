@@ -1,28 +1,4 @@
-import { TProfile } from '@/shared/model'
-
-type TTask = {
-  description?: string
-  id: number
-  teacher?: TProfile
-  title: string
-}
-
-export type TStatusName = 'Бэклог' | 'В работе' | 'На проверке' | 'Проверено'
-
-type TStatus = {
-  id?: number
-  name: TStatusName
-}
-
-type TSolution = {
-  answer?: string
-  grade?: string
-  id: number
-  status: TStatus
-  student?: TProfile
-  task: TTask
-  updated_at: string
-}
+import { TPagination, TSolution, TTask } from '@/shared/model'
 
 export interface ICreateTaskRequest {
   classes?: number[]
@@ -34,4 +10,14 @@ export interface ICreateTaskRequest {
 export interface ICreateTaskResponse {
   solutions?: TSolution[]
   task: TTask
+}
+
+export interface IGetTaskResponse {
+  data: TTask[]
+  pagination?: TPagination
+}
+
+export interface IGetTaskQuery {
+  'per-page'?: number
+  search?: string
 }
