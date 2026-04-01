@@ -85,12 +85,14 @@
   max-height: 40vh;
   overflow: hidden;
   z-index: 100;
+  container-type: inline-size;
 }
 
 .viewport {
   padding: 0.25rem;
   outline: none;
   max-height: inherit;
+  min-height: 2rem;
   overflow-y: auto;
 }
 
@@ -201,7 +203,8 @@
   border: none;
   border-radius: 0.375rem;
   cursor: pointer;
-  transition: background-color var(--transition-duration-fast) var(--transition-timing);
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing);
 
   &:hover:not(:disabled) {
     background-color: var(--color-gray-light);
@@ -225,5 +228,8 @@
   gap: 0.5rem;
   padding: 0.5rem;
   border-top: 1px solid var(--color-gray-light);
-  flex-shrink: 0;
+
+  @container (max-width: 250px) {
+    flex-direction: column;
+  }
 }

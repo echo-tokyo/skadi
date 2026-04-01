@@ -3,7 +3,6 @@ import styles from './styles.module.scss'
 import { TaskCard, TMode } from '@/widgets/task-card'
 import { useMemberSelectOptions } from '@/entities/member'
 import { useParams } from 'react-router'
-import { toFieldTaskData } from '../model/mock'
 
 const Task: FC = () => {
   const { id } = useParams()
@@ -33,7 +32,7 @@ const Task: FC = () => {
           onLoadMore: fetchNextPage,
           onSearchChange,
         }}
-        fieldData={toFieldTaskData}
+        // fieldData={toFieldTaskData}
         taskId={id ? Number(id) : undefined}
       />
     </div>
