@@ -1,6 +1,7 @@
 import { TRole } from '@/shared/model'
 import { ClassManagement } from '@/widgets/class-management'
 import { RoleManagement } from '@/widgets/role-management'
+import { SolutionManagement } from '@/widgets/solution-management'
 import { TaskManagement } from '@/widgets/task-management'
 import { FC } from 'react'
 
@@ -22,8 +23,13 @@ export const TAB_CONFIG: ITabConfig[] = [
     role: 'admin',
   },
   {
-    name: 'Домашние задания',
+    name: 'Список заданий',
     component: TaskManagement,
+    role: 'teacher',
+  },
+  {
+    name: 'Список решений',
+    component: SolutionManagement,
     role: 'teacher',
   },
   // {

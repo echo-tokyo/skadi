@@ -1,5 +1,5 @@
-import { TaskCard, TTask } from '@/entities/task'
-import { Button } from '@/shared/ui'
+import { TTask } from '@/entities/task'
+import { AccordionCard, Button } from '@/shared/ui'
 import { memo } from 'react'
 import { useNavigate } from 'react-router'
 import styles from './styles.module.scss'
@@ -12,10 +12,12 @@ export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
   const nav = useNavigate()
 
   return (
-    <TaskCard
+    <AccordionCard
       title={taskData.title}
-      description={taskData.description}
-      teacherName={taskData.teacher?.fullname}
+      fields={[
+        { label: 'Описание', value: taskData.description },
+        { label: 'Преподаватель', value: taskData.teacher?.fullname },
+      ]}
       actions={
         <div className={styles.cardActions}>
           <Button color='inverted'>Удалить</Button>

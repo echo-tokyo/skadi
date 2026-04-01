@@ -1,33 +1,24 @@
-import {
-  Button,
-  Input,
-  PlugDefault,
-  Sentinel,
-  Skeleton,
-  Text,
-} from '@/shared/ui'
+import { Input, PlugDefault, Sentinel, Skeleton, Text } from '@/shared/ui'
 import { useState } from 'react'
 import styles from './styles.module.scss'
-import { useNavigate } from 'react-router'
-import { useInfiniteTasks } from '../model/use-infinite-tasks'
+import { useInfiniteSolutions } from '../model/use-infinite-solutions'
 import { useDebounce, useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
-import { TaskCardItem } from './TaskCardItem'
+import { SolutionCardItem } from './SolutionCardItem'
 
-const { actions, tasks } = styles
+const { actions, solutions } = styles
 const SKELETON_CARDS = Array.from({ length: 10 })
 
-const TaskManagement = () => {
+const SolutionManagement = () => {
   const [searchValue, setSearchValue] = useState('')
-  const nav = useNavigate()
   const debouncedSearch = useDebounce(searchValue)
 
   const {
-    tasks: taskList,
+    solutions: solutionList,
     hasMore,
     isFetchingNextPage,
     loadMore,
     isLoading,
-  } = useInfiniteTasks({ 'per-page': 10, search: debouncedSearch })
+  } = useInfiniteSolutions({ 'per-page': 10, search: debouncedSearch })
 
   const showSkeleton = useShowSkeleton(isLoading)
 
@@ -40,7 +31,7 @@ const TaskManagement = () => {
   return (
     <>
       <Text weight='bold' size='20'>
-        Домашние задания
+        Решения учеников
       </Text>
       <div className={actions}>
         <Input
@@ -49,18 +40,17 @@ const TaskManagement = () => {
           onChange={setSearchValue}
           value={searchValue}
         />
-        <Button onClick={() => nav('/personal-area/tasks/new')}>
-          Новое задание
-        </Button>
       </div>
 
-      <div className={tasks}>
-        {taskList.length === 0 && !isLoading ? (
+      <div className={solutions}>
+        {solutionList.length === 0 && !isLoading ? (
           <PlugDefault />
         ) : isLoading && showSkeleton ? (
           SKELETON_CARDS.map((_, i) => <Skeleton key={i} height={'64px'} />)
         ) : (
-          taskList.map((task) => <TaskCardItem taskData={task} key={task.id} />)
+          solutionList.map((solution) => (
+            <SolutionCardItem solutionData={solution} key={solution.id} />
+          ))
         )}
 
         <Sentinel ref={sentinelRef} />
@@ -69,4 +59,4 @@ const TaskManagement = () => {
   )
 }
 
-export default TaskManagement
+export default SolutionManagement

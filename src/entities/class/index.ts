@@ -1,5 +1,4 @@
 export { default as ClassFields } from './ui/ClassFields'
-export { default as ClassCard } from './ui/ClassCard'
 export { transformToRequest } from './lib/transform-to-request'
 export type {
   IClassFieldsRef,

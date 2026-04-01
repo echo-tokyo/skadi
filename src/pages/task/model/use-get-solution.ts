@@ -3,11 +3,11 @@ import { getErrorMessage } from '@/shared/api'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 
-export const useGetSolution = (id: string | undefined) => {
+export const useGetSolution = (id: string | undefined, isSolution: boolean) => {
   const { data, error, isError, isLoading } = useGetSolutionByIdQuery(
     Number(id),
     {
-      skip: !id,
+      skip: !id || !isSolution,
     },
   )
 

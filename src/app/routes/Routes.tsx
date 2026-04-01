@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
         Component: Task,
       },
       {
-        path: '/personal-area/solution/:id',
+        path: '/personal-area/solutions/:id',
         Component: Task,
       },
     ],

@@ -2,10 +2,13 @@ import { FC } from 'react'
 import styles from './styles.module.scss'
 import { TaskCard, TMode } from '@/widgets/task-card'
 import { useMemberSelectOptions } from '@/entities/member'
-import { useParams } from 'react-router'
+import { useLocation, useParams } from 'react-router'
+import { useGetSolution } from '../model/use-get-solution'
 
 const Task: FC = () => {
   const { id } = useParams()
+  const location = useLocation()
+  const isSolution = location.pathname.includes('/solutions/')
 
   const {
     options,
@@ -15,10 +18,10 @@ const Task: FC = () => {
     onSearchChange,
   } = useMemberSelectOptions('student')
 
-  // const { data } = useGetSolution(id)
-  // const solution = data?.solution
-  // console.log(solution)
+  const { data } = useGetSolution(id, isSolution)
+  const solution = data?.solution
 
+  console.log(solution)
   const mode: TMode = id ? 'edit' : 'create'
 
   return (

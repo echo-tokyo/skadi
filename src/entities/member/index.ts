@@ -19,7 +19,6 @@ export type {
 export { BASE_DISABLED_FIELDS } from './config/fields-config'
 export { toProfile } from './lib/to-profile'
 
-export { default as MemberCard } from './ui/MemberCard'
 export { default as MemberFields } from './ui/MemberFields'
 
 export {

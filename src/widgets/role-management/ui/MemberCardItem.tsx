@@ -1,4 +1,5 @@
-import { IMember, MemberCard } from '@/entities/member'
+import { IMember } from '@/entities/member'
+import { AccordionCard } from '@/shared/ui'
 import { DeleteMemberButton } from '@/features/delete-member'
 import { EditMemberButton } from '@/features/edit-member'
 import { memo } from 'react'
@@ -6,10 +7,12 @@ import styles from './styles.module.scss'
 
 export const MemberCardItem = memo(({ member }: { member: IMember }) => {
   return (
-    <MemberCard
-      fullname={member.profile.fullname}
-      group={member.class?.name}
-      memberRole={member.role}
+    <AccordionCard
+      title={member.profile.fullname}
+      fields={[
+        { label: 'Статус', value: member.role },
+        { label: 'Группа', value: member.class?.name },
+      ]}
       actions={
         <div className={styles.cardActions}>
           <DeleteMemberButton
