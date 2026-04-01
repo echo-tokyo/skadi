@@ -6,10 +6,17 @@ export const taskSchema = z.object({
   title: z.string().min(1, 'Обязательное поле'),
 })
 
-export const taskFullSchema = z.object({
-  ...taskSchema.shape,
+export const solutionTeacherSchema = z.object({
+  // TODO: добавить grade
+  anser: z.string(),
   status: z.string(),
 })
 
+// export const taskFullSchema = z.object({
+//   ...taskSchema.shape,
+//   status: z.string(),
+// })
+
 export type TTaskSchema = z.infer<typeof taskSchema>
-export type TTaskFullSchema = z.infer<typeof taskFullSchema>
+export type TSolutionTeacherSchema = z.infer<typeof solutionTeacherSchema>
+// export type TTaskFullSchema = z.infer<typeof taskFullSchema>

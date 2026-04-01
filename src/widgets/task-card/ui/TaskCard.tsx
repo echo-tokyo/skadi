@@ -21,14 +21,16 @@ interface ITaskCardProps {
   fieldData?: TTaskSchema
   mode: TMode
   taskId?: number
+  page: 'solution' | 'task'
 }
 
 const TaskCard = (props: ITaskCardProps) => {
-  const { studentOptions, fieldData, mode, taskId } = props
+  const { studentOptions, fieldData, mode, taskId, page } = props
 
   const user = useAppSelector(selectAuthenticatedUser)
   const role = user.role
-  const schema = useGetSchema(mode, role)
+  const schema = useGetSchema(mode, role, page)
+  console.log(schema)
 
   const methods = useForm<z.infer<typeof schema>>({
     defaultValues: fieldData || initialFormValues,

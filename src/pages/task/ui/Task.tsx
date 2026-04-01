@@ -23,11 +23,13 @@ const Task: FC = () => {
 
   console.log(solution)
   const mode: TMode = id ? 'edit' : 'create'
+  const page: 'solution' | 'task' = isSolution ? 'solution' : 'task'
 
   return (
     <div className={styles.wrapper}>
       <TaskCard
         mode={mode}
+        page={page}
         studentOptions={{
           data: options,
           hasMore: hasNextPage,
