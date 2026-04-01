@@ -3,8 +3,11 @@ import styles from './styles.module.scss'
 import { TaskCard, TMode } from '@/widgets/task-card'
 import { useMemberSelectOptions } from '@/entities/member'
 import { useParams } from 'react-router'
+import { toFieldTaskData } from '../model/mock'
 
 const Task: FC = () => {
+  const { id } = useParams()
+
   const {
     options,
     fetchNextPage,
@@ -13,7 +16,10 @@ const Task: FC = () => {
     onSearchChange,
   } = useMemberSelectOptions('student')
 
-  const { id } = useParams()
+  // const { data } = useGetSolution(id)
+  // const solution = data?.solution
+  // console.log(solution)
+
   const mode: TMode = id ? 'edit' : 'create'
 
   return (
@@ -27,13 +33,8 @@ const Task: FC = () => {
           onLoadMore: fetchNextPage,
           onSearchChange,
         }}
-        // fieldData={{
-        //   description: 'fefe',
-        //   status: '3',
-        //   students: ['68'],
-        //   teacher: 'fef',
-        //   title: 'kek',
-        // }}
+        fieldData={toFieldTaskData}
+        taskId={id ? Number(id) : undefined}
       />
     </div>
   )

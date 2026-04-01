@@ -1,8 +1,14 @@
 import { TRole } from '@/shared/model'
 import { TMode } from './types'
-import { taskCreateSchema } from './schemas'
+import { taskSchema } from './schemas'
 
-export const useGetSchema = (mode: TMode, _role: TRole) => {
-  if (mode === 'create') return taskCreateSchema
-  // if (role === 'student') return null
+export const useGetSchema = (mode: TMode, role: TRole) => {
+  // при создании задания
+  if (mode === 'create') return taskSchema
+  // при редактировании задания
+  if (mode === 'edit' && role === 'admin') return taskSchema
+
+  // TODO: при редактировании решения админом, при редактировании решения студентом
+
+  return taskSchema
 }

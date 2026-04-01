@@ -29,6 +29,10 @@ export const router = createBrowserRouter([
         path: '/personal-area/tasks/:id',
         Component: Task,
       },
+      {
+        path: '/personal-area/solution/:id',
+        Component: Task,
+      },
     ],
   },
 ])

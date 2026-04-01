@@ -6,8 +6,10 @@ import {
 import {
   ICreateTaskRequest,
   ICreateTaskResponse,
-  IGetTaskQuery,
-  IGetTaskResponse,
+  IGetTasksQuery,
+  IGetTasksResponse,
+  IUpdateTaskRequest,
+  IUpdateTaskResponse,
 } from '../model/types'
 
 export const taskApi = baseApi.injectEndpoints({
@@ -20,7 +22,15 @@ export const taskApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
-    getTasks: builder.infiniteQuery<IGetTaskResponse, IGetTaskQuery, number>({
+    updateTask: builder.mutation<IUpdateTaskResponse, IUpdateTaskRequest>({
+      query: ({ id, ...data }) => ({
+        url: `/teacher/task/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['Task'],
+    }),
+    getTasks: builder.infiniteQuery<IGetTasksResponse, IGetTasksQuery, number>({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
         return {
@@ -39,4 +49,8 @@ export const taskApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useCreateTaskMutation, useGetTasksInfiniteQuery } = taskApi
+export const {
+  useCreateTaskMutation,
+  useUpdateTaskMutation,
+  useGetTasksInfiniteQuery,
+} = taskApi

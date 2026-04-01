@@ -1,9 +1,7 @@
-import { TTaskCreateSchema } from '../model/schemas'
+import { TTaskSchema } from '../model/schemas'
 
-export const initialFormValues: TTaskCreateSchema = {
+export const initialFormValues: TTaskSchema = {
   description: '',
   students: [],
-  teacher: 'Вы',
   title: '',
-  // status: '',
 }

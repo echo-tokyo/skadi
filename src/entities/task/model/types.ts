@@ -12,12 +12,24 @@ export interface ICreateTaskResponse {
   task: TTask
 }
 
-export interface IGetTaskResponse {
+export interface IGetTasksResponse {
   data: TTask[]
   pagination?: TPagination
 }
 
-export interface IGetTaskQuery {
+export interface IGetTasksQuery {
   'per-page'?: number
   search?: string
+}
+
+export interface IUpdateTaskRequest {
+  id: number
+  classes?: number[]
+  description: string
+  students?: number[]
+  title: string
+}
+
+export interface IUpdateTaskResponse {
+  task: TTask
 }

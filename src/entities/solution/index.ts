@@ -1,1 +1,1 @@
-export {} from './model/types'
+export { useGetSolutionByIdQuery } from './api/solution-api'
