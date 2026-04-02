@@ -31,7 +31,7 @@ func NewClassController(classUCClient class.UsecaseClient,
 
 // @summary		Получение группы по id.
 // @description	Получение всех данных о группе с инфой о преподе и учениках (ID и полные имена).
-// @router			/class/get/{id} [get]
+// @router			/class/{id} [get]
 // @id				class-read
 // @tags			class
 // @accept			json

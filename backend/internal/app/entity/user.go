@@ -30,17 +30,17 @@ func (*User) TableName() string {
 }
 
 // IsAdmin returns true if the user role is Admin.
-func (u User) IsAdmin() bool {
+func (u *User) IsAdmin() bool {
 	return u.Role == Admin
 }
 
 // IsTeacher returns true if the user role is Teacher.
-func (u User) IsTeacher() bool {
+func (u *User) IsTeacher() bool {
 	return u.Role == Teacher
 }
 
 // IsStudent returns true if the user role is Student.
-func (u User) IsStudent() bool {
+func (u *User) IsStudent() bool {
 	return u.Role == Student
 }
 

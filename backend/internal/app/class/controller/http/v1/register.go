@@ -4,23 +4,23 @@ package v1
 
 import (
 	fiber "github.com/gofiber/fiber/v2"
+
+	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/service/server/middleware"
 )
 
 // RegisterEndpoints registers all class endpoints.
-func RegisterEndpoints(router fiber.Router, controller *ClassController,
-	controllerAdmin *ClassControllerAdmin, mwJWTAccess fiber.Handler, mwAdmin fiber.Handler) {
+func RegisterEndpoints(router fiber.Router,
+	controller *ClassController, controllerAdmin *ClassControllerAdmin,
+	mwJWTAccess fiber.Handler, mwAllow middleware.AllowFunc) {
 
-	adminGroup := router.Group("/admin/class", mwJWTAccess, mwAdmin)
-	{
-		adminGroup.Post("/", controllerAdmin.Create)
-		adminGroup.Patch("/:id", controllerAdmin.Update)
-		adminGroup.Delete("/:id", controllerAdmin.Delete)
-	}
+	mwAdminOnly := mwAllow(entity.Admin)
 
 	authGroup := router.Group("/class", mwJWTAccess)
-	{
-		authGroup.Get("/get/:id", controller.Read)
-		authGroup.Get("/short", controller.ListShort)
-		authGroup.Get("/", controller.ListFull)
-	}
+	authGroup.Post("/", mwAdminOnly, controllerAdmin.Create)
+	authGroup.Get("/short", controller.ListShort)
+	authGroup.Get("/", controller.ListFull)
+	authGroup.Get("/:id", controller.Read)
+	authGroup.Patch("/:id", mwAdminOnly, controllerAdmin.Update)
+	authGroup.Delete("/:id", mwAdminOnly, controllerAdmin.Delete)
 }

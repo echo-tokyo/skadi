@@ -92,7 +92,7 @@ func (c *TaskControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(solObj)
 }
 
-// @summary		Получение списка решений [только ученик].
+// @summary		Получение списка решений [Только ученик].
 // @description	Получение списка решений конкретного ученика.
 // @router			/student/solution [get]
 // @id				student-solution-list

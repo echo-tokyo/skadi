@@ -32,8 +32,8 @@ func NewTaskControllerTeacher(taskUCTeacher task.UsecaseTeacher,
 
 // @summary		Создание нового задания. [Только преподаватель]
 // @description	Создание нового задания для переданных учеников и учеников из переданных групп.
-// @router			/teacher/task [post]
-// @id				teacher-task-create
+// @router			/task [post]
+// @id				task-create
 // @tags			task
 // @accept			json
 // @produce		json
@@ -94,7 +94,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 
 // @summary		Обновление задания. [Только преподаватель]
 // @description	Частичное обновление задания (только переданные поля: название, описание, прикреплённые файлы) по его id.
-// @router			/teacher/task/{id} [patch]
+// @router			/task/{id} [patch]
 // @id				task-update
 // @tags			task
 // @accept			json
@@ -210,8 +210,8 @@ func (c *TaskControllerTeacher) UpdateSolution(ctx *fiber.Ctx) error {
 
 // @summary		Удаление задания по id. [Только преподаватель]
 // @description	Удаление задания целиком (со всеми его решениями) по его id.
-// @router			/teacher/task/{id} [delete]
-// @id				teacher-task-delete
+// @router			/task/{id} [delete]
+// @id				task-delete
 // @tags			task
 // @accept			json
 // @produce		json
@@ -244,8 +244,8 @@ func (c *TaskControllerTeacher) DeleteTask(ctx *fiber.Ctx) error {
 
 // @summary		Удаление решения по id. [Только преподаватель]
 // @description	Удаление решения (не задания целиком) по его id.
-// @router			/teacher/solution/{id} [delete]
-// @id				teacher-solution-delete
+// @router			/solution/{id} [delete]
+// @id				solution-delete
 // @tags			task
 // @accept			json
 // @produce		json
@@ -278,7 +278,7 @@ func (c *TaskControllerTeacher) DeleteSolution(ctx *fiber.Ctx) error {
 
 // @summary		Получение списка заданий [только преподаватель].
 // @description	Получение списка заданий конкретного преподавателя.
-// @router			/teacher/task [get]
+// @router			/task [get]
 // @id				task-list
 // @tags			task
 // @accept			json

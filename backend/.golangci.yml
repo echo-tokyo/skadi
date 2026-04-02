@@ -123,11 +123,14 @@ linters:
       - linters: # similar but different endpoints
           - dupl
         path: "internal/app/task/controller/http/v1/controller_student.go"
-        text: "48-93 lines are duplicate of `internal/app/task/controller/http/v1/controller_teacher.go:166-211"
+        text: "48-93 lines are duplicate of `internal/app/task/controller/http/v1/controller_teacher.go:164-209"
       - linters: # similar but different endpoints
           - dupl
         path: "internal/app/task/controller/http/v1/controller_teacher.go"
-        text: "166-211 lines are duplicate of `internal/app/task/controller/http/v1/controller_student.go:48-93"
+        text: "164-209 lines are duplicate of `internal/app/task/controller/http/v1/controller_student.go:48-93"
+      - linters: # more readable
+          - goconst
+        text: "string `/:id` has [3456789] occurrences, make it a constant"
 
 issues:
   fix: false

@@ -29,9 +29,9 @@ func NewTaskController(taskUCClient task.UsecaseClient,
 	}
 }
 
-// @summary		Получение решения задания по id.
+// @summary		Получение решения задания по id [Преподаватель и ученик].
 // @description	Получение всех данных о решении задания с полной инфой о задании и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют это задание.
-// @router			/solution/get/{id} [get]
+// @router			/solution/{id} [get]
 // @id				solution-read
 // @tags			task
 // @accept			json
@@ -42,7 +42,7 @@ func NewTaskController(taskUCClient task.UsecaseClient,
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403	"доступ запрещён"
 // @failure		404	"решение задания не найдено"
-func (c *TaskController) Read(ctx *fiber.Ctx) error {
+func (c *TaskController) ReadSolution(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 

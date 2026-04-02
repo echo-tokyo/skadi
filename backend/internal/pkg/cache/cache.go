@@ -5,7 +5,7 @@ package cache
 import (
 	"time"
 
-	_ "github.com/gofiber/fiber/v2"
+	_ "github.com/gofiber/fiber/v2" // imported for comment hint
 )
 
 // Storage represents a cache key-value storage.

@@ -96,6 +96,13 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 	return solutions, nil
 }
 
+// GetTaskByID returns a task object by the given id and
+// a list of students linked to the task solutions.
+func (u *UCTeacher) GetTaskByID(teacherID, taskID int) (*entity.Task, []entity.Profile, error) {
+	// TODO: implement
+	panic("unimplemented")
+}
+
 // UpdateTask updates the given task by given ID with the new data.
 // It returns the updated task object.
 // Allows to update the title, desc and task files.
@@ -143,7 +150,6 @@ func (u *UCTeacher) UpdateSolution(teacherID, solutionID int,
 			return nil, err
 		}
 	}
-	// TODO: only if status is "checked" and the previous status is "ready"
 	if newData.Grade != nil {
 		solObj.Grade = newData.Grade
 	}
@@ -198,9 +204,7 @@ func (u *UCTeacher) DeleteSolutionByID(userID, solutionID int) error {
 func (u *UCTeacher) GetTasks(teacherID int, search string,
 	page *entity.Pagination) ([]entity.Task, error) {
 
-	taskList, err := u.taskRepoDB.GetTasks(teacherID, search, page)
-	// TODO: may be select students for each task
-	return taskList, err // err OR nil
+	return u.taskRepoDB.GetTasks(teacherID, search, page)
 }
 
 // GetSolutions returns all solutions for the teacher tasks.

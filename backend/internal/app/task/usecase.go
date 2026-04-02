@@ -11,6 +11,10 @@ type UsecaseTeacher interface {
 	CreateTaskWithSolutions(taskObj *entity.Task, studentIDs []int,
 		classIDs []int) ([]entity.Solution, error)
 
+	// GetTaskByID returns a task object by the given id and
+	// a list of students linked to the task solutions.
+	GetTaskByID(teacherID, taskID int) (*entity.Task, []entity.Profile, error)
+
 	// UpdateTask updates the given task by given ID with the new data.
 	// It returns the updated task object.
 	// Allows to update the title, desc and task files.

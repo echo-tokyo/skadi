@@ -31,8 +31,8 @@ func NewUserControllerAdmin(userUCAdmin user.UsecaseAdmin,
 
 // @summary		Создание нового юзера. [Только админ]
 // @description	Создание нового юзера и профиля для него со всеми данными.
-// @router			/admin/user [post]
-// @id				admin-user-create
+// @router			/user [post]
+// @id				user-create
 // @tags			user
 // @accept			json
 // @produce		json
@@ -96,8 +96,8 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 
 // @summary		Получение юзера по id. [Только админ]
 // @description	Получение юзера со всеми данными по его id.
-// @router			/admin/user/{id} [get]
-// @id				admin-user-read
+// @router			/user/{id} [get]
+// @id				user-read
 // @tags			user
 // @accept			json
 // @produce		json
@@ -128,8 +128,8 @@ func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 
 // @summary		Обновление юзера по id. [Только админ]
 // @description	Полное обновление профиля юзера и его группы (если студент) по его id.
-// @router			/admin/user/{id} [put]
-// @id				admin-user-update
+// @router			/user/{id} [put]
+// @id				user-update
 // @tags			user
 // @accept			json
 // @produce		json
@@ -203,8 +203,8 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 
 // @summary		Удаление юзера по id. [Только админ]
 // @description	Удаление юзера и его профиля по его id.
-// @router			/admin/user/{id} [delete]
-// @id				admin-user-delete
+// @router			/user/{id} [delete]
+// @id				user-delete
 // @tags			user
 // @accept			json
 // @produce		json
@@ -233,10 +233,10 @@ func (c *UserControllerAdmin) Delete(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
-// @summary		Получение списка юзеров. [Только админ]
+// @summary		Получение списка юзеров. [Админ и преподаватель]
 // @description	Получение списка юзеров со всеми данными (с настраиваемой пагинацией).
-// @router			/admin/user [get]
-// @id				admin-user-list
+// @router			/user [get]
+// @id				user-list
 // @tags			user
 // @accept			json
 // @produce		json
@@ -269,8 +269,8 @@ func (c *UserControllerAdmin) List(ctx *fiber.Ctx) error {
 
 // @summary		Смена пароля юзера. [Только админ]
 // @description	Смена пароля юзера по его id.
-// @router			/admin/user/{id}/password [put]
-// @id				admin-user-password-update
+// @router			/user/{id}/password [put]
+// @id				user-password-update
 // @tags			user
 // @accept			json
 // @produce		json

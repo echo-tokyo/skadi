@@ -4,42 +4,33 @@ package v1
 
 import (
 	fiber "github.com/gofiber/fiber/v2"
-)
 
-const (
-	_pathTeacher  = "/teacher"
-	_pathStudent  = "/student"
-	_pathTask     = "/task"
-	_pathSolution = "/solution"
-	_pathByID     = "/:id"
+	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/service/server/middleware"
 )
 
 // RegisterEndpoints registers all task endpoints.
 func RegisterEndpoints(router fiber.Router, controller *TaskController,
 	controllerStudent *TaskControllerStudent, controllerTeacher *TaskControllerTeacher,
-	mwJWTAccess fiber.Handler, mwStudent fiber.Handler, mwTeacher fiber.Handler) {
+	mwJWTAccess fiber.Handler, mwAllow middleware.AllowFunc) {
 
-	teacherGroup := router.Group(_pathTeacher, mwJWTAccess, mwTeacher)
-	{
-		taskGroup := teacherGroup.Group(_pathTask)
-		taskGroup.Post("/", controllerTeacher.Create)
-		taskGroup.Patch(_pathByID, controllerTeacher.UpdateTask)
-		taskGroup.Delete(_pathByID, controllerTeacher.DeleteTask)
-		taskGroup.Get("/", controllerTeacher.TaskList)
+	mwTeacherOnly := mwAllow(entity.Teacher)
+	mwStudentOnly := mwAllow(entity.Student)
+	mwTeacherStudent := mwAllow(entity.Teacher, entity.Student)
 
-		solutionGroup := teacherGroup.Group(_pathSolution)
-		solutionGroup.Patch(_pathByID, controllerTeacher.UpdateSolution)
-		solutionGroup.Delete(_pathByID, controllerTeacher.DeleteSolution)
-		solutionGroup.Get("/", controllerTeacher.SolutionList)
-	}
+	authGroup := router.Group("/", mwJWTAccess)
 
-	studentGroup := router.Group(_pathStudent, mwJWTAccess, mwStudent)
-	{
-		solutionGroup := studentGroup.Group(_pathSolution)
-		solutionGroup.Patch(_pathByID, controllerStudent.UpdateSolution)
-		solutionGroup.Get("/", controllerStudent.SolutionList)
-	}
+	taskAuthGroup := authGroup.Group("/task")
+	taskAuthGroup.Post("/", mwTeacherOnly, controllerTeacher.Create)
+	taskAuthGroup.Get("/", mwTeacherOnly, controllerTeacher.TaskList)
+	// taskAuthGroup.Get("/:id", mwTeacherOnly, controllerTeacher.ReadTask)
+	taskAuthGroup.Patch("/:id", mwTeacherOnly, controllerTeacher.UpdateTask)
+	taskAuthGroup.Delete("/:id", mwTeacherOnly, controllerTeacher.DeleteTask)
 
-	authGroup := router.Group(_pathSolution, mwJWTAccess)
-	authGroup.Get("/get"+_pathByID, controller.Read)
+	authGroup.Get("/teacher/solution", mwTeacherOnly, controllerTeacher.SolutionList)
+	authGroup.Get("/student/solution", mwStudentOnly, controllerStudent.SolutionList)
+	authGroup.Get("/solution/:id", mwTeacherStudent, controller.ReadSolution)
+	authGroup.Patch("/teacher/solution/:id", mwTeacherOnly, controllerTeacher.UpdateSolution)
+	authGroup.Patch("/student/solution/:id", mwStudentOnly, controllerStudent.UpdateSolution)
+	authGroup.Delete("/solution/:id", mwTeacherOnly, controllerTeacher.DeleteSolution)
 }

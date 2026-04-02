@@ -66,9 +66,10 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 			mwJWTAccess, mwAdmin, mwTeacher, mwStudent)
 	}
 	authhttpv1.RegisterEndpoints(apiV1, authController, mwJWTRefresh)
-	userhttpv1.RegisterEndpoints(apiV1, userController, userControllerAdmin, mwJWTAccess, mwAdmin)
+	userhttpv1.RegisterEndpoints(apiV1, userController, userControllerAdmin,
+		mwJWTAccess, middleware.Allow)
 	classhttpv1.RegisterEndpoints(apiV1, classController, classControllerAdmin,
-		mwJWTAccess, mwAdmin)
+		mwJWTAccess, middleware.Allow)
 	taskhttpv1.RegisterEndpoints(apiV1, taskController, taskControllerStudent,
-		taskControllerTeacher, mwJWTAccess, mwStudent, mwTeacher)
+		taskControllerTeacher, mwJWTAccess, middleware.Allow)
 }

@@ -18,459 +18,6 @@
     "host": "127.0.0.1:8000",
     "basePath": "/api/v1",
     "paths": {
-        "/admin/class": {
-            "post": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Создание новой группы со всеми данными и включение в неё переданных студентов.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "class"
-                ],
-                "summary": "Создание новой группы. [Только админ]",
-                "operationId": "admin-class-create",
-                "parameters": [
-                    {
-                        "description": "classBody",
-                        "name": "classBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.classBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Class"
-                        }
-                    },
-                    "400": {
-                        "description": "неверный ученик | неверный преподаватель | преподаватель не найден"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "409": {
-                        "description": "группа с введенным названием уже существует"
-                    }
-                }
-            }
-        },
-        "/admin/class/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Удаление группы по её id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "class"
-                ],
-                "summary": "Удаление группы по id. [Только админ]",
-                "operationId": "admin-class-delete",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Частичное обновление группы (только переданные поля) по её id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "class"
-                ],
-                "summary": "Обновление группы по id. [Только админ]",
-                "operationId": "admin-class-update",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID группы",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updateBody",
-                        "name": "updateBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_class_controller_http_v1.updateBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Class"
-                        }
-                    },
-                    "400": {
-                        "description": "неверный ученик | неверный преподаватель | преподаватель не найден"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "404": {
-                        "description": "группа не найдена"
-                    }
-                }
-            }
-        },
-        "/admin/user": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение списка юзеров со всеми данными (с настраиваемой пагинацией).",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Получение списка юзеров. [Только админ]",
-                "operationId": "admin-user-list",
-                "parameters": [
-                    {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "return only class-free students (only if param role=student)",
-                        "name": "free",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 1,
-                        "description": "page pagination param",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "default": 10,
-                        "example": 5,
-                        "description": "per page pagination param",
-                        "name": "per-page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "csv",
-                        "example": [
-                            "student"
-                        ],
-                        "description": "user roles (accepted: \"teacher\", \"student\")",
-                        "name": "role",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "иванов",
-                        "description": "substring to filter users by username and fullname (case-insensitive)",
-                        "name": "search",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/v1.listUserOut"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Создание нового юзера и профиля для него со всеми данными.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Создание нового юзера. [Только админ]",
-                "operationId": "admin-user-create",
-                "parameters": [
-                    {
-                        "description": "userBody",
-                        "name": "userBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.userBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entity.User"
-                        }
-                    },
-                    "400": {
-                        "description": "группа не найдена"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "409": {
-                        "description": "пользователь с введенным логином уже существует"
-                    }
-                }
-            }
-        },
-        "/admin/user/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение юзера со всеми данными по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Получение юзера по id. [Только админ]",
-                "operationId": "admin-user-read",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.User"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "404": {
-                        "description": "пользователь не найден"
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Полное обновление профиля юзера и его группы (если студент) по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Обновление юзера по id. [Только админ]",
-                "operationId": "admin-user-update",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updateBody",
-                        "name": "updateBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/internal_app_user_controller_http_v1.updateBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.User"
-                        }
-                    },
-                    "400": {
-                        "description": "неподдерживаемые данные для роли обновляемого пользователя | группа не найдена"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "404": {
-                        "description": "пользователь не найден"
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Удаление юзера и его профиля по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Удаление юзера по id. [Только админ]",
-                "operationId": "admin-user-delete",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "404": {
-                        "description": "пользователь не найден"
-                    }
-                }
-            }
-        },
-        "/admin/user/{id}/password": {
-            "put": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Смена пароля юзера по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Смена пароля юзера. [Только админ]",
-                "operationId": "admin-user-password-update",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID юзера",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updatePasswordAdminBody",
-                        "name": "updatePasswordAdminBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updatePasswordAdminBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "404": {
-                        "description": "пользователь не найден"
-                    }
-                }
-            }
-        },
         "/auth/login": {
             "post": {
                 "description": "Вход для существующего юзера по логину и паролю.",
@@ -623,16 +170,14 @@
                         "description": "неверный токен (пустой, истекший или неверный формат)"
                     }
                 }
-            }
-        },
-        "/class/get/{id}": {
-            "get": {
+            },
+            "post": {
                 "security": [
                     {
                         "JWTAccess": []
                     }
                 ],
-                "description": "Получение всех данных о группе с инфой о преподе и учениках (ID и полные имена).",
+                "description": "Создание новой группы со всеми данными и включение в неё переданных студентов.",
                 "consumes": [
                     "application/json"
                 ],
@@ -642,29 +187,34 @@
                 "tags": [
                     "class"
                 ],
-                "summary": "Получение группы по id.",
-                "operationId": "class-read",
+                "summary": "Создание новой группы. [Только админ]",
+                "operationId": "class-create",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "ID группы",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "classBody",
+                        "name": "classBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.classBody"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/entity.Class"
                         }
                     },
+                    "400": {
+                        "description": "неверный ученик | неверный преподаватель | преподаватель не найден"
+                    },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
                     },
-                    "404": {
-                        "description": "группа не найдена"
+                    "409": {
+                        "description": "группа с введенным названием уже существует"
                     }
                 }
             }
@@ -726,6 +276,140 @@
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/class/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение всех данных о группе с инфой о преподе и учениках (ID и полные имена).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Получение группы по id.",
+                "operationId": "class-read",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID группы",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Class"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "группа не найдена"
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление группы по её id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Удаление группы по id. [Только админ]",
+                "operationId": "class-delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление группы (только переданные поля) по её id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class"
+                ],
+                "summary": "Обновление группы по id. [Только админ]",
+                "operationId": "class-update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID группы",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateBody",
+                        "name": "updateBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_app_class_controller_http_v1.updateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Class"
+                        }
+                    },
+                    "400": {
+                        "description": "неверный ученик | неверный преподаватель | преподаватель не найден"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "группа не найдена"
                     }
                 }
             }
@@ -882,7 +566,7 @@
                 }
             }
         },
-        "/solution/get/{id}": {
+        "/solution/{id}": {
             "get": {
                 "security": [
                     {
@@ -899,7 +583,7 @@
                 "tags": [
                     "task"
                 ],
-                "summary": "Получение решения задания по id.",
+                "summary": "Получение решения задания по id [Преподаватель и ученик].",
                 "operationId": "solution-read",
                 "parameters": [
                     {
@@ -927,6 +611,45 @@
                         "description": "решение задания не найдено"
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление решения (не задания целиком) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Удаление решения по id. [Только преподаватель]",
+                "operationId": "solution-delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    }
+                }
             }
         },
         "/student/solution": {
@@ -946,7 +669,7 @@
                 "tags": [
                     "task"
                 ],
-                "summary": "Получение списка решений [только ученик].",
+                "summary": "Получение списка решений [Только ученик].",
                 "operationId": "student-solution-list",
                 "parameters": [
                     {
@@ -1046,170 +769,7 @@
                 }
             }
         },
-        "/teacher/solution": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение списка решений для заданий конкретного преподавателя.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "task"
-                ],
-                "summary": "Получение списка решений [только преподаватель].",
-                "operationId": "teacher-solution-list",
-                "parameters": [
-                    {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "filter for checked solutions if true",
-                        "name": "archived",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 1,
-                        "description": "page pagination param",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "default": 10,
-                        "example": 5,
-                        "description": "per page pagination param",
-                        "name": "per-page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "F26",
-                        "description": "substring to filter data by substring (case-insensitive)",
-                        "name": "search",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/v1.listSolutionOut"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    }
-                }
-            }
-        },
-        "/teacher/solution/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Удаление решения (не задания целиком) по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "task"
-                ],
-                "summary": "Удаление решения по id. [Только преподаватель]",
-                "operationId": "teacher-solution-delete",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID решения",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "403": {
-                        "description": "доступ запрещён"
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Частичное обновление решения (только переданные поля: статус - \"готово\"/\"проверено\" - и оценка) по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "task"
-                ],
-                "summary": "Обновление решения. [Только преподаватель]",
-                "operationId": "teacher-solution-update",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID решения",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updateSolutionBody",
-                        "name": "updateSolutionBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updateSolutionBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Solution"
-                        }
-                    },
-                    "400": {
-                        "description": "неверный статус"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "403": {
-                        "description": "доступ запрещён"
-                    },
-                    "404": {
-                        "description": "решение не найдено"
-                    }
-                }
-            }
-        },
-        "/teacher/task": {
+        "/task": {
             "get": {
                 "security": [
                     {
@@ -1283,7 +843,7 @@
                     "task"
                 ],
                 "summary": "Создание нового задания. [Только преподаватель]",
-                "operationId": "teacher-task-create",
+                "operationId": "task-create",
                 "parameters": [
                     {
                         "description": "taskBody",
@@ -1311,7 +871,7 @@
                 }
             }
         },
-        "/teacher/task/{id}": {
+        "/task/{id}": {
             "delete": {
                 "security": [
                     {
@@ -1329,7 +889,7 @@
                     "task"
                 ],
                 "summary": "Удаление задания по id. [Только преподаватель]",
-                "operationId": "teacher-task-delete",
+                "operationId": "task-delete",
                 "parameters": [
                     {
                         "type": "string",
@@ -1402,6 +962,255 @@
                     },
                     "404": {
                         "description": "задание не найдено"
+                    }
+                }
+            }
+        },
+        "/teacher/solution": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка решений для заданий конкретного преподавателя.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение списка решений [только преподаватель].",
+                "operationId": "teacher-solution-list",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "filter for checked solutions if true",
+                        "name": "archived",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "F26",
+                        "description": "substring to filter data by substring (case-insensitive)",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listSolutionOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/teacher/solution/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление решения (только переданные поля: статус - \"готово\"/\"проверено\" - и оценка) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Обновление решения. [Только преподаватель]",
+                "operationId": "teacher-solution-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateSolutionBody",
+                        "name": "updateSolutionBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateSolutionBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Solution"
+                        }
+                    },
+                    "400": {
+                        "description": "неверный статус"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение не найдено"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка юзеров со всеми данными (с настраиваемой пагинацией).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получение списка юзеров. [Админ и преподаватель]",
+                "operationId": "user-list",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "return only class-free students (only if param role=student)",
+                        "name": "free",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "example": [
+                            "student"
+                        ],
+                        "description": "user roles (accepted: \"teacher\", \"student\")",
+                        "name": "role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "иванов",
+                        "description": "substring to filter users by username and fullname (case-insensitive)",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listUserOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Создание нового юзера и профиля для него со всеми данными.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Создание нового юзера. [Только админ]",
+                "operationId": "user-create",
+                "parameters": [
+                    {
+                        "description": "userBody",
+                        "name": "userBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.userBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "группа не найдена"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "409": {
+                        "description": "пользователь с введенным логином уже существует"
                     }
                 }
             }
@@ -1523,6 +1332,193 @@
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение юзера со всеми данными по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получение юзера по id. [Только админ]",
+                "operationId": "user-read",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Полное обновление профиля юзера и его группы (если студент) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Обновление юзера по id. [Только админ]",
+                "operationId": "user-update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateBody",
+                        "name": "updateBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_app_user_controller_http_v1.updateBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "неподдерживаемые данные для роли обновляемого пользователя | группа не найдена"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Удаление юзера и его профиля по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Удаление юзера по id. [Только админ]",
+                "operationId": "user-delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
+                    }
+                }
+            }
+        },
+        "/user/{id}/password": {
+            "put": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Смена пароля юзера по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Смена пароля юзера. [Только админ]",
+                "operationId": "user-password-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID юзера",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updatePasswordAdminBody",
+                        "name": "updatePasswordAdminBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updatePasswordAdminBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "404": {
+                        "description": "пользователь не найден"
                     }
                 }
             }

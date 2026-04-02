@@ -32,8 +32,8 @@ func NewClassControllerAdmin(classUCAdmin class.UsecaseAdmin,
 
 // @summary		Создание новой группы. [Только админ]
 // @description	Создание новой группы со всеми данными и включение в неё переданных студентов.
-// @router			/admin/class [post]
-// @id				admin-class-create
+// @router			/class [post]
+// @id				class-create
 // @tags			class
 // @accept			json
 // @produce		json
@@ -93,8 +93,8 @@ func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 
 // @summary		Обновление группы по id. [Только админ]
 // @description	Частичное обновление группы (только переданные поля) по её id.
-// @router			/admin/class/{id} [patch]
-// @id				admin-class-update
+// @router			/class/{id} [patch]
+// @id				class-update
 // @tags			class
 // @accept			json
 // @produce		json
@@ -159,8 +159,8 @@ func (c *ClassControllerAdmin) Update(ctx *fiber.Ctx) error {
 
 // @summary		Удаление группы по id. [Только админ]
 // @description	Удаление группы по её id.
-// @router			/admin/class/{id} [delete]
-// @id				admin-class-delete
+// @router			/class/{id} [delete]
+// @id				class-delete
 // @tags			class
 // @accept			json
 // @produce		json

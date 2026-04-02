@@ -541,304 +541,6 @@ info:
   title: skadi API
   version: 1.0.0
 paths:
-  /admin/class:
-    post:
-      consumes:
-      - application/json
-      description: Создание новой группы со всеми данными и включение в неё переданных
-        студентов.
-      operationId: admin-class-create
-      parameters:
-      - description: classBody
-        in: body
-        name: classBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.classBody'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/entity.Class'
-        "400":
-          description: неверный ученик | неверный преподаватель | преподаватель не
-            найден
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "409":
-          description: группа с введенным названием уже существует
-      security:
-      - JWTAccess: []
-      summary: Создание новой группы. [Только админ]
-      tags:
-      - class
-  /admin/class/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Удаление группы по её id.
-      operationId: admin-class-delete
-      parameters:
-      - description: ID юзера
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-      security:
-      - JWTAccess: []
-      summary: Удаление группы по id. [Только админ]
-      tags:
-      - class
-    patch:
-      consumes:
-      - application/json
-      description: Частичное обновление группы (только переданные поля) по её id.
-      operationId: admin-class-update
-      parameters:
-      - description: ID группы
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: updateBody
-        in: body
-        name: updateBody
-        required: true
-        schema:
-          $ref: '#/definitions/internal_app_class_controller_http_v1.updateBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Class'
-        "400":
-          description: неверный ученик | неверный преподаватель | преподаватель не
-            найден
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: группа не найдена
-      security:
-      - JWTAccess: []
-      summary: Обновление группы по id. [Только админ]
-      tags:
-      - class
-  /admin/user:
-    get:
-      consumes:
-      - application/json
-      description: Получение списка юзеров со всеми данными (с настраиваемой пагинацией).
-      operationId: admin-user-list
-      parameters:
-      - description: return only class-free students (only if param role=student)
-        example: true
-        in: query
-        name: free
-        type: boolean
-      - description: page pagination param
-        example: 1
-        in: query
-        minimum: 1
-        name: page
-        type: integer
-      - default: 10
-        description: per page pagination param
-        example: 5
-        in: query
-        minimum: 1
-        name: per-page
-        type: integer
-      - collectionFormat: csv
-        description: 'user roles (accepted: "teacher", "student")'
-        example:
-        - student
-        in: query
-        items:
-          type: string
-        name: role
-        type: array
-      - description: substring to filter users by username and fullname (case-insensitive)
-        example: иванов
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/v1.listUserOut'
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-      security:
-      - JWTAccess: []
-      summary: Получение списка юзеров. [Только админ]
-      tags:
-      - user
-    post:
-      consumes:
-      - application/json
-      description: Создание нового юзера и профиля для него со всеми данными.
-      operationId: admin-user-create
-      parameters:
-      - description: userBody
-        in: body
-        name: userBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.userBody'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/entity.User'
-        "400":
-          description: группа не найдена
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "409":
-          description: пользователь с введенным логином уже существует
-      security:
-      - JWTAccess: []
-      summary: Создание нового юзера. [Только админ]
-      tags:
-      - user
-  /admin/user/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Удаление юзера и его профиля по его id.
-      operationId: admin-user-delete
-      parameters:
-      - description: ID юзера
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: пользователь не найден
-      security:
-      - JWTAccess: []
-      summary: Удаление юзера по id. [Только админ]
-      tags:
-      - user
-    get:
-      consumes:
-      - application/json
-      description: Получение юзера со всеми данными по его id.
-      operationId: admin-user-read
-      parameters:
-      - description: ID юзера
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.User'
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: пользователь не найден
-      security:
-      - JWTAccess: []
-      summary: Получение юзера по id. [Только админ]
-      tags:
-      - user
-    put:
-      consumes:
-      - application/json
-      description: Полное обновление профиля юзера и его группы (если студент) по
-        его id.
-      operationId: admin-user-update
-      parameters:
-      - description: ID юзера
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: updateBody
-        in: body
-        name: updateBody
-        required: true
-        schema:
-          $ref: '#/definitions/internal_app_user_controller_http_v1.updateBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.User'
-        "400":
-          description: неподдерживаемые данные для роли обновляемого пользователя
-            | группа не найдена
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: пользователь не найден
-      security:
-      - JWTAccess: []
-      summary: Обновление юзера по id. [Только админ]
-      tags:
-      - user
-  /admin/user/{id}/password:
-    put:
-      consumes:
-      - application/json
-      description: Смена пароля юзера по его id.
-      operationId: admin-user-password-update
-      parameters:
-      - description: ID юзера
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: updatePasswordAdminBody
-        in: body
-        name: updatePasswordAdminBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.updatePasswordAdminBody'
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "404":
-          description: пользователь не найден
-      security:
-      - JWTAccess: []
-      summary: Смена пароля юзера. [Только админ]
-      tags:
-      - user
   /auth/login:
     post:
       consumes:
@@ -939,7 +641,62 @@ paths:
       summary: Получение списка групп.
       tags:
       - class
-  /class/get/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Создание новой группы со всеми данными и включение в неё переданных
+        студентов.
+      operationId: class-create
+      parameters:
+      - description: classBody
+        in: body
+        name: classBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.classBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "400":
+          description: неверный ученик | неверный преподаватель | преподаватель не
+            найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "409":
+          description: группа с введенным названием уже существует
+      security:
+      - JWTAccess: []
+      summary: Создание новой группы. [Только админ]
+      tags:
+      - class
+  /class/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление группы по её id.
+      operationId: class-delete
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Удаление группы по id. [Только админ]
+      tags:
+      - class
     get:
       consumes:
       - application/json
@@ -966,6 +723,42 @@ paths:
       security:
       - JWTAccess: []
       summary: Получение группы по id.
+      tags:
+      - class
+    patch:
+      consumes:
+      - application/json
+      description: Частичное обновление группы (только переданные поля) по её id.
+      operationId: class-update
+      parameters:
+      - description: ID группы
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: updateBody
+        in: body
+        name: updateBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal_app_class_controller_http_v1.updateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Class'
+        "400":
+          description: неверный ученик | неверный преподаватель | преподаватель не
+            найден
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: группа не найдена
+      security:
+      - JWTAccess: []
+      summary: Обновление группы по id. [Только админ]
       tags:
       - class
   /class/short:
@@ -1105,7 +898,32 @@ paths:
       summary: Проверка. Только преподаватели.
       tags:
       - example
-  /solution/get/{id}:
+  /solution/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление решения (не задания целиком) по его id.
+      operationId: solution-delete
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Удаление решения по id. [Только преподаватель]
+      tags:
+      - task
     get:
       consumes:
       - application/json
@@ -1134,7 +952,7 @@ paths:
           description: решение задания не найдено
       security:
       - JWTAccess: []
-      summary: Получение решения задания по id.
+      summary: Получение решения задания по id [Преподаватель и ученик].
       tags:
       - task
   /student/solution:
@@ -1173,7 +991,7 @@ paths:
           description: неверный токен (пустой, истекший или неверный формат)
       security:
       - JWTAccess: []
-      summary: Получение списка решений [только ученик].
+      summary: Получение списка решений [Только ученик].
       tags:
       - task
   /student/solution/{id}:
@@ -1215,115 +1033,7 @@ paths:
       summary: Обновление решения. [Только ученик]
       tags:
       - task
-  /teacher/solution:
-    get:
-      consumes:
-      - application/json
-      description: Получение списка решений для заданий конкретного преподавателя.
-      operationId: teacher-solution-list
-      parameters:
-      - description: filter for checked solutions if true
-        example: true
-        in: query
-        name: archived
-        type: boolean
-      - description: page pagination param
-        example: 1
-        in: query
-        minimum: 1
-        name: page
-        type: integer
-      - default: 10
-        description: per page pagination param
-        example: 5
-        in: query
-        minimum: 1
-        name: per-page
-        type: integer
-      - description: substring to filter data by substring (case-insensitive)
-        example: F26
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/v1.listSolutionOut'
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-      security:
-      - JWTAccess: []
-      summary: Получение списка решений [только преподаватель].
-      tags:
-      - task
-  /teacher/solution/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Удаление решения (не задания целиком) по его id.
-      operationId: teacher-solution-delete
-      parameters:
-      - description: ID решения
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "403":
-          description: доступ запрещён
-      security:
-      - JWTAccess: []
-      summary: Удаление решения по id. [Только преподаватель]
-      tags:
-      - task
-    patch:
-      consumes:
-      - application/json
-      description: 'Частичное обновление решения (только переданные поля: статус -
-        "готово"/"проверено" - и оценка) по его id.'
-      operationId: teacher-solution-update
-      parameters:
-      - description: ID решения
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: updateSolutionBody
-        in: body
-        name: updateSolutionBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.updateSolutionBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Solution'
-        "400":
-          description: неверный статус
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "403":
-          description: доступ запрещён
-        "404":
-          description: решение не найдено
-      security:
-      - JWTAccess: []
-      summary: Обновление решения. [Только преподаватель]
-      tags:
-      - task
-  /teacher/task:
+  /task:
     get:
       consumes:
       - application/json
@@ -1367,7 +1077,7 @@ paths:
       - application/json
       description: Создание нового задания для переданных учеников и учеников из переданных
         групп.
-      operationId: teacher-task-create
+      operationId: task-create
       parameters:
       - description: taskBody
         in: body
@@ -1392,12 +1102,12 @@ paths:
       summary: Создание нового задания. [Только преподаватель]
       tags:
       - task
-  /teacher/task/{id}:
+  /task/{id}:
     delete:
       consumes:
       - application/json
       description: Удаление задания целиком (со всеми его решениями) по его id.
-      operationId: teacher-task-delete
+      operationId: task-delete
       parameters:
       - description: ID задания
         in: path
@@ -1454,6 +1164,294 @@ paths:
       summary: Обновление задания. [Только преподаватель]
       tags:
       - task
+  /teacher/solution:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка решений для заданий конкретного преподавателя.
+      operationId: teacher-solution-list
+      parameters:
+      - description: filter for checked solutions if true
+        example: true
+        in: query
+        name: archived
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter data by substring (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listSolutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка решений [только преподаватель].
+      tags:
+      - task
+  /teacher/solution/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 'Частичное обновление решения (только переданные поля: статус -
+        "готово"/"проверено" - и оценка) по его id.'
+      operationId: teacher-solution-update
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateSolutionBody
+        in: body
+        name: updateSolutionBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateSolutionBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Solution'
+        "400":
+          description: неверный статус
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление решения. [Только преподаватель]
+      tags:
+      - task
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка юзеров со всеми данными (с настраиваемой пагинацией).
+      operationId: user-list
+      parameters:
+      - description: return only class-free students (only if param role=student)
+        example: true
+        in: query
+        name: free
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - collectionFormat: csv
+        description: 'user roles (accepted: "teacher", "student")'
+        example:
+        - student
+        in: query
+        items:
+          type: string
+        name: role
+        type: array
+      - description: substring to filter users by username and fullname (case-insensitive)
+        example: иванов
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listUserOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка юзеров. [Админ и преподаватель]
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Создание нового юзера и профиля для него со всеми данными.
+      operationId: user-create
+      parameters:
+      - description: userBody
+        in: body
+        name: userBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.userBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: группа не найдена
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "409":
+          description: пользователь с введенным логином уже существует
+      security:
+      - JWTAccess: []
+      summary: Создание нового юзера. [Только админ]
+      tags:
+      - user
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление юзера и его профиля по его id.
+      operationId: user-delete
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Удаление юзера по id. [Только админ]
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: Получение юзера со всеми данными по его id.
+      operationId: user-read
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Получение юзера по id. [Только админ]
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Полное обновление профиля юзера и его группы (если студент) по
+        его id.
+      operationId: user-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: updateBody
+        in: body
+        name: updateBody
+        required: true
+        schema:
+          $ref: '#/definitions/internal_app_user_controller_http_v1.updateBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: неподдерживаемые данные для роли обновляемого пользователя
+            | группа не найдена
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Обновление юзера по id. [Только админ]
+      tags:
+      - user
+  /user/{id}/password:
+    put:
+      consumes:
+      - application/json
+      description: Смена пароля юзера по его id.
+      operationId: user-password-update
+      parameters:
+      - description: ID юзера
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updatePasswordAdminBody
+        in: body
+        name: updatePasswordAdminBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updatePasswordAdminBody'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "404":
+          description: пользователь не найден
+      security:
+      - JWTAccess: []
+      summary: Смена пароля юзера. [Только админ]
+      tags:
+      - user
   /user/me:
     get:
       consumes:
