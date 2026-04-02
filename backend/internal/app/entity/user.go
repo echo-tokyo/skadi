@@ -12,7 +12,7 @@ type User struct {
 	// user password hash
 	Password []byte `json:"-"`
 	// admin, teacher or student
-	Role string `json:"role" validate:"required"`
+	Role Role `json:"role" validate:"required"`
 	// user creating datetime
 	CreatedAt time.Time `json:"-"`
 	// class id (for students)
@@ -29,12 +29,42 @@ func (*User) TableName() string {
 	return "user"
 }
 
+// IsAdmin returns true if the user role is Admin.
+func (u User) IsAdmin() bool {
+	return u.Role == Admin
+}
+
+// IsTeacher returns true if the user role is Teacher.
+func (u User) IsTeacher() bool {
+	return u.Role == Teacher
+}
+
+// IsStudent returns true if the user role is Student.
+func (u User) IsStudent() bool {
+	return u.Role == Student
+}
+
 // UserClaims represents a claims with user data for JWT-tokens.
 type UserClaims struct {
 	// user ID
 	ID int `json:"id"`
 	// admin, teacher or student
-	Role string `json:"role"`
+	Role Role `json:"role"`
+}
+
+// IsAdmin returns true if the user role is Admin.
+func (u UserClaims) IsAdmin() bool {
+	return u.Role == Admin
+}
+
+// IsTeacher returns true if the user role is Teacher.
+func (u UserClaims) IsTeacher() bool {
+	return u.Role == Teacher
+}
+
+// IsStudent returns true if the user role is Student.
+func (u UserClaims) IsStudent() bool {
+	return u.Role == Student
 }
 
 // Token represents a user token pair (access and refresh).

@@ -6,7 +6,6 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/service/server/errhandler"
-	"skadi/backend/internal/pkg/roles"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 )
 
@@ -17,7 +16,7 @@ func Admin() fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for admin
-		if userClaims.Role == roles.Admin {
+		if userClaims.IsAdmin() {
 			return ctx.Next()
 		}
 		// not found error for non-admin
@@ -33,7 +32,7 @@ func Teacher() fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for teacher
-		if userClaims.Role == roles.Teacher {
+		if userClaims.IsTeacher() {
 			return ctx.Next()
 		}
 		// not found error for non-teacher
@@ -49,7 +48,7 @@ func Student() fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for student
-		if userClaims.Role == roles.Student {
+		if userClaims.IsStudent() {
 			return ctx.Next()
 		}
 		// not found error for non-student

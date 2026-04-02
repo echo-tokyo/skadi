@@ -228,7 +228,7 @@ func (r *RepoDB) Delete(data *entity.User) error {
 // GetByRoles returns user (with class if set and profile) list with given roles.
 // Free param appends condition (if only student role was given) to get class-free students.
 // Search params appends condition to filter users by username and fullname (substring).
-func (r *RepoDB) GetByRoles(roles []string, free bool, search string,
+func (r *RepoDB) GetByRoles(roles []entity.Role, free bool, search string,
 	page *entity.Pagination) ([]entity.User, error) {
 
 	if len(roles) == 0 {

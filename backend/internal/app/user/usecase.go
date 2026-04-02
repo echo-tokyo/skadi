@@ -31,7 +31,7 @@ type UsecaseAdmin interface {
 	// GetByRoles returns user list with given roles.
 	// Free param (if only student role was given) used to get class-free students.
 	// Search param used to filter users by username and fullname (substring).
-	GetByRoles(roleList []string, free bool,
+	GetByRoles(roleList []entity.Role, free bool,
 		search string, page *entity.Pagination) ([]entity.User, error)
 	// ChangePasswordAsAdmin changes password of any client.
 	// New password is a raw (not hashed) password.

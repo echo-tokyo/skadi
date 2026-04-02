@@ -9,7 +9,6 @@ import (
 	"skadi/backend/internal/app/status"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/app/user"
-	"skadi/backend/internal/pkg/roles"
 	"skadi/backend/internal/pkg/utils/slices"
 )
 
@@ -53,7 +52,7 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 	if err != nil {
 		return nil, fmt.Errorf("get teacher: %w", err)
 	}
-	if !roles.IsTeacher(teacher) {
+	if !teacher.IsTeacher() {
 		return nil, fmt.Errorf("%w: user %d: not teacher", task.ErrInvalidTeacher, teacher.ID)
 	}
 
@@ -65,7 +64,7 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 	studentProfiles := make([]entity.Profile, 0, len(studentUsers))
 	// check user roles
 	for idx := range studentUsers {
-		if !roles.IsStudent(&studentUsers[idx]) {
+		if !studentUsers[idx].IsStudent() {
 			return nil, fmt.Errorf("%w: user %d: not student",
 				task.ErrInvalidStudent, studentUsers[idx].ID)
 		}

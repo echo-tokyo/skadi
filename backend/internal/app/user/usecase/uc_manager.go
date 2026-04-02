@@ -58,7 +58,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 		return fmt.Errorf("get by id: %w", err)
 	}
 	// deny deletion of non-admins
-	if !roles.IsAdmin(userObj) {
+	if !userObj.IsAdmin() {
 		return errors.New("cannot delete non-admin")
 	}
 	if err := u.userRepoDB.Delete(userObj); err != nil {
@@ -69,7 +69,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 
 // GetAdmins returns all admins.
 func (u *UCManager) GetAdmins() ([]entity.User, error) {
-	userList, err := u.userRepoDB.GetByRoles([]string{roles.Admin}, false, "", nil)
+	userList, err := u.userRepoDB.GetByRoles([]entity.Role{roles.Admin}, false, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}

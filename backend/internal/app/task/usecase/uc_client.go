@@ -8,7 +8,6 @@ import (
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
-	"skadi/backend/internal/pkg/roles"
 )
 
 // Ensure UCClient implements interfaces.
@@ -39,10 +38,10 @@ func (u *UCClient) GetByIDFull(solutionID int,
 	}
 
 	// role checks
-	if userClaims.Role == roles.Teacher && solution.Task.TeacherID != userClaims.ID {
+	if userClaims.IsTeacher() && solution.Task.TeacherID != userClaims.ID {
 		return nil, nil, fmt.Errorf("%w: user (teacher) is not a task owner", task.ErrForbidden)
 	}
-	if userClaims.Role == roles.Student && solution.StudentID != userClaims.ID {
+	if userClaims.IsStudent() && solution.StudentID != userClaims.ID {
 		return nil, nil, fmt.Errorf("%w: user (stud) is not a solution owner", task.ErrForbidden)
 	}
 

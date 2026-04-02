@@ -5,13 +5,12 @@ import (
 	"slices"
 
 	"skadi/backend/internal/app/entity"
-	"skadi/backend/internal/pkg/roles"
 	"skadi/backend/internal/pkg/serialize"
 	"skadi/backend/internal/pkg/validator"
 )
 
 // _acceptedRoles contains accepted roles for listUserQuery
-var _acceptedRoles = []string{roles.Teacher, roles.Student}
+var _acceptedRoles = []entity.Role{entity.Teacher, entity.Student}
 
 // @description updatePasswordBody represents a data to update user password by the user himself.
 type updatePasswordBody struct {
@@ -28,7 +27,7 @@ type userBody struct {
 	// user password
 	Password string `json:"password" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// user role (teacher or student)
-	Role string `json:"role" validate:"required,oneof=teacher student" example:"teacher"`
+	Role entity.Role `json:"role" validate:"required,oneof=teacher student" example:"teacher"`
 	// class id (for students)
 	ClassID *int `json:"class_id" validate:"omitempty" example:"3"`
 	// user profile
@@ -72,7 +71,7 @@ type updateBody struct {
 // @description listUserQuery represents a data with optional query-params to get users list.
 type listUserQuery struct {
 	// user roles (accepted: "teacher", "student")
-	Roles []string `query:"role,omitempty" json:"role" example:"student"`
+	Roles []entity.Role `query:"role,omitempty" json:"role" example:"student"`
 	// return only class-free students (only if param role=student)
 	Free bool `query:"free,omitempty" json:"free" example:"true"`
 	// substring to filter users by username and fullname (case-insensitive)
