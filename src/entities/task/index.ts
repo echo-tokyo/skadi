@@ -1,4 +1,14 @@
-export { useCreateTaskMutation, useUpdateTaskMutation, useGetTasksInfiniteQuery } from './api/task-api'
-export type { ICreateTaskRequest, IUpdateTaskRequest, IGetTaskQuery, IGetTaskResponse, ITaskFieldsRef } from './model/types'
-export type { TTask } from '@/shared/model'
+export {
+  useCreateTaskMutation,
+  useUpdateTaskMutation,
+  useGetTasksInfiniteQuery,
+} from './api/task-api'
+export type {
+  ICreateTaskRequest,
+  IUpdateTaskRequest,
+  IGetTasksQuery,
+  IGetTasksResponse,
+  ITaskFieldsRef,
+} from './model/types'
+export type { TTaskSchema } from './model/schema'
 export { default as TaskFields } from './ui/TaskFields'

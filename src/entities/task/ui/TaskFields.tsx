@@ -19,12 +19,14 @@ interface ITaskFieldsProps {
   ref?: Ref<ITaskFieldsRef>
   studentField: TPaginatedSelectField
   onDirtyChange?: (isDirty: boolean) => void
+  fieldData?: TTaskSchema
 }
 
 const TaskFields = ({
   ref,
   studentField,
   onDirtyChange,
+  fieldData,
 }: ITaskFieldsProps): ReactNode => {
   const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
 
@@ -36,7 +38,7 @@ const TaskFields = ({
     formState: { errors, isDirty },
   } = useForm<TTaskSchema>({
     resolver: zodResolver(taskSchema),
-    defaultValues,
+    defaultValues: fieldData ?? defaultValues,
   })
 
   const title = watch('title')

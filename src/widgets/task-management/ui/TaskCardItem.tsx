@@ -1,16 +1,14 @@
-import { TTask } from '@/entities/task'
+import { EditTaskButton } from '@/features/edit-task'
 import { AccordionCard, Button } from '@/shared/ui'
 import { memo } from 'react'
-import { useNavigate } from 'react-router'
 import styles from './styles.module.scss'
+import { TTask } from '@/shared/model'
 
 interface ITaskCardItemProps {
   taskData: TTask
 }
 
 export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
-  const nav = useNavigate()
-
   return (
     <AccordionCard
       title={taskData.title}
@@ -21,12 +19,7 @@ export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
       actions={
         <div className={styles.cardActions}>
           <Button color='inverted'>Удалить</Button>
-          <Button
-            color='secondary'
-            onClick={() => nav(`/personal-area/tasks/${taskData.id}`)}
-          >
-            Редактировать
-          </Button>
+          <EditTaskButton task={taskData} />
         </div>
       }
     />
