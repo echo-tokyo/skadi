@@ -1,6 +1,5 @@
 import { TRole } from '@/shared/model'
-import { TMode } from './types'
-import { solutionTeacherSchema, taskSchema } from './schemas'
+import { TMode, taskSchema, solutionTeacherSchema } from '@/widgets/task-card'
 
 export const useGetSchema = (
   mode: TMode,

@@ -1,24 +1,16 @@
-import {
-  Button,
-  Input,
-  PlugDefault,
-  Sentinel,
-  Skeleton,
-  Text,
-} from '@/shared/ui'
+import { Input, PlugDefault, Sentinel, Skeleton, Text } from '@/shared/ui'
 import { useState } from 'react'
 import styles from './styles.module.scss'
-import { useNavigate } from 'react-router'
 import { useInfiniteTasks } from '../model/use-infinite-tasks'
 import { useDebounce, useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
 import { TaskCardItem } from './TaskCardItem'
+import { CreateTaskButton } from '@/features/create-task'
 
 const { actions, tasks } = styles
 const SKELETON_CARDS = Array.from({ length: 10 })
 
 const TaskManagement = () => {
   const [searchValue, setSearchValue] = useState('')
-  const nav = useNavigate()
   const debouncedSearch = useDebounce(searchValue)
 
   const {
@@ -49,9 +41,7 @@ const TaskManagement = () => {
           onChange={setSearchValue}
           value={searchValue}
         />
-        <Button onClick={() => nav('/personal-area/tasks/new')}>
-          Новое задание
-        </Button>
+        <CreateTaskButton />
       </div>
 
       <div className={tasks}>

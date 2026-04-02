@@ -1,4 +1,11 @@
 import { TPagination, TSolution, TTask } from '@/shared/model'
+import { TTaskSchema } from './schema'
+
+export interface ITaskFieldsRef {
+  validate: () => Promise<boolean>
+  getFieldsData: () => TTaskSchema
+  reset: () => void
+}
 
 export interface ICreateTaskRequest {
   classes?: number[]

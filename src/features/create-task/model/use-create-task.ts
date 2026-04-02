@@ -1,8 +1,8 @@
 import { ICreateTaskRequest, useCreateTaskMutation } from '@/entities/task'
+import { TTaskSchema } from '@/entities/task/model/schema'
 import { useMutationAction } from '@/shared/lib'
-import { TTaskCreateSchema } from '@/widgets/task-card'
 
-const prepare = (data: TTaskCreateSchema): ICreateTaskRequest => ({
+const prepare = (data: TTaskSchema): ICreateTaskRequest => ({
   title: data.title,
   description: data.description,
   students: data.students.map(Number),

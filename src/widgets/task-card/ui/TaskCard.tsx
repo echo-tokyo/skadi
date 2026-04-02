@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { z, ZodAny } from 'zod'
 import { initialFormValues } from '../config/form-config'
 import styles from './styles.module.scss'
 import TaskDescription from './components/TaskDescription'
@@ -7,33 +7,25 @@ import TaskGeneral from './components/TaskGeneral'
 import TaskMaterials from './components/TaskMaterials'
 import TaskAnswer from './components/TaskAnswer'
 import { TPaginatedSelectField } from '@/shared/model'
-import { TMode } from '../model/types'
+import { TDisplayValues, TMode } from '../model/types'
 import { CreateTaskButton } from '@/features/create-task'
 import { UpdateTaskButton } from '@/features/update-task'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { selectAuthenticatedUser } from '@/entities/user'
-import { useAppSelector } from '@/shared/lib'
-import { useGetSchema } from '../model/useSchema'
-import { TTaskSchema } from '../model/schemas'
-
+import { TSolutionTeacherSchema, TTaskSchema } from '../model/schemas'
 interface ITaskCardProps {
   studentOptions: TPaginatedSelectField
-  fieldData?: TTaskSchema
+  defaultValues?: TTaskSchema | TSolutionTeacherSchema
+  displayValues?: TDisplayValues
   mode: TMode
   taskId?: number
-  page: 'solution' | 'task'
+  schema: ZodAny
 }
 
 const TaskCard = (props: ITaskCardProps) => {
-  const { studentOptions, fieldData, mode, taskId, page } = props
-
-  const user = useAppSelector(selectAuthenticatedUser)
-  const role = user.role
-  const schema = useGetSchema(mode, role, page)
-  console.log(schema)
+  const { studentOptions, defaultValues, mode, taskId, schema } = props
 
   const methods = useForm<z.infer<typeof schema>>({
-    defaultValues: fieldData || initialFormValues,
+    defaultValues: defaultValues || initialFormValues,
     resolver: zodResolver(schema),
   })
 
