@@ -6,7 +6,12 @@ const Header: FC = (): ReactNode => {
 
   return (
     <header>
-      <div className={logo}></div>
+      <img
+        className={logo}
+        src='../../../../public/skadi_logo.png'
+        height='32'
+        alt='IT-Школа "Скади"'
+      ></img>
       <div className={rightItems}>
         <div className={avatar}></div>
         <div className={avatar}></div>
