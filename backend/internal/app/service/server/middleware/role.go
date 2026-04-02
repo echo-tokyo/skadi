@@ -21,17 +21,9 @@ func Allow(roles ...entity.Role) fiber.Handler {
 		// parse user claims
 		userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 		// allow for roles
-		fmt.Println()
-		fmt.Printf("roles %T \n", roles)
-		fmt.Println("roles", roles)
-		fmt.Printf("userClaims.Role %T \n", userClaims.Role)
-		fmt.Println("userClaims.Role", userClaims.Role)
-		fmt.Println()
 		if slices.Contains(roles, userClaims.Role) {
-			fmt.Println("AAAAAA")
 			return ctx.Next()
 		}
-		fmt.Println("BBB")
 		// not found error for other roles
 		err := fmt.Errorf("non-admin: %w", fiber.ErrNotFound)
 		return errhandler.CustomErrorHandler(ctx, err)
