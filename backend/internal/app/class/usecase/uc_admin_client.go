@@ -16,14 +16,14 @@ var _ class.UsecaseAdmin = (*UCAdminClient)(nil)
 var _ class.UsecaseClient = (*UCAdminClient)(nil)
 
 // UCAdminClient represents a class usecase for admin and client.
-// It implements the class.UsecaseAdmin and the class.UsecaseClient interfaces.
+// It implements the [class.UsecaseAdmin] and the [class.UsecaseClient] interfaces.
 type UCAdminClient struct {
 	cfg         *config.Config
 	classRepoDB class.RepositoryDB
 	userRepoDB  user.RepositoryDB
 }
 
-// NewUCAdminClient returns a new instance of UCAdminClient.
+// NewUCAdminClient returns a new instance of [UCAdminClient].
 func NewUCAdminClient(cfg *config.Config, classRepoDB class.RepositoryDB,
 	userRepoDB user.RepositoryDB) *UCAdminClient {
 

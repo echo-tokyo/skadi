@@ -19,10 +19,10 @@ type Builder struct {
 	sameSite string
 }
 
-// Option represents an option for Builder initializing.
+// Option represents an option for [Builder] initializing.
 type Option func(*Builder)
 
-// NewBuilder returns a new instance of Builder.
+// NewBuilder returns a new instance of [Builder].
 func NewBuilder(ttl time.Duration, options ...Option) *Builder {
 	builder := &Builder{
 		ttl:      ttl,

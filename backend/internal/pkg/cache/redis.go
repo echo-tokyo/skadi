@@ -16,11 +16,12 @@ const (
 var _ Storage = (*Redis)(nil)
 
 // Redis is a cache key-value storage based on Redis.
+// Redis implements the [Storage] interface.
 type Redis struct {
 	client *redis.Client
 }
 
-// NewRedis returns a new instance of Redis.
+// NewRedis returns a new instance of [Redis].
 func NewRedis(connString string) (*Redis, error) {
 	// create new client
 	client := redis.NewClient(&redis.Options{

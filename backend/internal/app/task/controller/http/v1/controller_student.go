@@ -20,7 +20,7 @@ type TaskControllerStudent struct {
 	taskUCStudent task.UsecaseStudent
 }
 
-// NewTaskControllerStudent returns a new instance of TaskControllerStudent.
+// NewTaskControllerStudent returns a new instance of [TaskControllerStudent].
 func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
 	valid validator.Validator) *TaskControllerStudent {
 

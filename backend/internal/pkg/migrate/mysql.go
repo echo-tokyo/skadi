@@ -10,14 +10,15 @@ import (
 	multierror "github.com/hashicorp/go-multierror"
 )
 
+// Ensure MySQL implements interface.
 var _ Migrate = (*MySQL)(nil)
 
-// MySQL represents a migrate implementation for the MySQL database.
+// MySQL represents a [Migrate] implementation for the MySQL database.
 type MySQL struct {
 	mgrt *gomigrate.Migrate
 }
 
-// NewMySQL returns a new instance of MySQL.
+// NewMySQL returns a new instance of [MySQL].
 func NewMySQL(sourceURL, databaseURL string) (*MySQL, error) {
 	mgrt, err := gomigrate.New(sourceURL, databaseURL)
 	if err != nil {

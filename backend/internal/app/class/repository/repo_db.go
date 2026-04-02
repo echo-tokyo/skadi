@@ -26,12 +26,12 @@ const (
 var _ class.RepositoryDB = (*RepoDB)(nil)
 
 // RepoDB is a class DB repo.
-// It implements the class.RepositoryDB interface.
+// It implements the [class.RepositoryDB] interface.
 type RepoDB struct {
 	dbStorage *gorm.DB
 }
 
-// NewRepoDB returns a new instance of RepoDB.
+// NewRepoDB returns a new instance of [RepoDB].
 func NewRepoDB(dbStorage *gorm.DB) *RepoDB {
 	return &RepoDB{
 		dbStorage: dbStorage,

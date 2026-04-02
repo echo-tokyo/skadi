@@ -14,13 +14,13 @@ import (
 var _ user.UsecaseManager = (*UCManager)(nil)
 
 // UCManager represents a user usecase for CLI-manager.
-// It implements the user.UsecaseManager interface.
+// It implements the [user.UsecaseManager] interface.
 type UCManager struct {
 	cfg        *config.Config
 	userRepoDB user.RepositoryDB
 }
 
-// NewUCManager returns a new instance of UCManager.
+// NewUCManager returns a new instance of [UCManager].
 func NewUCManager(cfg *config.Config, userRepoDB user.RepositoryDB) *UCManager {
 	return &UCManager{
 		cfg:        cfg,

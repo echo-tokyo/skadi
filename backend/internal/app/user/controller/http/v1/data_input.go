@@ -80,7 +80,7 @@ type listUserQuery struct {
 	entity.PaginationQuery
 }
 
-// Parse parses listUserQuery request data and validates it.
+// Parse parses [listUserQuery] request data and validates it.
 func (u *listUserQuery) Validate(valid validator.Validator) serialize.Validator {
 	return func(_ any) error {
 		// validate parsed roles list

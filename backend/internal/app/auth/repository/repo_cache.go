@@ -17,13 +17,13 @@ var _blacklisted = []byte("1") // value for blacklisted tokens
 var _ auth.RepositoryCache = (*RepoCache)(nil)
 
 // RepoCache is an auth cache repo.
-// It implements the auth.RepoCache interface.
+// It implements the [auth.RepoCache] interface.
 type RepoCache struct {
 	cfg          *config.Config
 	cacheStorage cache.Storage
 }
 
-// NewRepoCache returns a new instance of RepoCache.
+// NewRepoCache returns a new instance of [RepoCache].
 func NewRepoCache(cfg *config.Config, cacheStorage cache.Storage) *RepoCache {
 	return &RepoCache{
 		cfg:          cfg,

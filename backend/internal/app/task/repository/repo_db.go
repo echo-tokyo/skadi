@@ -35,12 +35,12 @@ const (
 var _ task.RepositoryDB = (*RepoDB)(nil)
 
 // RepoDB is a task DB repo.
-// It implements the task.RepositoryDB interface.
+// It implements the [task.RepositoryDB] interface.
 type RepoDB struct {
 	dbStorage *gorm.DB
 }
 
-// NewRepoDB returns a new instance of RepoDB.
+// NewRepoDB returns a new instance of [RepoDB].
 func NewRepoDB(dbStorage *gorm.DB) *RepoDB {
 	return &RepoDB{
 		dbStorage: dbStorage,

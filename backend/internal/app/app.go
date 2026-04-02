@@ -38,7 +38,7 @@ type App struct {
 	services []Service
 }
 
-// NewServer returns a new instance of App with services to start HTTP-server.
+// NewServer returns a new instance of [App] with services to start HTTP-server.
 func NewServer() (*App, error) {
 	// load config
 	cfg, err := config.New()
@@ -90,7 +90,7 @@ func NewServer() (*App, error) {
 	}, nil
 }
 
-// NewCmdManager returns a new instance of App with services to start command line manager.
+// NewCmdManager returns a new instance of [App] with services to start command line manager.
 func NewCmdManager() (*App, error) {
 	// load config
 	cfg, err := config.New()

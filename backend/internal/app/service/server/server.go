@@ -45,7 +45,7 @@ type Server struct {
 //	@name						access
 //	@description				Access JWT-token. Cookie will automatic add after auth is done.
 //
-// New returns a new instance of Server.
+// New returns a new instance of [Server].
 func New(cfg *config.Config, dbStorage *gorm.DB, cacheStorage cache.Storage,
 	valid validator.Validator) (*Server, error) {
 

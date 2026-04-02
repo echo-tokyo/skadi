@@ -21,10 +21,10 @@ type Builder struct {
 	refreshTTL    time.Duration
 }
 
-// Option represents an option for Builder initializing.
+// Option represents an option for [Builder] initializing.
 type Option func(*Builder)
 
-// NewBuilder returns a new instance of Builder.
+// NewBuilder returns a new instance of [Builder].
 func NewBuilder(accessSecret, refreshSecret []byte, options ...Option) *Builder {
 	builder := &Builder{
 		accessSecret:  accessSecret,

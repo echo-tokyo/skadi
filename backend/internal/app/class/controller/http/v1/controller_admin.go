@@ -20,7 +20,7 @@ type ClassControllerAdmin struct {
 	classUCAdmin class.UsecaseAdmin
 }
 
-// NewClassControllerAdmin returns a new instance of ClassControllerAdmin.
+// NewClassControllerAdmin returns a new instance of [ClassControllerAdmin].
 func NewClassControllerAdmin(classUCAdmin class.UsecaseAdmin,
 	valid validator.Validator) *ClassControllerAdmin {
 

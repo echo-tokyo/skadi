@@ -5,10 +5,10 @@ import "encoding/json"
 // Ensure default jsonify implements interface.
 var _ Jsonify = (*DefaultJsonify)(nil)
 
-// DefaultJsonify implements Jsonify via standart json library.
+// DefaultJsonify implements [Jsonify] via standart json library.
 type DefaultJsonify struct{}
 
-// New returns a new instance of DefaultJsonify.
+// New returns a new instance of [DefaultJsonify].
 func New() *DefaultJsonify {
 	return &DefaultJsonify{}
 }

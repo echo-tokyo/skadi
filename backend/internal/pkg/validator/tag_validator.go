@@ -16,14 +16,14 @@ import (
 // Ensure tag validator implements interface.
 var _ Validator = (*TagValidator)(nil)
 
-// TagValidator implementats Validator interface.
+// TagValidator implementats [Validator] interface.
 // It validates structs by tags.
 type TagValidator struct {
 	validatorInstance *govalidator.Validate
 	translator        ut.Translator
 }
 
-// NewTagValidator returns new instance of TagValidator.
+// NewTagValidator returns new instance of [TagValidator].
 func NewTagValidator() (*TagValidator, error) {
 	enTranslator := en.New()
 	uni := ut.New(enTranslator, enTranslator)

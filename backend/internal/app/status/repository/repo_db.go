@@ -15,12 +15,12 @@ import (
 var _ status.RepositoryDB = (*RepoDB)(nil)
 
 // RepoDB is a status DB repo.
-// It implements the status.RepositoryDB interface.
+// It implements the [status.RepositoryDB] interface.
 type RepoDB struct {
 	dbStorage *gorm.DB
 }
 
-// NewRepoDB returns a new instance of RepoDB.
+// NewRepoDB returns a new instance of [RepoDB].
 func NewRepoDB(dbStorage *gorm.DB) *RepoDB {
 	return &RepoDB{
 		dbStorage: dbStorage,

@@ -23,7 +23,7 @@ const (
 var _ task.UsecaseTeacher = (*UCTeacher)(nil)
 
 // UCTeacher represents a task usecase for teacher.
-// It implements the task.UsecaseTeacher interface.
+// It implements the [task.UsecaseTeacher] interface.
 type UCTeacher struct {
 	cfg          *config.Config
 	taskRepoDB   task.RepositoryDB
@@ -31,7 +31,7 @@ type UCTeacher struct {
 	userRepoDB   user.RepositoryDB
 }
 
-// NewUCTeacher returns a new instance of UCTeacher.
+// NewUCTeacher returns a new instance of [UCTeacher].
 func NewUCTeacher(cfg *config.Config, taskRepoDB task.RepositoryDB,
 	statusRepoDB status.RepositoryDB, userRepoDB user.RepositoryDB) *UCTeacher {
 

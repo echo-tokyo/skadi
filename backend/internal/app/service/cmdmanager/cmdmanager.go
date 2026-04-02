@@ -23,7 +23,7 @@ type CmdManager struct {
 	commands map[string]Handler
 }
 
-// New returns a new instance of CmdManager.
+// New returns a new instance of [CmdManager].
 func New(cfg *config.Config, dbStorage *gorm.DB) (*CmdManager, error) {
 	manager := &CmdManager{
 		ready: make(chan struct{}),

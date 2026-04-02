@@ -13,14 +13,14 @@ import (
 var _ task.UsecaseStudent = (*UCStudent)(nil)
 
 // UCStudent represents a task usecase for student.
-// It implements the task.UsecaseStudent interface.
+// It implements the [task.UsecaseStudent] interface.
 type UCStudent struct {
 	cfg          *config.Config
 	taskRepoDB   task.RepositoryDB
 	statusRepoDB status.RepositoryDB
 }
 
-// NewUCStudent returns a new instance of UCStudent.
+// NewUCStudent returns a new instance of [UCStudent].
 func NewUCStudent(cfg *config.Config, taskRepoDB task.RepositoryDB,
 	statusRepoDB status.RepositoryDB) *UCStudent {
 
@@ -59,7 +59,6 @@ func (u *UCStudent) UpdateSolution(studID, solutionID int,
 			return nil, err
 		}
 	}
-	// TODO: only if status is "in process"
 	if newData.Answer != nil {
 		solObj.Answer = newData.Answer
 	}

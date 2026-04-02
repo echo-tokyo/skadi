@@ -19,7 +19,7 @@ type ClassController struct {
 	classUCClient class.UsecaseClient
 }
 
-// NewClassController returns a new instance of ClassController.
+// NewClassController returns a new instance of [ClassController].
 func NewClassController(classUCClient class.UsecaseClient,
 	valid validator.Validator) *ClassController {
 

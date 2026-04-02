@@ -19,7 +19,7 @@ type TaskController struct {
 	taskUCClient task.UsecaseClient
 }
 
-// NewTaskController returns a new instance of TaskController.
+// NewTaskController returns a new instance of [TaskController].
 func NewTaskController(taskUCClient task.UsecaseClient,
 	valid validator.Validator) *TaskController {
 

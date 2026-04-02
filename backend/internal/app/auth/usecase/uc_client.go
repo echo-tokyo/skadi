@@ -16,7 +16,7 @@ import (
 var _ auth.UsecaseClient = (*UCClient)(nil)
 
 // UCClient represents an auth usecase for client.
-// It implements the auth.UsecaseClient interface.
+// It implements the [auth.UsecaseClient] interface.
 type UCClient struct {
 	cfg           *config.Config
 	userRepoDB    user.RepositoryDB
@@ -24,7 +24,7 @@ type UCClient struct {
 	jwtBuilder    jwt.Builder
 }
 
-// NewUCClient returns a new instance of UCClient.
+// NewUCClient returns a new instance of [UCClient].
 func NewUCClient(cfg *config.Config, userRepoDB user.RepositoryDB,
 	authRepoCache auth.RepositoryCache) *UCClient {
 

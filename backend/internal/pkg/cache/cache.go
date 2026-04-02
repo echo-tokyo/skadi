@@ -2,10 +2,14 @@
 // caching data and its implementations.
 package cache
 
-import "time"
+import (
+	"time"
+
+	_ "github.com/gofiber/fiber/v2"
+)
 
 // Storage represents a cache key-value storage.
-// This interface like a fiber.Storage interface.
+// This interface like a [fiber.Storage] interface.
 type Storage interface {
 	// Get gets the value for the given key.
 	Get(key string) ([]byte, error)

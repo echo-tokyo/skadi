@@ -11,7 +11,7 @@ type UserController struct {
 	userUCManager user.UsecaseManager
 }
 
-// NewUserController returns a new instance of UserController.
+// NewUserController returns a new instance of [UserController].
 func NewUserController(userUCManager user.UsecaseManager) *UserController {
 	return &UserController{
 		userUCManager: userUCManager,

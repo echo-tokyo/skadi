@@ -11,13 +11,13 @@ import (
 var _ auth.UsecaseMiddleware = (*UCMiddleware)(nil)
 
 // UCMiddleware represents an auth usecase for middlewares.
-// It implements the auth.UsecaseMiddleware interface.
+// It implements the [auth.UsecaseMiddleware] interface.
 type UCMiddleware struct {
 	cfg           *config.Config
 	authRepoCache auth.RepositoryCache
 }
 
-// NewUCMiddleware returns a new instance of UCMiddleware.
+// NewUCMiddleware returns a new instance of [UCMiddleware].
 func NewUCMiddleware(cfg *config.Config, authRepoCache auth.RepositoryCache) *UCMiddleware {
 	return &UCMiddleware{
 		cfg:           cfg,

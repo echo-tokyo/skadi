@@ -124,7 +124,7 @@ type (
 	}
 )
 
-// NewDefault returns a new instance of Config with default data.
+// NewDefault returns a new instance of [Config] with default data.
 func NewDefault() *Config {
 	return &Config{
 		Server: Server{
@@ -176,7 +176,7 @@ func NewDefault() *Config {
 	}
 }
 
-// Returns app config loaded from YAML-file.
+// New returns a new instance of [Config] loaded from YAML-file.
 func New() (*Config, error) {
 	// fill with default values (for settings in yaml-file)
 	cfg := NewDefault()

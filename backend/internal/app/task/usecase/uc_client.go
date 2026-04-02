@@ -14,13 +14,13 @@ import (
 var _ task.UsecaseClient = (*UCClient)(nil)
 
 // UCClient represents a task usecase for client.
-// It implements the task.UsecaseClient interface.
+// It implements the [task.UsecaseClient] interface.
 type UCClient struct {
 	cfg        *config.Config
 	taskRepoDB task.RepositoryDB
 }
 
-// NewUCClient returns a new instance of UCClient.
+// NewUCClient returns a new instance of [UCClient].
 func NewUCClient(cfg *config.Config, taskRepoDB task.RepositoryDB) *UCClient {
 	return &UCClient{
 		cfg:        cfg,
