@@ -8,7 +8,6 @@ import (
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/password"
-	"skadi/backend/internal/pkg/roles"
 )
 
 // Ensure UCManager implements interface.
@@ -41,7 +40,7 @@ func (u *UCManager) CreateAdmin(username string, passwd []byte) (*entity.User, e
 	userObj := &entity.User{
 		Username: username,
 		Password: hashPasswd,
-		Role:     roles.Admin,
+		Role:     entity.Admin,
 	}
 	// create user with default profile
 	err = u.userRepoDB.CreateUserWithDefaultProfile(userObj)
@@ -69,7 +68,7 @@ func (u *UCManager) DeleteAdminByID(id int) error {
 
 // GetAdmins returns all admins.
 func (u *UCManager) GetAdmins() ([]entity.User, error) {
-	userList, err := u.userRepoDB.GetByRoles([]entity.Role{roles.Admin}, false, "", nil)
+	userList, err := u.userRepoDB.GetByRoles([]entity.Role{entity.Admin}, false, "", nil)
 	if err != nil {
 		return nil, fmt.Errorf("get many: %w", err)
 	}
