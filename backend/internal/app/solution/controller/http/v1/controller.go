@@ -6,26 +6,26 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
-	"skadi/backend/internal/app/task"
+	"skadi/backend/internal/app/solution"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
 
-// TaskController represents a controller for task routes accepted for all clients.
-type TaskController struct {
-	valid        validator.Validator
-	taskUCClient task.UsecaseClient
+// SolController represents a controller for solution routes accepted for all clients.
+type SolController struct {
+	valid       validator.Validator
+	solUCClient solution.UsecaseClient
 }
 
-// NewTaskController returns a new instance of [TaskController].
-func NewTaskController(taskUCClient task.UsecaseClient,
-	valid validator.Validator) *TaskController {
+// NewSolController returns a new instance of [SolController].
+func NewSolController(solUCClient solution.UsecaseClient,
+	valid validator.Validator) *SolController {
 
-	return &TaskController{
-		valid:        valid,
-		taskUCClient: taskUCClient,
+	return &SolController{
+		valid:       valid,
+		solUCClient: solUCClient,
 	}
 }
 
@@ -33,7 +33,7 @@ func NewTaskController(taskUCClient task.UsecaseClient,
 // @description	Получение всех данных о решении задания с полной инфой о задании и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют это задание.
 // @router			/solution/{id} [get]
 // @id				solution-read
-// @tags			task
+// @tags			solution
 // @accept			json
 // @produce		json
 // @security		JWTAccess
@@ -42,7 +42,7 @@ func NewTaskController(taskUCClient task.UsecaseClient,
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403	"доступ запрещён"
 // @failure		404	"решение задания не найдено"
-func (c *TaskController) ReadSolution(ctx *fiber.Ctx) error {
+func (c *SolController) ReadSolution(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
@@ -51,15 +51,15 @@ func (c *TaskController) ReadSolution(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	solution, students, err := c.taskUCClient.GetByIDFull(inputPath.ID, userClaims)
-	if errors.Is(err, task.ErrNotFound) {
+	sol, students, err := c.solUCClient.GetByIDFull(inputPath.ID, userClaims)
+	if errors.Is(err, solution.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusNotFound,
 			Message:    "решение задания не найдено",
 		}
 	}
-	if errors.Is(err, task.ErrForbidden) {
+	if errors.Is(err, solution.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusForbidden,
@@ -71,7 +71,7 @@ func (c *TaskController) ReadSolution(ctx *fiber.Ctx) error {
 	}
 
 	res := &solutionOut{
-		Solution:      solution,
+		Solution:      sol,
 		OtherStudents: students,
 	}
 	return ctx.Status(fiber.StatusOK).JSON(res)

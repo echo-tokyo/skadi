@@ -581,7 +581,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Получение решения задания по id [Преподаватель и ученик].",
                 "operationId": "solution-read",
@@ -626,7 +626,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Удаление решения по id. [Только преподаватель]",
                 "operationId": "solution-delete",
@@ -667,7 +667,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Получение списка решений [Только ученик].",
                 "operationId": "student-solution-list",
@@ -725,7 +725,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Обновление решения. [Только ученик]",
                 "operationId": "student-solution-update",
@@ -981,7 +981,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Получение списка решений [только преподаватель].",
                 "operationId": "teacher-solution-list",
@@ -1046,7 +1046,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Обновление решения. [Только преподаватель]",
                 "operationId": "teacher-solution-update",

@@ -1,3 +1,5 @@
+// Package usecase contains task.UsecaseTeacher, task.UsecaseStudent and
+// task.UsecaseClient implementations.
 package usecase
 
 import (
@@ -130,37 +132,6 @@ func (u *UCTeacher) UpdateTask(teacherID, taskID int,
 	return taskObj, nil
 }
 
-// UpdateSolution updates the given solution by given ID with the new data.
-// It returns the updated solution object.
-// Allows to update the grade and status (only ready and archived).
-func (u *UCTeacher) UpdateSolution(teacherID, solutionID int,
-	newData *entity.SolutionUpdate) (*entity.Solution, error) {
-
-	solObj, err := u.taskRepoDB.GetSolutionByIDFull(solutionID)
-	if err != nil {
-		return nil, fmt.Errorf("get task: %w", err)
-	}
-	if teacherID != solObj.Task.TeacherID {
-		return nil, fmt.Errorf("%w: user is not a solution task owner", task.ErrForbidden)
-	}
-
-	newData.Answer = nil
-	if newData.StatusID != nil {
-		if err := u.getStatusToUpdate(solObj, *newData.StatusID); err != nil {
-			return nil, err
-		}
-	}
-	if newData.Grade != nil {
-		solObj.Grade = newData.Grade
-	}
-
-	if err := u.taskRepoDB.UpdateSolution(solutionID, newData); err != nil {
-		return nil, fmt.Errorf("update: %w", err)
-	}
-	solObj.UpdatedAt = newData.UpdatedAt
-	return solObj, nil
-}
-
 // DeleteTaskByID deletes task object by given ID.
 func (u *UCTeacher) DeleteTaskByID(userID, taskID int) error {
 	// get task info
@@ -180,48 +151,12 @@ func (u *UCTeacher) DeleteTaskByID(userID, taskID int) error {
 	return u.taskRepoDB.DeleteTaskByID(taskID)
 }
 
-// DeleteSolutionByID deletes solution object by given ID.
-func (u *UCTeacher) DeleteSolutionByID(userID, solutionID int) error {
-	// get short solution info
-	solObj, err := u.taskRepoDB.GetSolutionByID(solutionID)
-	// return nil error if solution was not found
-	if errors.Is(err, task.ErrNotFound) {
-		return nil
-	}
-	if err != nil {
-		return err
-	}
-	// check that given user (teacher) is a solution task owner
-	if userID != solObj.Task.TeacherID {
-		return fmt.Errorf("%w: user (teacher) is not a solution task owner", task.ErrForbidden)
-	}
-	// delete solution
-	return u.taskRepoDB.DeleteSolutionByID(solutionID)
-}
-
 // GetTasks returns all teacher tasks.
 // Search param appends condition to filter tasks by title (substring).
 func (u *UCTeacher) GetTasks(teacherID int, search string,
 	page *entity.Pagination) ([]entity.Task, error) {
 
 	return u.taskRepoDB.GetTasks(teacherID, search, page)
-}
-
-// GetSolutions returns all solutions for the teacher tasks.
-// Search param appends condition to filter solutions by task title (substring).
-// It returns checked solutions if archived is true.
-func (u *UCTeacher) GetSolutions(teacherID int, search string, archived bool,
-	page *entity.Pagination) ([]entity.Solution, error) {
-
-	solList, err := u.taskRepoDB.GetTeacherSolutions(teacherID, search, archived, page)
-	if err != nil {
-		return nil, err
-	}
-	// set student field for each solution to serialize it
-	for idx := range solList {
-		solList[idx].Student = solList[idx].StudentUser.Profile
-	}
-	return solList, nil
 }
 
 // getStatusToUpdate sets the new status object to updated solution.

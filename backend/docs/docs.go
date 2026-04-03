@@ -584,7 +584,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Получение решения задания по id [Преподаватель и ученик].",
                 "operationId": "solution-read",
@@ -629,7 +629,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Удаление решения по id. [Только преподаватель]",
                 "operationId": "solution-delete",
@@ -670,7 +670,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Получение списка решений [Только ученик].",
                 "operationId": "student-solution-list",
@@ -728,7 +728,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Обновление решения. [Только ученик]",
                 "operationId": "student-solution-update",
@@ -984,7 +984,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Получение списка решений [только преподаватель].",
                 "operationId": "teacher-solution-list",
@@ -1049,7 +1049,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "solution"
                 ],
                 "summary": "Обновление решения. [Только преподаватель]",
                 "operationId": "teacher-solution-update",

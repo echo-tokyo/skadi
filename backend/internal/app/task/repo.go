@@ -8,35 +8,15 @@ type RepositoryDB interface {
 	CreateTaskForStudents(taskObj *entity.Task, students []entity.Profile) ([]entity.Solution, error)
 	// GetTaskByID returns task info by the given ID.
 	GetTaskByID(id int) (*entity.Task, error)
-	// GetSolutionByID returns solution info (with task only) by the given ID.
-	GetSolutionByID(id int) (*entity.Solution, error)
-	// GetSolutionByIDFull returns a full solution info by the given ID.
-	GetSolutionByIDFull(id int) (*entity.Solution, error)
-
 	// UpdateTask updates the given task by given ID with the new data.
 	// It returns the updated task object.
 	UpdateTask(taskID int, newData *entity.TaskUpdate) error
-	// UpdateSolution updates the given solution by given ID with the new data.
-	// It returns the updated solution object.
-	UpdateSolution(solutionID int, newData *entity.SolutionUpdate) error
-
 	// DeleteTaskByID deletes task by given id.
 	DeleteTaskByID(id int) error
-	// DeleteSolutionByID deletes solution by given id.
-	DeleteSolutionByID(id int) error
 
 	// GetTasks returns all teacher tasks.
 	// Search param appends condition to filter tasks by title (substring).
 	GetTasks(teacherID int, search string, page *entity.Pagination) ([]entity.Task, error)
-	// GetTeacherSolutions returns all solutions for the teacher tasks.
-	// Search param appends condition to filter solutions by task title (substring).
-	// It returns checked solutions if archived is true.
-	GetTeacherSolutions(teacherID int, search string, archived bool,
-		page *entity.Pagination) ([]entity.Solution, error)
-	// GetStudentSolutions returns all student solutions.
-	// It returns checked solutions if archived is true.
-	GetStudentSolutions(studID int, archived bool,
-		page *entity.Pagination) ([]entity.Solution, error)
 	// GetTaskStudents returns all students linked to the given task.
 	GetTaskStudents(taskID int) ([]entity.Profile, error)
 }

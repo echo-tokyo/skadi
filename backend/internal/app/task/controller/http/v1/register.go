@@ -10,14 +10,10 @@ import (
 )
 
 // RegisterEndpoints registers all task endpoints.
-func RegisterEndpoints(router fiber.Router, controller *TaskController,
-	controllerStudent *TaskControllerStudent, controllerTeacher *TaskControllerTeacher,
+func RegisterEndpoints(router fiber.Router, controllerTeacher *TaskControllerTeacher,
 	mwJWTAccess fiber.Handler, mwAllow middleware.AllowFunc) {
 
 	mwTeacherOnly := mwAllow(entity.Teacher)
-	mwStudentOnly := mwAllow(entity.Student)
-	mwTeacherStudent := mwAllow(entity.Teacher, entity.Student)
-
 	authGroup := router.Group("/", mwJWTAccess)
 
 	taskAuthGroup := authGroup.Group("/task")
@@ -26,11 +22,4 @@ func RegisterEndpoints(router fiber.Router, controller *TaskController,
 	// taskAuthGroup.Get("/:id", mwTeacherOnly, controllerTeacher.ReadTask)
 	taskAuthGroup.Patch("/:id", mwTeacherOnly, controllerTeacher.UpdateTask)
 	taskAuthGroup.Delete("/:id", mwTeacherOnly, controllerTeacher.DeleteTask)
-
-	authGroup.Get("/teacher/solution", mwTeacherOnly, controllerTeacher.SolutionList)
-	authGroup.Get("/student/solution", mwStudentOnly, controllerStudent.SolutionList)
-	authGroup.Get("/solution/:id", mwTeacherStudent, controller.ReadSolution)
-	authGroup.Patch("/teacher/solution/:id", mwTeacherOnly, controllerTeacher.UpdateSolution)
-	authGroup.Patch("/student/solution/:id", mwStudentOnly, controllerStudent.UpdateSolution)
-	authGroup.Delete("/solution/:id", mwTeacherOnly, controllerTeacher.DeleteSolution)
 }

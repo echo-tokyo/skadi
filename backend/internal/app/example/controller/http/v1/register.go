@@ -4,12 +4,14 @@ package v1
 
 import (
 	fiber "github.com/gofiber/fiber/v2"
+
+	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/service/server/middleware"
 )
 
 // RegisterEndpoints registers all example endpoints.
 func RegisterEndpoints(router fiber.Router, controller *ExampleController,
-	mwJWTAccess fiber.Handler, mwAdmin fiber.Handler,
-	mwTeacher fiber.Handler, mwStudent fiber.Handler) {
+	mwJWTAccess fiber.Handler, mwAllow middleware.AllowFunc) {
 
 	group := router.Group("/example")
 	// public
@@ -17,7 +19,7 @@ func RegisterEndpoints(router fiber.Router, controller *ExampleController,
 	// authenticated only
 	authGroup := group.Use(mwJWTAccess)
 	authGroup.Get("/private", controller.Private)
-	authGroup.Get("/admin", mwAdmin, controller.Admin)       // admin only
-	authGroup.Get("/teacher", mwTeacher, controller.Teacher) // teacher only
-	authGroup.Get("/student", mwStudent, controller.Student) // student only
+	authGroup.Get("/admin", mwAllow(entity.Admin), controller.Admin)       // admin only
+	authGroup.Get("/teacher", mwAllow(entity.Teacher), controller.Teacher) // teacher only
+	authGroup.Get("/student", mwAllow(entity.Student), controller.Student) // student only
 }

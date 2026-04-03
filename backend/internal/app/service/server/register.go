@@ -12,6 +12,9 @@ import (
 	classuc "skadi/backend/internal/app/class/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
 	"skadi/backend/internal/app/service/server/middleware"
+	solhttpv1 "skadi/backend/internal/app/solution/controller/http/v1"
+	solrepo "skadi/backend/internal/app/solution/repository"
+	soluc "skadi/backend/internal/app/solution/usecase"
 	statusrepo "skadi/backend/internal/app/status/repository"
 	taskhttpv1 "skadi/backend/internal/app/task/controller/http/v1"
 	taskrepo "skadi/backend/internal/app/task/repository"
@@ -32,15 +35,17 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	userRepoDB := userrepo.NewRepoDB(dbStorage)
 	classRepoDB := classrepo.NewRepoDB(dbStorage)
 	taskRepoDB := taskrepo.NewRepoDB(dbStorage)
+	solRepoDB := solrepo.NewRepoDB(dbStorage)
 	statusRepoDB := statusrepo.NewRepoDB(dbStorage)
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB, classRepoDB)
 	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
-	taskUCClient := taskuc.NewUCClient(cfg, taskRepoDB)
 	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, statusRepoDB, userRepoDB)
-	taskUCStudent := taskuc.NewUCStudent(cfg, taskRepoDB, statusRepoDB)
+	solUCClient := soluc.NewUCClient(cfg, solRepoDB)
+	solUCStudent := soluc.NewUCStudent(cfg, solRepoDB, statusRepoDB)
+	solUCTeacher := soluc.NewUCTeacher(cfg, solRepoDB, statusRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
@@ -49,27 +54,25 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	classControllerAdmin := classhttpv1.NewClassControllerAdmin(classUCAdminClient, valid)
 	classController := classhttpv1.NewClassController(classUCAdminClient, valid)
 	taskControllerTeacher := taskhttpv1.NewTaskControllerTeacher(taskUCTeacher, valid)
-	taskControllerStudent := taskhttpv1.NewTaskControllerStudent(taskUCStudent, valid)
-	taskController := taskhttpv1.NewTaskController(taskUCClient, valid)
+	solController := solhttpv1.NewSolController(solUCClient, valid)
+	solControllerStudent := solhttpv1.NewSolControllerStudent(solUCStudent, valid)
+	solControllerTeacher := solhttpv1.NewSolControllerTeacher(solUCTeacher, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
 	mwJWTAccess := middleware.JWTAccess(cfg)
-	mwAdmin := middleware.Admin()
-	mwTeacher := middleware.Teacher()
-	mwStudent := middleware.Student()
-
 	// register endpoints
 	apiV1 := s.fiberApp.Group("/api/v1")
 	if s.Debug() { // register example endpoints if server is in debug mode
 		examplehttpv1.RegisterEndpoints(apiV1, exampleController,
-			mwJWTAccess, mwAdmin, mwTeacher, mwStudent)
+			mwJWTAccess, middleware.Allow)
 	}
 	authhttpv1.RegisterEndpoints(apiV1, authController, mwJWTRefresh)
 	userhttpv1.RegisterEndpoints(apiV1, userController, userControllerAdmin,
 		mwJWTAccess, middleware.Allow)
 	classhttpv1.RegisterEndpoints(apiV1, classController, classControllerAdmin,
 		mwJWTAccess, middleware.Allow)
-	taskhttpv1.RegisterEndpoints(apiV1, taskController, taskControllerStudent,
-		taskControllerTeacher, mwJWTAccess, middleware.Allow)
+	taskhttpv1.RegisterEndpoints(apiV1, taskControllerTeacher, mwJWTAccess, middleware.Allow)
+	solhttpv1.RegisterEndpoints(apiV1, solController, solControllerStudent, solControllerTeacher,
+		mwJWTAccess, middleware.Allow)
 }

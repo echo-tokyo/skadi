@@ -7,6 +7,7 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 
 	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/app/solution"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
@@ -14,19 +15,19 @@ import (
 	"skadi/backend/internal/pkg/validator"
 )
 
-// TaskControllerStudent represents a controller for task routes accepted for students only.
-type TaskControllerStudent struct {
-	valid         validator.Validator
-	taskUCStudent task.UsecaseStudent
+// SolControllerStudent represents a controller for solution routes accepted for students only.
+type SolControllerStudent struct {
+	valid        validator.Validator
+	solUCStudent solution.UsecaseStudent
 }
 
-// NewTaskControllerStudent returns a new instance of [TaskControllerStudent].
-func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
-	valid validator.Validator) *TaskControllerStudent {
+// NewSolControllerStudent returns a new instance of [SolControllerStudent].
+func NewSolControllerStudent(solUCStudent solution.UsecaseStudent,
+	valid validator.Validator) *SolControllerStudent {
 
-	return &TaskControllerStudent{
-		valid:         valid,
-		taskUCStudent: taskUCStudent,
+	return &SolControllerStudent{
+		valid:        valid,
+		solUCStudent: solUCStudent,
 	}
 }
 
@@ -34,7 +35,7 @@ func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
 // @description	Частичное обновление решения (только переданные поля: статус, кроме "проверено", ответ, файл ответа) по его id.
 // @router			/student/solution/{id} [patch]
 // @id				student-solution-update
-// @tags			task
+// @tags			solution
 // @accept			json
 // @produce		json
 // @security		JWTAccess
@@ -45,7 +46,7 @@ func NewTaskControllerStudent(taskUCStudent task.UsecaseStudent,
 // @failure		401					"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403					"доступ запрещён"
 // @failure		404					"решение не найдено"
-func (c *TaskControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
+func (c *SolControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
@@ -64,7 +65,7 @@ func (c *TaskControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
 		Answer:   inputBody.Answer,
 	}
 
-	solObj, err := c.taskUCStudent.UpdateSolution(userClaims.ID, inputPath.ID, newData)
+	solObj, err := c.solUCStudent.Update(userClaims.ID, inputPath.ID, newData)
 	if errors.Is(err, task.ErrInvalidData) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
@@ -96,14 +97,14 @@ func (c *TaskControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
 // @description	Получение списка решений конкретного ученика.
 // @router			/student/solution [get]
 // @id				student-solution-list
-// @tags			task
+// @tags			solution
 // @accept			json
 // @produce		json
 // @security		JWTAccess
 // @param			listSolutionStudentQuery	query		listSolutionStudentQuery	false	"listSolutionStudentQuery"
 // @success		200							{object}	listSolutionOut
 // @failure		401							"неверный токен (пустой, истекший или неверный формат)"
-func (c *TaskControllerStudent) SolutionList(ctx *fiber.Ctx) error {
+func (c *SolControllerStudent) SolutionList(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
@@ -115,7 +116,7 @@ func (c *TaskControllerStudent) SolutionList(ctx *fiber.Ctx) error {
 	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get solutions
-	solListResp, err := c.taskUCStudent.GetSolutions(userClaims.ID,
+	solListResp, err := c.solUCStudent.GetManyForStudent(userClaims.ID,
 		inputQuery.Archived, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)

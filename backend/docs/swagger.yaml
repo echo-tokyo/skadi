@@ -923,7 +923,7 @@ paths:
       - JWTAccess: []
       summary: Удаление решения по id. [Только преподаватель]
       tags:
-      - task
+      - solution
     get:
       consumes:
       - application/json
@@ -954,7 +954,7 @@ paths:
       - JWTAccess: []
       summary: Получение решения задания по id [Преподаватель и ученик].
       tags:
-      - task
+      - solution
   /student/solution:
     get:
       consumes:
@@ -993,7 +993,7 @@ paths:
       - JWTAccess: []
       summary: Получение списка решений [Только ученик].
       tags:
-      - task
+      - solution
   /student/solution/{id}:
     patch:
       consumes:
@@ -1032,7 +1032,7 @@ paths:
       - JWTAccess: []
       summary: Обновление решения. [Только ученик]
       tags:
-      - task
+      - solution
   /task:
     get:
       consumes:
@@ -1207,7 +1207,7 @@ paths:
       - JWTAccess: []
       summary: Получение списка решений [только преподаватель].
       tags:
-      - task
+      - solution
   /teacher/solution/{id}:
     patch:
       consumes:
@@ -1246,7 +1246,7 @@ paths:
       - JWTAccess: []
       summary: Обновление решения. [Только преподаватель]
       tags:
-      - task
+      - solution
   /user:
     get:
       consumes:
