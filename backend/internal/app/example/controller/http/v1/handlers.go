@@ -14,7 +14,7 @@ func NewExampleController() *ExampleController {
 	return &ExampleController{}
 }
 
-// @summary		Проверка. Все.
+// @summary		Проверка. [Все]
 // @description	Проверочный эндпоинт с доступом абсолютно всем.
 // @router			/example/free [get]
 // @id				example-free
@@ -29,7 +29,7 @@ func (c *ExampleController) Free(ctx *fiber.Ctx) error {
 	})
 }
 
-// @summary		Проверка. Только авторизованные.
+// @summary		Проверка. [Только авторизованные]
 // @description	Проверочный эндпоинт с доступом только для авторизованных юзеров.
 // @router			/example/private [get]
 // @id				example-private
@@ -48,7 +48,7 @@ func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	})
 }
 
-// @summary		Проверка. Только админы.
+// @summary		Проверка. [Только админ]
 // @description	Проверочный эндпоинт с доступом только для админов.
 // @router			/example/admin [get]
 // @id				example-admin
@@ -67,7 +67,7 @@ func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 	})
 }
 
-// @summary		Проверка. Только преподаватели.
+// @summary		Проверка. [Только преподаватель]
 // @description	Проверочный эндпоинт с доступом только для преподавателей.
 // @router			/example/teacher [get]
 // @id				example-teacher
@@ -86,7 +86,7 @@ func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 	})
 }
 
-// @summary		Проверка. Только студенты.
+// @summary		Проверка. [Только ученик]
 // @description	Проверочный эндпоинт с доступом только для студентов.
 // @router			/example/student [get]
 // @id				example-student

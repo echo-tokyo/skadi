@@ -33,8 +33,8 @@ func NewSolControllerTeacher(solUCTeacher solution.UsecaseTeacher,
 
 // @summary		Обновление решения. [Только преподаватель]
 // @description	Частичное обновление решения (только переданные поля: статус - "готово"/"проверено" - и оценка) по его id.
-// @router			/teacher/solution/{id} [patch]
-// @id				teacher-solution-update
+// @router			/solution/for-teacher/{id} [patch]
+// @id				solution-for-teacher-update
 // @tags			solution
 // @accept			json
 // @produce		json
@@ -127,10 +127,10 @@ func (c *SolControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
-// @summary		Получение списка решений [только преподаватель].
+// @summary		Получение списка решений. [Только преподаватель]
 // @description	Получение списка решений для заданий конкретного преподавателя.
-// @router			/teacher/solution [get]
-// @id				teacher-solution-list
+// @router			/solution/for-teacher [get]
+// @id				solution-for-teacher-list
 // @tags			solution
 // @accept			json
 // @produce		json

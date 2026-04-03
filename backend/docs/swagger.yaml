@@ -835,7 +835,7 @@ paths:
           description: Юзер не админ, доступ запрещён
       security:
       - JWTAccess: []
-      summary: Проверка. Только админы.
+      summary: Проверка. [Только админ]
       tags:
       - example
   /example/free:
@@ -851,7 +851,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/v1.exampleData'
-      summary: Проверка. Все.
+      summary: Проверка. [Все]
       tags:
       - example
   /example/private:
@@ -871,7 +871,7 @@ paths:
           description: Юзер не авторизован, доступ запрещён
       security:
       - JWTAccess: []
-      summary: Проверка. Только авторизованные.
+      summary: Проверка. [Только авторизованные]
       tags:
       - example
   /example/student:
@@ -891,7 +891,7 @@ paths:
           description: Юзер не студент, доступ запрещён
       security:
       - JWTAccess: []
-      summary: Проверка. Только студенты.
+      summary: Проверка. [Только ученик]
       tags:
       - example
   /example/teacher:
@@ -911,7 +911,7 @@ paths:
           description: Юзер не преподаватель, доступ запрещён
       security:
       - JWTAccess: []
-      summary: Проверка. Только преподаватели.
+      summary: Проверка. [Только преподаватель]
       tags:
       - example
   /solution/{id}:
@@ -968,15 +968,15 @@ paths:
           description: решение задания не найдено
       security:
       - JWTAccess: []
-      summary: Получение решения задания по id [Преподаватель и ученик].
+      summary: Получение решения задания по id. [Преподаватель и ученик]
       tags:
       - solution
-  /student/solution:
+  /solution/for-student:
     get:
       consumes:
       - application/json
       description: Получение списка решений конкретного ученика.
-      operationId: student-solution-list
+      operationId: solution-for-student-list
       parameters:
       - description: filter for checked solutions if true
         example: true
@@ -1007,16 +1007,16 @@ paths:
           description: неверный токен (пустой, истекший или неверный формат)
       security:
       - JWTAccess: []
-      summary: Получение списка решений [Только ученик].
+      summary: Получение списка решений. [Только ученик]
       tags:
       - solution
-  /student/solution/{id}:
+  /solution/for-student/{id}:
     patch:
       consumes:
       - application/json
       description: 'Частичное обновление решения (только переданные поля: статус,
         кроме "проверено", ответ, файл ответа) по его id.'
-      operationId: student-solution-update
+      operationId: solution-for-student-update
       parameters:
       - description: ID решения
         in: path
@@ -1047,6 +1047,89 @@ paths:
       security:
       - JWTAccess: []
       summary: Обновление решения. [Только ученик]
+      tags:
+      - solution
+  /solution/for-teacher:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка решений для заданий конкретного преподавателя.
+      operationId: solution-for-teacher-list
+      parameters:
+      - description: filter for checked solutions if true
+        example: true
+        in: query
+        name: archived
+        type: boolean
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      - description: substring to filter data by substring (case-insensitive)
+        example: F26
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listSolutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+      security:
+      - JWTAccess: []
+      summary: Получение списка решений. [Только преподаватель]
+      tags:
+      - solution
+  /solution/for-teacher/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: 'Частичное обновление решения (только переданные поля: статус -
+        "готово"/"проверено" - и оценка) по его id.'
+      operationId: solution-for-teacher-update
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: updateSolutionBody
+        in: body
+        name: updateSolutionBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateSolutionBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Solution'
+        "400":
+          description: неверный статус
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение не найдено
+      security:
+      - JWTAccess: []
+      summary: Обновление решения. [Только преподаватель]
       tags:
       - solution
   /task:
@@ -1085,7 +1168,7 @@ paths:
           description: неверный токен (пустой, истекший или неверный формат)
       security:
       - JWTAccess: []
-      summary: Получение списка заданий [только преподаватель].
+      summary: Получение списка заданий [Только преподаватель].
       tags:
       - task
     post:
@@ -1210,89 +1293,6 @@ paths:
       summary: Обновление задания. [Только преподаватель]
       tags:
       - task
-  /teacher/solution:
-    get:
-      consumes:
-      - application/json
-      description: Получение списка решений для заданий конкретного преподавателя.
-      operationId: teacher-solution-list
-      parameters:
-      - description: filter for checked solutions if true
-        example: true
-        in: query
-        name: archived
-        type: boolean
-      - description: page pagination param
-        example: 1
-        in: query
-        minimum: 1
-        name: page
-        type: integer
-      - default: 10
-        description: per page pagination param
-        example: 5
-        in: query
-        minimum: 1
-        name: per-page
-        type: integer
-      - description: substring to filter data by substring (case-insensitive)
-        example: F26
-        in: query
-        name: search
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/v1.listSolutionOut'
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-      security:
-      - JWTAccess: []
-      summary: Получение списка решений [только преподаватель].
-      tags:
-      - solution
-  /teacher/solution/{id}:
-    patch:
-      consumes:
-      - application/json
-      description: 'Частичное обновление решения (только переданные поля: статус -
-        "готово"/"проверено" - и оценка) по его id.'
-      operationId: teacher-solution-update
-      parameters:
-      - description: ID решения
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: updateSolutionBody
-        in: body
-        name: updateSolutionBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.updateSolutionBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Solution'
-        "400":
-          description: неверный статус
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "403":
-          description: доступ запрещён
-        "404":
-          description: решение не найдено
-      security:
-      - JWTAccess: []
-      summary: Обновление решения. [Только преподаватель]
-      tags:
-      - solution
   /user:
     get:
       consumes:

@@ -14,12 +14,11 @@ func RegisterEndpoints(router fiber.Router, controllerTeacher *TaskControllerTea
 	mwJWTAccess fiber.Handler, mwAllow middleware.AllowFunc) {
 
 	mwTeacherOnly := mwAllow(entity.Teacher)
-	authGroup := router.Group("/", mwJWTAccess)
 
-	taskAuthGroup := authGroup.Group("/task")
-	taskAuthGroup.Post("/", mwTeacherOnly, controllerTeacher.Create)
-	taskAuthGroup.Get("/", mwTeacherOnly, controllerTeacher.List)
-	taskAuthGroup.Get("/:id", mwTeacherOnly, controllerTeacher.Read)
-	taskAuthGroup.Patch("/:id", mwTeacherOnly, controllerTeacher.Update)
-	taskAuthGroup.Delete("/:id", mwTeacherOnly, controllerTeacher.Delete)
+	authGroup := router.Group("/task", mwJWTAccess)
+	authGroup.Post("/", mwTeacherOnly, controllerTeacher.Create)
+	authGroup.Get("/", mwTeacherOnly, controllerTeacher.List)
+	authGroup.Get("/:id", mwTeacherOnly, controllerTeacher.Read)
+	authGroup.Patch("/:id", mwTeacherOnly, controllerTeacher.Update)
+	authGroup.Delete("/:id", mwTeacherOnly, controllerTeacher.Delete)
 }

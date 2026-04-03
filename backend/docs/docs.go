@@ -431,7 +431,7 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "Проверка. Только админы.",
+                "summary": "Проверка. [Только админ]",
                 "operationId": "example-admin",
                 "responses": {
                     "200": {
@@ -461,7 +461,7 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "Проверка. Все.",
+                "summary": "Проверка. [Все]",
                 "operationId": "example-free",
                 "responses": {
                     "200": {
@@ -487,7 +487,7 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "Проверка. Только авторизованные.",
+                "summary": "Проверка. [Только авторизованные]",
                 "operationId": "example-private",
                 "responses": {
                     "200": {
@@ -519,7 +519,7 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "Проверка. Только студенты.",
+                "summary": "Проверка. [Только ученик]",
                 "operationId": "example-student",
                 "responses": {
                     "200": {
@@ -551,7 +551,7 @@ const docTemplate = `{
                 "tags": [
                     "example"
                 ],
-                "summary": "Проверка. Только преподаватели.",
+                "summary": "Проверка. [Только преподаватель]",
                 "operationId": "example-teacher",
                 "responses": {
                     "200": {
@@ -565,6 +565,247 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Юзер не преподаватель, доступ запрещён"
+                    }
+                }
+            }
+        },
+        "/solution/for-student": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка решений конкретного ученика.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solution"
+                ],
+                "summary": "Получение списка решений. [Только ученик]",
+                "operationId": "solution-for-student-list",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "filter for checked solutions if true",
+                        "name": "archived",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listSolutionOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/solution/for-student/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление решения (только переданные поля: статус, кроме \"проверено\", ответ, файл ответа) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solution"
+                ],
+                "summary": "Обновление решения. [Только ученик]",
+                "operationId": "solution-for-student-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateSolutionBody",
+                        "name": "updateSolutionBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateSolutionBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Solution"
+                        }
+                    },
+                    "400": {
+                        "description": "неверный статус"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение не найдено"
+                    }
+                }
+            }
+        },
+        "/solution/for-teacher": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка решений для заданий конкретного преподавателя.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solution"
+                ],
+                "summary": "Получение списка решений. [Только преподаватель]",
+                "operationId": "solution-for-teacher-list",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "filter for checked solutions if true",
+                        "name": "archived",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "F26",
+                        "description": "substring to filter data by substring (case-insensitive)",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listSolutionOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    }
+                }
+            }
+        },
+        "/solution/for-teacher/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Частичное обновление решения (только переданные поля: статус - \"готово\"/\"проверено\" - и оценка) по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solution"
+                ],
+                "summary": "Обновление решения. [Только преподаватель]",
+                "operationId": "solution-for-teacher-update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID решения",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "updateSolutionBody",
+                        "name": "updateSolutionBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.updateSolutionBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Solution"
+                        }
+                    },
+                    "400": {
+                        "description": "неверный статус"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение не найдено"
                     }
                 }
             }
@@ -586,7 +827,7 @@ const docTemplate = `{
                 "tags": [
                     "solution"
                 ],
-                "summary": "Получение решения задания по id [Преподаватель и ученик].",
+                "summary": "Получение решения задания по id. [Преподаватель и ученик]",
                 "operationId": "solution-read",
                 "parameters": [
                     {
@@ -655,123 +896,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/student/solution": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение списка решений конкретного ученика.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "solution"
-                ],
-                "summary": "Получение списка решений [Только ученик].",
-                "operationId": "student-solution-list",
-                "parameters": [
-                    {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "filter for checked solutions if true",
-                        "name": "archived",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 1,
-                        "description": "page pagination param",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "default": 10,
-                        "example": 5,
-                        "description": "per page pagination param",
-                        "name": "per-page",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/v1.listSolutionOut"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    }
-                }
-            }
-        },
-        "/student/solution/{id}": {
-            "patch": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Частичное обновление решения (только переданные поля: статус, кроме \"проверено\", ответ, файл ответа) по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "solution"
-                ],
-                "summary": "Обновление решения. [Только ученик]",
-                "operationId": "student-solution-update",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID решения",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updateSolutionBody",
-                        "name": "updateSolutionBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updateSolutionBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Solution"
-                        }
-                    },
-                    "400": {
-                        "description": "неверный статус"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "403": {
-                        "description": "доступ запрещён"
-                    },
-                    "404": {
-                        "description": "решение не найдено"
-                    }
-                }
-            }
-        },
         "/task": {
             "get": {
                 "security": [
@@ -789,7 +913,7 @@ const docTemplate = `{
                 "tags": [
                     "task"
                 ],
-                "summary": "Получение списка заданий [только преподаватель].",
+                "summary": "Получение списка заданий [Только преподаватель].",
                 "operationId": "task-list",
                 "parameters": [
                     {
@@ -1010,130 +1134,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "задание не найдено"
-                    }
-                }
-            }
-        },
-        "/teacher/solution": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение списка решений для заданий конкретного преподавателя.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "solution"
-                ],
-                "summary": "Получение списка решений [только преподаватель].",
-                "operationId": "teacher-solution-list",
-                "parameters": [
-                    {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "filter for checked solutions if true",
-                        "name": "archived",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 1,
-                        "description": "page pagination param",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "default": 10,
-                        "example": 5,
-                        "description": "per page pagination param",
-                        "name": "per-page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "example": "F26",
-                        "description": "substring to filter data by substring (case-insensitive)",
-                        "name": "search",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/v1.listSolutionOut"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    }
-                }
-            }
-        },
-        "/teacher/solution/{id}": {
-            "patch": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Частичное обновление решения (только переданные поля: статус - \"готово\"/\"проверено\" - и оценка) по его id.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "solution"
-                ],
-                "summary": "Обновление решения. [Только преподаватель]",
-                "operationId": "teacher-solution-update",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID решения",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "updateSolutionBody",
-                        "name": "updateSolutionBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updateSolutionBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Solution"
-                        }
-                    },
-                    "400": {
-                        "description": "неверный статус"
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "403": {
-                        "description": "доступ запрещён"
-                    },
-                    "404": {
-                        "description": "решение не найдено"
                     }
                 }
             }

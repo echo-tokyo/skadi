@@ -29,7 +29,7 @@ func NewSolController(solUCClient solution.UsecaseClient,
 	}
 }
 
-// @summary		Получение решения задания по id [Преподаватель и ученик].
+// @summary		Получение решения задания по id. [Преподаватель и ученик]
 // @description	Получение всех данных о решении задания с полной инфой о задании и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют это задание.
 // @router			/solution/{id} [get]
 // @id				solution-read

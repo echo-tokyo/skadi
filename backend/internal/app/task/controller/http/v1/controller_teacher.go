@@ -228,7 +228,7 @@ func (c *TaskControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
-// @summary		Получение списка заданий [только преподаватель].
+// @summary		Получение списка заданий [Только преподаватель].
 // @description	Получение списка заданий конкретного преподавателя.
 // @router			/task [get]
 // @id				task-list

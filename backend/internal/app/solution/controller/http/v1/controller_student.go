@@ -33,8 +33,8 @@ func NewSolControllerStudent(solUCStudent solution.UsecaseStudent,
 
 // @summary		Обновление решения. [Только ученик]
 // @description	Частичное обновление решения (только переданные поля: статус, кроме "проверено", ответ, файл ответа) по его id.
-// @router			/student/solution/{id} [patch]
-// @id				student-solution-update
+// @router			/solution/for-student/{id} [patch]
+// @id				solution-for-student-update
 // @tags			solution
 // @accept			json
 // @produce		json
@@ -93,10 +93,10 @@ func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(solObj)
 }
 
-// @summary		Получение списка решений [Только ученик].
+// @summary		Получение списка решений. [Только ученик]
 // @description	Получение списка решений конкретного ученика.
-// @router			/student/solution [get]
-// @id				student-solution-list
+// @router			/solution/for-student [get]
+// @id				solution-for-student-list
 // @tags			solution
 // @accept			json
 // @produce		json
