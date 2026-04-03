@@ -32,13 +32,28 @@ services:
     restart: always
     env_file:
       - ./backend/.env
-    ports:
-      - "127.0.0.1:8000:8000"
+    expose:
+      - "8000"
     networks:
       main_network:
     depends_on:
       - mysql
       - redis
+
+  web-server:
+    build:
+      context: .
+      dockerfile: ./web-server/Dockerfile
+    container_name: skadi_webserver
+    restart: always
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - "127.0.0.1:8000:443"
+    networks:
+      main:
+    depends_on:
+      - backend
 
 networks:
   main_network:
