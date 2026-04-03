@@ -91,8 +91,28 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 // GetTaskByID returns a task object by the given id and
 // a list of students linked to the task solutions.
 func (u *UCTeacher) GetTaskByID(teacherID, taskID int) (*entity.Task, []entity.Profile, error) {
-	// TODO: implement
-	panic("unimplemented")
+	// get task
+	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get task: %w", err)
+	}
+	if teacherID != taskObj.TeacherID {
+		return nil, nil, fmt.Errorf("%w: user is not a task owner", task.ErrForbidden)
+	}
+
+	// get teacher
+	teacher, err := u.userRepoDB.GetByIDWithProfileShort(taskObj.TeacherID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get teacher: %w", err)
+	}
+	taskObj.Teacher = teacher.Profile
+
+	// get students
+	studProfiles, err := u.taskRepoDB.GetTaskStudents(taskID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get task students: %w", err)
+	}
+	return taskObj, studProfiles, nil
 }
 
 // UpdateTask updates the given task by given ID with the new data.

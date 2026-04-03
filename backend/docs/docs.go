@@ -862,7 +862,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/v1.taskOut"
+                            "$ref": "#/definitions/v1.createTaskOut"
                         }
                     },
                     "400": {
@@ -875,6 +875,51 @@ const docTemplate = `{
             }
         },
         "/task/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение всех данных о задании и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение задания по id [Только преподаватель].",
+                "operationId": "task-read",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID решения задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.readTaskOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "задание не найдено"
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -1908,6 +1953,30 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.createTaskOut": {
+            "description": "createTaskOut represents a task data with solutions.",
+            "type": "object",
+            "required": [
+                "task"
+            ],
+            "properties": {
+                "solutions": {
+                    "description": "task solutions",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Solution"
+                    }
+                },
+                "task": {
+                    "description": "task object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Task"
+                        }
+                    ]
+                }
+            }
+        },
         "v1.exampleData": {
             "description": "exampleData represents an output data for example endpoints.",
             "type": "object",
@@ -2070,6 +2139,30 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.readTaskOut": {
+            "description": "readTaskOut represents a task data with students linked to the task solutions.",
+            "type": "object",
+            "required": [
+                "task"
+            ],
+            "properties": {
+                "students": {
+                    "description": "students solving this task",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Profile"
+                    }
+                },
+                "task": {
+                    "description": "task object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Task"
+                        }
+                    ]
+                }
+            }
+        },
         "v1.solutionOut": {
             "description": "solutionOut represents a solution data with students (solving the same task).",
             "type": "object",
@@ -2136,30 +2229,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 100,
                     "example": "ООП в Python"
-                }
-            }
-        },
-        "v1.taskOut": {
-            "description": "taskOut represents a task data with solutions.",
-            "type": "object",
-            "required": [
-                "task"
-            ],
-            "properties": {
-                "solutions": {
-                    "description": "task solutions",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Solution"
-                    }
-                },
-                "task": {
-                    "description": "task object",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/entity.Task"
-                        }
-                    ]
                 }
             }
         },

@@ -42,7 +42,7 @@ func NewSolController(solUCClient solution.UsecaseClient,
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403	"доступ запрещён"
 // @failure		404	"решение задания не найдено"
-func (c *SolController) ReadSolution(ctx *fiber.Ctx) error {
+func (c *SolController) Read(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 

@@ -4,12 +4,20 @@ import (
 	"skadi/backend/internal/app/entity"
 )
 
-// @description taskOut represents a task data with solutions.
-type taskOut struct {
+// @description createTaskOut represents a task data with solutions.
+type createTaskOut struct {
 	// task object
 	Task *entity.Task `json:"task" validate:"required"`
 	// task solutions
 	Solutions []entity.Solution `json:"solutions,omitempty" validate:"omitempty"`
+}
+
+// @description readTaskOut represents a task data with students linked to the task solutions.
+type readTaskOut struct {
+	// task object
+	Task *entity.Task `json:"task" validate:"required"`
+	// students solving this task
+	Students []entity.Profile `json:"students,omitempty" validate:"omitempty"`
 }
 
 // @description listTaskOut represents a task list data.

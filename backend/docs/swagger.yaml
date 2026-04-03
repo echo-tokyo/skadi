@@ -266,6 +266,21 @@ definitions:
         maxLength: 15
         type: string
     type: object
+  v1.createTaskOut:
+    description: createTaskOut represents a task data with solutions.
+    properties:
+      solutions:
+        description: task solutions
+        items:
+          $ref: '#/definitions/entity.Solution'
+        type: array
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+    required:
+    - task
+    type: object
   v1.exampleData:
     description: exampleData represents an output data for example endpoints.
     properties:
@@ -370,6 +385,22 @@ definitions:
     required:
     - fullname
     type: object
+  v1.readTaskOut:
+    description: readTaskOut represents a task data with students linked to the task
+      solutions.
+    properties:
+      students:
+        description: students solving this task
+        items:
+          $ref: '#/definitions/entity.Profile'
+        type: array
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+    required:
+    - task
+    type: object
   v1.solutionOut:
     description: solutionOut represents a solution data with students (solving the
       same task).
@@ -419,21 +450,6 @@ definitions:
     required:
     - description
     - title
-    type: object
-  v1.taskOut:
-    description: taskOut represents a task data with solutions.
-    properties:
-      solutions:
-        description: task solutions
-        items:
-          $ref: '#/definitions/entity.Solution'
-        type: array
-      task:
-        allOf:
-        - $ref: '#/definitions/entity.Task'
-        description: task object
-    required:
-    - task
     type: object
   v1.updatePasswordAdminBody:
     description: updatePasswordAdminBody represents a data to update user password
@@ -1091,7 +1107,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/v1.taskOut'
+            $ref: '#/definitions/v1.createTaskOut'
         "400":
           description: неверный ученик | неверный преподаватель | преподаватель не
             найден
@@ -1126,6 +1142,36 @@ paths:
       security:
       - JWTAccess: []
       summary: Удаление задания по id. [Только преподаватель]
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о задании и преподе (ID и полное имя), а
+        также списка учеников, которые выполняют это задание.
+      operationId: task-read
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.readTaskOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: задание не найдено
+      security:
+      - JWTAccess: []
+      summary: Получение задания по id [Только преподаватель].
       tags:
       - task
     patch:

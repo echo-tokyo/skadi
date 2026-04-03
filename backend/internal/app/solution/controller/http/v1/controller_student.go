@@ -46,7 +46,7 @@ func NewSolControllerStudent(solUCStudent solution.UsecaseStudent,
 // @failure		401					"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403					"доступ запрещён"
 // @failure		404					"решение не найдено"
-func (c *SolControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
+func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
@@ -104,7 +104,7 @@ func (c *SolControllerStudent) UpdateSolution(ctx *fiber.Ctx) error {
 // @param			listSolutionStudentQuery	query		listSolutionStudentQuery	false	"listSolutionStudentQuery"
 // @success		200							{object}	listSolutionOut
 // @failure		401							"неверный токен (пустой, истекший или неверный формат)"
-func (c *SolControllerStudent) SolutionList(ctx *fiber.Ctx) error {
+func (c *SolControllerStudent) List(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 

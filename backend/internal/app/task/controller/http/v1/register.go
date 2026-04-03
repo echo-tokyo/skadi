@@ -18,8 +18,8 @@ func RegisterEndpoints(router fiber.Router, controllerTeacher *TaskControllerTea
 
 	taskAuthGroup := authGroup.Group("/task")
 	taskAuthGroup.Post("/", mwTeacherOnly, controllerTeacher.Create)
-	taskAuthGroup.Get("/", mwTeacherOnly, controllerTeacher.TaskList)
-	// taskAuthGroup.Get("/:id", mwTeacherOnly, controllerTeacher.ReadTask)
-	taskAuthGroup.Patch("/:id", mwTeacherOnly, controllerTeacher.UpdateTask)
-	taskAuthGroup.Delete("/:id", mwTeacherOnly, controllerTeacher.DeleteTask)
+	taskAuthGroup.Get("/", mwTeacherOnly, controllerTeacher.List)
+	taskAuthGroup.Get("/:id", mwTeacherOnly, controllerTeacher.Read)
+	taskAuthGroup.Patch("/:id", mwTeacherOnly, controllerTeacher.Update)
+	taskAuthGroup.Delete("/:id", mwTeacherOnly, controllerTeacher.Delete)
 }

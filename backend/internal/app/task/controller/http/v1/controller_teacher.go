@@ -39,7 +39,7 @@ func NewTaskControllerTeacher(taskUCTeacher task.UsecaseTeacher,
 // @produce		json
 // @security		JWTAccess
 // @param			taskBody	body		taskBody	true	"taskBody"
-// @success		201			{object}	taskOut
+// @success		201			{object}	createTaskOut
 // @failure		400			"неверный ученик | неверный преподаватель | преподаватель не найден"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
@@ -85,11 +85,59 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	res := &taskOut{
+	res := &createTaskOut{
 		Task:      taskObj,
 		Solutions: solutions,
 	}
 	return ctx.Status(fiber.StatusCreated).JSON(res)
+}
+
+// @summary		Получение задания по id [Только преподаватель].
+// @description	Получение всех данных о задании и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.
+// @router			/task/{id} [get]
+// @id				task-read
+// @tags			task
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id	path		int	true	"ID решения задания"
+// @success		200	{object}	readTaskOut
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"доступ запрещён"
+// @failure		404	"задание не найдено"
+func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
+	inputPath := &taskIDPath{}
+	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
+		return err
+	}
+
+	taskObj, students, err := c.taskUCTeacher.GetTaskByID(userClaims.ID, inputPath.ID)
+	if errors.Is(err, task.ErrNotFound) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusNotFound,
+			Message:    "решение задания не найдено",
+		}
+	}
+	if errors.Is(err, task.ErrForbidden) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusForbidden,
+			Message:    "доступ запрещён",
+		}
+	}
+	if err != nil {
+		return fmt.Errorf("read: %w", err)
+	}
+
+	res := &readTaskOut{
+		Task:     taskObj,
+		Students: students,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
 // @summary		Обновление задания. [Только преподаватель]
@@ -106,7 +154,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403				"доступ запрещён"
 // @failure		404				"задание не найдено"
-func (c *TaskControllerTeacher) UpdateTask(ctx *fiber.Ctx) error {
+func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
@@ -158,7 +206,7 @@ func (c *TaskControllerTeacher) UpdateTask(ctx *fiber.Ctx) error {
 // @success		204	"No Content"
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403	"доступ запрещён"
-func (c *TaskControllerTeacher) DeleteTask(ctx *fiber.Ctx) error {
+func (c *TaskControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 
@@ -191,7 +239,7 @@ func (c *TaskControllerTeacher) DeleteTask(ctx *fiber.Ctx) error {
 // @param			listTaskQuery	query		listTaskQuery	false	"listTaskQuery"
 // @success		200				{object}	listTaskOut
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
-func (c *TaskControllerTeacher) TaskList(ctx *fiber.Ctx) error {
+func (c *TaskControllerTeacher) List(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 

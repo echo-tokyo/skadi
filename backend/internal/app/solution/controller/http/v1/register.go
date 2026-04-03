@@ -20,10 +20,10 @@ func RegisterEndpoints(router fiber.Router, controller *SolController,
 
 	authGroup := router.Group("/", mwJWTAccess)
 
-	authGroup.Get("/teacher/solution", mwTeacherOnly, controllerTeacher.SolutionList)
-	authGroup.Get("/student/solution", mwStudentOnly, controllerStudent.SolutionList)
-	authGroup.Get("/solution/:id", mwTeacherStudent, controller.ReadSolution)
-	authGroup.Patch("/teacher/solution/:id", mwTeacherOnly, controllerTeacher.UpdateSolution)
-	authGroup.Patch("/student/solution/:id", mwStudentOnly, controllerStudent.UpdateSolution)
-	authGroup.Delete("/solution/:id", mwTeacherOnly, controllerTeacher.DeleteSolution)
+	authGroup.Get("/teacher/solution", mwTeacherOnly, controllerTeacher.List)
+	authGroup.Get("/student/solution", mwStudentOnly, controllerStudent.List)
+	authGroup.Get("/solution/:id", mwTeacherStudent, controller.Read)
+	authGroup.Patch("/teacher/solution/:id", mwTeacherOnly, controllerTeacher.Update)
+	authGroup.Patch("/student/solution/:id", mwStudentOnly, controllerStudent.Update)
+	authGroup.Delete("/solution/:id", mwTeacherOnly, controllerTeacher.Delete)
 }
