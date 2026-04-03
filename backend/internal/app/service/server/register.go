@@ -42,7 +42,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB, classRepoDB)
 	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
-	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, statusRepoDB, userRepoDB)
+	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, userRepoDB)
 	solUCClient := soluc.NewUCClient(cfg, solRepoDB)
 	solUCStudent := soluc.NewUCStudent(cfg, solRepoDB, statusRepoDB)
 	solUCTeacher := soluc.NewUCTeacher(cfg, solRepoDB, statusRepoDB)

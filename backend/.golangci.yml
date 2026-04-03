@@ -98,21 +98,9 @@ linters:
       - linters: # swagger comments
           - lll
         path: "internal/app/service/server/server.go"
-      - linters: # swagger tags
-          - lll
-        path: "internal/app/auth/controller/http/v1/data_input.*?.go"
-      - linters: # swagger tags
-          - lll
-        path: "internal/app/user/controller/http/v1/data_input.*?.go"
       - linters: # swagger struct tags
           - lll
-        path: "internal/app/class/controller/http/v1/data_input.*?.go"
-      - linters: # swagger struct tags
-          - lll
-        path: "internal/app/task/controller/http/v1/data_input.*?.go"
-      - linters: # swagger struct tags
-          - lll
-        path: "internal/app/task/controller/http/v1/controller.*?.go"
+        path: "internal/app/.*?/controller/http/v1/.*?.go"
       - linters: # struct tags
           - lll
         path: "internal/app/entity"
@@ -122,12 +110,12 @@ linters:
         text: "unnecessaryBlock: block doesn't have definitions, can be simply deleted"
       - linters: # similar but different endpoints
           - dupl
-        path: "internal/app/task/controller/http/v1/controller_student.go"
-        text: "48-93 lines are duplicate of `internal/app/task/controller/http/v1/controller_teacher.go:164-209"
+        path: "internal/app/solution/controller/http/v1/controller_student.go"
+        text: "49-94 lines are duplicate of `internal/app/solution/controller/http/v1/controller_teacher.go:49-94"
       - linters: # similar but different endpoints
           - dupl
-        path: "internal/app/task/controller/http/v1/controller_teacher.go"
-        text: "164-209 lines are duplicate of `internal/app/task/controller/http/v1/controller_student.go:48-93"
+        path: "internal/app/solution/controller/http/v1/controller_teacher.go"
+        text: "49-94 lines are duplicate of `internal/app/solution/controller/http/v1/controller_student.go:49-94"
       - linters: # more readable
           - goconst
         text: "string `/:id` has [3456789] occurrences, make it a constant"

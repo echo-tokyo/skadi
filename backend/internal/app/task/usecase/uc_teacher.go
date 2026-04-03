@@ -8,17 +8,9 @@ import (
 
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
-	"skadi/backend/internal/app/status"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/utils/slices"
-)
-
-const (
-	_defaultStatusID  = 1 // ID of solution status "backlog"
-	_inWorkStatusID   = 2 // ID of solution status "in-work"
-	_readyStatusID    = 3 // ID of solution status "ready"
-	_archivedStatusID = 4 // ID of solution status "checked"
 )
 
 // Ensure UCAdmin implements interfaces.
@@ -27,21 +19,19 @@ var _ task.UsecaseTeacher = (*UCTeacher)(nil)
 // UCTeacher represents a task usecase for teacher.
 // It implements the [task.UsecaseTeacher] interface.
 type UCTeacher struct {
-	cfg          *config.Config
-	taskRepoDB   task.RepositoryDB
-	statusRepoDB status.RepositoryDB
-	userRepoDB   user.RepositoryDB
+	cfg        *config.Config
+	taskRepoDB task.RepositoryDB
+	userRepoDB user.RepositoryDB
 }
 
 // NewUCTeacher returns a new instance of [UCTeacher].
 func NewUCTeacher(cfg *config.Config, taskRepoDB task.RepositoryDB,
-	statusRepoDB status.RepositoryDB, userRepoDB user.RepositoryDB) *UCTeacher {
+	userRepoDB user.RepositoryDB) *UCTeacher {
 
 	return &UCTeacher{
-		cfg:          cfg,
-		taskRepoDB:   taskRepoDB,
-		statusRepoDB: statusRepoDB,
-		userRepoDB:   userRepoDB,
+		cfg:        cfg,
+		taskRepoDB: taskRepoDB,
+		userRepoDB: userRepoDB,
 	}
 }
 
@@ -157,24 +147,4 @@ func (u *UCTeacher) GetTasks(teacherID int, search string,
 	page *entity.Pagination) ([]entity.Task, error) {
 
 	return u.taskRepoDB.GetTasks(teacherID, search, page)
-}
-
-// getStatusToUpdate sets the new status object to updated solution.
-func (u *UCTeacher) getStatusToUpdate(solObj *entity.Solution, newStatusID int) error {
-	solObj.StatusID = newStatusID
-	// only ready and archived statuses
-	if newStatusID != _readyStatusID && newStatusID != _archivedStatusID {
-		return fmt.Errorf("%w: teacher cannot set the given status", task.ErrInvalidData)
-	}
-	// get status object
-	var err error
-	solObj.Status, err = u.statusRepoDB.GetByID(newStatusID)
-	// if status object with such id not found
-	if errors.Is(err, task.ErrNotFound) {
-		return fmt.Errorf("%w: status: %s", task.ErrInvalidData, err.Error())
-	}
-	if err != nil {
-		return fmt.Errorf("get status: %w", err)
-	}
-	return nil
 }
