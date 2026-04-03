@@ -1,15 +1,13 @@
 import { Text, Textarea } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { useFormContext } from 'react-hook-form'
+import { TDisplayValues } from '../../model/types'
 
-const TaskDescription = () => {
-  const {
-    watch,
-    setValue,
-    formState: { errors },
-  } = useFormContext()
-  const fieldsData = watch()
+interface ITaskDescriptionSectionProps {
+  taskValues: TDisplayValues
+}
 
+const TaskDescription = (props: ITaskDescriptionSectionProps) => {
+  const { taskValues } = props
   return (
     <div className={styles.card}>
       <Text size='20' weight='bold'>
@@ -19,15 +17,9 @@ const TaskDescription = () => {
         <Textarea
           label='Описание задания'
           fluid
-          value={fieldsData.description}
-          isValid={!errors.description}
-          description={errors.description?.message as string}
-          onChange={(v) =>
-            setValue('description', v, {
-              shouldDirty: true,
-              shouldValidate: true,
-            })
-          }
+          disabled
+          value={taskValues.description}
+          onChange={() => ''}
         />
       </div>
     </div>

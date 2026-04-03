@@ -1,43 +1,52 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { z, ZodAny } from 'zod'
-import { initialFormValues } from '../config/form-config'
+import { useEffect } from 'react'
+import { z } from 'zod'
 import styles from './styles.module.scss'
-import TaskDescription from './components/TaskDescription'
+import { TPaginatedSelectField } from '@/shared/model'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  solutionStudentSchema,
+  solutionTeacherSchema,
+  TSolutionStudentSchema,
+  TSolutionTeacherSchema,
+} from '../model/schemas'
+import { TDisplayValues } from '../model/types'
 import TaskGeneral from './components/TaskGeneral'
+import TaskDescription from './components/TaskDescription'
 import TaskMaterials from './components/TaskMaterials'
 import TaskAnswer from './components/TaskAnswer'
-import { TPaginatedSelectField } from '@/shared/model'
-import { TDisplayValues, TMode } from '../model/types'
-import { CreateTaskButton } from '@/features/create-task'
-import { UpdateTaskButton } from '@/features/update-task'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { TSolutionTeacherSchema, TTaskSchema } from '../model/schemas'
+import { UpdateSolutionButton } from '@/features/update-solution'
+
+// 2 валидации, 1 режим: для препода (редактирует статус и оценку) и ученика (редактирует статус кроме "проверено", ответ и ответ файлом)
 interface ITaskCardProps {
   studentOptions: TPaginatedSelectField
-  defaultValues?: TTaskSchema | TSolutionTeacherSchema
-  displayValues?: TDisplayValues
-  mode: TMode
-  taskId?: number
-  schema: ZodAny
+  solutionValues: TSolutionTeacherSchema | TSolutionStudentSchema
+  taskValues: TDisplayValues
+  schema: typeof solutionTeacherSchema | typeof solutionStudentSchema
+  solutionId: number
 }
 
 const TaskCard = (props: ITaskCardProps) => {
-  const { studentOptions, defaultValues, mode, taskId, schema } = props
+  const { solutionValues, schema, taskValues, studentOptions, solutionId } =
+    props
 
   const methods = useForm<z.infer<typeof schema>>({
-    defaultValues: defaultValues || initialFormValues,
+    defaultValues: solutionValues,
     resolver: zodResolver(schema),
   })
+
+  useEffect(() => {
+    methods.reset(solutionValues)
+  }, [solutionValues])
 
   return (
     <FormProvider {...methods}>
       <div className={styles.actions}>
-        {mode === 'create' && <CreateTaskButton />}
-        {mode === 'edit' && taskId && <UpdateTaskButton id={taskId} />}
+        <UpdateSolutionButton id={solutionId} />
       </div>
       <div className={styles.cards}>
-        <TaskGeneral studentOptions={studentOptions} />
-        <TaskDescription />
+        <TaskGeneral studentOptions={studentOptions} taskValues={taskValues} />
+        <TaskDescription taskValues={taskValues} />
         <TaskMaterials />
         <TaskAnswer />
       </div>

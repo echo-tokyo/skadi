@@ -1,17 +1,8 @@
 import { TRole } from '@/shared/model'
-import { TMode, taskSchema, solutionTeacherSchema } from '@/widgets/task-card'
+import { solutionTeacherSchema } from '@/widgets/task-card'
+import { solutionStudentSchema } from '@/widgets/task-card/model/schemas'
 
-export const useGetSchema = (
-  mode: TMode,
-  role: TRole,
-  page: 'solution' | 'task',
-) => {
-  // при создании задания
-  if (mode === 'create') return taskSchema
-  // при редактировании задания
-  if (mode === 'edit' && role === 'admin' && page === 'task') return taskSchema
-  // при редактировании решения админом
-  if (role === 'teacher' && page === 'solution') return solutionTeacherSchema
-  // TODO: при редактировании решения студентом
-  return taskSchema
+export const useGetSchema = (role: TRole) => {
+  if (role === 'teacher') return solutionTeacherSchema
+  return solutionStudentSchema
 }

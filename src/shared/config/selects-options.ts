@@ -1,5 +1,4 @@
-import { TStatusName } from '@/entities/task/model/types'
-import { TRole } from '../model'
+import { TRole, TStatusName } from '../model'
 import { SelectOption } from '../ui'
 
 // Селекту не нужен admin

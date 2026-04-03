@@ -4,7 +4,9 @@ export type {
   TClass,
   TPaginatedSelectField,
   TSolution,
+  TStatus,
   TStatusName,
+  TStatusValue,
   TTask,
   TPagination,
 } from './types/types'

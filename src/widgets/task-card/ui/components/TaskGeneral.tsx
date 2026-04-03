@@ -1,21 +1,24 @@
-import { STATUS_OPTIONS } from '@/shared/config/selects-options'
 import { Input, Select, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
 import { useFormContext } from 'react-hook-form'
 import { TPaginatedSelectField } from '@/shared/model'
+import { TDisplayValues } from '../../model/types'
+import { STATUS_OPTIONS } from '@/shared/config/selects-options'
 
 interface ITaskGeneralSectionProps {
   studentOptions: TPaginatedSelectField
+  taskValues: TDisplayValues
 }
 
 const TaskGeneral = (props: ITaskGeneralSectionProps) => {
-  const { studentOptions } = props
+  const { studentOptions, taskValues } = props
 
   const {
     watch,
     setValue,
     formState: { errors },
   } = useFormContext()
+
   const fieldsData = watch()
 
   return (
@@ -27,37 +30,25 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
         <Input
           title='Название задания'
           fluid
-          value={fieldsData.title}
-          isValid={!errors.title}
-          description={errors.title?.message as string}
-          onChange={(v) =>
-            setValue('title', v, { shouldDirty: true, shouldValidate: true })
-          }
+          value={taskValues.title}
+          disabled
+          onChange={() => ''}
         />
         <Select
           label='Проверяющий'
           fluid
           value={'Вы'}
-          options={[{ label: 'Фиксированное ФИО', value: 'Вы' }]}
+          options={[{ label: 'Вы', value: 'Вы' }]}
           onChange={() => ''}
           disabled
         />
         <Select
           label='Исполняющий'
           fluid
-          multiple
-          searchable
-          value={fieldsData.students}
+          value={taskValues.student}
+          disabled
           options={studentOptions.data}
-          hasMore={studentOptions.hasMore}
-          isLoadingMore={studentOptions.isLoadingMore}
-          onLoadMore={studentOptions.onLoadMore}
-          onSearchChange={studentOptions.onSearchChange}
-          isValid={!errors.students}
-          description={errors.students?.message as string}
-          onChange={(v) =>
-            setValue('students', v, { shouldDirty: true, shouldValidate: true })
-          }
+          onChange={() => ''}
         />
         <Select
           label='Статус'
@@ -67,7 +58,8 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
           onChange={(v) =>
             setValue('status', v, { shouldDirty: true, shouldValidate: true })
           }
-          disabled
+          isValid={!errors['status']}
+          description={errors['status']?.message as string}
         />
       </div>
     </div>

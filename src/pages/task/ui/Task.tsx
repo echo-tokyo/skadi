@@ -1,18 +1,17 @@
 import { FC } from 'react'
 import styles from './styles.module.scss'
-import { TaskCard, TMode } from '@/widgets/task-card'
+import { TaskCard } from '@/widgets/task-card'
 import { useMemberSelectOptions } from '@/entities/member'
-import { useLocation, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { useGetSolution } from '../model/use-get-solution'
 import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
 import { useGetSchema } from '../model/useSchema'
-import { ZodAny } from 'zod'
+import { toSolutionValues } from '../lib/to-solution-values'
+import { toTaskValues } from '../lib/to-task-values'
 
 const Task: FC = () => {
   const { id } = useParams()
-  const location = useLocation()
-  const isSolution = location.pathname.includes('/solutions/')
   const user = useAppSelector(selectAuthenticatedUser)
   const role = user.role
 
@@ -24,18 +23,20 @@ const Task: FC = () => {
     onSearchChange,
   } = useMemberSelectOptions('student')
 
-  const { data } = useGetSolution(id, isSolution)
-  const _solution = data?.solution
+  const { data } = useGetSolution(id)
+  const solution = data?.solution
 
-  const page: 'solution' | 'task' = isSolution ? 'solution' : 'task'
-  const mode: TMode = id ? 'edit' : 'create'
-  const schema = useGetSchema(mode, role, page)
+  const schema = useGetSchema(role)
+  const solutionValues = toSolutionValues(solution)
+  const taskValues = toTaskValues(solution)
 
   return (
     <div className={styles.wrapper}>
       <TaskCard
-        mode={mode}
-        schema={schema as unknown as ZodAny}
+        solutionId={Number(id)}
+        schema={schema}
+        solutionValues={solutionValues}
+        taskValues={taskValues}
         studentOptions={{
           data: options,
           hasMore: hasNextPage,
@@ -43,8 +44,6 @@ const Task: FC = () => {
           onLoadMore: fetchNextPage,
           onSearchChange,
         }}
-        // defaultValues={defaultValues}
-        taskId={id ? Number(id) : undefined}
       />
     </div>
   )

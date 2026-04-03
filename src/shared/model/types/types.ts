@@ -32,7 +32,7 @@ export type TTask = {
 
 export type TStatusName = 'Бэклог' | 'В работе' | 'На проверке' | 'Проверено'
 
-type TStatus = {
+export type TStatus = {
   id?: number
   name: TStatusName
 }
