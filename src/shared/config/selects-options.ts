@@ -1,4 +1,4 @@
-import { TRole, TStatusName } from '../model'
+import { TRole, TStatusValue } from '../model'
 import { SelectOption } from '../ui'
 
 // Селекту не нужен admin
@@ -9,16 +9,9 @@ export const ROLE_OPTIONS: SelectOption[] = [
 
 export const ROLE_VALUES: TRole[] = ['teacher', 'student']
 
-export const STATUS_OPTIONS: SelectOption[] = [
+export const STATUS_OPTIONS: SelectOption<TStatusValue>[] = [
   { value: '1', label: 'Бэклог' },
   { value: '2', label: 'В работе' },
   { value: '3', label: 'На проверке' },
   { value: '4', label: 'Проверено' },
-]
-
-export const STATUS_VALUES: TStatusName[] = [
-  'Бэклог',
-  'В работе',
-  'На проверке',
-  'Проверено',
 ]

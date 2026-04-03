@@ -1,9 +1,11 @@
-import { useUpdateSolutionByTeacherMutation } from '@/entities/solution'
-import { IUpdateSolutionByTeacherRequest } from '@/entities/solution/model/types'
+import {
+  IUpdateSolutionByTeacherRequest,
+  TSolutionTeacherSchema,
+  useUpdateSolutionByTeacherMutation,
+} from '@/entities/solution'
 import { useMutationAction } from '@/shared/lib'
-import { TSolutionTeacherSchema } from '@/widgets/task-card'
 
-export const useUpdateTask = (id: number) => {
+export const useUpdateSolution = (id: number) => {
   return useMutationAction({
     mutation: useUpdateSolutionByTeacherMutation(),
     prepare: (

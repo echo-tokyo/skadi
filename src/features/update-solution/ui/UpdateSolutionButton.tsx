@@ -1,22 +1,24 @@
 import { Button } from '@/shared/ui'
-import { TSolutionTeacherSchema } from '@/widgets/task-card'
 import { useFormContext } from 'react-hook-form'
-import { useUpdateTask } from '../model/use-update-solution'
+import { TSolutionTeacherSchema } from '@/entities/solution'
+import { useUpdateSolution } from '../model/use-update-solution'
 
-const UpdateSolutionButton = ({ id }: { id: number }) => {
+// FIXME: isDirty после сохранения становится неактульным
+const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
   const {
     watch,
+    handleSubmit,
     formState: { isDirty },
   } = useFormContext<TSolutionTeacherSchema>()
 
-  const { submit } = useUpdateTask(id)
-  const fieldsData = watch()
+  const { submit } = useUpdateSolution(id)
+  const statusValue = watch('status')
 
   return (
-    <Button disabled={!isDirty} onClick={() => submit(fieldsData)}>
-      {fieldsData.status === '4' ? 'Одобрить выполнение' : 'Сохранить решение'}
+    <Button disabled={!isDirty} onClick={handleSubmit(submit)}>
+      {statusValue === '4' ? 'Одобрить выполнение' : 'Сохранить решение'}
     </Button>
   )
 }
 
-export default UpdateSolutionButton
+export default UpdateSolutionByTeacherButton

@@ -1,25 +1,30 @@
-import { Input, Select, Text } from '@/shared/ui'
+import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
 import { useFormContext } from 'react-hook-form'
-import { TPaginatedSelectField } from '@/shared/model'
+import { TStatusValue } from '@/shared/model'
 import { TDisplayValues } from '../../model/types'
-import { STATUS_OPTIONS } from '@/shared/config/selects-options'
 
-interface ITaskGeneralSectionProps {
-  studentOptions: TPaginatedSelectField
-  taskValues: TDisplayValues
+type TStatusFormFields = {
+  status: TStatusValue
 }
 
+interface ITaskGeneralSectionProps {
+  displayValues: TDisplayValues
+  statusOptions: SelectOption<TStatusValue>[]
+}
+
+const noop = () => undefined
+
 const TaskGeneral = (props: ITaskGeneralSectionProps) => {
-  const { studentOptions, taskValues } = props
+  const { displayValues, statusOptions } = props
 
   const {
     watch,
     setValue,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext<TStatusFormFields>()
 
-  const fieldsData = watch()
+  const statusValue = watch('status')
 
   return (
     <div className={styles.card}>
@@ -30,36 +35,39 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
         <Input
           title='Название задания'
           fluid
-          value={taskValues.title}
+          value={displayValues.title}
           disabled
-          onChange={() => ''}
+          onChange={noop}
         />
+        {/* FIXME: константа или выбор (?) */}
         <Select
           label='Проверяющий'
           fluid
-          value={'Вы'}
-          options={[{ label: 'Вы', value: 'Вы' }]}
-          onChange={() => ''}
+          value={'Преподаватель'}
+          options={[{ label: 'Преподаватель', value: 'Преподаватель' }]}
+          onChange={noop}
           disabled
         />
-        <Select
-          label='Исполняющий'
+        <Input
+          title='Исполняющий'
           fluid
-          value={taskValues.student}
+          value={displayValues.student}
           disabled
-          options={studentOptions.data}
-          onChange={() => ''}
+          onChange={noop}
         />
         <Select
           label='Статус'
           fluid
-          value={fieldsData.status}
-          options={STATUS_OPTIONS}
+          value={statusValue}
+          options={statusOptions}
           onChange={(v) =>
-            setValue('status', v, { shouldDirty: true, shouldValidate: true })
+            setValue('status', v as TStatusValue, {
+              shouldDirty: true,
+              shouldValidate: true,
+            })
           }
           isValid={!errors['status']}
-          description={errors['status']?.message as string}
+          description={errors['status']?.message}
         />
       </div>
     </div>

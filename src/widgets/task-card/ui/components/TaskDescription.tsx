@@ -3,11 +3,11 @@ import styles from '../styles.module.scss'
 import { TDisplayValues } from '../../model/types'
 
 interface ITaskDescriptionSectionProps {
-  taskValues: TDisplayValues
+  displayValues: TDisplayValues
 }
 
 const TaskDescription = (props: ITaskDescriptionSectionProps) => {
-  const { taskValues } = props
+  const { displayValues } = props
   return (
     <div className={styles.card}>
       <Text size='20' weight='bold'>
@@ -18,7 +18,7 @@ const TaskDescription = (props: ITaskDescriptionSectionProps) => {
           label='Описание задания'
           fluid
           disabled
-          value={taskValues.description}
+          value={displayValues.description}
           onChange={() => ''}
         />
       </div>

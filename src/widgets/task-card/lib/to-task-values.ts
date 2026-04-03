@@ -7,4 +7,5 @@ export const toTaskValues = (
   description: solutionData?.task.description ?? '',
   student: solutionData?.student?.fullname ?? '',
   title: solutionData?.task.title ?? '',
+  answer: solutionData?.answer ?? '',
 })

@@ -1,1 +1,1 @@
-export { default as UpdateSolutionButton } from './ui/UpdateSolutionButton'
+export { default as UpdateSolutionByTeacherButton } from './ui/UpdateSolutionButton'
