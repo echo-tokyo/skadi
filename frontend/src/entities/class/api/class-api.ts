@@ -1,0 +1,70 @@
+import {
+  baseApi,
+  DEFAULT_PER_PAGE,
+  paginatedInfiniteQueryOptions,
+} from '@/shared/api'
+import {
+  IClass,
+  IClassQuery,
+  IClassResponse,
+  IClassRequest,
+} from '../model/types'
+
+export const classApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getClasses: builder.infiniteQuery<IClassResponse, IClassQuery, number>({
+      query: ({ queryArg, pageParam }) => {
+        const { 'per-page': perPage, ...rest } = queryArg
+        return {
+          url: '/class',
+          method: 'GET',
+          params: {
+            ...rest,
+            page: pageParam,
+            'per-page': perPage ?? DEFAULT_PER_PAGE,
+          },
+        }
+      },
+      infiniteQueryOptions: paginatedInfiniteQueryOptions,
+      providesTags: ['Class'],
+    }),
+    createClass: builder.mutation<IClass, IClassRequest>({
+      query: (data) => ({
+        url: '/admin/class',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: (_result, _error, arg) => {
+        const tags: ('Class' | 'Member')[] = ['Class']
+        if (arg.students.length > 0) tags.push('Member')
+        return tags
+      },
+    }),
+    editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
+      query: ({ id, data }) => ({
+        url: `/admin/class/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (_result, _error, arg) => {
+        const tags: ('Class' | 'Member')[] = ['Class']
+        if (arg.data.students.length > 0) tags.push('Member')
+        return tags
+      },
+    }),
+    deleteClass: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `admin/class/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Class', 'Member'],
+    }),
+  }),
+})
+
+export const {
+  useGetClassesInfiniteQuery,
+  useCreateClassMutation,
+  useDeleteClassMutation,
+  useEditClassMutation,
+} = classApi
