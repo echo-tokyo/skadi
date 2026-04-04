@@ -1,4 +1,8 @@
-import { baseApi, DEFAULT_PER_PAGE, paginatedInfiniteQueryOptions } from '@/shared/api'
+import {
+  baseApi,
+  DEFAULT_PER_PAGE,
+  paginatedInfiniteQueryOptions,
+} from '@/shared/api'
 import {
   ICreateMemberRequest,
   IMember,
@@ -32,7 +36,11 @@ export const memberApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Member'],
+      invalidatesTags: (_result, _error, arg) => {
+        const tags: ('Member' | 'Class')[] = ['Member']
+        if (arg.class_id !== undefined) tags.push('Class')
+        return tags
+      },
     }),
 
     updateMember: builder.mutation<
@@ -56,7 +64,7 @@ export const memberApi = baseApi.injectEndpoints({
         url: `/admin/user/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Member'],
+      invalidatesTags: ['Member', 'Class'],
     }),
   }),
 })

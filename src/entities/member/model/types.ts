@@ -17,7 +17,7 @@ export interface IUpdateMemberRequest {
 export interface ICreateMemberRequest {
   class_id?: number
   password: string
-  profile: TProfile
+  profile: Omit<TProfile, 'id'>
   role: TRole
   username: string
 }

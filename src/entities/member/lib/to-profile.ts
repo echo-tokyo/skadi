@@ -1,8 +1,7 @@
 import { TProfile } from '@/shared/model'
 import { TMemberFullSchema } from '../model/member-fields-schema'
 
-export const toProfile = (data: TMemberFullSchema): TProfile => ({
-  // TODO: добавить класс
+export const toProfile = (data: TMemberFullSchema): Omit<TProfile, 'id'> => ({
   fullname: data.fullname,
   address: data.address,
   contact: { email: data.email, phone: data.phone },

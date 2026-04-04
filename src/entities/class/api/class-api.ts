@@ -1,4 +1,8 @@
-import { baseApi, DEFAULT_PER_PAGE, paginatedInfiniteQueryOptions } from '@/shared/api'
+import {
+  baseApi,
+  DEFAULT_PER_PAGE,
+  paginatedInfiniteQueryOptions,
+} from '@/shared/api'
 import {
   IClass,
   IClassQuery,
@@ -30,7 +34,11 @@ export const classApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Class'],
+      invalidatesTags: (_result, _error, arg) => {
+        const tags: ('Class' | 'Member')[] = ['Class']
+        if (arg.students.length > 0) tags.push('Member')
+        return tags
+      },
     }),
     editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
       query: ({ id, data }) => ({
@@ -38,14 +46,18 @@ export const classApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ['Class', 'Member'],
+      invalidatesTags: (_result, _error, arg) => {
+        const tags: ('Class' | 'Member')[] = ['Class']
+        if (arg.data.students.length > 0) tags.push('Member')
+        return tags
+      },
     }),
     deleteClass: builder.mutation<void, number>({
       query: (id) => ({
         url: `admin/class/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Class'],
+      invalidatesTags: ['Class', 'Member'],
     }),
   }),
 })
