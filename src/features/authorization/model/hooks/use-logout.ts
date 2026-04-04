@@ -14,6 +14,7 @@ export const useLogout = () => {
   const logout = async (): Promise<void> => {
     try {
       await logoutMutation().unwrap()
+      toast.info('Выход из аккаунта')
     } catch (err) {
       toast.error(getErrorMessage(err))
     } finally {

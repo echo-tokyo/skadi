@@ -8,7 +8,7 @@ initializeAuthActions({
   onAuthFailure: () => {
     store.dispatch(clearUserData())
     router.navigate('/authorization', { replace: true })
-    toast.error('Токен истён, перезайдите в аккаунт')
+    toast.error('Требуется авторизация')
   },
 })
 
