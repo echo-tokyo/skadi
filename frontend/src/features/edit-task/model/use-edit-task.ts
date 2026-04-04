@@ -1,5 +1,8 @@
-import { IUpdateTaskRequest, useUpdateTaskMutation } from '@/entities/task'
-import { TTaskSchema } from '@/entities/task/model/schema'
+import {
+  IUpdateTaskRequest,
+  TTaskSchema,
+  useUpdateTaskMutation,
+} from '@/entities/task'
 import { useMutationAction } from '@/shared/lib'
 
 const prepare =

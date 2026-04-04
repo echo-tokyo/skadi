@@ -1,5 +1,4 @@
-import { IClass } from '@/entities/class'
-import { TClassSchema } from '@/entities/class/model/class-form-schema'
+import { IClass, TClassSchema } from '@/entities/class'
 
 export const toFieldValues = (classData: IClass): TClassSchema => ({
   className: classData.name,
