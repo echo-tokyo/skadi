@@ -18,6 +18,7 @@ import {
 import { TDisplayValues } from '../model/types'
 
 // 2 валидации, 1 режим: для препода (редактирует статус и оценку) и ученика (редактирует статус кроме "проверено", ответ и ответ файлом)
+
 interface ITaskCardProps {
   editableValues: TSolutionTeacherSchema | TSolutionStudentSchema
   displayValues: TDisplayValues

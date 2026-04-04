@@ -1,13 +1,10 @@
 import { TRole, TSolution, TStatusId } from '@/shared/model'
 import {
-  solutionTeacherSchema,
-  solutionStudentSchema,
+  TEACHER_VALID_STATUSES,
+  STUDENT_VALID_STATUSES,
   TSolutionTeacherSchema,
   TSolutionStudentSchema,
 } from '../model/schemas'
-
-const TEACHER_VALID_STATUSES = solutionTeacherSchema.shape.status.options
-const STUDENT_VALID_STATUSES = solutionStudentSchema.shape.status.options
 
 const DEFAULT_TEACHER_STATUS = TEACHER_VALID_STATUSES[0]
 const DEFAULT_STUDENT_STATUS = STUDENT_VALID_STATUSES[0]

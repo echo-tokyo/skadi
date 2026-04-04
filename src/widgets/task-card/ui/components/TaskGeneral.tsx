@@ -39,12 +39,10 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
           disabled
           onChange={noop}
         />
-        {/* FIXME: константа или выбор (?) */}
-        <Select
-          label='Проверяющий'
+        <Input
+          title='Проверяющий'
           fluid
-          value={'Преподаватель'}
-          options={[{ label: 'Преподаватель', value: 'Преподаватель' }]}
+          value={displayValues.teacher}
           onChange={noop}
           disabled
         />

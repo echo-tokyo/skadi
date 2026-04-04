@@ -17,7 +17,12 @@ export type {
   IUpdateSolutionByStudentRequest,
 } from './model/types'
 
-export { solutionTeacherSchema, solutionStudentSchema } from './model/schemas'
+export {
+  solutionTeacherSchema,
+  solutionStudentSchema,
+  TEACHER_VALID_STATUSES,
+  STUDENT_VALID_STATUSES,
+} from './model/schemas'
 
 export { getSchemaByRole } from './lib/get-schema-by-role'
 export { toFormValuesByRole } from './lib/to-form-values-by-role'

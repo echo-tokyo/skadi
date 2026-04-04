@@ -24,6 +24,7 @@ export const solutionApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
+      invalidatesTags: ['Solution'],
     }),
     updateSolutionByTeacher: builder.mutation<
       IUpdateSolutionByTeacherResponse,
@@ -34,6 +35,7 @@ export const solutionApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
+      invalidatesTags: ['Solution'],
     }),
     getSolutionById: builder.query<IGetSolutionByIdResponse, number>({
       query: (id) => ({
