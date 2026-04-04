@@ -6,7 +6,7 @@ import { useGetSolution } from '../model/use-get-solution'
 import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
 import { Skeleton } from '@/shared/ui'
-import { getSchemaByRole, toTeacherFormValues } from '@/entities/solution'
+import { getSchemaByRole, toFormValuesByRole } from '@/entities/solution'
 
 const Task: FC = () => {
   const { id } = useParams()
@@ -18,7 +18,7 @@ const Task: FC = () => {
 
   // TODO: добавить toStudentFormValues. в toTaskValues должны быть все поля, которые могут быть неизменяемыми, или нужно разделить на teacher и student (?)
   const schema = getSchemaByRole(role)
-  const solutionValues = toTeacherFormValues(solution)
+  const solutionValues = toFormValuesByRole(solution, role)
   const taskValues = toTaskValues(solution)
 
   return (

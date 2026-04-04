@@ -5,7 +5,7 @@ import {
 } from '@/entities/solution'
 import { useMutationAction } from '@/shared/lib'
 
-export const useUpdateSolution = (id: number) => {
+export const useTeacherUpdateSolution = (id: number) => {
   return useMutationAction({
     mutation: useUpdateSolutionByTeacherMutation(),
     prepare: (

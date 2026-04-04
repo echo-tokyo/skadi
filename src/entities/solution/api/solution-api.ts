@@ -7,12 +7,24 @@ import {
   IGetSolutionByIdResponse,
   IGetSolutionsQuery,
   IGetSolutionsResponse,
+  IUpdateSolutionByStudentRequest,
+  IUpdateSolutionByStudentResponse,
   IUpdateSolutionByTeacherRequest,
   IUpdateSolutionByTeacherResponse,
 } from '../model/types'
 
 export const solutionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    updateSolutionByStudent: builder.mutation<
+      IUpdateSolutionByStudentResponse,
+      { id: number; data: IUpdateSolutionByStudentRequest }
+    >({
+      query: ({ data, id }) => ({
+        url: `/student/solution/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
     updateSolutionByTeacher: builder.mutation<
       IUpdateSolutionByTeacherResponse,
       { id: number; data: IUpdateSolutionByTeacherRequest }
@@ -57,4 +69,5 @@ export const {
   useGetSolutionByIdQuery,
   useGetSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
+  useUpdateSolutionByStudentMutation,
 } = solutionApi

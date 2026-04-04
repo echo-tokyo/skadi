@@ -31,6 +31,16 @@ export interface IUpdateSolutionByTeacherResponse {
   updated_at?: string
 }
 
+export interface IUpdateSolutionByStudentRequest {
+  status_id?: number
+  answer?: string
+}
+
+export interface IUpdateSolutionByStudentResponse {
+  answer?: string
+  grade?: string
+  status_id: number
+}
 export interface IGetSolutionsQuery {
   archived?: boolean
   'per-page'?: number

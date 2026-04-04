@@ -7,7 +7,7 @@ import TaskGeneral from './components/TaskGeneral'
 import TaskDescription from './components/TaskDescription'
 import TaskMaterials from './components/TaskMaterials'
 import TaskAnswer from './components/TaskAnswer'
-import { UpdateSolutionByTeacherButton } from '@/features/update-solution'
+import { UpdateSolutionButton } from '@/features/update-solution'
 import { STATUS_OPTIONS } from '@/shared/config/selects-options'
 import {
   TSolutionTeacherSchema,
@@ -50,7 +50,7 @@ const TaskCard = (props: ITaskCardProps) => {
   return (
     <FormProvider {...methods}>
       <div className={styles.actions}>
-        <UpdateSolutionByTeacherButton id={solutionId} />
+        <UpdateSolutionButton id={solutionId} actualSchema={actualSchema} />
       </div>
       <div className={styles.cards}>
         <TaskGeneral

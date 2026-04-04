@@ -20,6 +20,7 @@ const TaskAnswer = (props: ITaskAnswerSectionProps) => {
   } = useFormContext<TSolutionStudentSchema>()
 
   const answerValue = watch('answer')
+
   return (
     <div className={styles.card}>
       <Text size='20' weight='bold'>
