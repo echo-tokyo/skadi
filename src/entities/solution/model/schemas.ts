@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
-export const TEACHER_VALID_STATUSES = ['3', '4'] as const
+// FIXME: если status имеет id 4, то у ученика отобразится некорректный статус
+export const TEACHER_VALID_STATUSES = ['1', '2', '3', '4'] as const
 export const STUDENT_VALID_STATUSES = ['1', '2', '3'] as const
 
 export const solutionTeacherSchema = z.object({
