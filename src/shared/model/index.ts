@@ -7,6 +7,7 @@ export type {
   TStatus,
   TStatusName,
   TStatusValue,
+  TStatusId,
   TTask,
   TPagination,
 } from './types/types'

@@ -16,7 +16,6 @@ const Task: FC = () => {
   const { data, isLoading } = useGetSolution(id)
   const solution = data?.solution
 
-  // TODO: добавить toStudentFormValues. в toTaskValues должны быть все поля, которые могут быть неизменяемыми, или нужно разделить на teacher и student (?)
   const schema = getSchemaByRole(role)
   const solutionValues = toFormValuesByRole(solution, role)
   const taskValues = toTaskValues(solution)

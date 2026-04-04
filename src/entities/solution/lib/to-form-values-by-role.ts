@@ -1,4 +1,4 @@
-import { TRole, TSolution } from '@/shared/model'
+import { TRole, TSolution, TStatusId } from '@/shared/model'
 import {
   solutionTeacherSchema,
   solutionStudentSchema,
@@ -13,7 +13,7 @@ const DEFAULT_TEACHER_STATUS = TEACHER_VALID_STATUSES[0]
 const DEFAULT_STUDENT_STATUS = STUDENT_VALID_STATUSES[0]
 
 const resolveStatus = <T extends string>(
-  raw: string | undefined,
+  raw: TStatusId | undefined,
   validOptions: readonly T[],
   fallback: T,
 ): T => {
@@ -24,7 +24,7 @@ const resolveStatus = <T extends string>(
 const toTeacherFormValues = (
   solutionData: TSolution | undefined,
 ): TSolutionTeacherSchema => {
-  const raw = solutionData?.status.id?.toString()
+  const raw: TStatusId | undefined = solutionData?.status.id
   const status = resolveStatus(
     raw,
     TEACHER_VALID_STATUSES,

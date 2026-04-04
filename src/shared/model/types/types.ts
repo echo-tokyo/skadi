@@ -32,9 +32,10 @@ export type TTask = {
 
 export type TStatusName = 'Бэклог' | 'В работе' | 'На проверке' | 'Проверено'
 export type TStatusValue = '1' | '2' | '3' | '4'
+export type TStatusId = 1 | 2 | 3 | 4
 
 export type TStatus = {
-  id?: TStatusValue
+  id?: TStatusId
   name: TStatusName
 }
 
