@@ -1,5 +1,8 @@
-import { ICreateTaskRequest, useCreateTaskMutation } from '@/entities/task'
-import { TTaskSchema } from '@/entities/task/model/schema'
+import {
+  ICreateTaskRequest,
+  TTaskSchema,
+  useCreateTaskMutation,
+} from '@/entities/task'
 import { useMutationAction } from '@/shared/lib'
 
 const prepare = (data: TTaskSchema): ICreateTaskRequest => ({

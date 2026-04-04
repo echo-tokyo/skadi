@@ -8,7 +8,6 @@ import TaskDescription from './components/TaskDescription'
 import TaskMaterials from './components/TaskMaterials'
 import TaskAnswer from './components/TaskAnswer'
 import { UpdateSolutionButton } from '@/features/update-solution'
-import { STATUS_OPTIONS } from '@/shared/config/selects-options'
 import {
   TSolutionTeacherSchema,
   TSolutionStudentSchema,
@@ -16,6 +15,7 @@ import {
   solutionStudentSchema,
 } from '@/entities/solution'
 import { TDisplayValues } from '../model/types'
+import { STATUS_OPTIONS } from '@/shared/config'
 
 // 2 валидации, 1 режим: для препода (редактирует статус и оценку) и ученика (редактирует статус кроме "проверено", ответ и ответ файлом)
 
