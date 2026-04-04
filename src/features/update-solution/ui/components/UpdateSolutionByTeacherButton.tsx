@@ -3,19 +3,24 @@ import { useFormContext } from 'react-hook-form'
 import { TSolutionTeacherSchema } from '@/entities/solution'
 import { useTeacherUpdateSolution } from '../../model/use-teacher-update-solution'
 
-// FIXME: isDirty после сохранения становится неактульным
 const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
   const {
     watch,
     handleSubmit,
+    reset,
     formState: { isDirty },
   } = useFormContext<TSolutionTeacherSchema>()
 
   const { submit } = useTeacherUpdateSolution(id)
   const statusValue = watch('status')
 
+  const onSubmit = handleSubmit(async (data) => {
+    const success = await submit(data)
+    if (success) reset(data)
+  })
+
   return (
-    <Button disabled={!isDirty} onClick={handleSubmit(submit)}>
+    <Button disabled={!isDirty} onClick={onSubmit}>
       {statusValue === '4' ? 'Одобрить выполнение' : 'Сохранить решение'}
     </Button>
   )

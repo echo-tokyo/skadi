@@ -6,7 +6,6 @@ interface IUpdateSolutionButtonProps {
   actualSchema: 'teacherSchema' | 'studentSchema'
 }
 
-// FIXME: isDirty после сохранения становится неактульным
 const UpdateSolutionButton = (props: IUpdateSolutionButtonProps) => {
   const { id, actualSchema } = props
 
