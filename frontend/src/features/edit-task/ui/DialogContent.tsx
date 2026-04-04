@@ -1,5 +1,4 @@
-import { ITaskFieldsRef, TaskFields } from '@/entities/task'
-import { TTaskSchema } from '@/entities/task/model/schema'
+import { ITaskFieldsRef, TaskFields, TTaskSchema } from '@/entities/task'
 import { useMemberSelectOptions } from '@/entities/member'
 import { memo } from 'react'
 import type { Ref } from 'react'
@@ -10,7 +9,11 @@ interface IDialogContentProps {
   onDirtyChange?: (isDirty: boolean) => void
 }
 
-const DialogContent = ({ ref, fieldData, onDirtyChange }: IDialogContentProps) => {
+const DialogContent = ({
+  ref,
+  fieldData,
+  onDirtyChange,
+}: IDialogContentProps) => {
   const {
     options,
     fetchNextPage,
