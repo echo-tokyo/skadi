@@ -4,11 +4,13 @@ import { IUser, IUserResponse } from './types'
 interface IUserState {
   user: IUser | null
   isAuthenticated: boolean
+  authChecked: boolean
 }
 
 const initialState: IUserState = {
   user: null,
   isAuthenticated: false,
+  authChecked: false,
 }
 
 const userSlice = createSlice({
@@ -18,10 +20,12 @@ const userSlice = createSlice({
     setUserData: (state, { payload }: PayloadAction<IUserResponse>) => {
       state.user = payload
       state.isAuthenticated = true
+      state.authChecked = true
     },
     clearUserData: (state) => {
       state.user = null
       state.isAuthenticated = false
+      state.authChecked = true
     },
   },
 })

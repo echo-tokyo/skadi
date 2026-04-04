@@ -20,7 +20,6 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         credentials: 'include',
       }),
-      invalidatesTags: ['Auth'],
     }),
 
     // Пока не используется отсюда

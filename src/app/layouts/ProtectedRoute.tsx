@@ -7,9 +7,10 @@ const ProtectedRoute: FC = () => {
   const dispatch = useAppDispatch()
 
   const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated)
+  const authChecked = useAppSelector((state) => state.user.authChecked)
 
   const { data: userData, isLoading } = useGetMeQuery(undefined, {
-    skip: isAuthenticated,
+    skip: isAuthenticated || authChecked,
   })
 
   useEffect(() => {
