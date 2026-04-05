@@ -1,0 +1,29 @@
+import { Button } from '@/shared/ui'
+import { useFormContext } from 'react-hook-form'
+import { TSolutionTeacherSchema } from '@/entities/solution'
+import { useTeacherUpdateSolution } from '../../model/use-teacher-update-solution'
+
+const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
+  const {
+    watch,
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = useFormContext<TSolutionTeacherSchema>()
+
+  const { submit } = useTeacherUpdateSolution(id)
+  const statusValue = watch('status')
+
+  const onSubmit = handleSubmit(async (data) => {
+    const success = await submit(data)
+    if (success) reset(data)
+  })
+
+  return (
+    <Button disabled={!isDirty} onClick={onSubmit}>
+      {statusValue === '4' ? 'Одобрить выполнение' : 'Сохранить решение'}
+    </Button>
+  )
+}
+
+export default UpdateSolutionByTeacherButton
