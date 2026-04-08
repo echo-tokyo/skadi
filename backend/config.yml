@@ -2,8 +2,8 @@ server:
   port: 8000 # server port
   shutdown_timeout: 1s # timeout to force shutdown server after receiving an OS signal
   cors:
-    allowed_origins: "http://127.0.0.1,http://172.17.0.1" # comma-separated allowed origins for cors
-    allowed_methods: "GET,HEAD,POST,OPTIONS" # comma-separated allowed methods for cors
+    allowed_origins: "http://127.0.0.1,http://172.17.0.1,http://web-server" # comma-separated allowed origins for cors
+    allowed_methods: "GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS" # comma-separated allowed methods for cors
     allow_credentials: true # allow credentials for cors if true
   auth:
     access_token:
