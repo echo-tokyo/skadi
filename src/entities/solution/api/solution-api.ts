@@ -69,7 +69,7 @@ export const solutionApi = baseApi.injectEndpoints({
         url: '/student/solution',
         method: 'GET',
       }),
-      providesTags: ['Solution'],
+      providesTags: ['StudentSolution'],
     }),
   }),
 })
