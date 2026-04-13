@@ -1318,7 +1318,7 @@ paths:
         minimum: 1
         name: per-page
         type: integer
-      - collectionFormat: csv
+      - collectionFormat: multi
         description: 'user roles (accepted: "teacher", "student")'
         example:
         - student

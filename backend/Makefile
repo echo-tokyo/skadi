@@ -27,7 +27,7 @@ mysql:
 # ------- #
 
 swagger-update:
-	@swag init -g $(server_runner_path)
+	@swag init --collectionFormat multi -g $(server_runner_path)
 
 swagger-fmt:
 	@swag fmt -g $(server_runner_path)
