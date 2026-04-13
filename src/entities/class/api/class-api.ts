@@ -34,11 +34,12 @@ export const classApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: (_result, _error, arg) => {
-        const tags: ('Class' | 'Member')[] = ['Class']
-        if (arg.students.length > 0) tags.push('Member')
-        return tags
-      },
+      invalidatesTags: ['Class', 'Member'],
+      // invalidatesTags: (_result, _error, arg) => {
+      //   const tags: ('Class' | 'Member')[] = ['Class']
+      //   if (arg.students.length > 0) tags.push('Member')
+      //   return tags
+      // },
     }),
     editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
       query: ({ id, data }) => ({
@@ -46,11 +47,12 @@ export const classApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (_result, _error, arg) => {
-        const tags: ('Class' | 'Member')[] = ['Class']
-        if (arg.data.students.length > 0) tags.push('Member')
-        return tags
-      },
+      invalidatesTags: ['Class', 'Member'],
+      // invalidatesTags: (_result, _error, arg) => {
+      //   const tags: ('Class' | 'Member')[] = ['Class']
+      //   if (arg.data.students.length > 0) tags.push('Member')
+      //   return tags
+      // },
     }),
     deleteClass: builder.mutation<void, number>({
       query: (id) => ({

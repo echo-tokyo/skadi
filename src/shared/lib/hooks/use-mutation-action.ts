@@ -9,7 +9,7 @@ type MutationTuple<TArg> = readonly [
 interface UseMutationActionConfig<TInput, TArg> {
   mutation: MutationTuple<TArg>
   prepare: (input: TInput) => TArg
-  successMessage: string
+  successMessage?: string
 }
 
 export const useMutationAction = <TInput, TArg>(
@@ -20,7 +20,9 @@ export const useMutationAction = <TInput, TArg>(
   const submit = async (input: TInput): Promise<boolean> => {
     try {
       await mutate(config.prepare(input)).unwrap()
-      toast.info(config.successMessage)
+      if (config.successMessage) {
+        toast.info(config.successMessage)
+      }
       return true
     } catch (err) {
       toast.error(getErrorMessage(err))

@@ -11,6 +11,7 @@ import {
   IUpdateMemberRequest,
 } from '../model/types'
 
+// TODO: настроить инвалидацию у member и class
 export const memberApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMembers: builder.infiniteQuery<IMembersResponse, IMembersQuery, number>({
@@ -36,11 +37,12 @@ export const memberApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: (_result, _error, arg) => {
-        const tags: ('Member' | 'Class')[] = ['Member']
-        if (arg.class_id !== undefined) tags.push('Class')
-        return tags
-      },
+      invalidatesTags: ['Member', 'Class'],
+      // invalidatesTags: (_result, _error, arg) => {
+      //   const tags: ('Member' | 'Class')[] = ['Member']
+      //   if (arg.class_id !== undefined) tags.push('Class')
+      //   return tags
+      // },
     }),
 
     updateMember: builder.mutation<
@@ -52,11 +54,12 @@ export const memberApi = baseApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (_result, _error, arg) => {
-        const tags: ('Member' | 'Class')[] = ['Member']
-        if (arg.data.class_id !== undefined) tags.push('Class')
-        return tags
-      },
+      invalidatesTags: ['Member', 'Class'],
+      // invalidatesTags: (_result, _error, arg) => {
+      //   const tags: ('Member' | 'Class')[] = ['Member']
+      //   if (arg.data.class_id !== undefined) tags.push('Class')
+      //   return tags
+      // },
     }),
 
     deleteMember: builder.mutation<void, number>({

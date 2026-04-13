@@ -20,7 +20,7 @@ import {
 import styles from './styles.module.scss'
 import { ROLE_OPTIONS } from '@/shared/config'
 import { IMemberFieldsRef } from '../model/types'
-import { TPaginatedSelectField } from '@/shared/model'
+import { TPaginatedSelectField } from '@/shared/ui'
 
 interface IMemberFormProps {
   ref?: Ref<IMemberFieldsRef>

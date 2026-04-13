@@ -1,5 +1,3 @@
-import { SelectOption } from '@/shared/ui'
-
 export type TRole = 'admin' | 'teacher' | 'student'
 
 type TContact = { email: string; phone: string }
@@ -35,7 +33,7 @@ export type TStatusValue = '1' | '2' | '3' | '4'
 export type TStatusId = 1 | 2 | 3 | 4
 
 export type TStatus = {
-  id?: TStatusId
+  id: TStatusId
   name: TStatusName
 }
 
@@ -54,13 +52,4 @@ export type TPagination = {
   per_page: number
   pages: number
   total: number
-}
-
-export type TPaginatedSelectField = {
-  data: SelectOption[]
-  selectedOptions?: SelectOption[]
-  onSearchChange?: (query: string) => void
-  onLoadMore?: () => void
-  hasMore?: boolean
-  isLoadingMore?: boolean
 }

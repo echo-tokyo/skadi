@@ -54,3 +54,12 @@ export interface MultipleProps<T extends string = string> extends BaseProps<T> {
 export type SelectProps<T extends string = string> =
   | SingleProps<T>
   | MultipleProps<T>
+
+export type TPaginatedSelectField = {
+  data: SelectOption[]
+  selectedOptions?: SelectOption[]
+  onSearchChange?: (query: string) => void
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
+}

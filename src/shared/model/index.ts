@@ -2,7 +2,6 @@ export type {
   TProfile,
   TRole,
   TClass,
-  TPaginatedSelectField,
   TSolution,
   TStatus,
   TStatusName,

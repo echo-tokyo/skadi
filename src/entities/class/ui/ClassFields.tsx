@@ -14,7 +14,7 @@ import { classSchema } from '../model/class-form-schema'
 import type { TClassSchema } from '../model/class-form-schema'
 import { INITIAL_FIELDS_VALUES } from '../config/fields-config'
 import { IClassFieldsRef } from '../model/types'
-import { TPaginatedSelectField } from '@/shared/model'
+import { TPaginatedSelectField } from '@/shared/ui'
 
 interface IClassFieldsProps {
   ref?: Ref<IClassFieldsRef>

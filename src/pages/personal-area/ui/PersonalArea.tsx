@@ -1,6 +1,6 @@
 import { FC, ReactNode, useMemo, useState } from 'react'
 import styles from './styles.module.scss'
-import { Button, Text } from '@/shared/ui'
+import { Button, PlugDefault, Text } from '@/shared/ui'
 import { ITabConfig, TAB_CONFIG } from '../config/tabs'
 import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
@@ -12,6 +12,7 @@ const PersonalArea: FC = (): ReactNode => {
   const role = user.role
   const navigate = useNavigate()
   const { logout } = useLogout()
+  const nav = useNavigate()
 
   const tabs = useMemo(
     () => TAB_CONFIG.filter((tab) => tab.role === role),
@@ -21,6 +22,13 @@ const PersonalArea: FC = (): ReactNode => {
   const [currentTab, setCurrentTab] = useState<ITabConfig | null>(
     tabs[0] ?? null,
   )
+
+  const handleTabClick = (tab: ITabConfig) => {
+    setCurrentTab(tab)
+    if (role === 'student' && tab.name === 'Дашборд') {
+      nav('/personal-area/dashboard')
+    }
+  }
 
   const ActiveComponent = currentTab?.component
 
@@ -38,7 +46,7 @@ const PersonalArea: FC = (): ReactNode => {
             <button
               type='button'
               className={styles.tabButton}
-              onClick={() => setCurrentTab(tab)}
+              onClick={() => handleTabClick(tab)}
               key={tab.name}
             >
               <Text color={getTabColor(tab)}>{tab.name}</Text>
@@ -56,7 +64,7 @@ const PersonalArea: FC = (): ReactNode => {
         </div>
       </div>
       <div className={styles.right}>
-        {ActiveComponent && <ActiveComponent />}
+        {ActiveComponent ? <ActiveComponent /> : <PlugDefault />}
       </div>
     </div>
   )

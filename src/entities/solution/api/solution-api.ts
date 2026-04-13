@@ -64,6 +64,13 @@ export const solutionApi = baseApi.injectEndpoints({
       infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Solution'],
     }),
+    getSolutionForStudent: builder.query<IGetSolutionsResponse, void>({
+      query: () => ({
+        url: '/student/solution',
+        method: 'GET',
+      }),
+      providesTags: ['Solution'],
+    }),
   }),
 })
 
@@ -72,4 +79,5 @@ export const {
   useGetSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
+  useGetSolutionForStudentQuery,
 } = solutionApi
