@@ -3,6 +3,7 @@ import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import invariant from 'tiny-invariant'
 import { TSolution, TStatusId } from '@/shared/model'
 import styles from '../styles.module.scss'
+import { useNavigate } from 'react-router'
 
 interface IKanbanCardProps {
   solution: TSolution
@@ -29,9 +30,12 @@ export const KanbanCard = memo(({ solution, columnId }: IKanbanCardProps) => {
     })
   }, [solution.id, columnId])
 
+  const nav = useNavigate()
+
   return (
     <div
       ref={ref}
+      onClick={() => nav(`/personal-area/solutions/${solution.id}`)}
       className={styles.card}
       style={{ opacity: dragging ? 0.4 : 1 }}
     >
