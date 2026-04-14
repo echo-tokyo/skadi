@@ -60,7 +60,7 @@ export const KanbanColumn = memo(({ id, title, cards }: IKanbanColumnProps) => {
 
   return (
     <div className={styles.column}>
-      <Text size='20' weight='600' color={textColor()}>
+      <Text size='20' weight='500' color={textColor()}>
         {`${title} (${cards.length})`}
       </Text>
       <KanbanColumnBody id={id} cards={cards} />
