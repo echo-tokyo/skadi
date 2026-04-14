@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant'
 import { TSolution, TStatusId, TStatusName } from '@/shared/model'
 import { KanbanCard } from './KanbanCard'
 import styles from '../styles.module.scss'
+import { Text, TTextColor } from '@/shared/ui'
 
 interface IKanbanColumnProps {
   id: TStatusId
@@ -43,7 +44,6 @@ const KanbanColumnBody = memo(({ id, cards }: IKanbanColumnBodyProps) => {
       {cards.map((solution) => (
         <KanbanCard key={solution.id} solution={solution} columnId={id} />
       ))}
-      {cards.length === 0 && <p className={styles.columnEmpty}>Нет задач</p>}
     </div>
   )
 })
@@ -51,12 +51,18 @@ const KanbanColumnBody = memo(({ id, cards }: IKanbanColumnBodyProps) => {
 KanbanColumnBody.displayName = 'KanbanColumnBody'
 
 export const KanbanColumn = memo(({ id, title, cards }: IKanbanColumnProps) => {
+  const textColor = (): TTextColor => {
+    if (id === 1) return '--color-red'
+    if (id === 2) return '--color-primary'
+    if (id === 3) return '--color-green'
+    return '--color-secondary'
+  }
+
   return (
     <div className={styles.column}>
-      <div className={styles.columnHeader}>
-        <span className={styles.columnTitle}>{title}</span>
-        <span className={styles.columnCount}>{cards.length}</span>
-      </div>
+      <Text size='20' weight='500' color={textColor()}>
+        {`${title} (${cards.length})`}
+      </Text>
       <KanbanColumnBody id={id} cards={cards} />
     </div>
   )

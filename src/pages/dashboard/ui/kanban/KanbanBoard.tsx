@@ -43,10 +43,11 @@ export const KanbanBoard = ({ solutions }: IKanbanBoardProps) => {
 
   return (
     <div className={styles.board}>
-      {KANBAN_COLUMNS.map((col) => (
+      {KANBAN_COLUMNS.map((col, index) => (
         <KanbanColumn
           key={col.id}
           id={col.id}
+          index={index}
           title={col.title}
           cards={solutionsByColumn[col.id] ?? EMPTY_ARRAY}
         />

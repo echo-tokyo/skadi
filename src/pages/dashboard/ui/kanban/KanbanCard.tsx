@@ -4,6 +4,8 @@ import invariant from 'tiny-invariant'
 import { TSolution, TStatusId } from '@/shared/model'
 import styles from '../styles.module.scss'
 import { useNavigate } from 'react-router'
+import { Text } from '@/shared/ui'
+import { unixToDate } from '@/shared/lib'
 
 interface IKanbanCardProps {
   solution: TSolution
@@ -39,9 +41,21 @@ export const KanbanCard = memo(({ solution, columnId }: IKanbanCardProps) => {
       className={styles.card}
       style={{ opacity: dragging ? 0.4 : 1 }}
     >
-      <p className={styles.cardTitle}>{solution.task.title}</p>
+      <div className={styles.cardHeader}>
+        <Text className={styles.cardTitle}>{solution.task.title}</Text>
+        <Text className={styles.cardTitle}>
+          {unixToDate(solution.updated_at)}
+        </Text>
+      </div>
       {solution.task.description && (
-        <p className={styles.cardDescription}>{solution.task.description}</p>
+        <Text
+          size='14'
+          color='--color-gray'
+          weight='300'
+          className={styles.cardDescription}
+        >
+          Описание: {solution.task.description}
+        </Text>
       )}
     </div>
   )

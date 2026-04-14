@@ -9,7 +9,6 @@ const Dashboard: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.title}>Мои задачи</h1>
       {!isLoading ? (
         <KanbanBoard solutions={solutions} />
       ) : (
