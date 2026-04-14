@@ -34,7 +34,6 @@ export const TAB_CONFIG: ITabConfig[] = [
   },
   {
     name: 'Дашборд',
-    // component: toDashboard,
     role: 'student',
   },
 ]

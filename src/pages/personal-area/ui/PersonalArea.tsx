@@ -19,9 +19,7 @@ const PersonalArea: FC = (): ReactNode => {
     [role],
   )
 
-  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(
-    tabs[0] ?? null,
-  )
+  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(null)
 
   const handleTabClick = (tab: ITabConfig) => {
     setCurrentTab(tab)
