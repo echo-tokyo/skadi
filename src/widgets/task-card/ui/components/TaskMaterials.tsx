@@ -4,7 +4,7 @@ import styles from '../styles.module.scss'
 const TaskMaterials = () => {
   return (
     <div className={styles.card}>
-      <Text size='20' weight='bold'>
+      <Text size='20' weight='600'>
         Материалы
       </Text>
       <div className={styles.cardFields}>

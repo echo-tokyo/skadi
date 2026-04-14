@@ -42,7 +42,7 @@ const RoleManagement = () => {
 
   return (
     <>
-      <Text weight='bold' size='20'>
+      <Text weight='600' size='20'>
         Управление ролями
       </Text>
       <div className={actions}>

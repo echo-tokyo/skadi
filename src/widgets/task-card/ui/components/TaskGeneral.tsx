@@ -28,7 +28,7 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
 
   return (
     <div className={styles.card}>
-      <Text size='20' weight='bold'>
+      <Text size='20' weight='600'>
         Общая информация
       </Text>
       <div className={styles.cardFields}>

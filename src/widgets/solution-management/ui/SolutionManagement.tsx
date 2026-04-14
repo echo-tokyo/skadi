@@ -30,7 +30,7 @@ const SolutionManagement = () => {
 
   return (
     <>
-      <Text weight='bold' size='20'>
+      <Text weight='600' size='20'>
         Решения учеников
       </Text>
       <div className={actions}>

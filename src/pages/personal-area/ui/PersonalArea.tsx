@@ -39,7 +39,7 @@ const PersonalArea: FC = (): ReactNode => {
     <div className={styles.wrapper}>
       <div className={styles.left}>
         <div className={styles.leftItems}>
-          <Text weight='bold' size='20'>
+          <Text weight='600' size='20'>
             Личный кабинет
           </Text>
           {tabs.map((tab) => (
