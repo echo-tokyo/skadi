@@ -11,7 +11,7 @@ const Dashboard: FC = () => {
     <div className={styles.wrapper}>
       <h1 className={styles.title}>Мои задачи</h1>
       {!isLoading ? (
-        <KanbanBoard initialSolutions={solutions} />
+        <KanbanBoard solutions={solutions} />
       ) : (
         <Skeleton height={'100%'} />
       )}

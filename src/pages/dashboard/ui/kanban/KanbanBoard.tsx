@@ -1,21 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { useStudentUpdateSolutionStatus } from '@/features/update-solution'
 import { TSolution, TStatusId } from '@/shared/model'
-import { KANBAN_COLUMNS, KanbanColumnConfig } from '../../config/columns'
+import { KANBAN_COLUMNS } from '../../config/columns'
 import { KanbanColumn } from './KanbanColumn'
 import styles from '../styles.module.scss'
 
-const COLUMN_MAP = Object.fromEntries(
-  KANBAN_COLUMNS.map((c) => [c.id, c]),
-) as Record<TStatusId, KanbanColumnConfig>
-
 interface IKanbanBoardProps {
-  initialSolutions: TSolution[]
+  solutions: TSolution[]
 }
 
-export const KanbanBoard = ({ initialSolutions }: IKanbanBoardProps) => {
-  const [solutions, setSolutions] = useState<TSolution[]>(initialSolutions)
+const EMPTY_ARRAY: TSolution[] = []
+export const KanbanBoard = ({ solutions }: IKanbanBoardProps) => {
   const { submit: updateStatus } = useStudentUpdateSolutionStatus()
 
   useEffect(() => {
@@ -27,26 +23,8 @@ export const KanbanBoard = ({ initialSolutions }: IKanbanBoardProps) => {
 
         const cardId = source.data.cardId as number
         const newColumnId = dropTarget.data.columnId as TStatusId
-        const column = COLUMN_MAP[newColumnId]
-        if (!column) return
 
-        let snapshot: TSolution[] = []
-
-        setSolutions((prev) => {
-          snapshot = prev
-          return prev.map((s) =>
-            s.id === cardId
-              ? {
-                  ...s,
-                  status: { ...s.status, id: newColumnId, name: column.title },
-                }
-              : s,
-          )
-        })
-
-        updateStatus({ id: cardId, status_id: newColumnId }).then((success) => {
-          if (!success) setSolutions(snapshot)
-        })
+        updateStatus({ id: cardId, status_id: newColumnId })
       },
     })
   }, [])
@@ -70,7 +48,7 @@ export const KanbanBoard = ({ initialSolutions }: IKanbanBoardProps) => {
           key={col.id}
           id={col.id}
           title={col.title}
-          cards={solutionsByColumn[col.id] ?? []}
+          cards={solutionsByColumn[col.id] ?? EMPTY_ARRAY}
         />
       ))}
     </div>

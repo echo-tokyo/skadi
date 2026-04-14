@@ -11,7 +11,12 @@ interface IKanbanColumnProps {
   cards: TSolution[]
 }
 
-export const KanbanColumn = memo(({ id, title, cards }: IKanbanColumnProps) => {
+interface IKanbanColumnBodyProps {
+  id: TStatusId
+  cards: TSolution[]
+}
+
+const KanbanColumnBody = memo(({ id, cards }: IKanbanColumnBodyProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [isDraggedOver, setIsDraggedOver] = useState(false)
 
@@ -31,20 +36,28 @@ export const KanbanColumn = memo(({ id, title, cards }: IKanbanColumnProps) => {
   }, [id])
 
   return (
+    <div
+      ref={ref}
+      className={`${styles.columnBody} ${isDraggedOver ? styles.columnBodyOver : ''}`}
+    >
+      {cards.map((solution) => (
+        <KanbanCard key={solution.id} solution={solution} columnId={id} />
+      ))}
+      {cards.length === 0 && <p className={styles.columnEmpty}>Нет задач</p>}
+    </div>
+  )
+})
+
+KanbanColumnBody.displayName = 'KanbanColumnBody'
+
+export const KanbanColumn = memo(({ id, title, cards }: IKanbanColumnProps) => {
+  return (
     <div className={styles.column}>
       <div className={styles.columnHeader}>
         <span className={styles.columnTitle}>{title}</span>
         <span className={styles.columnCount}>{cards.length}</span>
       </div>
-      <div
-        ref={ref}
-        className={`${styles.columnBody} ${isDraggedOver ? styles.columnBodyOver : ''}`}
-      >
-        {cards.map((solution) => (
-          <KanbanCard key={solution.id} solution={solution} columnId={id} />
-        ))}
-        {cards.length === 0 && <p className={styles.columnEmpty}>Нет задач</p>}
-      </div>
+      <KanbanColumnBody id={id} cards={cards} />
     </div>
   )
 })
