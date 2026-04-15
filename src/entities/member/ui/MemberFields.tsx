@@ -150,7 +150,7 @@ const MemberFields = ({
             key={name}
             {...commonProps}
             title={title}
-            value={fieldsData[name]}
+            value={fieldsData[name] ?? ''}
             onChange={onChange}
           />
         )

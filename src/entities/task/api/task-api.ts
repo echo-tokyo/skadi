@@ -16,7 +16,7 @@ export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createTask: builder.mutation<ICreateTaskResponse, ICreateTaskRequest>({
       query: (data) => ({
-        url: '/teacher/task',
+        url: '/task',
         method: 'POST',
         body: data,
       }),
@@ -24,7 +24,7 @@ export const taskApi = baseApi.injectEndpoints({
     }),
     updateTask: builder.mutation<IUpdateTaskResponse, IUpdateTaskRequest>({
       query: ({ id, ...data }) => ({
-        url: `/teacher/task/${id}`,
+        url: `/task/${id}`,
         method: 'PATCH',
         body: data,
       }),
@@ -34,7 +34,7 @@ export const taskApi = baseApi.injectEndpoints({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
         return {
-          url: '/teacher/task',
+          url: '/task',
           method: 'GET',
           params: {
             ...rest,

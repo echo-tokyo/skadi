@@ -5,8 +5,8 @@ export const classSchema = z.object({
     .string()
     .min(1, 'Обязательное поле')
     .max(50, 'Максимум 50 символов'),
-  teacher: z.string(),
-  students: z.array(z.string()),
+  teacher: z.string().optional(),
+  students: z.array(z.string()).optional(),
   schedule: z.string().max(100, 'Максимум 100 символов'),
 })
 

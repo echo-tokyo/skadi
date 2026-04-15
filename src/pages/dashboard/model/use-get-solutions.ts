@@ -1,10 +1,10 @@
-import { useGetSolutionForStudentQuery } from '@/entities/solution'
+import { useGetSolutionsForStudentQuery } from '@/entities/solution'
 import { getErrorMessage } from '@/shared/api'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 
 export const useGetSolutions = () => {
-  const { data, isError, error, isLoading } = useGetSolutionForStudentQuery()
+  const { data, isError, error, isLoading } = useGetSolutionsForStudentQuery()
 
   useEffect(() => {
     if (isError) {

@@ -30,7 +30,7 @@ export const classApi = baseApi.injectEndpoints({
     }),
     createClass: builder.mutation<IClass, IClassRequest>({
       query: (data) => ({
-        url: '/admin/class',
+        url: '/class',
         method: 'POST',
         body: data,
       }),
@@ -43,7 +43,7 @@ export const classApi = baseApi.injectEndpoints({
     }),
     editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
       query: ({ id, data }) => ({
-        url: `/admin/class/${id}`,
+        url: `/class/${id}`,
         method: 'PATCH',
         body: data,
       }),
@@ -56,7 +56,7 @@ export const classApi = baseApi.injectEndpoints({
     }),
     deleteClass: builder.mutation<void, number>({
       query: (id) => ({
-        url: `admin/class/${id}`,
+        url: `/class/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Class', 'Member'],

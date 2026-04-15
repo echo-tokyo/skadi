@@ -1,6 +1,6 @@
 export type TRole = 'admin' | 'teacher' | 'student'
 
-type TContact = { email: string; phone: string }
+type TContact = { email?: string; phone?: string }
 
 type TTeacherProfile = Omit<TProfile, 'class'>
 

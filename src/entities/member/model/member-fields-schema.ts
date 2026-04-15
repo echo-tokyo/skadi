@@ -11,7 +11,7 @@ export const memberBaseSchema = z.object({
     .string()
     .min(1, 'Обязательное поле')
     .max(150, 'Максимум 150 символов'),
-  class: z.string(),
+  class: z.string().optional(),
   address: z.string().max(200, 'Максимум 200 символов'),
   email: z.email('Некорректный email').or(z.literal('')),
   phone: phoneSchema,

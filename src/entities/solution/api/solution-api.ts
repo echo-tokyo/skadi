@@ -20,14 +20,14 @@ export const solutionApi = baseApi.injectEndpoints({
       { id: number; data: IUpdateSolutionByStudentRequest }
     >({
       query: ({ data, id }) => ({
-        url: `/student/solution/${id}`,
+        url: `/solution/for-student/${id}`,
         method: 'PATCH',
         body: data,
       }),
       async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           solutionApi.util.updateQueryData(
-            'getSolutionForStudent',
+            'getSolutionsForStudent',
             undefined,
             (draft) => {
               if (data.status_id === undefined) return
@@ -50,7 +50,7 @@ export const solutionApi = baseApi.injectEndpoints({
       { id: number; data: IUpdateSolutionByTeacherRequest }
     >({
       query: ({ data, id }) => ({
-        url: `/teacher/solution/${id}`,
+        url: `/solution/for-teacher/${id}`,
         method: 'PATCH',
         body: data,
       }),
@@ -59,7 +59,7 @@ export const solutionApi = baseApi.injectEndpoints({
 
     getSolutionById: builder.query<IGetSolutionByIdResponse, number>({
       query: (id) => ({
-        url: `/solution/get/${id}`,
+        url: `solution/${id}`,
         method: 'GET',
       }),
       providesTags: (_result, _error, id) => [{ type: 'Solution', id }],
@@ -73,7 +73,7 @@ export const solutionApi = baseApi.injectEndpoints({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
         return {
-          url: '/teacher/solution',
+          url: '/solution/for-teacher',
           method: 'GET',
           params: {
             ...rest,
@@ -86,9 +86,9 @@ export const solutionApi = baseApi.injectEndpoints({
       providesTags: ['Solution'],
     }),
 
-    getSolutionForStudent: builder.query<IGetSolutionsResponse, void>({
+    getSolutionsForStudent: builder.query<IGetSolutionsResponse, void>({
       query: () => ({
-        url: '/student/solution',
+        url: '/solution/for-student',
         method: 'GET',
       }),
       providesTags: ['Solution'],
@@ -101,5 +101,5 @@ export const {
   useGetSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
-  useGetSolutionForStudentQuery,
+  useGetSolutionsForStudentQuery,
 } = solutionApi
