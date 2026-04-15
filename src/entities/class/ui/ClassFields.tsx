@@ -96,7 +96,7 @@ const ClassFields = ({
         description={errors['teacher']?.message}
         options={teacherField.data}
         selectedOptions={teacherField.selectedOptions}
-        value={teacher}
+        value={teacher ?? ''}
         searchable
         onLoadMore={teacherField.onLoadMore}
         hasMore={teacherField.hasMore}
@@ -118,7 +118,7 @@ const ClassFields = ({
         description={errors['students']?.message}
         options={studentField.data}
         selectedOptions={studentField.selectedOptions}
-        value={students}
+        value={students ?? []}
         searchable
         onLoadMore={studentField.onLoadMore}
         hasMore={studentField.hasMore}

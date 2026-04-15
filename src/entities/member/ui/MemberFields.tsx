@@ -114,7 +114,7 @@ const MemberFields = ({
               isLoadingMore={classField.isLoadingMore}
               onLoadMore={classField.onLoadMore}
               onSearchChange={classField.onSearchChange}
-              value={fieldsData[name]}
+              value={fieldsData[name] ?? ''}
               onChange={onChange}
             />
           )
@@ -126,7 +126,7 @@ const MemberFields = ({
             label={title}
             placeholder='Выберите'
             options={ROLE_OPTIONS}
-            value={fieldsData[name]}
+            value={fieldsData[name] ?? ''}
             onChange={onChange}
           />
         )
@@ -139,7 +139,7 @@ const MemberFields = ({
             label={title}
             placeholder='Ввод..'
             resize='none'
-            value={fieldsData[name]}
+            value={fieldsData[name] ?? ''}
             onChange={onChange}
           />
         )
