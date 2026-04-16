@@ -28,6 +28,7 @@ export const classApi = baseApi.injectEndpoints({
       infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Class'],
     }),
+
     createClass: builder.mutation<IClass, IClassRequest>({
       query: (data) => ({
         url: '/class',
@@ -35,12 +36,8 @@ export const classApi = baseApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ['Class', 'Member'],
-      // invalidatesTags: (_result, _error, arg) => {
-      //   const tags: ('Class' | 'Member')[] = ['Class']
-      //   if (arg.students.length > 0) tags.push('Member')
-      //   return tags
-      // },
     }),
+
     editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
       query: ({ id, data }) => ({
         url: `/class/${id}`,
@@ -48,12 +45,8 @@ export const classApi = baseApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ['Class', 'Member'],
-      // invalidatesTags: (_result, _error, arg) => {
-      //   const tags: ('Class' | 'Member')[] = ['Class']
-      //   if (arg.data.students.length > 0) tags.push('Member')
-      //   return tags
-      // },
     }),
+
     deleteClass: builder.mutation<void, number>({
       query: (id) => ({
         url: `/class/${id}`,
