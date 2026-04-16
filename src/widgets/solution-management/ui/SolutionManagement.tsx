@@ -54,6 +54,7 @@ const SolutionManagement = () => {
           value={searchValue}
         />
         <Select
+          label='Фильтровать по:'
           options={ARCHIVED_OPTIONS}
           value={statusArchived}
           onChange={(val) => setStatusArchived(val)}
