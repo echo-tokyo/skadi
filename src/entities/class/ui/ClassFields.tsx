@@ -45,11 +45,15 @@ const ClassFields = ({
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  useImperativeHandle(ref, () => ({
-    validate: () => trigger(),
-    getFieldsData: () => getValues(),
-    reset: () => reset(),
-  }), [trigger, reset, getValues])
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate: () => trigger(),
+      getFieldsData: () => getValues(),
+      reset: () => reset(),
+    }),
+    [trigger, reset, getValues],
+  )
 
   return (
     <div className={styles.wrapper}>
@@ -112,7 +116,7 @@ const ClassFields = ({
             hasMore={studentField.hasMore}
             isLoadingMore={studentField.isLoadingMore}
             onSearchChange={studentField.onSearchChange}
-            onChange={field.onChange}
+            onChange={(val) => field.onChange([...val].sort())}
           />
         )}
       />

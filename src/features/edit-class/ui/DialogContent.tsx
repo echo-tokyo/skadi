@@ -52,6 +52,12 @@ const DialogContent = (props: DialogContentProps) => {
     [classData.students],
   )
 
+  const mergedStudentOptions = useMemo<SelectOption[]>(() => {
+    const map = new Map(seedStudentOptions.map((o) => [o.value, o]))
+    studentOptions.forEach((o) => map.set(o.value, o))
+    return [...map.values()]
+  }, [seedStudentOptions, studentOptions])
+
   return (
     <ClassFields
       ref={classFieldsRef}
@@ -66,7 +72,7 @@ const DialogContent = (props: DialogContentProps) => {
         onSearchChange: onTeacherSearchChange,
       }}
       studentField={{
-        data: studentOptions,
+        data: mergedStudentOptions,
         selectedOptions: seedStudentOptions,
         hasMore: hasNextStudentsPage,
         isLoadingMore: isFetchingNextStudentsPage,

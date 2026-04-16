@@ -22,6 +22,8 @@ const DialogContent = ({
     onSearchChange,
   } = useMemberSelectOptions('student')
 
+  // TODO: добавить selectedOptions после обновления бэка
+
   return (
     <TaskFields
       ref={ref}
