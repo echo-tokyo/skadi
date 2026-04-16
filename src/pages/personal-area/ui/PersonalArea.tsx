@@ -6,25 +6,33 @@ import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
 import { useNavigate } from 'react-router'
 import { useLogout } from '@/features/authorization'
+import { TRole } from '@/shared/model'
+
+const getTabFromLocalStorage = (role: TRole): ITabConfig | null => {
+  const savedName = localStorage.getItem('saved-tab')
+  return TAB_CONFIG.find((tab) => tab.name === savedName && tab.role === role) ?? null
+}
 
 const PersonalArea: FC = (): ReactNode => {
   const user = useAppSelector(selectAuthenticatedUser)
   const role = user.role
   const navigate = useNavigate()
   const { logout } = useLogout()
-  const nav = useNavigate()
 
   const tabs = useMemo(
     () => TAB_CONFIG.filter((tab) => tab.role === role),
     [role],
   )
 
-  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(null)
+  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(
+    () => getTabFromLocalStorage(role),
+  )
 
   const handleTabClick = (tab: ITabConfig) => {
     setCurrentTab(tab)
+    localStorage.setItem('saved-tab', tab.name)
     if (role === 'student' && tab.name === 'Дашборд') {
-      nav('/personal-area/dashboard')
+      navigate('/personal-area/dashboard')
     }
   }
 
