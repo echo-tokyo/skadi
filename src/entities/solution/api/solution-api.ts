@@ -93,6 +93,14 @@ export const solutionApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Solution'],
     }),
+
+    deleteSolution: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/solution/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Solution'],
+    }),
   }),
 })
 
@@ -102,4 +110,5 @@ export const {
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
   useGetSolutionsForStudentQuery,
+  useDeleteSolutionMutation,
 } = solutionApi
