@@ -7,13 +7,18 @@ export type {
 } from './model/types'
 
 export {
-  memberFullSchema,
-  memberBaseSchema,
+  studentSchema,
+  teacherSchema,
+  studentFullSchema,
+  teacherFullSchema,
 } from './model/member-fields-schema'
 export { useMemberSelectOptions } from './model/use-member-select-options'
 export type {
-  TMemberFullSchema,
-  TMemberBaseSchema,
+  TMemberFormData,
+  TStudentSchema,
+  TTeacherSchema,
+  TStudentFullSchema,
+  TTeacherFullSchema,
 } from './model/member-fields-schema'
 
 export { BASE_DISABLED_FIELDS } from './config/fields-config'

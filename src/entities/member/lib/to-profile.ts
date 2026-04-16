@@ -1,7 +1,7 @@
 import { TProfile } from '@/shared/model'
-import { TMemberFullSchema } from '../model/member-fields-schema'
+import { TMemberFormData } from '../model/member-fields-schema'
 
-export const toProfile = (data: TMemberFullSchema): Omit<TProfile, 'id'> => ({
+export const toProfile = (data: TMemberFormData): Omit<TProfile, 'id'> => ({
   fullname: data.fullname,
   address: data.address,
   contact: { email: data.email, phone: data.phone },

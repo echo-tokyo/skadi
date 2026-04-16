@@ -1,11 +1,11 @@
 import {
   ICreateMemberRequest,
-  TMemberFullSchema,
+  TMemberFormData,
   toProfile,
 } from '@/entities/member'
 
 export const transformToRequest = (
-  data: TMemberFullSchema,
+  data: TMemberFormData,
 ): ICreateMemberRequest => ({
   class_id: data.class ? Number(data.class) : undefined,
   username: data.username,

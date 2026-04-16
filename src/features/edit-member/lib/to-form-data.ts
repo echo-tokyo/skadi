@@ -1,6 +1,6 @@
-import { IMember, TMemberFullSchema } from '@/entities/member'
+import { IMember, TMemberFormData } from '@/entities/member'
 
-export const toFormData = (member: IMember): TMemberFullSchema => ({
+export const toFormData = (member: IMember): TMemberFormData => ({
   fullname: member.profile.fullname ?? '',
   role: member.role,
   username: member.username,

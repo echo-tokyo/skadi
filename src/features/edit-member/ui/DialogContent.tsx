@@ -1,21 +1,15 @@
 import { useClassSelectOptions } from '@/entities/class'
-import {
-  IMemberFieldsRef,
-  memberBaseSchema,
-  MemberFields,
-  TMemberFullSchema,
-} from '@/entities/member'
+import { IMemberFieldsRef, MemberFields, TMemberFormData } from '@/entities/member'
 import { memo, Ref } from 'react'
 
 interface IDialogContentProps {
-  fieldData: TMemberFullSchema
-  disabledFields: Array<keyof TMemberFullSchema>
+  fieldData: TMemberFormData
   ref: Ref<IMemberFieldsRef>
   onDirtyChange?: (isDirty: boolean) => void
 }
 
 const DialogContent = (props: IDialogContentProps) => {
-  const { ref: formRef, onDirtyChange, fieldData, disabledFields } = props
+  const { ref: formRef, onDirtyChange, fieldData } = props
 
   const {
     fetchNextPage,
@@ -28,9 +22,8 @@ const DialogContent = (props: IDialogContentProps) => {
   return (
     <MemberFields
       ref={formRef}
-      schema={memberBaseSchema}
+      mode='update'
       onDirtyChange={onDirtyChange}
-      disabledFields={disabledFields}
       fieldData={fieldData}
       classField={{
         data: options,

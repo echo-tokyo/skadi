@@ -6,12 +6,11 @@ const phoneSchema = z
   .regex(/^\+?[0-9\s\-()]{11,20}$/, 'Некорректный номер телефона')
   .or(z.literal(''))
 
-export const memberBaseSchema = z.object({
+const memberBaseSchema = z.object({
   fullname: z
     .string()
     .min(1, 'Обязательное поле')
     .max(150, 'Максимум 150 символов'),
-  class: z.string().optional(),
   address: z.string().max(200, 'Максимум 200 символов'),
   email: z.email('Некорректный email').or(z.literal('')),
   phone: phoneSchema,
@@ -19,6 +18,13 @@ export const memberBaseSchema = z.object({
   parentPhone: phoneSchema,
   extra: z.string().max(500, 'Максимум 500 символов'),
 })
+
+export const teacherSchema = memberBaseSchema.describe('TeacherSchema')
+export const studentSchema = memberBaseSchema
+  .extend({
+    class: z.string().optional(),
+  })
+  .describe('StudentSchema')
 
 const memberIdentitySchema = z.object({
   role: z.enum(ROLE_VALUES, { message: 'Выберите роль' }),
@@ -35,9 +41,21 @@ const memberIdentitySchema = z.object({
     .max(40, 'Максимум 40 символов'),
 })
 
-export const memberFullSchema = z.object({
-  ...memberBaseSchema.shape,
-  ...memberIdentitySchema.shape,
-})
-export type TMemberBaseSchema = z.infer<typeof memberBaseSchema>
-export type TMemberFullSchema = z.infer<typeof memberFullSchema>
+export const studentFullSchema = z
+  .object({
+    ...studentSchema.shape,
+    ...memberIdentitySchema.shape,
+  })
+  .describe('StudentFullSchema')
+export const teacherFullSchema = z
+  .object({
+    ...teacherSchema.shape,
+    ...memberIdentitySchema.shape,
+  })
+  .describe('TeacherFullSchema')
+
+export type TTeacherSchema = z.infer<typeof teacherSchema>
+export type TStudentSchema = z.infer<typeof studentSchema>
+export type TTeacherFullSchema = z.infer<typeof teacherFullSchema>
+export type TStudentFullSchema = z.infer<typeof studentFullSchema>
+export type TMemberFormData = TStudentFullSchema

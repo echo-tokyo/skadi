@@ -1,11 +1,11 @@
 import {
   IUpdateMemberRequest,
-  TMemberFullSchema,
+  TMemberFormData,
   toProfile,
 } from '@/entities/member'
 
 export const transformToUpdateRequest = (
-  data: TMemberFullSchema,
+  data: TMemberFormData,
 ): IUpdateMemberRequest => ({
   class_id: Number(data.class),
   profile: toProfile(data),

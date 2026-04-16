@@ -1,7 +1,7 @@
-import { TMemberFullSchema } from '../model/member-fields-schema'
+import { TMemberFormData } from '../model/member-fields-schema'
 
 type TInputFieldName = Exclude<
-  keyof TMemberFullSchema,
+  keyof TMemberFormData,
   'role' | 'extra' | 'class'
 >
 
@@ -11,7 +11,7 @@ export type TFieldConfig =
   | { type: 'select'; name: 'class'; title: string; required?: boolean }
   | { type: 'textarea'; name: 'extra'; title: string; required?: boolean }
 
-export const INITIAL_FIELDS_VALUES: TMemberFullSchema = {
+export const INITIAL_FIELDS_VALUES: TMemberFormData = {
   fullname: '',
   role: 'student',
   class: '',
@@ -39,7 +39,7 @@ export const FIELD_CONFIG: TFieldConfig[] = [
   { type: 'textarea', name: 'extra', title: 'Дополнительная информация' },
 ]
 
-export const BASE_DISABLED_FIELDS: Array<keyof TMemberFullSchema> = [
+export const BASE_DISABLED_FIELDS: Array<keyof TMemberFormData> = [
   'role',
   'username',
   'password',

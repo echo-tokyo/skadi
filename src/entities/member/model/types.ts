@@ -1,5 +1,5 @@
 import { TClass, TPagination, TProfile, TRole } from '@/shared/model'
-import { TMemberFullSchema } from './member-fields-schema'
+import { TMemberFormData } from './member-fields-schema'
 
 export interface IMember {
   class?: TClass
@@ -36,6 +36,6 @@ export interface IMembersQuery {
 
 export interface IMemberFieldsRef {
   validate: () => Promise<boolean>
-  getFieldsData: () => TMemberFullSchema
+  getFieldsData: () => TMemberFormData
   reset: () => void
 }
