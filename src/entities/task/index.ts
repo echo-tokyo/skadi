@@ -2,6 +2,7 @@ export {
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useGetTasksInfiniteQuery,
+  useDeleteTaskMutation,
 } from './api/task-api'
 export type {
   ICreateTaskRequest,

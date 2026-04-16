@@ -22,6 +22,7 @@ export const taskApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
+
     updateTask: builder.mutation<IUpdateTaskResponse, IUpdateTaskRequest>({
       query: ({ id, ...data }) => ({
         url: `/task/${id}`,
@@ -30,6 +31,7 @@ export const taskApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Task'],
     }),
+
     getTasks: builder.infiniteQuery<IGetTasksResponse, IGetTasksQuery, number>({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
@@ -46,6 +48,14 @@ export const taskApi = baseApi.injectEndpoints({
       infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Task'],
     }),
+
+    deleteTask: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/task/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Task'],
+    }),
   }),
 })
 
@@ -53,4 +63,5 @@ export const {
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useGetTasksInfiniteQuery,
+  useDeleteTaskMutation,
 } = taskApi
