@@ -19,6 +19,7 @@ interface MultiSelectInternalProps<T extends string> extends MultipleProps<T> {
 }
 
 const MultiSelect = <T extends string>({
+  ref,
   options,
   selectedOptions,
   label,
@@ -127,6 +128,7 @@ const MultiSelect = <T extends string>({
       )}
       <Popover.Root open={open} onOpenChange={setOpen}>
         <Popover.Trigger
+          ref={ref}
           id={triggerId}
           className={triggerClassName}
           disabled={disabled}

@@ -1,16 +1,8 @@
-import {
-  ReactNode,
-  memo,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import { ReactNode, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import type { Ref } from 'react'
-import { useForm, useFormState, useWatch } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Control, Resolver } from 'react-hook-form'
+import type { Resolver } from 'react-hook-form'
 import { Input, Select, Textarea } from '@/shared/ui'
 import {
   TMemberFormData,
@@ -23,7 +15,6 @@ import {
   BASE_DISABLED_FIELDS,
   FIELD_CONFIG,
   INITIAL_FIELDS_VALUES,
-  TFieldConfig,
 } from '../config/fields-config'
 import styles from './styles.module.scss'
 import { ROLE_OPTIONS } from '@/shared/config'
@@ -38,124 +29,6 @@ interface IMemberFormProps {
   onDirtyChange?: (isDirty: boolean) => void
 }
 
-interface IFieldItemProps {
-  field: TFieldConfig
-  control: Control<TMemberFormData>
-  disabled: boolean
-  onChange: (name: keyof TMemberFormData, value: string) => void
-  classField: TPaginatedSelectField
-}
-
-const FieldItem = memo(
-  ({
-    field,
-    control,
-    disabled,
-    onChange,
-    classField,
-  }: IFieldItemProps): ReactNode => {
-    const { name, title, required } = field
-
-    const value = useWatch({ control, name }) ?? ''
-    const { errors } = useFormState({ control, name })
-    const fieldError = errors[name]
-
-    const commonProps = {
-      required,
-      fluid: true,
-      disabled,
-      isValid: !fieldError,
-      description: fieldError?.message as string | undefined,
-    }
-
-    const handleChange = useCallback(
-      (v: string) => onChange(name, v),
-      [name, onChange],
-    )
-
-    switch (field.type) {
-      case 'select':
-        if (field.name === 'class') {
-          return (
-            <Select
-              {...commonProps}
-              label={title}
-              placeholder='Выберите'
-              options={classField.data}
-              searchable
-              hasMore={classField.hasMore}
-              isLoadingMore={classField.isLoadingMore}
-              onLoadMore={classField.onLoadMore}
-              onSearchChange={classField.onSearchChange}
-              value={value}
-              onChange={handleChange}
-            />
-          )
-        }
-        return (
-          <Select
-            {...commonProps}
-            label={title}
-            placeholder='Выберите'
-            options={ROLE_OPTIONS}
-            value={value}
-            onChange={handleChange}
-          />
-        )
-
-      case 'textarea':
-        return (
-          <Textarea
-            {...commonProps}
-            label={title}
-            placeholder='Ввод..'
-            resize='none'
-            value={value}
-            onChange={handleChange}
-          />
-        )
-
-      case 'input':
-        return (
-          <Input
-            {...commonProps}
-            title={title}
-            value={value}
-            onChange={handleChange}
-          />
-        )
-
-      default:
-        return null
-    }
-  },
-
-  (prev, next) => {
-    if (
-      prev.field !== next.field ||
-      prev.control !== next.control ||
-      prev.disabled !== next.disabled ||
-      prev.onChange !== next.onChange
-    ) {
-      return false
-    }
-
-    if (prev.field.name === 'class') {
-      return (
-        prev.classField.data === next.classField.data &&
-        prev.classField.hasMore === next.classField.hasMore &&
-        prev.classField.isLoadingMore === next.classField.isLoadingMore &&
-        prev.classField.onLoadMore === next.classField.onLoadMore &&
-        prev.classField.onSearchChange === next.classField.onSearchChange
-      )
-    }
-
-    return true
-  },
-)
-
-FieldItem.displayName = 'FieldItem'
-
 const MemberFields = ({
   mode,
   fieldData = INITIAL_FIELDS_VALUES,
@@ -163,11 +36,6 @@ const MemberFields = ({
   ref,
   classField,
 }: IMemberFormProps): ReactNode => {
-  const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
-
-  const hasAttemptedValidationRef = useRef(hasAttemptedValidation)
-  hasAttemptedValidationRef.current = hasAttemptedValidation
-
   const resolver = useCallback(
     async (
       data: TMemberFormData,
@@ -194,10 +62,9 @@ const MemberFields = ({
 
   const {
     control,
-    setValue,
-    resetField,
     trigger,
     reset,
+    resetField,
     getValues,
     formState: { isDirty },
   } = useForm<TMemberFormData>({
@@ -206,6 +73,7 @@ const MemberFields = ({
   })
 
   const role = useWatch({ control, name: 'role' })
+  const disabledFields = mode === 'update' ? BASE_DISABLED_FIELDS : []
 
   const onDirtyChangeRef = useRef(onDirtyChange)
   useEffect(() => {
@@ -216,36 +84,11 @@ const MemberFields = ({
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      validate: async () => {
-        setHasAttemptedValidation(true)
-        return trigger()
-      },
-      getFieldsData: () => getValues(),
-      reset: () => {
-        reset()
-        setHasAttemptedValidation(false)
-      },
-    }),
-    [trigger, reset, getValues],
-  )
-
-  const handleFieldChange = useCallback(
-    (name: keyof TMemberFormData, value: string) => {
-      if (name === 'role' && value === 'teacher') {
-        resetField('class')
-      }
-      setValue(name, value, {
-        shouldValidate: hasAttemptedValidationRef.current,
-        shouldDirty: true,
-      })
-    },
-    [setValue, resetField],
-  )
-
-  const disabledFields = mode === 'update' ? BASE_DISABLED_FIELDS : []
+  useImperativeHandle(ref, () => ({
+    validate: () => trigger(),
+    getFieldsData: () => getValues(),
+    reset: () => reset(),
+  }), [trigger, reset, getValues])
 
   const visibleFields = FIELD_CONFIG.filter(
     (f) => !(f.name === 'class' && role === 'teacher'),
@@ -253,16 +96,113 @@ const MemberFields = ({
 
   return (
     <div className={styles.wrapper}>
-      {visibleFields.map((field) => (
-        <FieldItem
-          key={field.name}
-          field={field}
-          control={control}
-          disabled={disabledFields.includes(field.name)}
-          onChange={handleFieldChange}
-          classField={classField}
-        />
-      ))}
+      {visibleFields.map((field) => {
+        const disabled = disabledFields.includes(field.name)
+
+        if (field.type === 'select' && field.name === 'class') {
+          return (
+            <Controller
+              key={field.name}
+              control={control}
+              name='class'
+              render={({ field: f, fieldState }) => (
+                <Select
+                  ref={f.ref}
+                  label={field.title}
+                  placeholder='Выберите'
+                  fluid
+                  required={field.required}
+                  disabled={disabled}
+                  isValid={!fieldState.error}
+                  description={fieldState.error?.message}
+                  options={classField.data}
+                  searchable
+                  hasMore={classField.hasMore}
+                  isLoadingMore={classField.isLoadingMore}
+                  onLoadMore={classField.onLoadMore}
+                  onSearchChange={classField.onSearchChange}
+                  value={f.value ?? ''}
+                  onChange={f.onChange}
+                />
+              )}
+            />
+          )
+        }
+
+        if (field.type === 'select' && field.name === 'role') {
+          return (
+            <Controller
+              key={field.name}
+              control={control}
+              name='role'
+              render={({ field: f, fieldState }) => (
+                <Select
+                  ref={f.ref}
+                  label={field.title}
+                  placeholder='Выберите'
+                  fluid
+                  required={field.required}
+                  disabled={disabled}
+                  isValid={!fieldState.error}
+                  description={fieldState.error?.message}
+                  options={ROLE_OPTIONS}
+                  value={f.value ?? ''}
+                  onChange={(v) => {
+                    if (v === 'teacher') resetField('class')
+                    f.onChange(v)
+                  }}
+                />
+              )}
+            />
+          )
+        }
+
+        if (field.type === 'textarea') {
+          return (
+            <Controller
+              key={field.name}
+              control={control}
+              name={field.name}
+              render={({ field: f, fieldState }) => (
+                <Textarea
+                  ref={f.ref}
+                  label={field.title}
+                  placeholder='Ввод..'
+                  fluid
+                  required={field.required}
+                  disabled={disabled}
+                  isValid={!fieldState.error}
+                  description={fieldState.error?.message}
+                  resize='none'
+                  value={f.value as string ?? ''}
+                  onChange={f.onChange}
+                />
+              )}
+            />
+          )
+        }
+
+        return (
+          <Controller
+            key={field.name}
+            control={control}
+            name={field.name}
+            render={({ field: f, fieldState }) => (
+              <Input
+                ref={f.ref}
+                title={field.title}
+                fluid
+                required={field.required}
+                disabled={disabled}
+                isValid={!fieldState.error}
+                description={fieldState.error?.message}
+                value={f.value as string ?? ''}
+                onChange={f.onChange}
+              />
+            )}
+          />
+        )
+      })}
     </div>
   )
 }
