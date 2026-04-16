@@ -5,13 +5,13 @@ import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/api'
 import { useDebounce } from '@/shared/lib'
 
-export const useMemberSelectOptions = (role: TRole) => {
+export const useMemberSelectOptions = (role: TRole, isFree = true) => {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error } =
     useGetMembersInfiniteQuery({
-      free: true,
+      free: isFree,
       role: [role],
       'per-page': 10,
       search: debouncedSearch || undefined,

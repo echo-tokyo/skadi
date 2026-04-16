@@ -20,7 +20,7 @@ const DialogContent = ({
     hasNextPage,
     isFetchingNextPage,
     onSearchChange,
-  } = useMemberSelectOptions('student')
+  } = useMemberSelectOptions('student', false)
 
   // TODO: добавить selectedOptions после обновления бэка
 

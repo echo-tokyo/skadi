@@ -15,7 +15,7 @@ const DialogContent = ({ ref, onDirtyChange }: IDialogContentProps) => {
     hasNextPage,
     isFetchingNextPage,
     onSearchChange,
-  } = useMemberSelectOptions('student')
+  } = useMemberSelectOptions('student', false)
 
   return (
     <TaskFields

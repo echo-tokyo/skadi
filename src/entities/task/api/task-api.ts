@@ -20,7 +20,7 @@ export const taskApi = baseApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Task'],
+      invalidatesTags: ['Task', 'Solution'],
     }),
 
     updateTask: builder.mutation<IUpdateTaskResponse, IUpdateTaskRequest>({
@@ -29,7 +29,7 @@ export const taskApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ['Task'],
+      invalidatesTags: ['Task', 'Solution'],
     }),
 
     getTasks: builder.infiniteQuery<IGetTasksResponse, IGetTasksQuery, number>({
@@ -54,7 +54,7 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/task/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Task'],
+      invalidatesTags: ['Task', 'Solution'],
     }),
   }),
 })
