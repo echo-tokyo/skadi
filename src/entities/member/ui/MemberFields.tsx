@@ -1,4 +1,10 @@
-import { ReactNode, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from 'react'
 import type { Ref } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -62,7 +68,7 @@ const MemberFields = ({
 
   const {
     control,
-    trigger,
+    handleSubmit,
     reset,
     resetField,
     getValues,
@@ -84,11 +90,21 @@ const MemberFields = ({
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  useImperativeHandle(ref, () => ({
-    validate: () => trigger(),
-    getFieldsData: () => getValues(),
-    reset: () => reset(),
-  }), [trigger, reset, getValues])
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate: () =>
+        new Promise((resolve) =>
+          handleSubmit(
+            () => resolve(true),
+            () => resolve(false),
+          )(),
+        ),
+      getFieldsData: () => getValues(),
+      reset: () => reset(),
+    }),
+    [handleSubmit, reset, getValues],
+  )
 
   const visibleFields = FIELD_CONFIG.filter(
     (f) => !(f.name === 'class' && role === 'teacher'),
@@ -174,7 +190,7 @@ const MemberFields = ({
                   isValid={!fieldState.error}
                   description={fieldState.error?.message}
                   resize='none'
-                  value={f.value as string ?? ''}
+                  value={(f.value as string) ?? ''}
                   onChange={f.onChange}
                 />
               )}
@@ -196,7 +212,7 @@ const MemberFields = ({
                 disabled={disabled}
                 isValid={!fieldState.error}
                 description={fieldState.error?.message}
-                value={f.value as string ?? ''}
+                value={(f.value as string) ?? ''}
                 onChange={f.onChange}
               />
             )}
