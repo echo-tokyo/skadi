@@ -8,7 +8,6 @@ import (
 
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/solution"
-	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
@@ -42,7 +41,7 @@ func NewSolControllerTeacher(solUCTeacher solution.UsecaseTeacher,
 // @param			id					path		string				true	"ID решения"
 // @param			updateSolutionBody	body		updateSolutionBody	true	"updateSolutionBody"
 // @success		200					{object}	entity.Solution
-// @failure		400					"неверный статус"
+// @failure		400					"статус не найден"
 // @failure		401					"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403					"доступ запрещён"
 // @failure		404					"решение не найдено"
@@ -59,6 +58,9 @@ func (c *SolControllerTeacher) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if *inputBody.StatusID == 0 {
+		inputBody.StatusID = nil
+	}
 	// data reshaping
 	newData := &entity.SolutionUpdate{
 		StatusID: inputBody.StatusID,
@@ -66,21 +68,21 @@ func (c *SolControllerTeacher) Update(ctx *fiber.Ctx) error {
 	}
 
 	solObj, err := c.solUCTeacher.Update(userClaims.ID, inputPath.ID, newData)
-	if errors.Is(err, task.ErrInvalidData) {
+	if errors.Is(err, solution.ErrInvalidData) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusBadRequest,
-			Message:    "неверный статус",
+			Message:    "статус не найден",
 		}
 	}
-	if errors.Is(err, task.ErrForbidden) {
+	if errors.Is(err, solution.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusForbidden,
 			Message:    "доступ запрещён",
 		}
 	}
-	if errors.Is(err, task.ErrNotFound) {
+	if errors.Is(err, solution.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusNotFound,
@@ -114,7 +116,7 @@ func (c *SolControllerTeacher) Delete(ctx *fiber.Ctx) error {
 		return err
 	}
 	err := c.solUCTeacher.DeleteByID(userClaims.ID, inputPath.ID)
-	if errors.Is(err, task.ErrForbidden) {
+	if errors.Is(err, solution.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusForbidden,

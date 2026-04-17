@@ -108,16 +108,12 @@ func (u *UCTeacher) GetManyForTeacher(teacherID int, search string, archived boo
 
 // getStatusToUpdate sets the new status object to updated solution.
 func (u *UCTeacher) getStatusToUpdate(solObj *entity.Solution, newStatusID int) error {
-	solObj.StatusID = newStatusID
-	// only ready and archived statuses
-	if newStatusID != _readyStatusID && newStatusID != _archivedStatusID {
-		return fmt.Errorf("%w: teacher cannot set the given status", solution.ErrInvalidData)
-	}
-	// get status object
 	var err error
+	// get status object
+	solObj.StatusID = newStatusID
 	solObj.Status, err = u.statusRepoDB.GetByID(newStatusID)
 	// if status object with such id not found
-	if errors.Is(err, solution.ErrNotFound) {
+	if errors.Is(err, status.ErrNotFound) {
 		return fmt.Errorf("%w: status: %s", solution.ErrInvalidData, err.Error())
 	}
 	if err != nil {

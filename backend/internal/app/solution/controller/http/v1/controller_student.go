@@ -8,7 +8,6 @@ import (
 
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/solution"
-	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
@@ -59,6 +58,9 @@ func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if *inputBody.StatusID == 0 {
+		inputBody.StatusID = nil
+	}
 	// data reshaping
 	newData := &entity.SolutionUpdate{
 		StatusID: inputBody.StatusID,
@@ -66,21 +68,21 @@ func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	}
 
 	solObj, err := c.solUCStudent.Update(userClaims.ID, inputPath.ID, newData)
-	if errors.Is(err, task.ErrInvalidData) {
+	if errors.Is(err, solution.ErrInvalidData) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusBadRequest,
 			Message:    "неверный статус",
 		}
 	}
-	if errors.Is(err, task.ErrForbidden) {
+	if errors.Is(err, solution.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusForbidden,
 			Message:    "доступ запрещён",
 		}
 	}
-	if errors.Is(err, task.ErrNotFound) {
+	if errors.Is(err, solution.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusNotFound,

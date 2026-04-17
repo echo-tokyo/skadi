@@ -7,7 +7,6 @@ import (
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/solution"
 	"skadi/backend/internal/app/status"
-	"skadi/backend/internal/app/task"
 )
 
 // Ensure UCStudent implements interfaces.
@@ -51,7 +50,8 @@ func (u *UCStudent) Update(studID, solutionID int,
 		return nil, fmt.Errorf("get full solution: %w", err)
 	}
 	if studID != solObj.StudentID {
-		return nil, fmt.Errorf("%w: user (student) is not a solution owner", task.ErrForbidden)
+		return nil, fmt.Errorf("%w: user (student) is not a solution owner",
+			solution.ErrForbidden)
 	}
 
 	newData.Grade = nil
@@ -82,7 +82,7 @@ func (u *UCStudent) getStatusToUpdate(solObj *entity.Solution, newStatusID int) 
 	var err error
 	solObj.Status, err = u.statusRepoDB.GetByID(newStatusID)
 	// if status object with such id not found
-	if errors.Is(err, task.ErrNotFound) {
+	if errors.Is(err, status.ErrNotFound) {
 		return fmt.Errorf("%w: status: %s", solution.ErrInvalidData, err.Error())
 	}
 	if err != nil {
