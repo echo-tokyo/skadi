@@ -99,10 +99,16 @@ func (r *RepoDB) Update(classID int, newData *entity.ClassUpdate) error {
 	// set new schedule
 	if newData.Schedule != nil {
 		updates["schedule"] = newData.Schedule
+		if *newData.Schedule == "" {
+			updates["schedule"] = nil
+		}
 	}
 	// set new teacher ID
 	if newData.TeacherID != nil {
 		updates["teacher_id"] = newData.TeacherID
+		if *newData.TeacherID == 0 {
+			updates["teacher_id"] = nil
+		}
 	}
 
 	return r.dbStorage.Transaction(func(tx *gorm.DB) error {

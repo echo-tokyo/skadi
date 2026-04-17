@@ -132,7 +132,7 @@ func (u *UCAdminClient) ListFull(search string, page *entity.Pagination) ([]enti
 // setTeacherProfile sets teacher profile for given class object if teacher ID is presented.
 // It returns an error if teacher with given ID not found or teacher role is not "teacher".
 func (u *UCAdminClient) setTeacherProfile(classObj *entity.Class) error {
-	if classObj.TeacherID == nil {
+	if classObj.TeacherID == nil || *classObj.TeacherID == 0 {
 		return nil
 	}
 	// get teacher object by ID
