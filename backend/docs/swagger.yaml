@@ -1120,7 +1120,7 @@ paths:
           schema:
             $ref: '#/definitions/entity.Solution'
         "400":
-          description: неверный статус
+          description: статус не найден
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "403":
