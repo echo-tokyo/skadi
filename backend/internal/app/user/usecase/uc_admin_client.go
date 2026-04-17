@@ -47,6 +47,9 @@ func (u *UCAdminClient) CreateWithProfile(userObj *entity.User) error {
 		userObj.ClassID = nil
 		userObj.Profile.ParentContact = nil
 	}
+	if *userObj.ClassID == 0 {
+		userObj.ClassID = nil
+	}
 
 	// hash password
 	hashPasswd, err := password.Encode(userObj.Password)
