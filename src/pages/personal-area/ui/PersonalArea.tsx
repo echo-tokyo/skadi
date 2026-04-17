@@ -10,6 +10,10 @@ import { TRole } from '@/shared/model'
 
 const getTabFromLocalStorage = (role: TRole): ITabConfig | null => {
   const savedName = localStorage.getItem('saved-tab')
+  if (savedName === 'Дашборд') {
+    return null
+  }
+
   return (
     TAB_CONFIG.find((tab) => tab.name === savedName && tab.role === role) ??
     null
