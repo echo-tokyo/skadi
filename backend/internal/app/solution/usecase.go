@@ -14,7 +14,8 @@ type UsecaseTeacher interface {
 	// DeleteByID deletes solution object by given ID.
 	DeleteByID(userID, solutionID int) error
 	// GetManyForTeacher returns all solutions for the teacher tasks.
-	// Search param appends condition to filter solutions by task title (substring).
+	// Search param appends condition to filter solutions
+	// by task title or student fullname (substring).
 	// StatusID param appends condition to filter solutions by status.
 	GetManyForTeacher(teacherID int, search string, statusID int,
 		page *entity.Pagination) ([]entity.Solution, error)

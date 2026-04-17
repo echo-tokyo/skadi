@@ -25,8 +25,8 @@ type updateSolutionBody struct {
 type listSolutionTeacherQuery struct {
 	// status filter
 	StatusID int `query:"status_id,omitempty" json:"status_id" validate:"omitempty,oneof=1 2 3 4" example:"2"`
-	// substring to filter data by substring (case-insensitive)
-	Search string `query:"search,omitempty" json:"search" example:"F26"`
+	// substring to filter data by task title or student fullname (case-insensitive)
+	Search string `query:"search,omitempty" json:"search" example:"HTML"`
 	// pagination params
 	entity.PaginationQuery
 }

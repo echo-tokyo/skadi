@@ -1074,8 +1074,8 @@ paths:
         minimum: 1
         name: per-page
         type: integer
-      - description: substring to filter data by substring (case-insensitive)
-        example: F26
+      - description: substring to filter data by task title or student fullname (case-insensitive)
+        example: HTML
         in: query
         name: search
         type: string

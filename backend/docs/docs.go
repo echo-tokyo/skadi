@@ -731,8 +731,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "F26",
-                        "description": "substring to filter data by substring (case-insensitive)",
+                        "example": "HTML",
+                        "description": "substring to filter data by task title or student fullname (case-insensitive)",
                         "name": "search",
                         "in": "query"
                     },
