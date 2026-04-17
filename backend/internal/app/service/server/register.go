@@ -43,7 +43,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	userUCAdminClient := useruc.NewUCAdminClient(cfg, userRepoDB, classRepoDB)
 	classUCAdminClient := classuc.NewUCAdminClient(cfg, classRepoDB, userRepoDB)
 	taskUCTeacher := taskuc.NewUCTeacher(cfg, taskRepoDB, userRepoDB)
-	solUCClient := soluc.NewUCClient(cfg, solRepoDB)
+	solUCClient := soluc.NewUCClient(cfg, solRepoDB, taskRepoDB)
 	solUCStudent := soluc.NewUCStudent(cfg, solRepoDB, statusRepoDB)
 	solUCTeacher := soluc.NewUCTeacher(cfg, solRepoDB, statusRepoDB)
 	// create controllers

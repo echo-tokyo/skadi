@@ -12,11 +12,11 @@ type solutionIDPath struct {
 
 // @description updateSolutionBody represents a data with optional body to update solution.
 type updateSolutionBody struct {
-	// new status ID
+	// new status ID (student and teacher)
 	StatusID *int `json:"status_id,omitempty" validate:"omitempty" example:"2"`
-	// new grade
+	// new grade (teacher only)
 	Grade *string `json:"grade,omitempty" validate:"omitempty,max=5" example:"5+" maxLength:"50"`
-	// new answer
+	// new answer (student only)
 	Answer *string `json:"answer,omitempty" validate:"omitempty" example:"ООП - это объектно-ориентированное программирование"`
 }
 

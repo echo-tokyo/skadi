@@ -77,13 +77,16 @@ func (r *RepoDB) GetByIDFull(id int) (*entity.Solution, error) {
 		Where(id).First(&solObj).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// solution object with such id not found
-		return nil, fmt.Errorf("solution with id: %w: %s", solution.ErrNotFound, err.Error())
+		return nil, fmt.Errorf("solution with id: %w", solution.ErrNotFound)
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	// set student and teacher profiles
 	solObj.Student = solObj.StudentUser.Profile
 	solObj.Task.Teacher = solObj.Task.TeacherUser.Profile
-	return &solObj, err // err OR nil
+	return &solObj, nil
 }
 
 // Update updates the given solution by given ID with the new data.

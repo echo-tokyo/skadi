@@ -489,16 +489,16 @@ definitions:
       solution.
     properties:
       answer:
-        description: new answer
+        description: new answer (student only)
         example: ООП - это объектно-ориентированное программирование
         type: string
       grade:
-        description: new grade
+        description: new grade (teacher only)
         example: 5+
         maxLength: 50
         type: string
       status_id:
-        description: new status ID
+        description: new status ID (student and teacher)
         example: 2
         type: integer
     type: object

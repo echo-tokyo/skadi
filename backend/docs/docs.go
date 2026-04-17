@@ -2277,18 +2277,18 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "answer": {
-                    "description": "new answer",
+                    "description": "new answer (student only)",
                     "type": "string",
                     "example": "ООП - это объектно-ориентированное программирование"
                 },
                 "grade": {
-                    "description": "new grade",
+                    "description": "new grade (teacher only)",
                     "type": "string",
                     "maxLength": 50,
                     "example": "5+"
                 },
                 "status_id": {
-                    "description": "new status ID",
+                    "description": "new status ID (student and teacher)",
                     "type": "integer",
                     "example": 2
                 }

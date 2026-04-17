@@ -23,10 +23,13 @@ type UCClient struct {
 }
 
 // NewUCClient returns a new instance of [UCClient].
-func NewUCClient(cfg *config.Config, solRepoDB solution.RepositoryDB) *UCClient {
+func NewUCClient(cfg *config.Config, solRepoDB solution.RepositoryDB,
+	taskRepoDB task.RepositoryDB) *UCClient {
+
 	return &UCClient{
-		cfg:       cfg,
-		solRepoDB: solRepoDB,
+		cfg:        cfg,
+		solRepoDB:  solRepoDB,
+		taskRepoDB: taskRepoDB,
 	}
 }
 
