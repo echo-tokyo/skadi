@@ -1,37 +1,64 @@
 import { Button, Input } from '@/shared/ui'
-import { FC, FormEvent, ReactNode, useState } from 'react'
+import { FC, ReactNode } from 'react'
 import styles from './styles.module.scss'
 import { useSignIn } from '../model/hooks/use-sign-in'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { authSchema, TAuthSchema } from '../model/schema'
 
+const { wrapper, auth } = styles
 export const SignIn: FC = (): ReactNode => {
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const { wrapper, auth } = styles
   const { signIn } = useSignIn()
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault()
-    signIn({ username, password })
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { isDirty },
+  } = useForm<TAuthSchema>({
+    defaultValues: {
+      login: '',
+      password: '',
+    },
+    resolver: zodResolver(authSchema),
+  })
+
+  const onSubmit = (): void => {
+    signIn({ username: getValues('login'), password: getValues('password') })
   }
 
   return (
     <div className={wrapper}>
-      <form className={auth} onSubmit={handleSubmit}>
-        <Input
-          title='test'
-          fluid
-          placeholder='login'
-          value={username}
-          onChange={setUsername}
+      <form className={auth} onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name='login'
+          control={control}
+          render={({ fieldState, field }) => (
+            <Input
+              title='Логин'
+              fluid
+              value={field.value}
+              onChange={field.onChange}
+              isValid={!fieldState.error}
+              description={fieldState.error?.message}
+            />
+          )}
         />
-        <Input
-          title='test'
-          fluid
-          placeholder='pass'
-          value={password}
-          onChange={setPassword}
+        <Controller
+          name='password'
+          control={control}
+          render={({ fieldState, field }) => (
+            <Input
+              title='Пароль'
+              fluid
+              value={field.value}
+              onChange={field.onChange}
+              isValid={!fieldState.error}
+              description={fieldState.error?.message}
+            />
+          )}
         />
-        <Button fluid type='submit'>
+        <Button fluid type='submit' disabled={!isDirty}>
           Войти
         </Button>
       </form>
