@@ -978,11 +978,6 @@ paths:
       description: Получение списка решений конкретного ученика.
       operationId: solution-for-student-list
       parameters:
-      - description: filter for checked solutions if true
-        example: true
-        in: query
-        name: archived
-        type: boolean
       - description: page pagination param
         example: 1
         in: query
@@ -995,6 +990,16 @@ paths:
         in: query
         minimum: 1
         name: per-page
+        type: integer
+      - description: status filter
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        example: 2
+        in: query
+        name: status_id
         type: integer
       produces:
       - application/json
@@ -1056,11 +1061,6 @@ paths:
       description: Получение списка решений для заданий конкретного преподавателя.
       operationId: solution-for-teacher-list
       parameters:
-      - description: filter for checked solutions if true
-        example: true
-        in: query
-        name: archived
-        type: boolean
       - description: page pagination param
         example: 1
         in: query
@@ -1079,6 +1079,16 @@ paths:
         in: query
         name: search
         type: string
+      - description: status filter
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        example: 2
+        in: query
+        name: status_id
+        type: integer
       produces:
       - application/json
       responses:

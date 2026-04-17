@@ -590,13 +590,6 @@ const docTemplate = `{
                 "operationId": "solution-for-student-list",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "filter for checked solutions if true",
-                        "name": "archived",
-                        "in": "query"
-                    },
-                    {
                         "minimum": 1,
                         "type": "integer",
                         "example": 1,
@@ -611,6 +604,19 @@ const docTemplate = `{
                         "example": 5,
                         "description": "per page pagination param",
                         "name": "per-page",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "integer",
+                        "example": 2,
+                        "description": "status filter",
+                        "name": "status_id",
                         "in": "query"
                     }
                 ],
@@ -707,13 +713,6 @@ const docTemplate = `{
                 "operationId": "solution-for-teacher-list",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "filter for checked solutions if true",
-                        "name": "archived",
-                        "in": "query"
-                    },
-                    {
                         "minimum": 1,
                         "type": "integer",
                         "example": 1,
@@ -735,6 +734,19 @@ const docTemplate = `{
                         "example": "F26",
                         "description": "substring to filter data by substring (case-insensitive)",
                         "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "integer",
+                        "example": 2,
+                        "description": "status filter",
+                        "name": "status_id",
                         "in": "query"
                     }
                 ],

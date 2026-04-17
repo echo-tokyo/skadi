@@ -32,11 +32,11 @@ func NewUCStudent(cfg *config.Config, solRepoDB solution.RepositoryDB,
 }
 
 // GetManyForStudent returns all student solutions.
-// It returns checked solutions if archived is true.
-func (u *UCStudent) GetManyForStudent(studID int, archived bool,
+// StatusID param appends condition to filter solutions by status.
+func (u *UCStudent) GetManyForStudent(studID int, statusID int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
-	return u.solRepoDB.GetManyForStudent(studID, archived, page)
+	return u.solRepoDB.GetManyForStudent(studID, statusID, page)
 }
 
 // Update updates the given solution by given ID with the new data.

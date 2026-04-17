@@ -23,8 +23,8 @@ type updateSolutionBody struct {
 // @description listSolutionTeacherQuery represents a data with
 // optional query-params to get solutions list for a teacher tasks.
 type listSolutionTeacherQuery struct {
-	// filter for checked solutions if true
-	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
+	// status filter
+	StatusID int `query:"status_id,omitempty" json:"status_id" validate:"omitempty,oneof=1 2 3 4" example:"2"`
 	// substring to filter data by substring (case-insensitive)
 	Search string `query:"search,omitempty" json:"search" example:"F26"`
 	// pagination params
@@ -34,8 +34,8 @@ type listSolutionTeacherQuery struct {
 // @description listSolutionStudentQuery represents a data with
 // optional query-params to get solutions list for a student.
 type listSolutionStudentQuery struct {
-	// filter for checked solutions if true
-	Archived bool `query:"archived,omitempty" json:"archived" example:"true"`
+	// status filter
+	StatusID int `query:"status_id,omitempty" json:"status_id" validate:"omitempty,oneof=1 2 3 4" example:"2"`
 	// pagination params
 	entity.PaginationQuery
 }

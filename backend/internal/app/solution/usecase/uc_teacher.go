@@ -91,11 +91,11 @@ func (u *UCTeacher) DeleteByID(userID, solutionID int) error {
 
 // GetManyForTeacher returns all solutions for the teacher tasks.
 // Search param appends condition to filter solutions by task title (substring).
-// It returns checked solutions if archived is true.
-func (u *UCTeacher) GetManyForTeacher(teacherID int, search string, archived bool,
+// StatusID param appends condition to filter solutions by status.
+func (u *UCTeacher) GetManyForTeacher(teacherID int, search string, statusID int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
-	solList, err := u.solRepoDB.GetManyForTeacher(teacherID, search, archived, page)
+	solList, err := u.solRepoDB.GetManyForTeacher(teacherID, search, statusID, page)
 	if err != nil {
 		return nil, err
 	}

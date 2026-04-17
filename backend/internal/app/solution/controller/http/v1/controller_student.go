@@ -119,7 +119,7 @@ func (c *SolControllerStudent) List(ctx *fiber.Ctx) error {
 
 	// get solutions
 	solListResp, err := c.solUCStudent.GetManyForStudent(userClaims.ID,
-		inputQuery.Archived, pageParams)
+		inputQuery.StatusID, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

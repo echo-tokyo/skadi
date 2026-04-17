@@ -153,7 +153,7 @@ func (c *SolControllerTeacher) List(ctx *fiber.Ctx) error {
 
 	// get solutions
 	solListResp, err := c.solUCTeacher.GetManyForTeacher(userClaims.ID, inputQuery.Search,
-		inputQuery.Archived, pageParams)
+		inputQuery.StatusID, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

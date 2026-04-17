@@ -16,11 +16,11 @@ type RepositoryDB interface {
 
 	// GetManyForTeacher returns all solutions for the teacher tasks.
 	// Search param appends condition to filter solutions by task title (substring).
-	// It returns checked solutions if archived is true.
-	GetManyForTeacher(teacherID int, search string, archived bool,
+	// StatusID param appends condition to filter solutions by status.
+	GetManyForTeacher(teacherID int, search string, statusID int,
 		page *entity.Pagination) ([]entity.Solution, error)
 	// GetManyForStudent returns all student solutions.
-	// It returns checked solutions if archived is true.
-	GetManyForStudent(studID int, archived bool,
+	// StatusID param appends condition to filter solutions by status.
+	GetManyForStudent(studID int, statusID int,
 		page *entity.Pagination) ([]entity.Solution, error)
 }

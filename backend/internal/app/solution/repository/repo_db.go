@@ -126,8 +126,8 @@ func (r *RepoDB) DeleteByID(id int) error {
 
 // GetManyForTeacher returns all solutions for the teacher tasks.
 // Search param appends condition to filter solutions by task title (substring).
-// It returns checked solutions if archived is true.
-func (r *RepoDB) GetManyForTeacher(teacherID int, search string, archived bool,
+// StatusID param appends condition to filter solutions by status.
+func (r *RepoDB) GetManyForTeacher(teacherID int, search string, statusID int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
 	solList := make([]entity.Solution, 0)
@@ -143,11 +143,9 @@ func (r *RepoDB) GetManyForTeacher(teacherID int, search string, archived bool,
 		Preload(_preloadStatus).
 		Joins("INNER JOIN task ON task.id = solution.task_id").
 		Where("task.teacher_id = ?", teacherID)
-	// select only checked solutions or all solutions apart of checked ones
-	if archived {
-		query = query.Where("status_id = ?", _archivedStatusID)
-	} else {
-		query = query.Where("status_id <> ?", _archivedStatusID)
+	// add filters
+	if statusID != 0 {
+		query = query.Where("status_id = ?", statusID)
 	}
 	if search != "" {
 		query = query.Where("title REGEXP ?", search)
@@ -166,8 +164,8 @@ func (r *RepoDB) GetManyForTeacher(teacherID int, search string, archived bool,
 }
 
 // GetManyForStudent returns all student solutions.
-// It returns checked solutions if archived is true.
-func (r *RepoDB) GetManyForStudent(studID int, archived bool,
+// StatusID param appends condition to filter solutions by status.
+func (r *RepoDB) GetManyForStudent(studID int, statusID int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
 	solList := make([]entity.Solution, 0)
@@ -178,11 +176,9 @@ func (r *RepoDB) GetManyForStudent(studID int, archived bool,
 		}).
 		Preload(_preloadStatus).
 		Where("student_id = ?", studID)
-	// select only checked solutions or all solutions apart of checked ones
-	if archived {
-		query = query.Where("status_id = ?", _archivedStatusID)
-	} else {
-		query = query.Where("status_id <> ?", _archivedStatusID)
+	// add filters
+	if statusID != 0 {
+		query = query.Where("status_id = ?", statusID)
 	}
 	query = query.Order(_orderByIDDESC)
 	// apply pagination if it's not nil
