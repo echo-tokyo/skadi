@@ -48,6 +48,9 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if *inputBody.ClassID == 0 {
+		inputBody.ClassID = nil
+	}
 	// data reshaping
 	userObj := &entity.User{
 		Username: inputBody.Username,
@@ -72,6 +75,7 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 			Email: inputBody.Profile.ParentContact.Email,
 		}
 	}
+
 	// create a new user
 	err := c.userUCAdmin.CreateWithProfile(userObj)
 	if errors.Is(err, user.ErrAlreadyExists) {
@@ -150,6 +154,9 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	if *inputBody.ClassID == 0 {
+		inputBody.ClassID = nil
+	}
 	// data reshaping
 	oldUser := &entity.User{
 		ClassID: inputBody.ClassID,
