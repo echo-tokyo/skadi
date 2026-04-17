@@ -37,7 +37,7 @@ export const KanbanCard = memo(({ solution, columnId }: IKanbanCardProps) => {
   return (
     <div
       ref={ref}
-      onClick={() => nav(`/personal-area/solutions/${solution.id}`)}
+      onClick={() => nav(`/personal-area/dashboard/solutions/${solution.id}`)}
       className={styles.card}
       style={{ opacity: dragging ? 0.4 : 1 }}
     >

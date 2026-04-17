@@ -10,7 +10,10 @@ import { TRole } from '@/shared/model'
 
 const getTabFromLocalStorage = (role: TRole): ITabConfig | null => {
   const savedName = localStorage.getItem('saved-tab')
-  return TAB_CONFIG.find((tab) => tab.name === savedName && tab.role === role) ?? null
+  return (
+    TAB_CONFIG.find((tab) => tab.name === savedName && tab.role === role) ??
+    null
+  )
 }
 
 const PersonalArea: FC = (): ReactNode => {
@@ -24,8 +27,8 @@ const PersonalArea: FC = (): ReactNode => {
     [role],
   )
 
-  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(
-    () => getTabFromLocalStorage(role),
+  const [currentTab, setCurrentTab] = useState<ITabConfig | null>(() =>
+    getTabFromLocalStorage(role),
   )
 
   const handleTabClick = (tab: ITabConfig) => {

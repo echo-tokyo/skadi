@@ -1,5 +1,6 @@
 import { useGetMeQuery, setUserData } from '@/entities/user'
 import { useAppDispatch, useAppSelector } from '@/shared/lib'
+import { Breadcrumbs } from '@/shared/ui'
 import { FC, useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router'
 
@@ -24,7 +25,12 @@ const ProtectedRoute: FC = () => {
   }
 
   if (isAuthenticated) {
-    return <Outlet />
+    return (
+      <>
+        <Breadcrumbs />
+        <Outlet />
+      </>
+    )
   }
 
   return <Navigate to='/authorization' replace />
