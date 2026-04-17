@@ -925,7 +925,7 @@ const docTemplate = `{
                 "tags": [
                     "task"
                 ],
-                "summary": "Получение списка заданий [Только преподаватель].",
+                "summary": "Получение списка заданий. [Только преподаватель]",
                 "operationId": "task-list",
                 "parameters": [
                     {
@@ -1027,7 +1027,7 @@ const docTemplate = `{
                 "tags": [
                     "task"
                 ],
-                "summary": "Получение задания по id [Только преподаватель].",
+                "summary": "Получение задания по id. [Только преподаватель]",
                 "operationId": "task-read",
                 "parameters": [
                     {

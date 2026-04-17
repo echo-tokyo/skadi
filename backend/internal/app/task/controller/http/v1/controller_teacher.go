@@ -92,7 +92,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(res)
 }
 
-// @summary		Получение задания по id [Только преподаватель].
+// @summary		Получение задания по id. [Только преподаватель]
 // @description	Получение всех данных о задании и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.
 // @router			/task/{id} [get]
 // @id				task-read
@@ -228,7 +228,7 @@ func (c *TaskControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
-// @summary		Получение списка заданий [Только преподаватель].
+// @summary		Получение списка заданий. [Только преподаватель]
 // @description	Получение списка заданий конкретного преподавателя.
 // @router			/task [get]
 // @id				task-list
