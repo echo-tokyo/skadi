@@ -1,9 +1,5 @@
 import { useClassSelectOptions } from '@/entities/class'
-import {
-  IMemberFieldsRef,
-  MemberFields,
-  memberFullSchema,
-} from '@/entities/member'
+import { IMemberFieldsRef, MemberFields } from '@/entities/member'
 import { memo, Ref } from 'react'
 
 interface IDialogContentProps {
@@ -25,7 +21,7 @@ const DialogContent = (props: IDialogContentProps) => {
   return (
     <MemberFields
       ref={formRef}
-      schema={memberFullSchema}
+      mode='create'
       onDirtyChange={onDirtyChange}
       classField={{
         data: options,

@@ -41,6 +41,14 @@
   }
 }
 
+.white {
+  background-color: var(--color-white);
+  color: var(--color-secondary);
+  &:hover:not(:disabled) {
+    background-color: var(--color-gray-light);
+  }
+}
+
 .invalidText {
   --input-text-color: var(--color-red);
   p {

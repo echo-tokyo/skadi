@@ -18,6 +18,9 @@ html,
   flex-direction: column;
   margin: 0 2rem;
   height: calc(100% - var(--header-height));
+  nav {
+    margin-top: 1rem;
+  }
 }
 
 * {

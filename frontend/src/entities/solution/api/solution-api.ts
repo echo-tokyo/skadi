@@ -20,30 +20,51 @@ export const solutionApi = baseApi.injectEndpoints({
       { id: number; data: IUpdateSolutionByStudentRequest }
     >({
       query: ({ data, id }) => ({
-        url: `/student/solution/${id}`,
+        url: `/solution/for-student/${id}`,
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ['Solution'],
+      async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          solutionApi.util.updateQueryData(
+            'getSolutionsForStudent',
+            undefined,
+            (draft) => {
+              if (data.status_id === undefined) return
+              const solution = draft.data.find((s) => s.id === id)
+              if (solution) solution.status.id = data.status_id
+            },
+          ),
+        )
+        try {
+          await queryFulfilled
+          dispatch(solutionApi.util.invalidateTags([{ type: 'Solution', id }]))
+        } catch {
+          patch.undo()
+        }
+      },
     }),
+
     updateSolutionByTeacher: builder.mutation<
       IUpdateSolutionByTeacherResponse,
       { id: number; data: IUpdateSolutionByTeacherRequest }
     >({
       query: ({ data, id }) => ({
-        url: `/teacher/solution/${id}`,
+        url: `/solution/for-teacher/${id}`,
         method: 'PATCH',
         body: data,
       }),
       invalidatesTags: ['Solution'],
     }),
+
     getSolutionById: builder.query<IGetSolutionByIdResponse, number>({
       query: (id) => ({
-        url: `/solution/get/${id}`,
+        url: `solution/${id}`,
         method: 'GET',
       }),
-      providesTags: ['Solution'],
+      providesTags: (_result, _error, id) => [{ type: 'Solution', id }],
     }),
+
     getSolutions: builder.infiniteQuery<
       IGetSolutionsResponse,
       IGetSolutionsQuery,
@@ -52,7 +73,7 @@ export const solutionApi = baseApi.injectEndpoints({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
         return {
-          url: '/teacher/solution',
+          url: '/solution/for-teacher',
           method: 'GET',
           params: {
             ...rest,
@@ -64,6 +85,22 @@ export const solutionApi = baseApi.injectEndpoints({
       infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Solution'],
     }),
+
+    getSolutionsForStudent: builder.query<IGetSolutionsResponse, void>({
+      query: () => ({
+        url: '/solution/for-student',
+        method: 'GET',
+      }),
+      providesTags: ['Solution'],
+    }),
+
+    deleteSolution: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/solution/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Solution'],
+    }),
   }),
 })
 
@@ -72,4 +109,6 @@ export const {
   useGetSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
+  useGetSolutionsForStudentQuery,
+  useDeleteSolutionMutation,
 } = solutionApi

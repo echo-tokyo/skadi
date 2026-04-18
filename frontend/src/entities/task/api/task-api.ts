@@ -16,25 +16,27 @@ export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createTask: builder.mutation<ICreateTaskResponse, ICreateTaskRequest>({
       query: (data) => ({
-        url: '/teacher/task',
+        url: '/task',
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Task'],
+      invalidatesTags: ['Task', 'Solution'],
     }),
+
     updateTask: builder.mutation<IUpdateTaskResponse, IUpdateTaskRequest>({
       query: ({ id, ...data }) => ({
-        url: `/teacher/task/${id}`,
+        url: `/task/${id}`,
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ['Task'],
+      invalidatesTags: ['Task', 'Solution'],
     }),
+
     getTasks: builder.infiniteQuery<IGetTasksResponse, IGetTasksQuery, number>({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
         return {
-          url: '/teacher/task',
+          url: '/task',
           method: 'GET',
           params: {
             ...rest,
@@ -46,6 +48,14 @@ export const taskApi = baseApi.injectEndpoints({
       infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Task'],
     }),
+
+    deleteTask: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/task/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Task', 'Solution'],
+    }),
   }),
 })
 
@@ -53,4 +63,5 @@ export const {
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useGetTasksInfiniteQuery,
+  useDeleteTaskMutation,
 } = taskApi

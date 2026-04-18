@@ -1,3 +1,4 @@
+import { DeleteSolutionButton } from '@/features/delete-solution'
 import { TSolution } from '@/shared/model'
 import { AccordionCard, Button } from '@/shared/ui'
 import { memo } from 'react'
@@ -21,6 +22,11 @@ export const SolutionCardItem = memo(
         ]}
         actions={
           <div className={styles.cardActions}>
+            <DeleteSolutionButton
+              id={solutionData.id}
+              studentName={solutionData.student?.fullname ?? 'Нет ученика'}
+              taskTitle={solutionData.task.title}
+            />
             <Button
               color='secondary'
               onClick={() => nav(`/personal-area/solutions/${solutionData.id}`)}

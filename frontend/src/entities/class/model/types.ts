@@ -10,9 +10,9 @@ type TClassPagination = {
 
 export interface IClassRequest {
   name: string
-  schedule: string
-  students: number[]
-  teacher_id: number
+  schedule?: string
+  students?: number[]
+  teacher_id?: number
 }
 
 export interface IClass {

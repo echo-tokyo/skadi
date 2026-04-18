@@ -1,9 +1,11 @@
-import { ReactNode, ChangeEvent, forwardRef, useId } from 'react'
+import { ReactNode, ChangeEvent, useId } from 'react'
+import type { Ref } from 'react'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
 
 interface IProps {
+  ref?: Ref<HTMLInputElement>
   value: string
   title?: string
   description?: string
@@ -17,23 +19,21 @@ interface IProps {
   onChange: (value: string) => void
 }
 
-const Input = forwardRef<HTMLInputElement, IProps>((props, ref): ReactNode => {
-  const {
-    placeholder = 'Ввод...',
-    title,
-    value,
-    disabled,
-    isValid = true,
-    description,
-    type = 'text',
-    fluid,
-    size = 'm',
-    required,
-    onChange,
-  } = props
-
-  const generatedId = useId()
-  const inputId = generatedId
+const Input = ({
+  ref,
+  placeholder = 'Ввод...',
+  title,
+  value,
+  disabled,
+  isValid = true,
+  description,
+  type = 'text',
+  fluid,
+  size = 'm',
+  required,
+  onChange,
+}: IProps): ReactNode => {
+  const inputId = useId()
   const descriptionId = `${inputId}-description`
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -86,7 +86,7 @@ const Input = forwardRef<HTMLInputElement, IProps>((props, ref): ReactNode => {
       )}
     </div>
   )
-})
+}
 
 Input.displayName = 'Input'
 

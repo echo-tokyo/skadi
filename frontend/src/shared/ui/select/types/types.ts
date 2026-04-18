@@ -1,3 +1,5 @@
+import type { Ref } from 'react'
+
 export interface SelectOption<T extends string = string> {
   label: string
   value: T
@@ -5,6 +7,7 @@ export interface SelectOption<T extends string = string> {
 }
 
 interface BaseProps<T extends string = string> {
+  ref?: Ref<HTMLButtonElement>
   options: SelectOption<T>[]
   /** Предзагруженные выбранные элементы (seed) — для форм редактирования,
    *  когда серверные данные ещё не пришли */
@@ -54,3 +57,12 @@ export interface MultipleProps<T extends string = string> extends BaseProps<T> {
 export type SelectProps<T extends string = string> =
   | SingleProps<T>
   | MultipleProps<T>
+
+export type TPaginatedSelectField = {
+  data: SelectOption[]
+  selectedOptions?: SelectOption[]
+  onSearchChange?: (query: string) => void
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
+}

@@ -3,6 +3,8 @@ export {
   useGetSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
+  useGetSolutionsForStudentQuery,
+  useDeleteSolutionMutation,
 } from './api/solution-api'
 
 export type { IGetSolutionsQuery } from './model/types'

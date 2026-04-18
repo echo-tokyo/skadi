@@ -33,7 +33,7 @@ const ClassManagement = () => {
 
   return (
     <>
-      <Text weight='bold' size='20'>
+      <Text weight='600' size='20'>
         Управление группами
       </Text>
       <div className={actions}>

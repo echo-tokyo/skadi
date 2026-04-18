@@ -21,7 +21,7 @@ const AccordionCard = ({ title, fields, actions }: IAccordionCardProps) => (
     content={
       <div className={styles.content}>
         {fields.map(({ label, value }) => (
-          <div key={label}>
+          <div key={label} className={styles.contentItem}>
             <Text size='14'>{`${label}: ${value ?? '-'}`}</Text>
             <Divider />
           </div>

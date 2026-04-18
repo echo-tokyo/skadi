@@ -28,33 +28,28 @@ export const classApi = baseApi.injectEndpoints({
       infiniteQueryOptions: paginatedInfiniteQueryOptions,
       providesTags: ['Class'],
     }),
+
     createClass: builder.mutation<IClass, IClassRequest>({
       query: (data) => ({
-        url: '/admin/class',
+        url: '/class',
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: (_result, _error, arg) => {
-        const tags: ('Class' | 'Member')[] = ['Class']
-        if (arg.students.length > 0) tags.push('Member')
-        return tags
-      },
+      invalidatesTags: ['Class', 'Member'],
     }),
+
     editClass: builder.mutation<IClass, { id: number; data: IClassRequest }>({
       query: ({ id, data }) => ({
-        url: `/admin/class/${id}`,
+        url: `/class/${id}`,
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (_result, _error, arg) => {
-        const tags: ('Class' | 'Member')[] = ['Class']
-        if (arg.data.students.length > 0) tags.push('Member')
-        return tags
-      },
+      invalidatesTags: ['Class', 'Member'],
     }),
+
     deleteClass: builder.mutation<void, number>({
       query: (id) => ({
-        url: `admin/class/${id}`,
+        url: `/class/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Class', 'Member'],

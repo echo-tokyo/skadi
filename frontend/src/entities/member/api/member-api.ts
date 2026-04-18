@@ -17,7 +17,7 @@ export const memberApi = baseApi.injectEndpoints({
       query: ({ queryArg, pageParam }) => {
         const { 'per-page': perPage, ...rest } = queryArg
         return {
-          url: '/admin/user',
+          url: '/user',
           method: 'GET',
           params: {
             ...rest,
@@ -32,7 +32,7 @@ export const memberApi = baseApi.injectEndpoints({
 
     createMember: builder.mutation<IMember, ICreateMemberRequest>({
       query: (data) => ({
-        url: '/admin/user',
+        url: '/user',
         method: 'POST',
         body: data,
       }),
@@ -48,7 +48,7 @@ export const memberApi = baseApi.injectEndpoints({
       { id: number; data: IUpdateMemberRequest }
     >({
       query: ({ id, data }) => ({
-        url: `/admin/user/${id}`,
+        url: `/user/${id}`,
         method: 'PUT',
         body: data,
       }),
@@ -61,7 +61,7 @@ export const memberApi = baseApi.injectEndpoints({
 
     deleteMember: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/admin/user/${id}`,
+        url: `/user/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Member', 'Class'],

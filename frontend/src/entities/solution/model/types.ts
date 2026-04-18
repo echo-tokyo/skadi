@@ -3,6 +3,7 @@ import {
   TProfile,
   TSolution,
   TStatus,
+  TStatusId,
   TTask,
 } from '@/shared/model'
 
@@ -32,14 +33,19 @@ export interface IUpdateSolutionByTeacherResponse {
 }
 
 export interface IUpdateSolutionByStudentRequest {
-  status_id?: number
+  status_id?: TStatusId
   answer?: string
+  grade?: string
 }
 
 export interface IUpdateSolutionByStudentResponse {
-  answer?: string
+  answer: string
+  id: string
   grade?: string
-  status_id: number
+  status?: TStatus
+  student: TProfile
+  task?: TTask
+  updated_at: string
 }
 export interface IGetSolutionsQuery {
   archived?: boolean

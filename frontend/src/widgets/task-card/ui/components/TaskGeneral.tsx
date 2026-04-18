@@ -1,6 +1,6 @@
 import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 import { TStatusValue } from '@/shared/model'
 import { TDisplayValues } from '../../model/types'
 
@@ -17,18 +17,11 @@ const noop = () => undefined
 
 const TaskGeneral = (props: ITaskGeneralSectionProps) => {
   const { displayValues, statusOptions } = props
-
-  const {
-    watch,
-    setValue,
-    formState: { errors },
-  } = useFormContext<TStatusFormFields>()
-
-  const statusValue = watch('status')
+  const { control } = useFormContext<TStatusFormFields>()
 
   return (
     <div className={styles.card}>
-      <Text size='20' weight='bold'>
+      <Text size='20' weight='600'>
         Общая информация
       </Text>
       <div className={styles.cardFields}>
@@ -53,19 +46,20 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
           disabled
           onChange={noop}
         />
-        <Select
-          label='Статус'
-          fluid
-          value={statusValue}
-          options={statusOptions}
-          onChange={(v) =>
-            setValue('status', v as TStatusValue, {
-              shouldDirty: true,
-              shouldValidate: true,
-            })
-          }
-          isValid={!errors['status']}
-          description={errors['status']?.message}
+        <Controller
+          control={control}
+          name='status'
+          render={({ field, fieldState }) => (
+            <Select
+              label='Статус'
+              fluid
+              value={field.value}
+              options={statusOptions}
+              onChange={field.onChange}
+              isValid={!fieldState.error}
+              description={fieldState.error?.message}
+            />
+          )}
         />
       </div>
     </div>

@@ -1,10 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { useDialog } from '@/shared/lib'
-import {
-  IMember,
-  BASE_DISABLED_FIELDS,
-  IMemberFieldsRef,
-} from '@/entities/member'
+import { IMember, IMemberFieldsRef } from '@/entities/member'
 import { toFormData } from '../lib/to-form-data'
 import { useEditMember } from './use-edit-member'
 import DialogContent from '../ui/DialogContent'
@@ -24,7 +20,6 @@ export const useEditMemberDialog = (member: IMember) => {
         <DialogContent
           ref={formRef}
           fieldData={fieldData}
-          disabledFields={BASE_DISABLED_FIELDS}
           onDirtyChange={(isDirty) => {
             if (dialogIdRef.current) {
               update(dialogIdRef.current, {

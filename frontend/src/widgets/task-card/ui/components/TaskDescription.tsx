@@ -10,7 +10,7 @@ const TaskDescription = (props: ITaskDescriptionSectionProps) => {
   const { displayValues } = props
   return (
     <div className={styles.card}>
-      <Text size='20' weight='bold'>
+      <Text size='20' weight='600'>
         Описание
       </Text>
       <div className={styles.cardFields}>

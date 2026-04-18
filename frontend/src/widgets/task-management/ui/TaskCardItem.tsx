@@ -1,8 +1,9 @@
 import { EditTaskButton } from '@/features/edit-task'
-import { AccordionCard, Button } from '@/shared/ui'
+import { AccordionCard } from '@/shared/ui'
 import { memo } from 'react'
 import styles from './styles.module.scss'
 import { TTask } from '@/shared/model'
+import { DeleteTaskButton } from '@/features/delete-task'
 
 interface ITaskCardItemProps {
   taskData: TTask
@@ -12,13 +13,10 @@ export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
   return (
     <AccordionCard
       title={taskData.title}
-      fields={[
-        { label: 'Описание', value: taskData.description },
-        { label: 'Преподаватель', value: taskData.teacher?.fullname },
-      ]}
+      fields={[{ label: 'Описание', value: taskData.description }]}
       actions={
         <div className={styles.cardActions}>
-          <Button color='inverted'>Удалить</Button>
+          <DeleteTaskButton id={taskData.id} taskName={taskData.title} />
           <EditTaskButton task={taskData} />
         </div>
       }

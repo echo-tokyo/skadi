@@ -50,7 +50,7 @@ const Dialog = (props: IProps): ReactNode => {
   return createPortal(
     <div className={wrapperClass} onClick={handleOverlayClick}>
       <div className={dialogClass}>
-        <Text size='20' weight='bold'>
+        <Text size='20' weight='600'>
           {title}
         </Text>
         <div className={styles.content}>{children}</div>

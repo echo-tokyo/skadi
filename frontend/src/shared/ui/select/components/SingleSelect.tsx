@@ -19,6 +19,7 @@ interface SingleSelectInternalProps<T extends string> extends SingleProps<T> {
 }
 
 const SingleSelect = <T extends string>({
+  ref,
   options,
   selectedOptions,
   label,
@@ -124,6 +125,7 @@ const SingleSelect = <T extends string>({
       )}
       <Popover.Root open={open} onOpenChange={setOpen}>
         <Popover.Trigger
+          ref={ref}
           id={triggerId}
           className={triggerClassName}
           disabled={disabled}

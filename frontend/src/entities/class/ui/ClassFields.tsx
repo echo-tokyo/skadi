@@ -1,20 +1,14 @@
-import {
-  ReactNode,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import { ReactNode, useEffect, useImperativeHandle, useRef } from 'react'
 import type { Ref } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Input, Select } from '@/shared/ui'
 import styles from './styles.module.scss'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { classSchema } from '../model/class-form-schema'
 import type { TClassSchema } from '../model/class-form-schema'
 import { INITIAL_FIELDS_VALUES } from '../config/fields-config'
 import { IClassFieldsRef } from '../model/types'
-import { TPaginatedSelectField } from '@/shared/model'
+import { TPaginatedSelectField } from '@/shared/ui'
 
 interface IClassFieldsProps {
   ref?: Ref<IClassFieldsRef>
@@ -31,119 +25,123 @@ const ClassFields = ({
   onDirtyChange,
   ref,
 }: IClassFieldsProps): ReactNode => {
-  const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
-
   const {
-    watch,
-    setValue,
+    control,
     trigger,
     reset,
-    formState: { errors, isDirty },
+    getValues,
+    handleSubmit,
+    formState: { isDirty },
   } = useForm<TClassSchema>({
     resolver: zodResolver(classSchema),
     defaultValues: fieldValues,
   })
 
-  const className = watch('className')
-  const teacher = watch('teacher')
-  const students = watch('students')
-  const schedule = watch('schedule')
-
   const onDirtyChangeRef = useRef(onDirtyChange)
+  useEffect(() => {
+    onDirtyChangeRef.current = onDirtyChange
+  })
 
   useEffect(() => {
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  useImperativeHandle(ref, () => ({
-    validate: async () => {
-      setHasAttemptedValidation(true)
-      return trigger()
-    },
-    getFieldsData: () => ({
-      className,
-      teacher,
-      students,
-      schedule,
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate: () =>
+        new Promise((resolve) =>
+          handleSubmit(
+            () => resolve(true),
+            () => resolve(false),
+          )(),
+        ),
+      getFieldsData: () => getValues(),
+      reset: () => reset(),
     }),
-    reset: () => {
-      reset()
-      setHasAttemptedValidation(false)
-    },
-  }))
+    [trigger, reset, getValues],
+  )
 
   return (
     <div className={styles.wrapper}>
-      <Input
-        fluid
-        title='Название группы'
-        required
-        isValid={!errors['className']}
-        description={errors['className']?.message}
-        value={className}
-        onChange={(val) =>
-          setValue('className', val, {
-            shouldValidate: hasAttemptedValidation,
-            shouldDirty: true,
-          })
-        }
+      <Controller
+        control={control}
+        name='className'
+        render={({ field, fieldState }) => (
+          <Input
+            ref={field.ref}
+            fluid
+            title='Название группы'
+            required
+            isValid={!fieldState.error}
+            description={fieldState.error?.message}
+            value={field.value}
+            onChange={field.onChange}
+          />
+        )}
       />
-      <Select
-        fluid
-        label='Преподаватель'
-        isValid={!errors['teacher']}
-        placeholder='Выберите'
-        description={errors['teacher']?.message}
-        options={teacherField.data}
-        selectedOptions={teacherField.selectedOptions}
-        value={teacher}
-        searchable
-        onLoadMore={teacherField.onLoadMore}
-        hasMore={teacherField.hasMore}
-        isLoadingMore={teacherField.isLoadingMore}
-        onSearchChange={teacherField.onSearchChange}
-        onChange={(v) =>
-          setValue('teacher', v, {
-            shouldValidate: hasAttemptedValidation,
-            shouldDirty: true,
-          })
-        }
+      <Controller
+        control={control}
+        name='teacher'
+        render={({ field, fieldState }) => (
+          <Select
+            ref={field.ref}
+            fluid
+            label='Преподаватель'
+            placeholder='Выберите'
+            isValid={!fieldState.error}
+            description={fieldState.error?.message}
+            options={teacherField.data}
+            selectedOptions={teacherField.selectedOptions}
+            value={field.value ?? ''}
+            searchable
+            onLoadMore={teacherField.onLoadMore}
+            hasMore={teacherField.hasMore}
+            isLoadingMore={teacherField.isLoadingMore}
+            onSearchChange={teacherField.onSearchChange}
+            onChange={field.onChange}
+          />
+        )}
       />
-      <Select
-        fluid
-        label='Ученики'
-        isValid={!errors['students']}
-        multiple
-        placeholder='Выберите'
-        description={errors['students']?.message}
-        options={studentField.data}
-        selectedOptions={studentField.selectedOptions}
-        value={students}
-        searchable
-        onLoadMore={studentField.onLoadMore}
-        hasMore={studentField.hasMore}
-        isLoadingMore={studentField.isLoadingMore}
-        onSearchChange={studentField.onSearchChange}
-        onChange={(v) =>
-          setValue('students', v, {
-            shouldValidate: hasAttemptedValidation,
-            shouldDirty: true,
-          })
-        }
+      <Controller
+        control={control}
+        name='students'
+        render={({ field, fieldState }) => (
+          <Select
+            ref={field.ref}
+            fluid
+            label='Ученики'
+            multiple
+            placeholder='Выберите'
+            isValid={!fieldState.error}
+            description={fieldState.error?.message}
+            options={studentField.data}
+            selectedOptions={studentField.selectedOptions}
+            value={field.value ?? []}
+            searchable
+            onLoadMore={studentField.onLoadMore}
+            hasMore={studentField.hasMore}
+            isLoadingMore={studentField.isLoadingMore}
+            onSearchChange={studentField.onSearchChange}
+            onChange={(val) => field.onChange([...val].sort())}
+          />
+        )}
       />
-      <Input
-        fluid
-        title='Расписание'
-        placeholder='Каждый четверг, 18:00 - 19:00'
-        isValid={!errors['schedule']}
-        description={errors['schedule']?.message}
-        value={schedule}
-        onChange={(val) =>
-          setValue('schedule', val, {
-            shouldValidate: hasAttemptedValidation,
-            shouldDirty: true,
-          })
-        }
+      <Controller
+        control={control}
+        name='schedule'
+        render={({ field, fieldState }) => (
+          <Input
+            ref={field.ref}
+            fluid
+            title='Расписание'
+            placeholder='Каждый четверг, 18:00 - 19:00'
+            isValid={!fieldState.error}
+            description={fieldState.error?.message}
+            value={field.value}
+            onChange={field.onChange}
+          />
+        )}
       />
     </div>
   )

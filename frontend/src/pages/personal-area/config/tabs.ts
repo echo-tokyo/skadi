@@ -7,7 +7,7 @@ import { FC } from 'react'
 
 export interface ITabConfig {
   name: string
-  component: FC
+  component?: FC
   role: TRole
 }
 
@@ -32,9 +32,8 @@ export const TAB_CONFIG: ITabConfig[] = [
     component: SolutionManagement,
     role: 'teacher',
   },
-  // {
-  //   name: 'Дашборд',
-  //   component: RoleManagement,
-  //   role: 'student',
-  // },
+  {
+    name: 'Дашборд',
+    role: 'student',
+  },
 ]

@@ -1,57 +1,85 @@
 import {
   ReactNode,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
-  useState,
 } from 'react'
 import type { Ref } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ZodObject, ZodRawShape } from 'zod'
 import type { Resolver } from 'react-hook-form'
 import { Input, Select, Textarea } from '@/shared/ui'
-import { TMemberFullSchema } from '../model/member-fields-schema'
 import {
+  TMemberFormData,
+  studentSchema,
+  teacherSchema,
+  studentFullSchema,
+  teacherFullSchema,
+} from '../model/member-fields-schema'
+import {
+  BASE_DISABLED_FIELDS,
   FIELD_CONFIG,
   INITIAL_FIELDS_VALUES,
-  TFieldConfig,
 } from '../config/fields-config'
 import styles from './styles.module.scss'
 import { ROLE_OPTIONS } from '@/shared/config'
 import { IMemberFieldsRef } from '../model/types'
-import { TPaginatedSelectField } from '@/shared/model'
+import { TPaginatedSelectField } from '@/shared/ui'
 
 interface IMemberFormProps {
   ref?: Ref<IMemberFieldsRef>
-  schema: ZodObject<ZodRawShape>
-  fieldData?: TMemberFullSchema
-  disabledFields?: Array<keyof TMemberFullSchema>
+  mode: 'create' | 'update'
+  fieldData?: TMemberFormData
   classField: TPaginatedSelectField
   onDirtyChange?: (isDirty: boolean) => void
 }
 
 const MemberFields = ({
-  schema,
+  mode,
   fieldData = INITIAL_FIELDS_VALUES,
-  disabledFields = [],
   onDirtyChange,
   ref,
   classField,
 }: IMemberFormProps): ReactNode => {
-  const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false)
+  const resolver = useCallback(
+    async (
+      data: TMemberFormData,
+      context: unknown,
+      options: Parameters<Resolver<TMemberFormData>>[2],
+    ) => {
+      const schema =
+        mode === 'update'
+          ? data.role === 'teacher'
+            ? teacherSchema
+            : studentSchema
+          : data.role === 'teacher'
+            ? teacherFullSchema
+            : studentFullSchema
+
+      return (zodResolver(schema) as unknown as Resolver<TMemberFormData>)(
+        data,
+        context,
+        options,
+      )
+    },
+    [mode],
+  )
 
   const {
-    watch,
-    setValue,
-    trigger,
+    control,
+    handleSubmit,
     reset,
-    formState: { errors, isDirty },
-  } = useForm<TMemberFullSchema>({
-    resolver: zodResolver(schema) as unknown as Resolver<TMemberFullSchema>,
+    resetField,
+    getValues,
+    formState: { isDirty },
+  } = useForm<TMemberFormData>({
+    resolver,
     defaultValues: fieldData,
   })
-  const fieldsData = watch()
+
+  const role = useWatch({ control, name: 'role' })
+  const disabledFields = mode === 'update' ? BASE_DISABLED_FIELDS : []
 
   const onDirtyChangeRef = useRef(onDirtyChange)
   useEffect(() => {
@@ -62,106 +90,137 @@ const MemberFields = ({
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  const formDataRef = useRef<TMemberFullSchema>(fieldsData)
-  formDataRef.current = fieldsData
-
   useImperativeHandle(
     ref,
     () => ({
-      validate: async () => {
-        setHasAttemptedValidation(true)
-        return trigger()
-      },
-      getFieldsData: () => formDataRef.current,
-      reset: () => {
-        reset()
-        setHasAttemptedValidation(false)
-      },
+      validate: () =>
+        new Promise((resolve) =>
+          handleSubmit(
+            () => resolve(true),
+            () => resolve(false),
+          )(),
+        ),
+      getFieldsData: () => getValues(),
+      reset: () => reset(),
     }),
-    [trigger, reset],
+    [handleSubmit, reset, getValues],
   )
 
-  const renderField = (field: TFieldConfig): ReactNode => {
-    const { name, title, required } = field
-    const disabled = disabledFields.includes(name)
+  const visibleFields = FIELD_CONFIG.filter(
+    (f) => !(f.name === 'class' && role === 'teacher'),
+  )
 
-    const commonProps = {
-      required,
-      fluid: true,
-      disabled,
-      isValid: !errors[name],
-      description: errors[name]?.message,
-    }
+  return (
+    <div className={styles.wrapper}>
+      {visibleFields.map((field) => {
+        const disabled = disabledFields.includes(field.name)
 
-    const onChange = (v: string) =>
-      setValue(name, v, {
-        shouldValidate: hasAttemptedValidation,
-        shouldDirty: true,
-      })
-
-    switch (field.type) {
-      case 'select':
-        if (field.name === 'class') {
+        if (field.type === 'select' && field.name === 'class') {
           return (
-            <Select
-              key={name}
-              {...commonProps}
-              label={title}
-              placeholder='Выберите'
-              options={classField.data}
-              searchable
-              hasMore={classField.hasMore}
-              isLoadingMore={classField.isLoadingMore}
-              onLoadMore={classField.onLoadMore}
-              onSearchChange={classField.onSearchChange}
-              value={fieldsData[name]}
-              onChange={onChange}
+            <Controller
+              key={field.name}
+              control={control}
+              name='class'
+              render={({ field: f, fieldState }) => (
+                <Select
+                  ref={f.ref}
+                  label={field.title}
+                  placeholder='Выберите'
+                  fluid
+                  required={field.required}
+                  disabled={disabled}
+                  isValid={!fieldState.error}
+                  description={fieldState.error?.message}
+                  options={classField.data}
+                  searchable
+                  hasMore={classField.hasMore}
+                  isLoadingMore={classField.isLoadingMore}
+                  onLoadMore={classField.onLoadMore}
+                  onSearchChange={classField.onSearchChange}
+                  value={f.value ?? ''}
+                  onChange={f.onChange}
+                />
+              )}
             />
           )
         }
+
+        if (field.type === 'select' && field.name === 'role') {
+          return (
+            <Controller
+              key={field.name}
+              control={control}
+              name='role'
+              render={({ field: f, fieldState }) => (
+                <Select
+                  ref={f.ref}
+                  label={field.title}
+                  placeholder='Выберите'
+                  fluid
+                  required={field.required}
+                  disabled={disabled}
+                  isValid={!fieldState.error}
+                  description={fieldState.error?.message}
+                  options={ROLE_OPTIONS}
+                  value={f.value ?? ''}
+                  onChange={(v) => {
+                    if (v === 'teacher') resetField('class')
+                    f.onChange(v)
+                  }}
+                />
+              )}
+            />
+          )
+        }
+
+        if (field.type === 'textarea') {
+          return (
+            <Controller
+              key={field.name}
+              control={control}
+              name={field.name}
+              render={({ field: f, fieldState }) => (
+                <Textarea
+                  ref={f.ref}
+                  label={field.title}
+                  placeholder='Ввод..'
+                  fluid
+                  required={field.required}
+                  disabled={disabled}
+                  isValid={!fieldState.error}
+                  description={fieldState.error?.message}
+                  resize='none'
+                  value={(f.value as string) ?? ''}
+                  onChange={f.onChange}
+                />
+              )}
+            />
+          )
+        }
+
         return (
-          <Select
-            key={name}
-            {...commonProps}
-            label={title}
-            placeholder='Выберите'
-            options={ROLE_OPTIONS}
-            value={fieldsData[name]}
-            onChange={onChange}
+          <Controller
+            key={field.name}
+            control={control}
+            name={field.name}
+            render={({ field: f, fieldState }) => (
+              <Input
+                ref={f.ref}
+                title={field.title}
+                fluid
+                required={field.required}
+                disabled={disabled}
+                isValid={!fieldState.error}
+                description={fieldState.error?.message}
+                value={(f.value as string) ?? ''}
+                onChange={f.onChange}
+              />
+            )}
           />
         )
-
-      case 'textarea':
-        return (
-          <Textarea
-            key={name}
-            {...commonProps}
-            label={title}
-            placeholder='Ввод..'
-            resize='none'
-            value={fieldsData[name]}
-            onChange={onChange}
-          />
-        )
-
-      case 'input':
-        return (
-          <Input
-            key={name}
-            {...commonProps}
-            title={title}
-            value={fieldsData[name]}
-            onChange={onChange}
-          />
-        )
-
-      default: {
-        return null
-      }
-    }
-  }
-
-  return <div className={styles.wrapper}>{FIELD_CONFIG.map(renderField)}</div>
+      })}
+    </div>
+  )
 }
 
 export default MemberFields

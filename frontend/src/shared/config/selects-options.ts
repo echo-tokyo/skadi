@@ -9,6 +9,10 @@ export const ROLE_OPTIONS: SelectOption[] = [
 
 export const ROLE_VALUES: TRole[] = ['teacher', 'student']
 
+export const ARCHIVED_OPTIONS: SelectOption<'archived'>[] = [
+  { value: 'archived', label: 'Архивировано' },
+]
+
 export const STATUS_OPTIONS: SelectOption<TStatusValue>[] = [
   { value: '1', label: 'Бэклог' },
   { value: '2', label: 'В работе' },
