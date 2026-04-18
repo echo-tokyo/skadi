@@ -30,6 +30,7 @@ const ClassFields = ({
     trigger,
     reset,
     getValues,
+    handleSubmit,
     formState: { isDirty },
   } = useForm<TClassSchema>({
     resolver: zodResolver(classSchema),
@@ -48,7 +49,13 @@ const ClassFields = ({
   useImperativeHandle(
     ref,
     () => ({
-      validate: () => trigger(),
+      validate: () =>
+        new Promise((resolve) =>
+          handleSubmit(
+            () => resolve(true),
+            () => resolve(false),
+          )(),
+        ),
       getFieldsData: () => getValues(),
       reset: () => reset(),
     }),

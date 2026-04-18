@@ -27,6 +27,7 @@ const TaskFields = ({
     trigger,
     reset,
     getValues,
+    handleSubmit,
     formState: { isDirty },
   } = useForm<TTaskSchema>({
     resolver: zodResolver(taskSchema),
@@ -42,11 +43,21 @@ const TaskFields = ({
     onDirtyChangeRef.current?.(isDirty)
   }, [isDirty])
 
-  useImperativeHandle(ref, () => ({
-    validate: () => trigger(),
-    getFieldsData: () => getValues(),
-    reset: () => reset(),
-  }), [trigger, reset, getValues])
+  useImperativeHandle(
+    ref,
+    () => ({
+      validate: () =>
+        new Promise((resolve) =>
+          handleSubmit(
+            () => resolve(true),
+            () => resolve(false),
+          )(),
+        ),
+      getFieldsData: () => getValues(),
+      reset: () => reset(),
+    }),
+    [trigger, reset, getValues],
+  )
 
   return (
     <div className={styles.content}>
