@@ -13,10 +13,7 @@ export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
   return (
     <AccordionCard
       title={taskData.title}
-      fields={[
-        { label: 'Описание', value: taskData.description },
-        { label: 'Преподаватель', value: taskData.teacher?.fullname },
-      ]}
+      fields={[{ label: 'Описание', value: taskData.description }]}
       actions={
         <div className={styles.cardActions}>
           <DeleteTaskButton id={taskData.id} taskName={taskData.title} />

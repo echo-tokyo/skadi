@@ -14,9 +14,12 @@ export const ClassCardItem = memo(({ classData }: IClassCardItemProps) => {
     <AccordionCard
       title={classData.name}
       fields={[
-        { label: 'Расписание', value: classData.schedule },
-        { label: 'Студентов', value: classData.students?.length },
         { label: 'Преподаватель', value: classData.teacher?.fullname },
+        {
+          label: 'Студенты',
+          value: classData.students?.map((el) => el.fullname).join(', '),
+        },
+        { label: 'Расписание', value: classData.schedule },
       ]}
       actions={
         <div className={styles.actions}>

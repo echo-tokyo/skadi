@@ -77,15 +77,6 @@ const TaskFields = ({
           />
         )}
       />
-      <Select
-        label='Проверяющий'
-        fluid
-        required
-        value='Вы'
-        options={[{ label: 'Вы', value: 'Вы' }]}
-        onChange={() => ''}
-        disabled
-      />
       <Controller
         control={control}
         name='students'
