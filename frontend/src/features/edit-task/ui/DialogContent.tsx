@@ -1,5 +1,6 @@
 import { ITaskFieldsRef, TaskFields, TTaskSchema } from '@/entities/task'
 import { useMemberSelectOptions } from '@/entities/member'
+import { useClassSelectOptions } from '@/entities/class'
 import { memo } from 'react'
 import type { Ref } from 'react'
 
@@ -22,6 +23,14 @@ const DialogContent = ({
     onSearchChange,
   } = useMemberSelectOptions('student', false)
 
+  const {
+    options: classOptions,
+    fetchNextPage: classFetchNextPage,
+    hasNextPage: classHasNextPage,
+    isFetchingNextPage: classIsFetchingNextPage,
+    onSearchChange: classOnSearchChange,
+  } = useClassSelectOptions()
+
   // TODO: добавить selectedOptions после обновления бэка
 
   return (
@@ -35,6 +44,13 @@ const DialogContent = ({
         isLoadingMore: isFetchingNextPage,
         onLoadMore: fetchNextPage,
         onSearchChange,
+      }}
+      classField={{
+        data: classOptions,
+        hasMore: classHasNextPage,
+        isLoadingMore: classIsFetchingNextPage,
+        onLoadMore: classFetchNextPage,
+        onSearchChange: classOnSearchChange,
       }}
     />
   )

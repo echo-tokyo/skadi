@@ -4,4 +4,5 @@ export const defaultValues: TTaskSchema = {
   title: '',
   description: '',
   students: [],
+  classes: [],
 }

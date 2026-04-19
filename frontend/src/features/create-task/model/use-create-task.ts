@@ -9,6 +9,7 @@ const prepare = (data: TTaskSchema): ICreateTaskRequest => ({
   title: data.title,
   description: data.description,
   students: data.students.map(Number),
+  classes: data.classes.map(Number),
 })
 
 export const useCreateTask = () => {

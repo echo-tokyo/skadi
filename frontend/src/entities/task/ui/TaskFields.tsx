@@ -12,6 +12,7 @@ import { defaultValues } from '../config/default-values'
 interface ITaskFieldsProps {
   ref?: Ref<ITaskFieldsRef>
   studentField: TPaginatedSelectField
+  classField: TPaginatedSelectField
   onDirtyChange?: (isDirty: boolean) => void
   fieldData?: TTaskSchema
 }
@@ -19,6 +20,7 @@ interface ITaskFieldsProps {
 const TaskFields = ({
   ref,
   studentField,
+  classField,
   onDirtyChange,
   fieldData,
 }: ITaskFieldsProps): ReactNode => {
@@ -100,6 +102,32 @@ const TaskFields = ({
             onChange={field.onChange}
           />
         )}
+      />
+      <Controller
+        control={control}
+        name='classes'
+        render={({ field, fieldState }) => {
+          return (
+            <Select
+              ref={field.ref}
+              fluid
+              label='Группы'
+              multiple
+              placeholder='Выберите'
+              isValid={!fieldState.error}
+              description={fieldState.error?.message}
+              options={classField.data}
+              selectedOptions={classField.selectedOptions}
+              value={field.value}
+              searchable
+              onLoadMore={classField.onLoadMore}
+              hasMore={classField.hasMore}
+              isLoadingMore={classField.isLoadingMore}
+              onSearchChange={classField.onSearchChange}
+              onChange={field.onChange}
+            />
+          )
+        }}
       />
       <Controller
         control={control}

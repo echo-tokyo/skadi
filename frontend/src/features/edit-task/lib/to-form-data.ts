@@ -5,4 +5,5 @@ export const toFormData = (task: TTask): TTaskSchema => ({
   title: task.title,
   description: task.description ?? '',
   students: [],
+  classes: [],
 })

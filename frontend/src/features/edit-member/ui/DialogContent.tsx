@@ -1,5 +1,9 @@
 import { useClassSelectOptions } from '@/entities/class'
-import { IMemberFieldsRef, MemberFields, TMemberFormData } from '@/entities/member'
+import {
+  IMemberFieldsRef,
+  MemberFields,
+  TMemberFormData,
+} from '@/entities/member'
 import { memo, Ref } from 'react'
 
 interface IDialogContentProps {
