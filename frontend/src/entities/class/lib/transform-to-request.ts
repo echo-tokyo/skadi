@@ -6,6 +6,6 @@ export const transformToRequest = (data: TClassSchema): IClassRequest => {
     name: data.className,
     schedule: data.schedule,
     students: data.students ? data.students.map((el) => Number(el)) : undefined,
-    teacher_id: data.teacher ? Number(data.teacher) : undefined,
+    teacher_id: Number(data.teacher),
   }
 }
