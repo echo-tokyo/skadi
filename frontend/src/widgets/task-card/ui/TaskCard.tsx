@@ -16,6 +16,7 @@ import {
 } from '@/entities/solution'
 import { TDisplayValues } from '../model/types'
 import { STATUS_OPTIONS } from '@/shared/config'
+import { Button } from '@/shared/ui'
 
 // 2 валидации, 1 режим: для препода (редактирует статус и оценку) и ученика (редактирует статус кроме "проверено", ответ и ответ файлом)
 
@@ -42,7 +43,10 @@ const TaskCard = (props: ITaskCardProps) => {
     resolver: zodResolver(schema),
   })
 
-  const { reset } = methods
+  const {
+    reset,
+    formState: { isDirty },
+  } = methods
 
   useEffect(() => {
     reset(editableValues)
@@ -51,6 +55,9 @@ const TaskCard = (props: ITaskCardProps) => {
   return (
     <FormProvider {...methods}>
       <div className={styles.actions}>
+        <Button onClick={reset} disabled={!isDirty} color='secondary'>
+          Сбросить
+        </Button>
         <UpdateSolutionButton id={solutionId} actualSchema={actualSchema} />
       </div>
       <div className={styles.cards}>
