@@ -48,7 +48,7 @@ export interface IUpdateSolutionByStudentResponse {
   updated_at: string
 }
 export interface IGetSolutionsQuery {
-  archived?: boolean
+  status_id?: TStatusId
   'per-page'?: number
   search?: string
 }
