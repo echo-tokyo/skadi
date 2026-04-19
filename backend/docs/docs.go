@@ -1101,7 +1101,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Частичное обновление задания (только переданные поля: название, описание, прикреплённые файлы) по его id.",
+                "description": "Частичное обновление задания (только переданные поля: название, описание, привязанные ученики, прикреплённые файлы) по его id.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1135,8 +1135,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Task"
+                            "$ref": "#/definitions/v1.readTaskOut"
                         }
+                    },
+                    "400": {
+                        "description": "неверный ученик"
                     },
                     "401": {
                         "description": "неверный токен (пустой, истекший или неверный формат)"
@@ -2314,6 +2317,13 @@ const docTemplate = `{
                     "description": "new task description",
                     "type": "string",
                     "example": "Что такое ООП? Перечислить принципы ООП"
+                },
+                "students": {
+                    "description": "IDs of students (updated list) for the task",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "title": {
                     "description": "new task title",

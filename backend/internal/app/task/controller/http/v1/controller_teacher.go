@@ -11,6 +11,7 @@ import (
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
+	"skadi/backend/internal/pkg/utils/slices"
 	"skadi/backend/internal/pkg/validator"
 )
 
@@ -58,7 +59,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 		TeacherID: userClaims.ID,
 	}
 	// create a new task with solutions
-	solutions, err := c.taskUCTeacher.CreateTaskWithSolutions(taskObj,
+	solutions, err := c.taskUCTeacher.CreateWithSolutions(taskObj,
 		inputBody.StudentIDs, inputBody.ClassIDs)
 	if errors.Is(err, task.ErrNotFoundUser) {
 		return &httperror.HTTPError{
@@ -114,7 +115,7 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	taskObj, students, err := c.taskUCTeacher.GetTaskByID(userClaims.ID, inputPath.ID)
+	taskObj, students, err := c.taskUCTeacher.GetByID(userClaims.ID, inputPath.ID)
 	if errors.Is(err, task.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
@@ -141,7 +142,7 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 }
 
 // @summary		Обновление задания. [Только преподаватель]
-// @description	Частичное обновление задания (только переданные поля: название, описание, прикреплённые файлы) по его id.
+// @description	Частичное обновление задания (только переданные поля: название, описание, привязанные ученики, прикреплённые файлы) по его id.
 // @router			/task/{id} [patch]
 // @id				task-update
 // @tags			task
@@ -150,7 +151,8 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 // @security		JWTAccess
 // @param			id				path		string			true	"ID задания"
 // @param			updateTaskBody	body		updateTaskBody	true	"updateTaskBody"
-// @success		200				{object}	entity.Task
+// @success		200				{object}	readTaskOut
+// @failure		400				"неверный ученик"
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403				"доступ запрещён"
 // @failure		404				"задание не найдено"
@@ -169,11 +171,11 @@ func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 
 	// data reshaping
 	newData := &entity.TaskUpdate{
-		Title: inputBody.Title,
-		Desc:  inputBody.Desc,
+		Title:           inputBody.Title,
+		Desc:            inputBody.Desc,
+		NewFullStudents: slices.DelDupls(inputBody.Students), // delete duplicates from list
 	}
-
-	taskObj, err := c.taskUCTeacher.UpdateTask(userClaims.ID, inputPath.ID, newData)
+	taskObj, students, err := c.taskUCTeacher.Update(userClaims.ID, inputPath.ID, newData)
 	if errors.Is(err, task.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
@@ -188,10 +190,22 @@ func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 			Message:    "задание не найдено",
 		}
 	}
+	if errors.Is(err, task.ErrInvalidData) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusBadRequest,
+			Message:    "неверный ученик",
+		}
+	}
 	if err != nil {
 		return err
 	}
-	return ctx.Status(fiber.StatusOK).JSON(taskObj)
+
+	res := &readTaskOut{
+		Task:     taskObj,
+		Students: students,
+	}
+	return ctx.Status(fiber.StatusOK).JSON(res)
 }
 
 // @summary		Удаление задания по id. [Только преподаватель]
@@ -214,7 +228,7 @@ func (c *TaskControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputPath, ctx.ParamsParser, c.valid.Validate); err != nil {
 		return err
 	}
-	err := c.taskUCTeacher.DeleteTaskByID(userClaims.ID, inputPath.ID)
+	err := c.taskUCTeacher.DeleteByID(userClaims.ID, inputPath.ID)
 	if errors.Is(err, task.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
@@ -251,7 +265,7 @@ func (c *TaskControllerTeacher) List(ctx *fiber.Ctx) error {
 	pageParams := inputQuery.PaginationQuery.ToPagination()
 
 	// get tasks
-	taskListResp, err := c.taskUCTeacher.GetTasks(userClaims.ID, inputQuery.Search, pageParams)
+	taskListResp, err := c.taskUCTeacher.GetMany(userClaims.ID, inputQuery.Search, pageParams)
 	if err != nil {
 		return fmt.Errorf("list: %w", err)
 	}

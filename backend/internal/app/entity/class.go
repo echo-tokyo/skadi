@@ -38,3 +38,27 @@ type ClassUpdate struct {
 	// IDs of students to delete them from the class
 	DelStudents []int
 }
+
+// ToUpdatesMap generates map to update class object.
+func (c *ClassUpdate) ToUpdatesMap() map[string]any {
+	updates := make(map[string]any)
+	// set new name
+	if c.Name != nil {
+		updates["name"] = *c.Name
+	}
+	// set new schedule
+	if c.Schedule != nil {
+		updates["schedule"] = c.Schedule
+		if *c.Schedule == "" {
+			updates["schedule"] = nil
+		}
+	}
+	// set new teacher ID
+	if c.TeacherID != nil {
+		updates["teacher_id"] = c.TeacherID
+		if *c.TeacherID == 0 {
+			updates["teacher_id"] = nil
+		}
+	}
+	return updates
+}

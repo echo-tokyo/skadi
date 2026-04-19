@@ -31,4 +31,24 @@ type TaskUpdate struct {
 	Title *string
 	// new task description
 	Desc *string
+	// IDs of new students to completely replace old students
+	NewFullStudents []int
+	// IDs of students to issue the task solutions for them
+	AddStudents []int
+	// IDs of students to delete their task solutions
+	DelStudents []int
+}
+
+// ToUpdatesMap generates map to update task object.
+func (t *TaskUpdate) ToUpdatesMap() map[string]any {
+	updates := make(map[string]any)
+	// set new title
+	if t.Title != nil {
+		updates["title"] = *t.Title
+	}
+	// set new desctiption
+	if t.Desc != nil {
+		updates["description"] = t.Desc
+	}
+	return updates
 }

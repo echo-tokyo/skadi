@@ -26,9 +26,6 @@ const (
 	_fieldUpdatedAt = "updated_at"  // table field name
 
 	_orderByIDDESC = "id DESC" // condition to order data by id DESC
-
-	_defaultStatusID  = 1 // ID of default solution status "backlog"
-	_archivedStatusID = 4 // ID of archived solution status "checked"
 )
 
 // Ensure RepoDB implements interface.
@@ -92,19 +89,7 @@ func (r *RepoDB) GetByIDFull(id int) (*entity.Solution, error) {
 // Update updates the given solution by given ID with the new data.
 // It returns the updated solution object.
 func (r *RepoDB) Update(taskID int, newData *entity.SolutionUpdate) error {
-	updates := make(map[string]any)
-	// set new grade
-	if newData.Grade != nil {
-		updates["grade"] = *newData.Grade
-	}
-	// set new answer
-	if newData.Answer != nil {
-		updates["answer"] = newData.Answer
-	}
-	// set new teacher ID
-	if newData.StatusID != nil {
-		updates["status_id"] = newData.StatusID
-	}
+	updates := newData.ToUpdatesMap()
 
 	var updatedSol *entity.Solution
 	// update class
