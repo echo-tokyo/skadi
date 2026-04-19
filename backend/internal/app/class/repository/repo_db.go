@@ -91,27 +91,9 @@ func (r *RepoDB) GetByID(id int) (*entity.Class, error) {
 // Update updates class by given ID with the new data.
 // It returns the updated class object.
 func (r *RepoDB) Update(classID int, newData *entity.ClassUpdate) error {
-	updates := make(map[string]any)
-	// set new name
-	if newData.Name != nil {
-		updates["name"] = *newData.Name
-	}
-	// set new schedule
-	if newData.Schedule != nil {
-		updates["schedule"] = newData.Schedule
-		if *newData.Schedule == "" {
-			updates["schedule"] = nil
-		}
-	}
-	// set new teacher ID
-	if newData.TeacherID != nil {
-		updates["teacher_id"] = newData.TeacherID
-		if *newData.TeacherID == 0 {
-			updates["teacher_id"] = nil
-		}
-	}
-
 	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		updates := newData.ToUpdatesMap()
+
 		// update class
 		err := tx.Model(&entity.Class{}).
 			Where(_fieldID+" = ?", classID).
@@ -129,14 +111,16 @@ func (r *RepoDB) Update(classID int, newData *entity.ClassUpdate) error {
 				return fmt.Errorf("add students: %w", err)
 			}
 		}
+		// skip deleting students if del list is empty
+		if len(newData.DelStudents) == 0 {
+			return nil
+		}
 		// delete students from the class
-		if len(newData.DelStudents) > 0 {
-			err := tx.Model(&entity.User{}).
-				Where(_fieldID+" IN ?", newData.DelStudents).
-				Update(_fieldClassID, nil).Error
-			if err != nil {
-				return fmt.Errorf("delete students: %w", err)
-			}
+		err = tx.Model(&entity.User{}).
+			Where(_fieldID+" IN ?", newData.DelStudents).
+			Update(_fieldClassID, nil).Error
+		if err != nil {
+			return fmt.Errorf("delete students: %w", err)
 		}
 		return nil
 	})

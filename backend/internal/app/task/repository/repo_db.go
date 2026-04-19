@@ -47,8 +47,8 @@ func NewRepoDB(dbStorage *gorm.DB) *RepoDB {
 	}
 }
 
-// CreateTaskForStudents create a new task and empty solutions for every student.
-func (r *RepoDB) CreateTaskForStudents(taskObj *entity.Task,
+// CreateForStudents create a new task and empty solutions for every student.
+func (r *RepoDB) CreateForStudents(taskObj *entity.Task,
 	students []entity.Profile) ([]entity.Solution, error) {
 
 	var (
@@ -96,8 +96,8 @@ func (r *RepoDB) CreateTaskForStudents(taskObj *entity.Task,
 	return solutions, err // err OR nil
 }
 
-// GetTaskByID returns task info by the given ID.
-func (r *RepoDB) GetTaskByID(id int) (*entity.Task, error) {
+// GetByID returns task info by the given ID.
+func (r *RepoDB) GetByID(id int) (*entity.Task, error) {
 	var taskObj entity.Task
 	err := r.dbStorage.
 		Where(id).First(&taskObj).Error
@@ -108,23 +108,18 @@ func (r *RepoDB) GetTaskByID(id int) (*entity.Task, error) {
 	return &taskObj, err // err OR nil
 }
 
-// UpdateTask updates the given task by given ID with the new data.
-func (r *RepoDB) UpdateTask(taskID int, newData *entity.TaskUpdate) error {
-	updates := make(map[string]any)
-	// set new title
-	if newData.Title != nil {
-		updates["title"] = *newData.Title
-	}
-	// set new desctiption
-	if newData.Desc != nil {
-		updates["description"] = newData.Desc
-	}
-
+// Update updates the given task by given ID with the new data.
+func (r *RepoDB) Update(taskID int, newData *entity.TaskUpdate) error {
 	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		updates := newData.ToUpdatesMap()
+
 		// update task
 		err := tx.Model(&entity.Task{}).
 			Where(_fieldID+" = ?", taskID).
 			Updates(updates).Error
+		if err != nil {
+			return fmt.Errorf("task: %w", err)
+		}
 
 		// delete old solutions
 		if len(newData.DelStudents) > 0 {
@@ -155,14 +150,14 @@ func (r *RepoDB) UpdateTask(taskID int, newData *entity.TaskUpdate) error {
 	})
 }
 
-// DeleteTaskByID deletes task by given id.
-func (r *RepoDB) DeleteTaskByID(id int) error {
+// DeleteByID deletes task by given id.
+func (r *RepoDB) DeleteByID(id int) error {
 	return r.dbStorage.Delete(&entity.Task{}, id).Error
 }
 
-// GetTasks returns all teacher tasks.
+// GetMany returns all teacher tasks.
 // Search param appends condition to filter tasks by title (substring).
-func (r *RepoDB) GetTasks(teacherID int, search string,
+func (r *RepoDB) GetMany(teacherID int, search string,
 	page *entity.Pagination) ([]entity.Task, error) {
 
 	var taskList []entity.Task

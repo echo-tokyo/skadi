@@ -44,3 +44,21 @@ type SolutionUpdate struct {
 	// last-update datetime of solution
 	UpdatedAt *time.Time
 }
+
+// ToUpdatesMap generates map to update solution object.
+func (s *SolutionUpdate) ToUpdatesMap() map[string]any {
+	updates := make(map[string]any)
+	// set new grade
+	if s.Grade != nil {
+		updates["grade"] = *s.Grade
+	}
+	// set new answer
+	if s.Answer != nil {
+		updates["answer"] = s.Answer
+	}
+	// set new teacher ID
+	if s.StatusID != nil {
+		updates["status_id"] = s.StatusID
+	}
+	return updates
+}

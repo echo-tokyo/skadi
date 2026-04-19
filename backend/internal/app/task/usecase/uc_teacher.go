@@ -81,7 +81,7 @@ func (u *UCTeacher) CreateWithSolutions(taskObj *entity.Task,
 	taskObj.TeacherUser = teacher
 	taskObj.Teacher = teacher.Profile
 	// create task and solutions for all collected students
-	solutions, err := u.taskRepoDB.CreateTaskForStudents(taskObj, studentProfiles)
+	solutions, err := u.taskRepoDB.CreateForStudents(taskObj, studentProfiles)
 	if err != nil {
 		return nil, fmt.Errorf("create task for students: %w", err)
 	}
@@ -92,7 +92,7 @@ func (u *UCTeacher) CreateWithSolutions(taskObj *entity.Task,
 // a list of students linked to the task solutions.
 func (u *UCTeacher) GetByID(teacherID, taskID int) (*entity.Task, []entity.Profile, error) {
 	// get task
-	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
+	taskObj, err := u.taskRepoDB.GetByID(taskID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get task: %w", err)
 	}
@@ -121,7 +121,7 @@ func (u *UCTeacher) GetByID(teacherID, taskID int) (*entity.Task, []entity.Profi
 func (u *UCTeacher) Update(teacherID, taskID int,
 	newData *entity.TaskUpdate) (*entity.Task, []entity.Profile, error) {
 
-	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
+	taskObj, err := u.taskRepoDB.GetByID(taskID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get task: %w", err)
 	}
@@ -141,7 +141,7 @@ func (u *UCTeacher) Update(teacherID, taskID int,
 	}
 	// TODO: else
 
-	if err := u.taskRepoDB.UpdateTask(taskID, newData); err != nil {
+	if err := u.taskRepoDB.Update(taskID, newData); err != nil {
 		return nil, nil, fmt.Errorf("update: %w", err)
 	}
 
@@ -157,7 +157,7 @@ func (u *UCTeacher) Update(teacherID, taskID int,
 // DeleteByID deletes task object by given ID.
 func (u *UCTeacher) DeleteByID(userID, taskID int) error {
 	// get task info
-	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
+	taskObj, err := u.taskRepoDB.GetByID(taskID)
 	// return nil error if task was not found
 	if errors.Is(err, task.ErrNotFound) {
 		return nil
@@ -170,7 +170,7 @@ func (u *UCTeacher) DeleteByID(userID, taskID int) error {
 		return fmt.Errorf("%w: user (teacher) is not a task owner", task.ErrForbidden)
 	}
 	// delete task
-	return u.taskRepoDB.DeleteTaskByID(taskID)
+	return u.taskRepoDB.DeleteByID(taskID)
 }
 
 // GetMany returns all teacher tasks.
@@ -178,7 +178,7 @@ func (u *UCTeacher) DeleteByID(userID, taskID int) error {
 func (u *UCTeacher) GetMany(teacherID int, search string,
 	page *entity.Pagination) ([]entity.Task, error) {
 
-	return u.taskRepoDB.GetTasks(teacherID, search, page)
+	return u.taskRepoDB.GetMany(teacherID, search, page)
 }
 
 // sepNewStudents separates students from new students list into add/delete (linked to task) lists.

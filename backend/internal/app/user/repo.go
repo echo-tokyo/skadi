@@ -41,5 +41,5 @@ type RepositoryDB interface {
 	GetProfilesShortByClass(classID int) ([]entity.Profile, error)
 	// AddDelChanges separates students from new students list
 	// into add/delete lists basing on comparation with old students list.
-	AddDelChanges(oldStuds, newStuds []entity.Profile) (add []int, del []int)
+	AddDelChanges(oldStuds, newStuds []entity.Profile) (add, del []int)
 }

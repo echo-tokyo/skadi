@@ -296,7 +296,7 @@ func (r *RepoDB) GetProfilesShortByClass(classID int) ([]entity.Profile, error) 
 
 // AddDelChanges separates students from new students list
 // into add/delete lists basing on comparation with old students list.
-func (r *RepoDB) AddDelChanges(oldStuds, newStuds []entity.Profile) (add []int, del []int) {
+func (r *RepoDB) AddDelChanges(oldStuds, newStuds []entity.Profile) (add, del []int) {
 	// collect old students' IDs
 	oldStudIDs := make(map[int]struct{}, len(oldStuds))
 	for _, oldStud := range oldStuds {
