@@ -294,6 +294,32 @@ func (r *RepoDB) GetProfilesShortByClass(classID int) ([]entity.Profile, error) 
 	return profiles, err // err OR nil
 }
 
+// AddDelChanges separates students from new students list
+// into add/delete lists basing on comparation with old students list.
+func (r *RepoDB) AddDelChanges(oldStuds, newStuds []entity.Profile) (add []int, del []int) {
+	// collect old students' IDs
+	oldStudIDs := make(map[int]struct{}, len(oldStuds))
+	for _, oldStud := range oldStuds {
+		oldStudIDs[*oldStud.ID] = struct{}{}
+	}
+
+	var ok bool
+	for _, newStud := range newStuds {
+		// del record from map if ID is in the both student slices (old and new)
+		if _, ok = oldStudIDs[*newStud.ID]; ok {
+			delete(oldStudIDs, *newStud.ID)
+		} else {
+			// append ID to add-list
+			add = append(add, *newStud.ID)
+		}
+	}
+	// del IDs that is in the old students slice only
+	for oldStudID := range oldStudIDs {
+		del = append(del, oldStudID)
+	}
+	return add, del
+}
+
 // findOrCreateContacts finds or creates contact and parent contact info
 func findOrCreateContacts(tx *gorm.DB, profile *entity.Profile) error {
 	if profile.Contact != nil {

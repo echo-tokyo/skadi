@@ -101,11 +101,12 @@ func (u *UCAdminClient) Update(id int, newData *entity.ClassUpdate) (*entity.Cla
 	// get slice of new student profiles
 	if newData.NewFullStudents != nil {
 		newData.AddStudents, newData.DelStudents,
-			classObj.Students, err = u.sepNewStudents(classObj.ID, newData.NewFullStudents)
+			classObj.Students, err = u.sepNewStudents(id, newData.NewFullStudents)
 		if err != nil {
 			return nil, err
 		}
 	}
+	// TODO: else
 
 	if err := u.classRepoDB.Update(id, newData); err != nil {
 		return nil, fmt.Errorf("update: %w", err)
@@ -151,6 +152,30 @@ func (u *UCAdminClient) setTeacherProfile(classObj *entity.Class) error {
 	return nil
 }
 
+// sepNewStudents separates students from new students list into add/delete (from class) lists.
+// It returns both result lists and new student profiles list.
+func (u *UCAdminClient) sepNewStudents(classID int, newStudIDs []int) (add []int, del []int,
+	newStuds []entity.Profile, err error) {
+
+	// get actual students list before updating class data
+	oldStuds, err := u.userRepoDB.GetProfilesShortByClass(classID)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("get old students: %w", err)
+	}
+	// get user objects of new students (and check them)
+	newStudUsers, err := u.getStudentsByIDs(classID, newStudIDs)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("get new students: %w", err)
+	}
+	// collect new student profiles
+	newStuds = make([]entity.Profile, len(newStudUsers))
+	for idx := range newStudUsers {
+		newStuds[idx] = *newStudUsers[idx].Profile
+	}
+	add, del = u.userRepoDB.AddDelChanges(oldStuds, newStuds)
+	return add, del, newStuds, nil
+}
+
 // getStudentsByIDs gets student (user) objects by given IDs and validates gotten student list.
 func (u *UCAdminClient) getStudentsByIDs(classID int, studentIDs []int) ([]entity.User, error) {
 	// get user objects by IDs
@@ -170,49 +195,4 @@ func (u *UCAdminClient) getStudentsByIDs(classID int, studentIDs []int) ([]entit
 		}
 	}
 	return students, nil
-}
-
-// sepNewStudents separates students from new students list to add/delete (from class) lists.
-// It returns both result lists and new student profiles list.
-func (u *UCAdminClient) sepNewStudents(classID int, newStudIDs []int) (add []int, del []int,
-	studentProfiles []entity.Profile, err error) {
-
-	// get actual students list before updating class data
-	oldStuds, err := u.userRepoDB.GetProfilesShortByClass(classID)
-	if err != nil {
-		return nil, nil, nil, fmt.Errorf("get old students: %w", err)
-	}
-	// collect students' IDs
-	oldStudIDs := make(map[int]struct{}, len(oldStuds))
-	for _, stud := range oldStuds {
-		oldStudIDs[*stud.ID] = struct{}{}
-	}
-
-	// get user objects of new students (and check them)
-	newStuds, err := u.getStudentsByIDs(classID, newStudIDs)
-	if err != nil {
-		return nil, nil, nil, fmt.Errorf("get new students: %w", err)
-	}
-
-	var ok bool
-	for _, stud := range newStuds {
-		// del record from map if ID is in the both student slices (old and new)
-		if _, ok = oldStudIDs[stud.ID]; ok {
-			delete(oldStudIDs, stud.ID)
-		} else {
-			// append ID to add-list
-			add = append(add, stud.ID)
-		}
-	}
-	// del IDs that is in the old students slice only
-	for studID := range oldStudIDs {
-		del = append(del, studID)
-	}
-
-	// collect student profiles
-	studentProfiles = make([]entity.Profile, len(newStuds))
-	for idx := range newStuds {
-		studentProfiles[idx] = *newStuds[idx].Profile
-	}
-	return add, del, studentProfiles, nil
 }

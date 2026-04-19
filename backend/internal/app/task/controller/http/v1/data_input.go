@@ -28,6 +28,8 @@ type updateTaskBody struct {
 	Title *string `json:"title,omitempty" validate:"omitempty,max=100" example:"Понятие ООП" maxLength:"100"`
 	// new task description
 	Desc *string `json:"description,omitempty" validate:"omitempty" example:"Что такое ООП? Перечислить принципы ООП"`
+	// IDs of students (updated list) for the task
+	Students []int `json:"students,omitempty" validate:"omitempty"`
 }
 
 // @description listTaskQuery represents a data with optional query-params to get tasks list.

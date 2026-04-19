@@ -89,7 +89,7 @@ func (r *RepoDB) CreateTaskForStudents(taskObj *entity.Task,
 			}
 		}
 		if err = tx.Omit(_preloadStudent, _preloadStatus).Create(solutions).Error; err != nil {
-			return fmt.Errorf("solution for students: %w", err)
+			return fmt.Errorf("solutions for students: %w", err)
 		}
 		return nil
 	})
@@ -109,7 +109,6 @@ func (r *RepoDB) GetTaskByID(id int) (*entity.Task, error) {
 }
 
 // UpdateTask updates the given task by given ID with the new data.
-// It returns the updated task object.
 func (r *RepoDB) UpdateTask(taskID int, newData *entity.TaskUpdate) error {
 	updates := make(map[string]any)
 	// set new title
@@ -120,11 +119,40 @@ func (r *RepoDB) UpdateTask(taskID int, newData *entity.TaskUpdate) error {
 	if newData.Desc != nil {
 		updates["description"] = newData.Desc
 	}
-	// update task
-	err := r.dbStorage.Model(&entity.Task{}).
-		Where(_fieldID+" = ?", taskID).
-		Updates(updates).Error
-	return err // err OR nil
+
+	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		// update task
+		err := tx.Model(&entity.Task{}).
+			Where(_fieldID+" = ?", taskID).
+			Updates(updates).Error
+
+		// delete old solutions
+		if len(newData.DelStudents) > 0 {
+			err = tx.Where("student_id IN ? AND task_id = ?", newData.DelStudents, taskID).
+				Delete(&entity.Solution{}).Error
+			if err != nil {
+				return fmt.Errorf("delete solutions for students: %w", err)
+			}
+		}
+
+		// skip creating new solutions if add list is empty
+		if len(newData.AddStudents) == 0 {
+			return nil
+		}
+		// create new solutions
+		solutions := make([]entity.Solution, len(newData.AddStudents))
+		for idx, studID := range newData.AddStudents {
+			solutions[idx] = entity.Solution{
+				TaskID:    taskID,
+				StudentID: studID,
+				StatusID:  _defaultStatusID,
+			}
+		}
+		if err = tx.Omit(_preloadStudent, _preloadStatus).Create(solutions).Error; err != nil {
+			return fmt.Errorf("create solutions for students: %w", err)
+		}
+		return err
+	})
 }
 
 // DeleteTaskByID deletes task by given id.

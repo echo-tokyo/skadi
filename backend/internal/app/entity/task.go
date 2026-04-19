@@ -31,4 +31,10 @@ type TaskUpdate struct {
 	Title *string
 	// new task description
 	Desc *string
+	// IDs of new students to completely replace old students
+	NewFullStudents []int
+	// IDs of students to issue the task solutions for them
+	AddStudents []int
+	// IDs of students to delete their task solutions
+	DelStudents []int
 }

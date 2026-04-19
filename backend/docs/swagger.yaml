@@ -509,6 +509,11 @@ definitions:
         description: new task description
         example: Что такое ООП? Перечислить принципы ООП
         type: string
+      students:
+        description: IDs of students (updated list) for the task
+        items:
+          type: integer
+        type: array
       title:
         description: new task title
         example: Понятие ООП
@@ -1271,7 +1276,7 @@ paths:
       consumes:
       - application/json
       description: 'Частичное обновление задания (только переданные поля: название,
-        описание, прикреплённые файлы) по его id.'
+        описание, привязанные ученики, прикреплённые файлы) по его id.'
       operationId: task-update
       parameters:
       - description: ID задания
@@ -1291,7 +1296,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Task'
+            $ref: '#/definitions/v1.readTaskOut'
+        "400":
+          description: неверный ученик
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "403":

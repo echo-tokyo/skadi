@@ -35,9 +35,9 @@ func NewUCTeacher(cfg *config.Config, taskRepoDB task.RepositoryDB,
 	}
 }
 
-// CreateTaskWithSolutions creates a new task and solutions
+// CreateWithSolutions creates a new task and solutions
 // for all given students and for all students linked to the given classes.
-func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
+func (u *UCTeacher) CreateWithSolutions(taskObj *entity.Task,
 	studentIDs []int, classIDs []int) ([]entity.Solution, error) {
 
 	teacher, err := u.userRepoDB.GetByIDWithProfileShort(taskObj.TeacherID)
@@ -88,9 +88,9 @@ func (u *UCTeacher) CreateTaskWithSolutions(taskObj *entity.Task,
 	return solutions, nil
 }
 
-// GetTaskByID returns a task object by the given id and
+// GetByID returns a task object by the given id and
 // a list of students linked to the task solutions.
-func (u *UCTeacher) GetTaskByID(teacherID, taskID int) (*entity.Task, []entity.Profile, error) {
+func (u *UCTeacher) GetByID(teacherID, taskID int) (*entity.Task, []entity.Profile, error) {
 	// get task
 	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
 	if err != nil {
@@ -115,22 +115,34 @@ func (u *UCTeacher) GetTaskByID(teacherID, taskID int) (*entity.Task, []entity.P
 	return taskObj, studProfiles, nil
 }
 
-// UpdateTask updates the given task by given ID with the new data.
-// It returns the updated task object.
-// Allows to update the title, desc and task files.
-func (u *UCTeacher) UpdateTask(teacherID, taskID int,
-	newData *entity.TaskUpdate) (*entity.Task, error) {
+// Update updates the given task by given ID with the new data.
+// It returns the updated task object and updated students linked to the task.
+// Allows to update the title, desc, linked students and task files.
+func (u *UCTeacher) Update(teacherID, taskID int,
+	newData *entity.TaskUpdate) (*entity.Task, []entity.Profile, error) {
 
 	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
 	if err != nil {
-		return nil, fmt.Errorf("get task: %w", err)
+		return nil, nil, fmt.Errorf("get task: %w", err)
 	}
 	if teacherID != taskObj.TeacherID {
-		return nil, fmt.Errorf("%w: user is not a task owner", task.ErrForbidden)
+		return nil, nil, fmt.Errorf("%w: user is not a task owner", task.ErrForbidden)
 	}
 
+	// set add/del student lists to newData object and
+	// get slice of new student profiles
+	var students []entity.Profile
+	if newData.NewFullStudents != nil {
+		newData.AddStudents, newData.DelStudents,
+			students, err = u.sepNewStudents(taskID, newData.NewFullStudents)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+	// TODO: else
+
 	if err := u.taskRepoDB.UpdateTask(taskID, newData); err != nil {
-		return nil, fmt.Errorf("update: %w", err)
+		return nil, nil, fmt.Errorf("update: %w", err)
 	}
 
 	if newData.Title != nil {
@@ -139,11 +151,11 @@ func (u *UCTeacher) UpdateTask(teacherID, taskID int,
 	if newData.Desc != nil {
 		taskObj.Desc = *newData.Desc
 	}
-	return taskObj, nil
+	return taskObj, students, nil
 }
 
-// DeleteTaskByID deletes task object by given ID.
-func (u *UCTeacher) DeleteTaskByID(userID, taskID int) error {
+// DeleteByID deletes task object by given ID.
+func (u *UCTeacher) DeleteByID(userID, taskID int) error {
 	// get task info
 	taskObj, err := u.taskRepoDB.GetTaskByID(taskID)
 	// return nil error if task was not found
@@ -161,10 +173,52 @@ func (u *UCTeacher) DeleteTaskByID(userID, taskID int) error {
 	return u.taskRepoDB.DeleteTaskByID(taskID)
 }
 
-// GetTasks returns all teacher tasks.
+// GetMany returns all teacher tasks.
 // Search param appends condition to filter tasks by title (substring).
-func (u *UCTeacher) GetTasks(teacherID int, search string,
+func (u *UCTeacher) GetMany(teacherID int, search string,
 	page *entity.Pagination) ([]entity.Task, error) {
 
 	return u.taskRepoDB.GetTasks(teacherID, search, page)
+}
+
+// sepNewStudents separates students from new students list into add/delete (linked to task) lists.
+// It returns both result lists and new student profiles list.
+func (u *UCTeacher) sepNewStudents(taskID int, newStudIDs []int) (add []int, del []int,
+	newStuds []entity.Profile, err error) {
+
+	// get actual students list before updating task solutions
+	oldStuds, err := u.taskRepoDB.GetTaskStudents(taskID)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("get old students: %w", err)
+	}
+	// get user objects of new students (and check them)
+	newStudUsers, err := u.getStudentsByIDs(newStudIDs)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("get new students: %w", err)
+	}
+	// collect new student profiles
+	newStuds = make([]entity.Profile, len(newStudUsers))
+	for idx := range newStudUsers {
+		newStuds[idx] = *newStudUsers[idx].Profile
+	}
+	add, del = u.userRepoDB.AddDelChanges(oldStuds, newStuds)
+
+	return add, del, newStuds, nil
+}
+
+// getStudentsByIDs gets student (user) objects by given IDs and validates gotten student list.
+func (u *UCTeacher) getStudentsByIDs(studentIDs []int) ([]entity.User, error) {
+	// get user objects by IDs
+	students, err := u.userRepoDB.GetManyWithProfilesShort(studentIDs)
+	if err != nil {
+		return nil, fmt.Errorf("get students: %w", err)
+	}
+	// check students
+	for idx := range students {
+		if !students[idx].IsStudent() {
+			return nil, fmt.Errorf("%w: user %d: not student",
+				task.ErrInvalidData, students[idx].ID)
+		}
+	}
+	return students, nil
 }

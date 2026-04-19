@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestCreateUserWithProfile(t *testing.T) {
+func TestGetOneFull(t *testing.T) {
 	userID := 1
 
 	userObj, err := _testRepoDB.GetOneFull("id", userID)

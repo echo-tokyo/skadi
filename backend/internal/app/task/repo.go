@@ -9,7 +9,6 @@ type RepositoryDB interface {
 	// GetTaskByID returns task info by the given ID.
 	GetTaskByID(id int) (*entity.Task, error)
 	// UpdateTask updates the given task by given ID with the new data.
-	// It returns the updated task object.
 	UpdateTask(taskID int, newData *entity.TaskUpdate) error
 	// DeleteTaskByID deletes task by given id.
 	DeleteTaskByID(id int) error
