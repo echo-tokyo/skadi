@@ -23,5 +23,7 @@ type UsecaseTeacher interface {
 
 	// GetMany returns all teacher tasks.
 	// Search param appends condition to filter tasks by title (substring).
-	GetMany(teacherID int, search string, page *entity.Pagination) ([]entity.Task, error)
+	// For each elem returns task object and list of students linked to it.
+	GetMany(teacherID int, search string,
+		page *entity.Pagination) ([]entity.TaskWithStudents, error)
 }

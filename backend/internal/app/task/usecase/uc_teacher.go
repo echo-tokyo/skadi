@@ -5,6 +5,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
@@ -178,9 +179,48 @@ func (u *UCTeacher) DeleteByID(userID, taskID int) error {
 // GetMany returns all teacher tasks.
 // Search param appends condition to filter tasks by title (substring).
 func (u *UCTeacher) GetMany(teacherID int, search string,
-	page *entity.Pagination) ([]entity.Task, error) {
+	page *entity.Pagination) ([]entity.TaskWithStudents, error) {
 
-	return u.taskRepoDB.GetMany(teacherID, search, page)
+	// get tasks
+	taskList, err := u.taskRepoDB.GetMany(teacherID, search, page)
+	if err != nil {
+		return nil, fmt.Errorf("get tasks: %w", err)
+	}
+	if len(taskList) == 0 {
+		return []entity.TaskWithStudents{}, nil
+	}
+
+	errChan := make(chan error, len(taskList))
+	var wg sync.WaitGroup
+
+	// fan out pattern to get students for each task
+	res := make([]entity.TaskWithStudents, len(taskList))
+	for idx := range taskList {
+		wg.Add(1)
+		go func(taskIdx int) {
+			defer wg.Done()
+			res[taskIdx].Task = &taskList[taskIdx]
+			// get students for task
+			students, loopErr := u.taskRepoDB.GetTaskStudents(taskList[taskIdx].ID)
+			if loopErr != nil {
+				errChan <- fmt.Errorf("task %d: %w", taskList[taskIdx].ID, loopErr)
+				return
+			}
+			res[taskIdx].Students = students
+		}(idx)
+	}
+
+	go func() {
+		defer close(errChan)
+		wg.Wait()
+	}()
+
+	for err := range errChan {
+		if err != nil {
+			return nil, fmt.Errorf("get students: %w", err)
+		}
+	}
+	return res, nil
 }
 
 // sepNewStudents separates students from new students list into add/delete (linked to task) lists.

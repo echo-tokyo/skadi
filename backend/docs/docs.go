@@ -1042,7 +1042,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/v1.readTaskOut"
+                            "$ref": "#/definitions/entity.TaskWithStudents"
                         }
                     },
                     "401": {
@@ -1135,7 +1135,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/v1.readTaskOut"
+                            "$ref": "#/definitions/entity.TaskWithStudents"
                         }
                     },
                     "400": {
@@ -1792,6 +1792,26 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.TaskWithStudents": {
+            "type": "object",
+            "properties": {
+                "students": {
+                    "description": "students solving this task",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Profile"
+                    }
+                },
+                "task": {
+                    "description": "task object",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Task"
+                        }
+                    ]
+                }
+            }
+        },
         "entity.User": {
             "type": "object",
             "required": [
@@ -2075,7 +2095,7 @@ const docTemplate = `{
                     "description": "tasks list",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Task"
+                        "$ref": "#/definitions/entity.TaskWithStudents"
                     }
                 },
                 "pagination": {
@@ -2149,30 +2169,6 @@ const docTemplate = `{
                     "allOf": [
                         {
                             "$ref": "#/definitions/v1.contactBody"
-                        }
-                    ]
-                }
-            }
-        },
-        "v1.readTaskOut": {
-            "description": "readTaskOut represents a task data with students linked to the task solutions.",
-            "type": "object",
-            "required": [
-                "task"
-            ],
-            "properties": {
-                "students": {
-                    "description": "students solving this task",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Profile"
-                    }
-                },
-                "task": {
-                    "description": "task object",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/entity.Task"
                         }
                     ]
                 }
