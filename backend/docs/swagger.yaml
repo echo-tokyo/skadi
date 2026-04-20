@@ -216,6 +216,12 @@ definitions:
         description: class id (for students)
         example: 3
         type: integer
+      password:
+        description: user password
+        example: qwerty123
+        maxLength: 40
+        minLength: 8
+        type: string
       profile:
         allOf:
         - $ref: '#/definitions/v1.profileBody'
@@ -1445,8 +1451,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Полное обновление профиля юзера и его группы (если студент) по
-        его id.
+      description: Полное обновление профиля юзера, его группы (если студент) и пароля
+        (опционально) по его id.
       operationId: user-update
       parameters:
       - description: ID юзера

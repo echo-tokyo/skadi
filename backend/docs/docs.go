@@ -1448,7 +1448,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Полное обновление профиля юзера и его группы (если студент) по его id.",
+                "description": "Полное обновление профиля юзера, его группы (если студент) и пароля (опционально) по его id.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1905,6 +1905,13 @@ const docTemplate = `{
                     "description": "class id (for students)",
                     "type": "integer",
                     "example": 3
+                },
+                "password": {
+                    "description": "user password",
+                    "type": "string",
+                    "maxLength": 40,
+                    "minLength": 8,
+                    "example": "qwerty123"
                 },
                 "profile": {
                     "description": "user profile",

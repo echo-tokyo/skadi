@@ -17,6 +17,8 @@ import (
 var _ user.UsecaseAdmin = (*UCAdminClient)(nil)
 var _ user.UsecaseClient = (*UCAdminClient)(nil)
 
+var noCheck = func(_ *entity.User) error { return nil }
+
 // UCAdminClient represents a user usecase for admin and client.
 // It implements the [user.UsecaseAdmin] and the [user.UsecaseClient] interfaces.
 type UCAdminClient struct {
@@ -72,7 +74,7 @@ func (u *UCAdminClient) GetByID(id int) (*entity.User, error) {
 	return userObj, nil
 }
 
-// Update updates user (class and profile) by given ID with given data.
+// Update updates user (class, password and profile) by given ID with given data.
 // It returns user object with updated user data.
 func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, error) {
 	oldUserObj, err := u.userRepoDB.GetByID(id)
@@ -96,7 +98,10 @@ func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, erro
 
 	// update user object only
 	userObj.ClassID = newUser.ClassID // set new class ID
-	userObj.Password = nil            // skip password updates
+	// process and set new password hash
+	if err := processPassword(userObj, newUser.Password, noCheck); err != nil {
+		return nil, err
+	}
 	if err := u.userRepoDB.UpdateUser(userObj); err != nil {
 		return nil, fmt.Errorf("user: %w", err)
 	}
@@ -175,7 +180,6 @@ func (u *UCAdminClient) GetByRoles(roleList []entity.Role, free bool, search str
 // ChangePasswordAsAdmin changes password of any client.
 // New password is a raw (not hashed) password.
 func (u *UCAdminClient) ChangePasswordAsAdmin(id int, newPasswd []byte) error {
-	var noCheck = func(_ *entity.User) error { return nil }
 	return u.changePassword(id, newPasswd, noCheck)
 }
 
@@ -201,28 +205,40 @@ func (u *UCAdminClient) ChangePasswordAsClient(id int, oldPasswd, newPasswd []by
 func (u *UCAdminClient) changePassword(id int, newPasswd []byte,
 	checkFunc func(userObj *entity.User) error) error {
 
+	// get user object
 	userObj, err := u.userRepoDB.GetByID(id)
 	if err != nil {
 		return fmt.Errorf("get by id: %w", err)
 	}
+
+	if err := processPassword(userObj, newPasswd, checkFunc); err != nil {
+		return err
+	}
+	// update user's password
+	if err := u.userRepoDB.UpdateUser(userObj); err != nil {
+		return fmt.Errorf("change password: %w", err)
+	}
+	return nil
+}
+
+// processPassword uses role/password checks and set hash to user's password field.
+func processPassword(userObj *entity.User, newPasswd []byte,
+	checkFunc func(userObj *entity.User) error) error {
+
 	// deny changing password for admins
 	if userObj.IsAdmin() {
 		return fmt.Errorf("cannot change admin password: %w", user.ErrNotFound)
 	}
-
 	// apply additional password checks
 	if err := checkFunc(userObj); err != nil {
 		return err
 	}
 
 	// hash new password
+	var err error
 	userObj.Password, err = password.Encode(newPasswd)
 	if err != nil {
 		return fmt.Errorf("encode new password: %w", err)
-	}
-	// update user's password
-	if err := u.userRepoDB.UpdateUser(userObj); err != nil {
-		return fmt.Errorf("change password: %w", err)
 	}
 	return nil
 }

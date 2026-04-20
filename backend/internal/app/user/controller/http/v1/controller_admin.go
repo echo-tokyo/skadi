@@ -131,7 +131,7 @@ func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 }
 
 // @summary		Обновление юзера по id. [Только админ]
-// @description	Полное обновление профиля юзера и его группы (если студент) по его id.
+// @description	Полное обновление профиля юзера, его группы (если студент) и пароля (опционально) по его id.
 // @router			/user/{id} [put]
 // @id				user-update
 // @tags			user
@@ -159,7 +159,8 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 	}
 	// data reshaping
 	oldUser := &entity.User{
-		ClassID: inputBody.ClassID,
+		ClassID:  inputBody.ClassID,
+		Password: []byte(inputBody.Password),
 		Profile: &entity.Profile{
 			Fullname: inputBody.Profile.FullName,
 			Address:  inputBody.Profile.Address,
