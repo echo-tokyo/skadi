@@ -129,17 +129,19 @@ func (u *UCTeacher) Update(teacherID, taskID int,
 		return nil, nil, fmt.Errorf("%w: user is not a task owner", task.ErrForbidden)
 	}
 
-	// set add/del student lists to newData object and
-	// get slice of new student profiles
 	var students []entity.Profile
 	if newData.NewFullStudents != nil {
+		// set add/del student lists to newData object and
+		// get slice of new student profiles
 		newData.AddStudents, newData.DelStudents,
 			students, err = u.sepNewStudents(taskID, newData.NewFullStudents)
-		if err != nil {
-			return nil, nil, err
-		}
+	} else {
+		// get actual students list
+		students, err = u.taskRepoDB.GetTaskStudents(taskID)
 	}
-	// TODO: else
+	if err != nil {
+		return nil, nil, fmt.Errorf("get students: %w", err)
+	}
 
 	if err := u.taskRepoDB.Update(taskID, newData); err != nil {
 		return nil, nil, fmt.Errorf("update: %w", err)
@@ -189,12 +191,12 @@ func (u *UCTeacher) sepNewStudents(taskID int, newStudIDs []int) (add []int, del
 	// get actual students list before updating task solutions
 	oldStuds, err := u.taskRepoDB.GetTaskStudents(taskID)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("get old students: %w", err)
+		return nil, nil, nil, fmt.Errorf("old list: %w", err)
 	}
 	// get user objects of new students (and check them)
 	newStudUsers, err := u.getStudentsByIDs(newStudIDs)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("get new students: %w", err)
+		return nil, nil, nil, fmt.Errorf("new list: %w", err)
 	}
 	// collect new student profiles
 	newStuds = make([]entity.Profile, len(newStudUsers))
@@ -211,7 +213,7 @@ func (u *UCTeacher) getStudentsByIDs(studentIDs []int) ([]entity.User, error) {
 	// get user objects by IDs
 	students, err := u.userRepoDB.GetManyWithProfilesShort(studentIDs)
 	if err != nil {
-		return nil, fmt.Errorf("get students: %w", err)
+		return nil, err
 	}
 	// check students
 	for idx := range students {
