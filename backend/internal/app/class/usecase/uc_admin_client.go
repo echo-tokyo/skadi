@@ -97,16 +97,19 @@ func (u *UCAdminClient) Update(id int, newData *entity.ClassUpdate) (*entity.Cla
 	if err := u.setTeacherProfile(classObj); err != nil {
 		return nil, err
 	}
-	// set add/del student lists to newData object and
-	// get slice of new student profiles
+
 	if newData.NewFullStudents != nil {
+		// set add/del student lists to newData object and
+		// get slice of new student profiles
 		newData.AddStudents, newData.DelStudents,
 			classObj.Students, err = u.sepNewStudents(id, newData.NewFullStudents)
-		if err != nil {
-			return nil, err
-		}
+	} else {
+		// get actual students list
+		classObj.Students, err = u.userRepoDB.GetProfilesShortByClass(id)
 	}
-	// TODO: else
+	if err != nil {
+		return nil, fmt.Errorf("get students: %w", err)
+	}
 
 	if err := u.classRepoDB.Update(id, newData); err != nil {
 		return nil, fmt.Errorf("update: %w", err)
@@ -160,12 +163,12 @@ func (u *UCAdminClient) sepNewStudents(classID int, newStudIDs []int) (add []int
 	// get actual students list before updating class data
 	oldStuds, err := u.userRepoDB.GetProfilesShortByClass(classID)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("get old students: %w", err)
+		return nil, nil, nil, fmt.Errorf("old list: %w", err)
 	}
 	// get user objects of new students (and check them)
 	newStudUsers, err := u.getStudentsByIDs(classID, newStudIDs)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("get new students: %w", err)
+		return nil, nil, nil, fmt.Errorf("new list: %w", err)
 	}
 	// collect new student profiles
 	newStuds = make([]entity.Profile, len(newStudUsers))
@@ -181,7 +184,7 @@ func (u *UCAdminClient) getStudentsByIDs(classID int, studentIDs []int) ([]entit
 	// get user objects by IDs
 	students, err := u.userRepoDB.GetManyWithProfilesShort(studentIDs)
 	if err != nil {
-		return nil, fmt.Errorf("get students: %w", err)
+		return nil, err
 	}
 	// check students
 	for idx := range students {

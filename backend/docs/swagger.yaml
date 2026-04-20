@@ -140,6 +140,18 @@ definitions:
     - id
     - title
     type: object
+  entity.TaskWithStudents:
+    properties:
+      students:
+        description: students solving this task
+        items:
+          $ref: '#/definitions/entity.Profile'
+        type: array
+      task:
+        allOf:
+        - $ref: '#/definitions/entity.Task'
+        description: task object
+    type: object
   entity.User:
     properties:
       class:
@@ -204,6 +216,12 @@ definitions:
         description: class id (for students)
         example: 3
         type: integer
+      password:
+        description: user password
+        example: qwerty123
+        maxLength: 40
+        minLength: 8
+        type: string
       profile:
         allOf:
         - $ref: '#/definitions/v1.profileBody'
@@ -333,7 +351,7 @@ definitions:
       data:
         description: tasks list
         items:
-          $ref: '#/definitions/entity.Task'
+          $ref: '#/definitions/entity.TaskWithStudents'
         type: array
       pagination:
         allOf:
@@ -384,22 +402,6 @@ definitions:
         description: parent contact info (for students)
     required:
     - fullname
-    type: object
-  v1.readTaskOut:
-    description: readTaskOut represents a task data with students linked to the task
-      solutions.
-    properties:
-      students:
-        description: students solving this task
-        items:
-          $ref: '#/definitions/entity.Profile'
-        type: array
-      task:
-        allOf:
-        - $ref: '#/definitions/entity.Task'
-        description: task object
-    required:
-    - task
     type: object
   v1.solutionOut:
     description: solutionOut represents a solution data with students (solving the
@@ -1260,7 +1262,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/v1.readTaskOut'
+            $ref: '#/definitions/entity.TaskWithStudents'
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "403":
@@ -1296,7 +1298,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/v1.readTaskOut'
+            $ref: '#/definitions/entity.TaskWithStudents'
         "400":
           description: неверный ученик
         "401":
@@ -1449,8 +1451,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Полное обновление профиля юзера и его группы (если студент) по
-        его id.
+      description: Полное обновление профиля юзера, его группы (если студент) и пароля
+        (опционально) по его id.
       operationId: user-update
       parameters:
       - description: ID юзера

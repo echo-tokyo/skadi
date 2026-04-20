@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 // Task represents a task data.
 type Task struct {
@@ -23,6 +25,14 @@ type Task struct {
 // TableName determines DB table name for the task object.
 func (*Task) TableName() string {
 	return "task"
+}
+
+// TaskWithStudents represents a task data with students linked to it.
+type TaskWithStudents struct {
+	// task object
+	Task *Task `json:"task"`
+	// students solving this task
+	Students []Profile `json:"students"`
 }
 
 // TaskUpdate represents a data to update task.

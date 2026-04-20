@@ -102,7 +102,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 // @produce		json
 // @security		JWTAccess
 // @param			id	path		int	true	"ID решения задания"
-// @success		200	{object}	readTaskOut
+// @success		200	{object}	entity.TaskWithStudents
 // @failure		401	"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403	"доступ запрещён"
 // @failure		404	"задание не найдено"
@@ -134,7 +134,7 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 		return fmt.Errorf("read: %w", err)
 	}
 
-	res := &readTaskOut{
+	res := &entity.TaskWithStudents{
 		Task:     taskObj,
 		Students: students,
 	}
@@ -151,7 +151,7 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 // @security		JWTAccess
 // @param			id				path		string			true	"ID задания"
 // @param			updateTaskBody	body		updateTaskBody	true	"updateTaskBody"
-// @success		200				{object}	readTaskOut
+// @success		200				{object}	entity.TaskWithStudents
 // @failure		400				"неверный ученик"
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403				"доступ запрещён"
@@ -201,7 +201,7 @@ func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	res := &readTaskOut{
+	res := &entity.TaskWithStudents{
 		Task:     taskObj,
 		Students: students,
 	}

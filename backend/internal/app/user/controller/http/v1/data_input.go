@@ -12,14 +12,6 @@ import (
 // _acceptedRoles contains accepted roles for listUserQuery
 var _acceptedRoles = []entity.Role{entity.Teacher, entity.Student}
 
-// @description updatePasswordBody represents a data to update user password by the user himself.
-type updatePasswordBody struct {
-	// old user password
-	OldPasswd string `json:"old" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
-	// new user password
-	NewPasswd string `json:"new" validate:"required,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
-}
-
 // @description userBody represents a data with user.
 type userBody struct {
 	// user username
@@ -64,6 +56,8 @@ type userIDPath struct {
 type updateBody struct {
 	// class id (for students)
 	ClassID *int `json:"class_id,omitempty" validate:"omitempty,numeric" example:"3"`
+	// user password
+	Password string `json:"password,omitempty" validate:"omitempty,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// user profile
 	Profile profileBody `json:"profile" validate:"required"`
 }
@@ -104,5 +98,13 @@ func (u *listUserQuery) Validate(valid validator.Validator) serialize.Validator 
 // @description updatePasswordAdminBody represents a data to update user password by admin.
 type updatePasswordAdminBody struct {
 	// new password for user
+	NewPasswd string `json:"new" validate:"required,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
+}
+
+// @description updatePasswordBody represents a data to update user password by the user himself.
+type updatePasswordBody struct {
+	// old user password
+	OldPasswd string `json:"old" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
+	// new user password
 	NewPasswd string `json:"new" validate:"required,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
 }
