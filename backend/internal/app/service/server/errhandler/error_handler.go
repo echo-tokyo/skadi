@@ -31,9 +31,13 @@ func CustomErrorHandler(ctx *fiber.Ctx, err error) error {
 		errResp.source = "fiber"
 		errResp.StatusCode = fiberErr.Code
 		errResp.Message = fiberErr.Message
+		// change default message for 403 error
+		if errResp.StatusCode == fiber.StatusForbidden {
+			errResp.Message = "запрещено"
+		}
 		// change default message for 404 error
 		if errResp.StatusCode == fiber.StatusNotFound {
-			errResp.Message = "page not found"
+			errResp.Message = "ресурс не найден"
 		}
 	// *httperror.HTTPError error
 	case errors.As(err, &httpErr):

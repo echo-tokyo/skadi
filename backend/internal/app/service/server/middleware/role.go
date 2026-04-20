@@ -24,8 +24,8 @@ func Allow(roles ...entity.Role) fiber.Handler {
 		if slices.Contains(roles, userClaims.Role) {
 			return ctx.Next()
 		}
-		// not found error for other roles
-		err := fmt.Errorf("non-admin: %w", fiber.ErrNotFound)
+		// error for other roles
+		err := fmt.Errorf("role not in %v: %w", roles, fiber.ErrForbidden)
 		return errhandler.CustomErrorHandler(ctx, err)
 	}
 }
