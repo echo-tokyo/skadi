@@ -7,13 +7,13 @@ import (
 // @description taskBody represents a data with task.
 type taskBody struct {
 	// task title
-	Title string `json:"title" validate:"required,max=100" example:"ООП в Python" maxLength:"100"`
+	Title string `form:"title" json:"title" validate:"required,max=100" example:"ООП в Python" maxLength:"100"`
 	// task description
-	Desc string `json:"description" validate:"required" example:"ООП в Python - это ..."`
+	Desc string `form:"description" json:"description" validate:"required" example:"ООП в Python - это ..."`
 	// classes for task solutions
-	ClassIDs []int `json:"classes,omitempty" validate:"omitempty" example:"3,6,9"`
+	ClassIDs []int `form:"classes" json:"classes,omitempty" validate:"omitempty" example:"3,6,9"`
 	// students for task solutions
-	StudentIDs []int `json:"students,omitempty" validate:"omitempty" example:"22,32,14"`
+	StudentIDs []int `form:"students" json:"students,omitempty" validate:"omitempty" example:"22,32,14"`
 }
 
 // @description taskIDPath represents a data with task ID in path params.

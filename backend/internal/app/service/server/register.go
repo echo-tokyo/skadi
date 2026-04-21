@@ -53,7 +53,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	userController := userhttpv1.NewUserController(userUCAdminClient, valid)
 	classControllerAdmin := classhttpv1.NewClassControllerAdmin(classUCAdminClient, valid)
 	classController := classhttpv1.NewClassController(classUCAdminClient, valid)
-	taskControllerTeacher := taskhttpv1.NewTaskControllerTeacher(taskUCTeacher, valid)
+	taskControllerTeacher := taskhttpv1.NewTaskControllerTeacher(cfg, taskUCTeacher, valid)
 	solController := solhttpv1.NewSolController(solUCClient, valid)
 	solControllerStudent := solhttpv1.NewSolControllerStudent(solUCStudent, valid)
 	solControllerTeacher := solhttpv1.NewSolControllerTeacher(solUCTeacher, valid)

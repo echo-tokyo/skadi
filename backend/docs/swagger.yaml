@@ -33,6 +33,21 @@ definitions:
       phone:
         type: string
     type: object
+  entity.File:
+    properties:
+      id:
+        description: file ID
+        type: integer
+      mime_type:
+        description: file MIME-type
+        type: string
+      name:
+        description: filename
+        type: string
+      size:
+        description: file size in bytes
+        type: integer
+    type: object
   entity.Pagination:
     properties:
       page:
@@ -126,6 +141,11 @@ definitions:
       description:
         description: task description
         type: string
+      files:
+        description: task files
+        items:
+          $ref: '#/definitions/entity.File'
+        type: array
       id:
         description: task id
         type: integer
@@ -418,40 +438,6 @@ definitions:
         description: solution object
     required:
     - solution
-    type: object
-  v1.taskBody:
-    description: taskBody represents a data with task.
-    properties:
-      classes:
-        description: classes for task solutions
-        example:
-        - 3
-        - 6
-        - 9
-        items:
-          type: integer
-        type: array
-      description:
-        description: task description
-        example: ООП в Python - это ...
-        type: string
-      students:
-        description: students for task solutions
-        example:
-        - 22
-        - 32
-        - 14
-        items:
-          type: integer
-        type: array
-      title:
-        description: task title
-        example: ООП в Python
-        maxLength: 100
-        type: string
-    required:
-    - description
-    - title
     type: object
   v1.updatePasswordAdminBody:
     description: updatePasswordAdminBody represents a data to update user password
@@ -1190,17 +1176,42 @@ paths:
       - task
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Создание нового задания для переданных учеников и учеников из переданных
         групп.
       operationId: task-create
       parameters:
-      - description: taskBody
-        in: body
-        name: taskBody
+      - description: task title
+        in: formData
+        name: title
         required: true
-        schema:
-          $ref: '#/definitions/v1.taskBody'
+        type: string
+      - description: task description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - collectionFormat: multi
+        description: classes for task solutions (list of class IDs)
+        in: formData
+        items:
+          type: integer
+        name: classes
+        type: array
+      - collectionFormat: multi
+        description: students for task solutions (list of student IDs)
+        in: formData
+        items:
+          type: integer
+        name: students
+        type: array
+      - collectionFormat: multi
+        description: task files
+        in: formData
+        items:
+          type: file
+        name: file
+        type: array
       produces:
       - application/json
       responses:

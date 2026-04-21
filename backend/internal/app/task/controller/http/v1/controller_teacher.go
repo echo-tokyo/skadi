@@ -3,9 +3,11 @@ package v1
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 
 	fiber "github.com/gofiber/fiber/v2"
 
+	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
@@ -15,19 +17,23 @@ import (
 	"skadi/backend/internal/pkg/validator"
 )
 
+const _mpfdFileKey = "file" // key for mpfd files
+
 // TaskControllerTeacher represents a controller for task routes accepted for teachers only.
 type TaskControllerTeacher struct {
 	valid         validator.Validator
 	taskUCTeacher task.UsecaseTeacher
+	taskFileDir   string
 }
 
 // NewTaskControllerTeacher returns a new instance of [TaskControllerTeacher].
-func NewTaskControllerTeacher(taskUCTeacher task.UsecaseTeacher,
+func NewTaskControllerTeacher(cfg *config.Config, taskUCTeacher task.UsecaseTeacher,
 	valid validator.Validator) *TaskControllerTeacher {
 
 	return &TaskControllerTeacher{
 		valid:         valid,
 		taskUCTeacher: taskUCTeacher,
+		taskFileDir:   cfg.Media.TaskFileDir,
 	}
 }
 
@@ -36,10 +42,14 @@ func NewTaskControllerTeacher(taskUCTeacher task.UsecaseTeacher,
 // @router			/task [post]
 // @id				task-create
 // @tags			task
-// @accept			json
+// @accept			mpfd
 // @produce		json
 // @security		JWTAccess
-// @param			taskBody	body		taskBody	true	"taskBody"
+// @param			title		formData	string	true	"task title"
+// @param			description	formData	string	true	"task description"
+// @param			classes		formData	[]int	false	"classes for task solutions (list of class IDs)"
+// @param			students	formData	[]int	false	"students for task solutions (list of student IDs)"
+// @param			file		formData	[]file	false	"task files"
 // @success		201			{object}	createTaskOut
 // @failure		400			"неверный ученик | неверный преподаватель | преподаватель не найден"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
@@ -51,16 +61,49 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
+	// parse mpfd
+	mpfd, err := ctx.MultipartForm()
+	if err != nil {
+		return fmt.Errorf("parse mpfd: %w", err)
+	}
+
+	// save uploaded files to the file system
+	var uploadedFiles entity.Files
+	if mpfd != nil {
+		uploadedFiles = make(entity.Files, len(mpfd.File[_mpfdFileKey]))
+		for idx, file := range mpfd.File[_mpfdFileKey] {
+			// collect file's metadata
+			uploadedFiles[idx] = entity.NewFile(
+				file.Filename,
+				file.Header["Content-Type"][0],
+				file.Size,
+				entity.FileWithPathPrefix(c.taskFileDir),
+			)
+			// save file to file system
+			if err := ctx.SaveFile(file, uploadedFiles[idx].Path); err != nil {
+				uploadedFiles.Cleanup()
+				return fmt.Errorf("save file %s: %w", file.Filename, err)
+			}
+		}
+	}
+
+	slog.Debug("create task",
+		"students", inputBody.StudentIDs,
+		"classes", inputBody.ClassIDs)
 
 	// data reshaping
 	taskObj := &entity.Task{
 		Title:     inputBody.Title,
 		Desc:      inputBody.Desc,
 		TeacherID: userClaims.ID,
+		Files:     uploadedFiles,
 	}
 	// create a new task with solutions
 	solutions, err := c.taskUCTeacher.CreateWithSolutions(taskObj,
 		inputBody.StudentIDs, inputBody.ClassIDs)
+	if err != nil {
+		uploadedFiles.Cleanup()
+	}
 	if errors.Is(err, task.ErrNotFoundUser) {
 		return &httperror.HTTPError{
 			CauseErr:   err,

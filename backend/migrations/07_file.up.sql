@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS file (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     path VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(50) NOT NULL DEFAULT "file1",
-    size INT NULL,
+    size BIGINT NULL,
     mime_type VARCHAR(50) NULL DEFAULT "text/plain"
 );
 

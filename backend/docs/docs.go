@@ -973,7 +973,7 @@ const docTemplate = `{
                 ],
                 "description": "Создание нового задания для переданных учеников и учеников из переданных групп.",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -985,13 +985,48 @@ const docTemplate = `{
                 "operationId": "task-create",
                 "parameters": [
                     {
-                        "description": "taskBody",
-                        "name": "taskBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.taskBody"
-                        }
+                        "type": "string",
+                        "description": "task title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "task description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "classes for task solutions (list of class IDs)",
+                        "name": "classes",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "students for task solutions (list of student IDs)",
+                        "name": "students",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "task files",
+                        "name": "file",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -1635,6 +1670,27 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.File": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "file ID",
+                    "type": "integer"
+                },
+                "mime_type": {
+                    "description": "file MIME-type",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "filename",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "file size in bytes",
+                    "type": "integer"
+                }
+            }
+        },
         "entity.Pagination": {
             "type": "object",
             "required": [
@@ -1773,6 +1829,13 @@ const docTemplate = `{
                 "description": {
                     "description": "task description",
                     "type": "string"
+                },
+                "files": {
+                    "description": "task files",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.File"
+                    }
                 },
                 "id": {
                     "description": "task id",
@@ -2202,51 +2265,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/entity.Solution"
                         }
                     ]
-                }
-            }
-        },
-        "v1.taskBody": {
-            "description": "taskBody represents a data with task.",
-            "type": "object",
-            "required": [
-                "description",
-                "title"
-            ],
-            "properties": {
-                "classes": {
-                    "description": "classes for task solutions",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "example": [
-                        3,
-                        6,
-                        9
-                    ]
-                },
-                "description": {
-                    "description": "task description",
-                    "type": "string",
-                    "example": "ООП в Python - это ..."
-                },
-                "students": {
-                    "description": "students for task solutions",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "example": [
-                        22,
-                        32,
-                        14
-                    ]
-                },
-                "title": {
-                    "description": "task title",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "ООП в Python"
                 }
             }
         },

@@ -20,6 +20,8 @@ type Task struct {
 	// teacher object
 	Teacher     *Profile `gorm:"-" json:"teacher,omitempty" validate:"omitempty"`
 	TeacherUser *User    `gorm:"foreignKey:TeacherID;references:ID" json:"-"`
+	// task files
+	Files []*File `gorm:"many2many:task_file;foreignKey:ID;References:ID" json:"files,omitempty" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the task object.

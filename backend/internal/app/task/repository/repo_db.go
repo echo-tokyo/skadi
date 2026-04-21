@@ -57,7 +57,7 @@ func (r *RepoDB) CreateForStudents(taskObj *entity.Task,
 
 	// transaction to create the task and solutions
 	err := r.dbStorage.Transaction(func(tx *gorm.DB) error {
-		// create task
+		// create task and files
 		err := tx.Create(taskObj).Error
 		if errors.Is(err, gorm.ErrForeignKeyViolated) {
 			// teacher with given ID is not found
@@ -66,6 +66,17 @@ func (r *RepoDB) CreateForStudents(taskObj *entity.Task,
 		if err != nil {
 			return err
 		}
+
+		// // create files and link them to the task object
+		// for _, taskFile := range taskObj.Files {
+		// 	if err := tx.Create(taskFile).Error; err != nil {
+		// 		return fmt.Errorf("create file: %w", err)
+		// 	}
+		// 	// create many2many relationship
+		// 	if err := tx.Model(taskObj).Association("Files").Append(taskFile); err != nil {
+		// 		return fmt.Errorf("associate the file: %w", err)
+		// 	}
+		// }
 
 		// get status object
 		var statusObj *entity.Status
