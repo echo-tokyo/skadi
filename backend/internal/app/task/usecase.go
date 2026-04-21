@@ -1,10 +1,11 @@
 // Package task contains all repos, usecases and controllers for task.
 // Sub-package repo contains RepoDB implementation.
-// Sub-package usecase contains UsecaseTeacher, UsecaseStudent and UsecaseClient implementations.
+// Sub-package usecase contains UsecaseTeacher implementation.
 package task
 
 import "skadi/backend/internal/app/entity"
 
+// UsecaseAdmin describes all class usecases for teacher.
 type UsecaseTeacher interface {
 	// CreateWithSolutions creates a new task and solutions
 	// for all given students and for all students linked to the given classes.

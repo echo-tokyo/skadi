@@ -48,7 +48,7 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if *inputBody.ClassID == 0 {
+	if inputBody.ClassID != nil && *inputBody.ClassID == 0 {
 		inputBody.ClassID = nil
 	}
 	// data reshaping
@@ -153,32 +153,7 @@ func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
-
-	if *inputBody.ClassID == 0 {
-		inputBody.ClassID = nil
-	}
-	// data reshaping
-	oldUser := &entity.User{
-		ClassID:  inputBody.ClassID,
-		Password: []byte(inputBody.Password),
-		Profile: &entity.Profile{
-			Fullname: inputBody.Profile.FullName,
-			Address:  inputBody.Profile.Address,
-			Extra:    inputBody.Profile.Extra,
-		},
-	}
-	if inputBody.Profile.Contact != nil {
-		oldUser.Profile.Contact = &entity.Contact{
-			Phone: inputBody.Profile.Contact.Phone,
-			Email: inputBody.Profile.Contact.Email,
-		}
-	}
-	if inputBody.Profile.ParentContact != nil {
-		oldUser.Profile.ParentContact = &entity.Contact{
-			Phone: inputBody.Profile.ParentContact.Phone,
-			Email: inputBody.Profile.ParentContact.Email,
-		}
-	}
+	oldUser := inputBody.ToEntityUser()
 
 	// update user
 	newUser, err := c.userUCAdmin.Update(inputPath.ID, oldUser)

@@ -5,6 +5,7 @@ package solution
 
 import "skadi/backend/internal/app/entity"
 
+// UsecaseTeacher describes all class usecases for teacher.
 type UsecaseTeacher interface {
 	// Update updates the given solution by given ID with the new data.
 	// It returns the updated solution object.
@@ -21,6 +22,7 @@ type UsecaseTeacher interface {
 		page *entity.Pagination) ([]entity.Solution, error)
 }
 
+// UsecaseStudent describes all class usecases for student.
 type UsecaseStudent interface {
 	// GetManyForStudent returns all student solutions.
 	// StatusID param appends condition to filter solutions by status.
@@ -32,6 +34,7 @@ type UsecaseStudent interface {
 	Update(studID, solutionID int, newData *entity.SolutionUpdate) (*entity.Solution, error)
 }
 
+// UsecaseClient describes all class usecases for teacher and student.
 type UsecaseClient interface {
 	// GetByIDFull returns a full solution info and all students linked to the solution task.
 	GetByIDFull(solutionID int,

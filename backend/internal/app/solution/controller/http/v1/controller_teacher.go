@@ -58,7 +58,7 @@ func (c *SolControllerTeacher) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	if *inputBody.StatusID == 0 {
+	if inputBody.StatusID != nil && *inputBody.StatusID == 0 {
 		inputBody.StatusID = nil
 	}
 	// data reshaping

@@ -59,6 +59,15 @@ cp ./test-stand/frontend/mysql.env ./mysql/.env
 cp ./test-stand/frontend/backend-config.yml ./backend/config.yml
 ```
 
+Чтобы востановить старые файлы используйте (linux):
+
+```shell
+mv ./backend/.env.backup ./backend/.env
+mv ./mysql/.env.backup ./mysql/.env
+mv ./backend/config.yml.backup ./backend/config.yml
+
+```
+
 #### 3. Запустить `compose` файл для frontend'а
 
 ```shell

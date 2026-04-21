@@ -1,5 +1,4 @@
-// Package usecase contains task.UsecaseTeacher, task.UsecaseStudent and
-// task.UsecaseClient implementations.
+// Package usecase contains task.UsecaseTeacher implementation.
 package usecase
 
 import (
