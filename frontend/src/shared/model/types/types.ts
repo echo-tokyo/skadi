@@ -28,6 +28,15 @@ export type TTask = {
   title: string
 }
 
+export type TFile = {
+  id: string
+  name: string
+  size?: number
+  url?: string
+  type?: string
+  preview?: string
+}
+
 export type TTaskWithStudents = {
   students?: TProfile[]
   task: TTask
