@@ -26,15 +26,14 @@ export type TTask = {
   id: number
   teacher?: TProfile
   title: string
+  files: TFile[]
 }
 
 export type TFile = {
   id: string
+  mime_type: string
   name: string
-  size?: number
-  url?: string
-  type?: string
-  preview?: string
+  size: number
 }
 
 export type TTaskWithStudents = {

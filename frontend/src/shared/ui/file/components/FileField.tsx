@@ -53,8 +53,7 @@ const FileField = ({
         id: crypto.randomUUID(),
         name: f.name,
         size: f.size,
-        type: f.type,
-        preview: f.type.startsWith('image/') ? URL.createObjectURL(f) : undefined,
+        mime_type: f.type,
         file: f,
       }))
 
@@ -105,7 +104,11 @@ const FileField = ({
       {totalCount > 0 && (
         <ul className={styles.fileList} aria-label='Выбранные файлы'>
           {serverFiles.map((file) => (
-            <FileItem key={file.id} file={file} onRemove={(id) => onRemoveServerFile?.(id)} />
+            <FileItem
+              key={file.id}
+              file={file}
+              onRemove={(id) => onRemoveServerFile?.(id)}
+            />
           ))}
           {localFiles.map((file) => (
             <FileItem key={file.id} file={file} onRemove={handleRemoveLocal} />
