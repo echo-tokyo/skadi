@@ -10,8 +10,8 @@ type RepositoryDB interface {
 	GetByID(id int) (*entity.Task, error)
 	// Update updates the given task by given ID with the new data.
 	Update(taskID int, newData *entity.TaskUpdate) error
-	// DeleteByID deletes task by given id.
-	DeleteByID(id int) error
+	// Delete deletes task and task files.
+	Delete(taskObj *entity.Task) error
 
 	// GetMany returns all teacher tasks.
 	// Search param appends condition to filter tasks by title (substring).

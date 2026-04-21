@@ -21,7 +21,7 @@ type Task struct {
 	Teacher     *Profile `gorm:"-" json:"teacher,omitempty" validate:"omitempty"`
 	TeacherUser *User    `gorm:"foreignKey:TeacherID;references:ID" json:"-"`
 	// task files
-	Files []*File `gorm:"many2many:task_file;foreignKey:ID;References:ID" json:"files,omitempty" validate:"omitempty"`
+	Files Files `gorm:"many2many:task_file;foreignKey:ID;References:ID" json:"files,omitempty" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the task object.
@@ -32,9 +32,9 @@ func (*Task) TableName() string {
 // TaskWithStudents represents a task data with students linked to it.
 type TaskWithStudents struct {
 	// task object
-	Task *Task `json:"task"`
+	Task *Task `json:"task" validate:"required"`
 	// students solving this task
-	Students []Profile `json:"students"`
+	Students []Profile `json:"students,omitempty" validate:"omitempty"`
 }
 
 // TaskUpdate represents a data to update task.

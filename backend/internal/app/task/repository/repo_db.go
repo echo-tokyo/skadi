@@ -18,6 +18,7 @@ const (
 	_preloadStudent        = "StudentUser"              // object field name
 	_preloadStudentProfile = "StudentUser.Profile"      // object field name
 	_preloadStatus         = "Status"                   // object field name
+	_preloadFiles          = "Files"                    // object field name
 
 	_fieldID        = "id"          // table field name
 	_fieldFullname  = "fullname"    // table field name
@@ -67,17 +68,6 @@ func (r *RepoDB) CreateForStudents(taskObj *entity.Task,
 			return err
 		}
 
-		// // create files and link them to the task object
-		// for _, taskFile := range taskObj.Files {
-		// 	if err := tx.Create(taskFile).Error; err != nil {
-		// 		return fmt.Errorf("create file: %w", err)
-		// 	}
-		// 	// create many2many relationship
-		// 	if err := tx.Model(taskObj).Association("Files").Append(taskFile); err != nil {
-		// 		return fmt.Errorf("associate the file: %w", err)
-		// 	}
-		// }
-
 		// get status object
 		var statusObj *entity.Status
 		err = tx.Where(_defaultStatusID).First(&statusObj).Error
@@ -111,6 +101,7 @@ func (r *RepoDB) CreateForStudents(taskObj *entity.Task,
 func (r *RepoDB) GetByID(id int) (*entity.Task, error) {
 	var taskObj entity.Task
 	err := r.dbStorage.
+		Preload(_preloadFiles).
 		Where(id).First(&taskObj).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// task object with such id not found
@@ -161,9 +152,21 @@ func (r *RepoDB) Update(taskID int, newData *entity.TaskUpdate) error {
 	})
 }
 
-// DeleteByID deletes task by given id.
-func (r *RepoDB) DeleteByID(id int) error {
-	return r.dbStorage.Delete(&entity.Task{}, id).Error
+// Delete deletes task and task files.
+func (r *RepoDB) Delete(taskObj *entity.Task) error {
+	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		// delete task and task_file records
+		if err := tx.Delete(&entity.Task{}, taskObj.ID).Error; err != nil {
+			return err
+		}
+		// delete files
+		for _, file := range taskObj.Files {
+			if err := tx.Delete(&entity.File{}, file.ID).Error; err != nil {
+				return fmt.Errorf("delete file %d: %w", file.ID, err)
+			}
+		}
+		return nil
+	})
 }
 
 // GetMany returns all teacher tasks.

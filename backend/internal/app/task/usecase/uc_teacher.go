@@ -173,7 +173,12 @@ func (u *UCTeacher) DeleteByID(userID, taskID int) error {
 		return fmt.Errorf("%w: user (teacher) is not a task owner", task.ErrForbidden)
 	}
 	// delete task
-	return u.taskRepoDB.DeleteByID(taskID)
+	if err := u.taskRepoDB.Delete(taskObj); err != nil {
+		return err
+	}
+	// delete files from the file system
+	taskObj.Files.Cleanup()
+	return nil
 }
 
 // GetMany returns all teacher tasks.

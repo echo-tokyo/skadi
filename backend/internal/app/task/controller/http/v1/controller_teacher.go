@@ -3,7 +3,6 @@ package v1
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 
 	fiber "github.com/gofiber/fiber/v2"
 
@@ -12,12 +11,11 @@ import (
 	"skadi/backend/internal/app/task"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
+	utilsfile "skadi/backend/internal/pkg/utils/file"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/utils/slices"
 	"skadi/backend/internal/pkg/validator"
 )
-
-const _mpfdFileKey = "file" // key for mpfd files
 
 // TaskControllerTeacher represents a controller for task routes accepted for teachers only.
 type TaskControllerTeacher struct {
@@ -61,35 +59,10 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
-	// parse mpfd
-	mpfd, err := ctx.MultipartForm()
+	uploadedFiles, err := utilsfile.ParseAndSaveFiles(ctx, c.taskFileDir)
 	if err != nil {
-		return fmt.Errorf("parse mpfd: %w", err)
+		return err
 	}
-
-	// save uploaded files to the file system
-	var uploadedFiles entity.Files
-	if mpfd != nil {
-		uploadedFiles = make(entity.Files, len(mpfd.File[_mpfdFileKey]))
-		for idx, file := range mpfd.File[_mpfdFileKey] {
-			// collect file's metadata
-			uploadedFiles[idx] = entity.NewFile(
-				file.Filename,
-				file.Header["Content-Type"][0],
-				file.Size,
-				entity.FileWithPathPrefix(c.taskFileDir),
-			)
-			// save file to file system
-			if err := ctx.SaveFile(file, uploadedFiles[idx].Path); err != nil {
-				uploadedFiles.Cleanup()
-				return fmt.Errorf("save file %s: %w", file.Filename, err)
-			}
-		}
-	}
-
-	slog.Debug("create task",
-		"students", inputBody.StudentIDs,
-		"classes", inputBody.ClassIDs)
 
 	// data reshaping
 	taskObj := &entity.Task{
@@ -163,7 +136,7 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusNotFound,
-			Message:    "решение задания не найдено",
+			Message:    "задание не найдено",
 		}
 	}
 	if errors.Is(err, task.ErrForbidden) {

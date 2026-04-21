@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -10,13 +11,13 @@ import (
 // File represents a metadata for the file.
 type File struct {
 	// file ID
-	ID int `json:"id"`
+	ID int `json:"id" validate:"required"`
 	// filename
-	Name string `json:"name"`
+	Name string `json:"name" validate:"required"`
 	// file MIME-type
-	MimeType string `json:"mime_type"`
+	MimeType string `json:"mime_type" validate:"required"`
 	// file size in bytes
-	Size int64 `json:"size"`
+	Size int64 `json:"size" validate:"required"`
 	// filepath
 	Path string `json:"-"`
 	// prefix for filepath
@@ -55,7 +56,9 @@ func FileWithPathPrefix(s string) FileOption {
 
 // Remove removes the saved file from the file system.
 func (f *File) Remove() {
-	os.Remove(f.Path) // nolint:errcheck // doesn't need to be handled for the client
+	if err := os.Remove(f.Path); err != nil {
+		slog.Warn("remove file %s: %w", f.Path, err)
+	}
 }
 
 // Files represents a slice of File objects.

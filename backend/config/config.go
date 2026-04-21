@@ -50,6 +50,7 @@ const (
 	_defMigrationSrc = "file://migrations" // default migrations source URL (dir ./migrations)
 
 	// media
+	_dirPerms           = 0o755                    // permissions for the file dirs
 	_defTaskFileDir     = "./media/task_files"     // default dir for task files
 	_defSolutionFileDir = "./media/solution_files" // default dir for solution files
 )
@@ -233,5 +234,5 @@ func New() (*Config, error) {
 
 // mkdirP creates all dirs in the given path (like mkdir -p).
 func mkdirP(path string) error {
-	return os.MkdirAll(path, 0755)
+	return os.MkdirAll(path, _dirPerms)
 }
