@@ -104,6 +104,11 @@ definitions:
       answer:
         description: solution text answer
         type: string
+      files:
+        description: solution files
+        items:
+          $ref: '#/definitions/entity.File'
+        type: array
       grade:
         description: solution grade
         type: string
@@ -918,7 +923,8 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Удаление решения (не задания целиком) по его id.
+      description: Удаление решения (не задания целиком) со всеми файлами решения
+        по его id.
       operationId: solution-delete
       parameters:
       - description: ID решения
@@ -943,9 +949,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Получение всех данных о решении задания с полной инфой о задании
-        и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют
-        это задание.
+      description: Получение всех данных о решении задания (с файлами решения) с полной
+        инфой о задании (с файлами задания) и преподе (ID и полное имя), а также со
+        списком учеников, которые тоже выполняют это задание.
       operationId: solution-read
       parameters:
       - description: ID решения задания

@@ -13,11 +13,13 @@ import (
 
 const (
 	_preloadTask           = "Task"                     // object field name
+	_preloadTaskFiles      = "Task.Files"               // object field name
 	_preloadTeacher        = "Task.TeacherUser"         // object field name
 	_preloadTeacherProfile = "Task.TeacherUser.Profile" // object field name
 	_preloadStudent        = "StudentUser"              // object field name
 	_preloadStudentProfile = "StudentUser.Profile"      // object field name
 	_preloadStatus         = "Status"                   // object field name
+	_preloadFiles          = "Files"                    // object field name
 
 	_fieldID        = "id"          // table field name
 	_fieldFullname  = "fullname"    // table field name
@@ -62,6 +64,7 @@ func (r *RepoDB) GetByIDFull(id int) (*entity.Solution, error) {
 	var solObj entity.Solution
 	err := r.dbStorage.
 		Preload(_preloadTask).
+		Preload(_preloadTaskFiles).
 		Preload(_preloadTeacher).
 		Preload(_preloadTeacherProfile, func(db *gorm.DB) *gorm.DB {
 			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
@@ -71,6 +74,7 @@ func (r *RepoDB) GetByIDFull(id int) (*entity.Solution, error) {
 			return db.Select(_fieldID, _fieldFullname) // preload only ID and fullname
 		}).
 		Preload(_preloadStatus).
+		Preload(_preloadFiles).
 		Where(id).First(&solObj).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// solution object with such id not found
@@ -104,9 +108,21 @@ func (r *RepoDB) Update(taskID int, newData *entity.SolutionUpdate) error {
 	return nil
 }
 
-// DeleteByID deletes solution by given id.
-func (r *RepoDB) DeleteByID(id int) error {
-	return r.dbStorage.Delete(&entity.Solution{}, id).Error
+// Delete deletes solution and solution files.
+func (r *RepoDB) Delete(solObj *entity.Solution) error {
+	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		// delete solution and solution_file records
+		if err := tx.Delete(&entity.Solution{}, solObj.ID).Error; err != nil {
+			return err
+		}
+		// delete files
+		for _, file := range solObj.Files {
+			if err := tx.Delete(&entity.File{}, file.ID).Error; err != nil {
+				return fmt.Errorf("delete file %d: %w", file.ID, err)
+			}
+		}
+		return nil
+	})
 }
 
 // GetManyForTeacher returns all solutions for the teacher tasks.

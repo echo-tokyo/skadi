@@ -86,7 +86,12 @@ func (u *UCTeacher) DeleteByID(userID, solutionID int) error {
 		return fmt.Errorf("%w: user (teacher) is not a solution task owner", solution.ErrForbidden)
 	}
 	// delete solution
-	return u.solRepoDB.DeleteByID(solutionID)
+	if err := u.solRepoDB.Delete(solObj); err != nil {
+		return err
+	}
+	// delete files from the file system
+	solObj.Files.Cleanup()
+	return nil
 }
 
 // GetManyForTeacher returns all solutions for the teacher tasks.

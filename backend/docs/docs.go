@@ -829,7 +829,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Получение всех данных о решении задания с полной инфой о задании и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют это задание.",
+                "description": "Получение всех данных о решении задания (с файлами решения) с полной инфой о задании (с файлами задания) и преподе (ID и полное имя), а также со списком учеников, которые тоже выполняют это задание.",
                 "consumes": [
                     "application/json"
                 ],
@@ -874,7 +874,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Удаление решения (не задания целиком) по его id.",
+                "description": "Удаление решения (не задания целиком) со всеми файлами решения по его id.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1770,6 +1770,13 @@ const docTemplate = `{
                 "answer": {
                     "description": "solution text answer",
                     "type": "string"
+                },
+                "files": {
+                    "description": "solution files",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.File"
+                    }
                 },
                 "grade": {
                     "description": "solution grade",

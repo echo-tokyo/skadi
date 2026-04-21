@@ -11,8 +11,8 @@ type RepositoryDB interface {
 	// Update updates the given solution by given ID with the new data.
 	// It returns the updated solution object.
 	Update(solutionID int, newData *entity.SolutionUpdate) error
-	// DeleteByID deletes solution by given id.
-	DeleteByID(id int) error
+	// Delete deletes solution and solution files.
+	Delete(solObj *entity.Solution) error
 
 	// GetManyForTeacher returns all solutions for the teacher tasks.
 	// Search param appends condition to filter solutions

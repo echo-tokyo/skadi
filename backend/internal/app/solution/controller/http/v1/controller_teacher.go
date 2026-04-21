@@ -96,7 +96,7 @@ func (c *SolControllerTeacher) Update(ctx *fiber.Ctx) error {
 }
 
 // @summary		Удаление решения по id. [Только преподаватель]
-// @description	Удаление решения (не задания целиком) по его id.
+// @description	Удаление решения (не задания целиком) со всеми файлами решения по его id.
 // @router			/solution/{id} [delete]
 // @id				solution-delete
 // @tags			solution

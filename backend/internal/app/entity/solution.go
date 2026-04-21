@@ -26,6 +26,8 @@ type Solution struct {
 	StudentUser *User    `gorm:"foreignKey:StudentID;references:ID" json:"-"`
 	// status object
 	Status *Status `gorm:"foreignKey:StatusID;references:ID" json:"status" validate:"required"`
+	// solution files
+	Files Files `gorm:"many2many:solution_file;foreignKey:ID;References:ID" json:"files,omitempty" validate:"omitempty"`
 }
 
 // TableName determines DB table name for the solution object.
