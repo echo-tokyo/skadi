@@ -45,6 +45,13 @@ type SolutionUpdate struct {
 	Answer *string
 	// last-update datetime of solution
 	UpdatedAt *time.Time
+
+	// List of files to append to the task
+	AddFiles Files
+	// IDs of files to delete from the task
+	DelFilesIDs []int
+	// List of files to delete from the task
+	DelFiles Files
 }
 
 // ToUpdatesMap generates map to update solution object.

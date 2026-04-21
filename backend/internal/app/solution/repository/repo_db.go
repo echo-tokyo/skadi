@@ -91,21 +91,27 @@ func (r *RepoDB) GetByIDFull(id int) (*entity.Solution, error) {
 }
 
 // Update updates the given solution by given ID with the new data.
-// It returns the updated solution object.
-func (r *RepoDB) Update(taskID int, newData *entity.SolutionUpdate) error {
-	updates := newData.ToUpdatesMap()
+func (r *RepoDB) Update(solutionID int, newData *entity.SolutionUpdate) error {
+	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
+		updates := newData.ToUpdatesMap()
 
-	var updatedSol *entity.Solution
-	// update class
-	err := r.dbStorage.Model(&entity.Solution{}).
-		Where(_fieldID+" = ?", taskID).
-		Updates(updates).
-		Scan(&updatedSol).Error
-	if err != nil {
-		return err
-	}
-	newData.UpdatedAt = updatedSol.UpdatedAt
-	return nil
+		var updatedSol *entity.Solution
+		// update solution
+		err := tx.Model(&entity.Solution{}).
+			Where(_fieldID+" = ?", solutionID).
+			Updates(updates).
+			Scan(&updatedSol).Error
+		if err != nil {
+			return err
+		}
+		// update solution files
+		if err := r.updateSolutionFiles(tx, solutionID, newData); err != nil {
+			return err
+		}
+
+		newData.UpdatedAt = updatedSol.UpdatedAt
+		return nil
+	})
 }
 
 // Delete deletes solution and solution files.
@@ -195,4 +201,35 @@ func (r *RepoDB) GetManyForStudent(studID int, statusID int,
 		return nil, err
 	}
 	return solList, nil
+}
+
+// updateSolutionFiles deletes old solution files and creates new ones.
+func (r *RepoDB) updateSolutionFiles(tx *gorm.DB,
+	solID int, newData *entity.SolutionUpdate) error {
+
+	// delete old files
+	if len(newData.DelFilesIDs) > 0 {
+		err := tx.Where("id IN ?", newData.DelFilesIDs).
+			Delete(&entity.File{}).Error
+		if err != nil {
+			return fmt.Errorf("delete files: %w", err)
+		}
+	}
+
+	// create new files and link them to the solution object
+	if len(newData.AddFiles) == 0 {
+		return nil
+	}
+	for _, newFile := range newData.AddFiles {
+		if err := tx.Create(newFile).Error; err != nil {
+			return fmt.Errorf("create file: %w", err)
+		}
+		// create many2many relationship
+		err := tx.Model(&entity.Solution{ID: solID}).
+			Association("Files").Append(newFile)
+		if err != nil {
+			return fmt.Errorf("associate the file: %w", err)
+		}
+	}
+	return nil
 }

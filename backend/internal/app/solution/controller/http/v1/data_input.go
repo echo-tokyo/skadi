@@ -2,6 +2,7 @@ package v1
 
 import (
 	"skadi/backend/internal/app/entity"
+	"skadi/backend/internal/pkg/utils/slices"
 )
 
 // @description solutionIDPath represents a data with solution ID in path params.
@@ -13,11 +14,29 @@ type solutionIDPath struct {
 // @description updateSolutionBody represents a data with optional body to update solution.
 type updateSolutionBody struct {
 	// new status ID (student and teacher)
-	StatusID *int `json:"status_id,omitempty" validate:"omitempty" example:"2"`
+	StatusID *int `form:"status_id" json:"status_id,omitempty" validate:"omitempty" example:"2"`
 	// new grade (teacher only)
 	Grade *string `json:"grade,omitempty" validate:"omitempty,max=5" example:"5+" maxLength:"50"`
 	// new answer (student only)
-	Answer *string `json:"answer,omitempty" validate:"omitempty" example:"ООП - это объектно-ориентированное программирование"`
+	Answer *string `form:"answer" json:"answer,omitempty" validate:"omitempty" example:"ООП - это объектно-ориентированное программирование"`
+	// IDs of files to delete from the task (student only)
+	DelFiles []int `form:"delete_files" json:"delete_files,omitempty" validate:"omitempty"`
+}
+
+func (u *updateSolutionBody) ToEntitySolutionUpdate(
+	uploadedFiles entity.Files) *entity.SolutionUpdate {
+
+	if u.StatusID != nil && *u.StatusID == 0 {
+		u.StatusID = nil
+	}
+	// data reshaping
+	solUpdate := &entity.SolutionUpdate{
+		StatusID:    u.StatusID,
+		Answer:      u.Answer,
+		AddFiles:    uploadedFiles,
+		DelFilesIDs: slices.DelDupls(u.DelFiles), // delete duplicates from list
+	}
+	return solUpdate
 }
 
 // @description listSolutionTeacherQuery represents a data with

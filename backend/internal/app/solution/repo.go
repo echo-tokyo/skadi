@@ -9,7 +9,6 @@ type RepositoryDB interface {
 	// GetByIDFull returns a full solution info by the given ID.
 	GetByIDFull(id int) (*entity.Solution, error)
 	// Update updates the given solution by given ID with the new data.
-	// It returns the updated solution object.
 	Update(solutionID int, newData *entity.SolutionUpdate) error
 	// Delete deletes solution and solution files.
 	Delete(solObj *entity.Solution) error

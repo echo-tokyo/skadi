@@ -492,6 +492,11 @@ definitions:
         description: new answer (student only)
         example: ООП - это объектно-ориентированное программирование
         type: string
+      delete_files:
+        description: IDs of files to delete from the task (student only)
+        items:
+          type: integer
+        type: array
       grade:
         description: new grade (teacher only)
         example: 5+
@@ -1032,7 +1037,7 @@ paths:
   /solution/for-student/{id}:
     patch:
       consumes:
-      - application/json
+      - multipart/form-data
       description: 'Частичное обновление решения (только переданные поля: статус,
         кроме "проверено", ответ, файл ответа) по его id.'
       operationId: solution-for-student-update
@@ -1042,12 +1047,28 @@ paths:
         name: id
         required: true
         type: string
-      - description: updateSolutionBody
-        in: body
-        name: updateSolutionBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.updateSolutionBody'
+      - description: new status ID
+        in: formData
+        name: status_id
+        type: integer
+      - description: new answer
+        in: formData
+        name: answer
+        type: string
+      - collectionFormat: multi
+        description: IDs of files to delete from the solution
+        in: formData
+        items:
+          type: integer
+        name: delete_files
+        type: array
+      - collectionFormat: multi
+        description: new solution files
+        in: formData
+        items:
+          type: file
+        name: file
+        type: array
       produces:
       - application/json
       responses:

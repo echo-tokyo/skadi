@@ -6,27 +6,30 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
-	"skadi/backend/internal/app/entity"
+	"skadi/backend/config"
 	"skadi/backend/internal/app/solution"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
+	utilsfile "skadi/backend/internal/pkg/utils/file"
 	utilsjwt "skadi/backend/internal/pkg/utils/jwt"
 	"skadi/backend/internal/pkg/validator"
 )
 
 // SolControllerStudent represents a controller for solution routes accepted for students only.
 type SolControllerStudent struct {
-	valid        validator.Validator
-	solUCStudent solution.UsecaseStudent
+	valid           validator.Validator
+	solUCStudent    solution.UsecaseStudent
+	solutionFileDir string
 }
 
 // NewSolControllerStudent returns a new instance of [SolControllerStudent].
-func NewSolControllerStudent(solUCStudent solution.UsecaseStudent,
+func NewSolControllerStudent(cfg *config.Config, solUCStudent solution.UsecaseStudent,
 	valid validator.Validator) *SolControllerStudent {
 
 	return &SolControllerStudent{
-		valid:        valid,
-		solUCStudent: solUCStudent,
+		valid:           valid,
+		solUCStudent:    solUCStudent,
+		solutionFileDir: cfg.Media.SolutionFileDir,
 	}
 }
 
@@ -35,16 +38,19 @@ func NewSolControllerStudent(solUCStudent solution.UsecaseStudent,
 // @router			/solution/for-student/{id} [patch]
 // @id				solution-for-student-update
 // @tags			solution
-// @accept			json
+// @accept			mpfd
 // @produce		json
 // @security		JWTAccess
-// @param			id					path		string				true	"ID решения"
-// @param			updateSolutionBody	body		updateSolutionBody	true	"updateSolutionBody"
-// @success		200					{object}	entity.Solution
-// @failure		400					"неверный статус"
-// @failure		401					"неверный токен (пустой, истекший или неверный формат)"
-// @failure		403					"доступ запрещён"
-// @failure		404					"решение не найдено"
+// @param			id				path		string	true	"ID решения"
+// @param			status_id		formData	int		false	"new status ID"
+// @param			answer			formData	string	false	"new answer"
+// @param			delete_files	formData	[]int	false	"IDs of files to delete from the solution"
+// @param			file			formData	[]file	false	"new solution files"
+// @success		200				{object}	entity.Solution
+// @failure		400				"неверный статус"
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403				"доступ запрещён"
+// @failure		404				"решение не найдено"
 func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -57,17 +63,16 @@ func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
-
-	if inputBody.StatusID != nil && *inputBody.StatusID == 0 {
-		inputBody.StatusID = nil
+	uploadedFiles, err := utilsfile.ParseAndSaveFiles(ctx, c.solutionFileDir)
+	if err != nil {
+		return err
 	}
-	// data reshaping
-	newData := &entity.SolutionUpdate{
-		StatusID: inputBody.StatusID,
-		Answer:   inputBody.Answer,
-	}
+	newData := inputBody.ToEntitySolutionUpdate(uploadedFiles)
 
 	solObj, err := c.solUCStudent.Update(userClaims.ID, inputPath.ID, newData)
+	if err != nil {
+		uploadedFiles.Cleanup()
+	}
 	if errors.Is(err, solution.ErrInvalidData) {
 		return &httperror.HTTPError{
 			CauseErr:   err,

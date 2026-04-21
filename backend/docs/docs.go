@@ -683,7 +683,7 @@ const docTemplate = `{
                 ],
                 "description": "Частичное обновление решения (только переданные поля: статус, кроме \"проверено\", ответ, файл ответа) по его id.",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -702,13 +702,36 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "updateSolutionBody",
-                        "name": "updateSolutionBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updateSolutionBody"
-                        }
+                        "type": "integer",
+                        "description": "new status ID",
+                        "name": "status_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "new answer",
+                        "name": "answer",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "IDs of files to delete from the solution",
+                        "name": "delete_files",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "new solution files",
+                        "name": "file",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -2406,6 +2429,13 @@ const docTemplate = `{
                     "description": "new answer (student only)",
                     "type": "string",
                     "example": "ООП - это объектно-ориентированное программирование"
+                },
+                "delete_files": {
+                    "description": "IDs of files to delete from the task (student only)",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "grade": {
                     "description": "new grade (teacher only)",

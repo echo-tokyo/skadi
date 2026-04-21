@@ -3,6 +3,8 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	goslices "slices"
+
 	"skadi/backend/config"
 	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/solution"
@@ -45,6 +47,7 @@ func (u *UCStudent) GetManyForStudent(studID int, statusID int,
 func (u *UCStudent) Update(studID, solutionID int,
 	newData *entity.SolutionUpdate) (*entity.Solution, error) {
 
+	// get solution with files
 	solObj, err := u.solRepoDB.GetByIDFull(solutionID)
 	if err != nil {
 		return nil, fmt.Errorf("get full solution: %w", err)
@@ -53,6 +56,18 @@ func (u *UCStudent) Update(studID, solutionID int,
 		return nil, fmt.Errorf("%w: user (student) is not a solution owner",
 			solution.ErrForbidden)
 	}
+
+	newData.DelFiles = make(entity.Files, 0, len(newData.DelFilesIDs))
+	solFilesRemains := make(entity.Files, 0, len(solObj.Files))
+	// collect files' metadata to delete them from solution
+	for _, oldFile := range solObj.Files {
+		if goslices.Contains(newData.DelFilesIDs, oldFile.ID) {
+			newData.DelFiles = append(newData.DelFiles, oldFile)
+		} else {
+			solFilesRemains = append(solFilesRemains, oldFile)
+		}
+	}
+	solObj.Files = solFilesRemains
 
 	newData.Grade = nil
 	if newData.StatusID != nil {
@@ -68,6 +83,12 @@ func (u *UCStudent) Update(studID, solutionID int,
 		return nil, fmt.Errorf("update: %w", err)
 	}
 	solObj.UpdatedAt = newData.UpdatedAt
+
+	// append new files to solution files
+	solObj.Files = append(solObj.Files, newData.AddFiles...)
+	// remove deleted files from file system
+	newData.DelFiles.Cleanup()
+
 	return solObj, nil
 }
 

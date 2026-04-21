@@ -202,6 +202,9 @@ func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 		DelFilesIDs:     slices.DelDupls(inputBody.DelFiles), // delete duplicates from list
 	}
 	taskObj, students, err := c.taskUCTeacher.Update(userClaims.ID, inputPath.ID, newData)
+	if err != nil {
+		uploadedFiles.Cleanup()
+	}
 	if errors.Is(err, task.ErrForbidden) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
