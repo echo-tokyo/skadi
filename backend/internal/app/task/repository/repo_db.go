@@ -176,6 +176,7 @@ func (r *RepoDB) GetMany(teacherID int, search string,
 
 	var taskList []entity.Task
 	query := r.dbStorage.Model(&entity.Task{}).
+		Preload(_preloadFiles).
 		Where("teacher_id = ?", teacherID)
 	if search != "" {
 		query = query.Where("title REGEXP ?", search)

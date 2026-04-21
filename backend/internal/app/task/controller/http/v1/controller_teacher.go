@@ -259,7 +259,7 @@ func (c *TaskControllerTeacher) Delete(ctx *fiber.Ctx) error {
 }
 
 // @summary		Получение списка заданий. [Только преподаватель]
-// @description	Получение списка заданий конкретного преподавателя.
+// @description	Получение списка заданий (с файлами задания и учениками, которые выполняют это задание) конкретного преподавателя.
 // @router			/task [get]
 // @id				task-list
 // @tags			task

@@ -1178,7 +1178,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Получение списка заданий конкретного преподавателя.
+      description: Получение списка заданий (с файлами задания и учениками, которые
+        выполняют это задание) конкретного преподавателя.
       operationId: task-list
       parameters:
       - description: page pagination param
