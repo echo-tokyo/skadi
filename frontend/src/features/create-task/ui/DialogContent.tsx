@@ -3,6 +3,7 @@ import { useMemberSelectOptions } from '@/entities/member'
 import { memo } from 'react'
 import type { Ref } from 'react'
 import { useClassSelectOptions } from '@/entities/class'
+import { taskSchemaCreate } from '@/entities/task/model/schema'
 
 interface IDialogContentProps {
   ref: Ref<ITaskFieldsRef>
@@ -29,6 +30,7 @@ const DialogContent = ({ ref, onDirtyChange }: IDialogContentProps) => {
   return (
     <TaskFields
       ref={ref}
+      schema={taskSchemaCreate}
       onDirtyChange={onDirtyChange}
       studentField={{
         data: options,

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
-import { ITaskFieldsRef } from '@/entities/task'
+import { ITaskFieldsRef, TTaskSchemaCreate } from '@/entities/task'
 import { useCreateTask } from './use-create-task'
 import DialogContent from '../ui/DialogContent'
 
@@ -34,7 +34,7 @@ export const useCreateTaskDialog = () => {
           throw new Error('Validation failed')
         }
 
-        const formData = formRef.current?.getFieldsData()
+        const formData = formRef.current?.getFieldsData() as TTaskSchemaCreate
 
         if (formData) {
           const success = await submit(formData)

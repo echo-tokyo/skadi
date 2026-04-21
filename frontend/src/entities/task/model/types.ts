@@ -1,9 +1,14 @@
-import { TPagination, TSolution, TTask } from '@/shared/model'
-import { TTaskSchema } from './schema'
+import {
+  TPagination,
+  TSolution,
+  TTask,
+  TTaskWithStudents,
+} from '@/shared/model'
+import { TTaskSchemaCreate, TTaskSchemaUpdate } from './schema'
 
 export interface ITaskFieldsRef {
   validate: () => Promise<boolean>
-  getFieldsData: () => TTaskSchema
+  getFieldsData: () => TTaskSchemaCreate | TTaskSchemaUpdate
   reset: () => void
 }
 
@@ -20,7 +25,7 @@ export interface ICreateTaskResponse {
 }
 
 export interface IGetTasksResponse {
-  data: TTask[]
+  data: TTaskWithStudents[]
   pagination?: TPagination
 }
 

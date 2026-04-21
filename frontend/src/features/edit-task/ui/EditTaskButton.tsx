@@ -1,10 +1,10 @@
 import { Button } from '@/shared/ui'
 import { memo } from 'react'
 import { useEditTaskDialog } from '../model/use-edit-task-dialog'
-import { TTask } from '@/shared/model'
+import { TTaskWithStudents } from '@/shared/model'
 
 interface IEditTaskButtonProps {
-  task: TTask
+  task: TTaskWithStudents
 }
 
 const EditTaskButton = ({ task }: IEditTaskButtonProps) => {

@@ -28,6 +28,11 @@ export type TTask = {
   title: string
 }
 
+export type TTaskWithStudents = {
+  students?: TProfile[]
+  task: TTask
+}
+
 export type TStatus = {
   id: 1 | 2 | 3 | 4
   name: 'Бэклог' | 'В работе' | 'На проверке' | 'Проверено'

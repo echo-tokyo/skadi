@@ -2,21 +2,30 @@ import { EditTaskButton } from '@/features/edit-task'
 import { AccordionCard } from '@/shared/ui'
 import { memo } from 'react'
 import styles from './styles.module.scss'
-import { TTask } from '@/shared/model'
+import { TTaskWithStudents } from '@/shared/model'
 import { DeleteTaskButton } from '@/features/delete-task'
 
 interface ITaskCardItemProps {
-  taskData: TTask
+  taskData: TTaskWithStudents
 }
 
 export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
   return (
     <AccordionCard
-      title={taskData.title}
-      fields={[{ label: 'Описание', value: taskData.description }]}
+      title={taskData.task.title}
+      fields={[
+        { label: 'Описание', value: taskData.task.description },
+        {
+          label: 'Ученики',
+          value: taskData.students?.map((el) => el.fullname).join(', '),
+        },
+      ]}
       actions={
         <div className={styles.cardActions}>
-          <DeleteTaskButton id={taskData.id} taskName={taskData.title} />
+          <DeleteTaskButton
+            id={taskData.task.id}
+            taskName={taskData.task.title}
+          />
           <EditTaskButton task={taskData} />
         </div>
       }

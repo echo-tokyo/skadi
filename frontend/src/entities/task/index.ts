@@ -11,5 +11,5 @@ export type {
   IGetTasksResponse,
   ITaskFieldsRef,
 } from './model/types'
-export type { TTaskSchema } from './model/schema'
+export type { TTaskSchemaUpdate, TTaskSchemaCreate } from './model/schema'
 export { default as TaskFields } from './ui/TaskFields'

@@ -6,34 +6,40 @@ import { Input, Select, Textarea } from '@/shared/ui'
 import { TPaginatedSelectField } from '@/shared/ui'
 import { ITaskFieldsRef } from '../model/types'
 import styles from './styles.module.scss'
-import { taskSchema, TTaskSchema } from '../model/schema'
+import {
+  taskSchemaCreate,
+  taskSchemaUpdate,
+  TTaskSchemaUpdate,
+} from '../model/schema'
 import { defaultValues } from '../config/default-values'
+import z from 'zod'
 
 interface ITaskFieldsProps {
   ref?: Ref<ITaskFieldsRef>
   studentField: TPaginatedSelectField
-  classField: TPaginatedSelectField
+  classField?: TPaginatedSelectField
   onDirtyChange?: (isDirty: boolean) => void
-  fieldData?: TTaskSchema
+  fieldValues?: TTaskSchemaUpdate
+  schema: typeof taskSchemaCreate | typeof taskSchemaUpdate
 }
 
 const TaskFields = ({
+  schema,
   ref,
   studentField,
   classField,
   onDirtyChange,
-  fieldData,
+  fieldValues,
 }: ITaskFieldsProps): ReactNode => {
   const {
     control,
-    trigger,
     reset,
     getValues,
     handleSubmit,
     formState: { isDirty },
-  } = useForm<TTaskSchema>({
-    resolver: zodResolver(taskSchema),
-    defaultValues: fieldData ?? defaultValues,
+  } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: fieldValues ?? defaultValues,
   })
 
   const onDirtyChangeRef = useRef(onDirtyChange)
@@ -58,7 +64,7 @@ const TaskFields = ({
       getFieldsData: () => getValues(),
       reset: () => reset(),
     }),
-    [trigger, reset, getValues],
+    [reset, getValues, handleSubmit],
   )
 
   return (
@@ -68,7 +74,6 @@ const TaskFields = ({
         name='title'
         render={({ field, fieldState }) => (
           <Input
-            ref={field.ref}
             fluid
             title='Название'
             required
@@ -84,7 +89,6 @@ const TaskFields = ({
         name='students'
         render={({ field, fieldState }) => (
           <Select
-            ref={field.ref}
             fluid
             label='Ученики'
             multiple
@@ -103,38 +107,38 @@ const TaskFields = ({
           />
         )}
       />
-      <Controller
-        control={control}
-        name='classes'
-        render={({ field, fieldState }) => {
-          return (
-            <Select
-              ref={field.ref}
-              fluid
-              label='Группы'
-              multiple
-              placeholder='Выберите'
-              isValid={!fieldState.error}
-              description={fieldState.error?.message}
-              options={classField.data}
-              selectedOptions={classField.selectedOptions}
-              value={field.value}
-              searchable
-              onLoadMore={classField.onLoadMore}
-              hasMore={classField.hasMore}
-              isLoadingMore={classField.isLoadingMore}
-              onSearchChange={classField.onSearchChange}
-              onChange={field.onChange}
-            />
-          )
-        }}
-      />
+      {classField && (
+        <Controller
+          control={control}
+          name='classes'
+          render={({ field, fieldState }) => {
+            return (
+              <Select
+                fluid
+                label='Группы'
+                multiple
+                placeholder='Выберите'
+                isValid={!fieldState.error}
+                description={fieldState.error?.message}
+                options={classField.data}
+                selectedOptions={classField.selectedOptions}
+                value={field.value ?? []}
+                searchable
+                onLoadMore={classField.onLoadMore}
+                hasMore={classField.hasMore}
+                isLoadingMore={classField.isLoadingMore}
+                onSearchChange={classField.onSearchChange}
+                onChange={field.onChange}
+              />
+            )
+          }}
+        />
+      )}
       <Controller
         control={control}
         name='description'
         render={({ field, fieldState }) => (
           <Textarea
-            ref={field.ref}
             label='Описание'
             fluid
             required

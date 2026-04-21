@@ -1,18 +1,21 @@
-import { ITaskFieldsRef, TaskFields, TTaskSchema } from '@/entities/task'
+import { ITaskFieldsRef, TaskFields } from '@/entities/task'
 import { useMemberSelectOptions } from '@/entities/member'
-import { useClassSelectOptions } from '@/entities/class'
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import type { Ref } from 'react'
+import { SelectOption } from '@/shared/ui'
+import { TTaskWithStudents } from '@/shared/model'
+import { toFormData } from '../lib/to-form-data'
+import { taskSchemaUpdate } from '@/entities/task/model/schema'
 
 interface IDialogContentProps {
   ref: Ref<ITaskFieldsRef>
-  fieldData: TTaskSchema
+  taskData: TTaskWithStudents
   onDirtyChange?: (isDirty: boolean) => void
 }
 
 const DialogContent = ({
   ref,
-  fieldData,
+  taskData,
   onDirtyChange,
 }: IDialogContentProps) => {
   const {
@@ -23,34 +26,37 @@ const DialogContent = ({
     onSearchChange,
   } = useMemberSelectOptions('student', false)
 
-  const {
-    options: classOptions,
-    fetchNextPage: classFetchNextPage,
-    hasNextPage: classHasNextPage,
-    isFetchingNextPage: classIsFetchingNextPage,
-    onSearchChange: classOnSearchChange,
-  } = useClassSelectOptions()
+  const fieldValues = useMemo(() => toFormData(taskData), [taskData])
 
-  // TODO: добавить selectedOptions после обновления бэка
+  // FIXME: такой же код есть в другом месте
+  const seedStudentOptions = useMemo<SelectOption[]>(
+    () =>
+      taskData.students?.map((s) => ({
+        value: String(s.id),
+        label: s.fullname,
+      })) ?? [],
+    [taskData.students],
+  )
+
+  const mergedStudentOptions = useMemo<SelectOption[]>(() => {
+    const map = new Map(seedStudentOptions.map((o) => [o.value, o]))
+    options.forEach((o) => map.set(o.value, o))
+    return [...map.values()]
+  }, [seedStudentOptions, options])
 
   return (
     <TaskFields
       ref={ref}
-      fieldData={fieldData}
+      schema={taskSchemaUpdate}
+      fieldValues={fieldValues}
       onDirtyChange={onDirtyChange}
       studentField={{
-        data: options,
+        data: mergedStudentOptions,
+        selectedOptions: seedStudentOptions,
         hasMore: hasNextPage,
         isLoadingMore: isFetchingNextPage,
         onLoadMore: fetchNextPage,
         onSearchChange,
-      }}
-      classField={{
-        data: classOptions,
-        hasMore: classHasNextPage,
-        isLoadingMore: classIsFetchingNextPage,
-        onLoadMore: classFetchNextPage,
-        onSearchChange: classOnSearchChange,
       }}
     />
   )
