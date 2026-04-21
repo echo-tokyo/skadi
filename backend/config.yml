@@ -36,3 +36,7 @@ db:
   port: 3306 # db port
   migration:
     src: file://migrations # URL to dir with db migrations
+
+media:
+  task_file_dir: "./media/task_files" # dir for task files
+  solution_file_dir: "./media/solution_files" # dir for solution files

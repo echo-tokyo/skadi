@@ -5,6 +5,11 @@ env/
 
 # dev
 backend/temp/
+# dev media
+backend/media/solution_files/*
+!backend/media/solution_files/.keep
+backend/media/task_files/*
+!backend/media/task_files/.keep
 
 # test configs
 !test-stand/**
@@ -23,5 +28,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
 .vite

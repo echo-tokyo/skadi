@@ -4,6 +4,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -47,6 +48,10 @@ const (
 	_defDBHost       = "127.0.0.1"         // default db host
 	_defDBPort       = "3306"              // default db port
 	_defMigrationSrc = "file://migrations" // default migrations source URL (dir ./migrations)
+
+	// media
+	_defTaskFileDir     = "./media/task_files"     // default dir for task files
+	_defSolutionFileDir = "./media/solution_files" // default dir for solution files
 )
 
 type (
@@ -55,6 +60,7 @@ type (
 		Logging `yaml:"logging"`
 		Cache   `yaml:"cache"`
 		DB      `yaml:"db"`
+		Media   `yaml:"media"`
 	}
 
 	Server struct {
@@ -122,6 +128,13 @@ type (
 		// URL to connect to DB to migrates
 		DB string
 	}
+
+	Media struct {
+		// dir for task files
+		TaskFileDir string `yaml:"task_file_dir"`
+		// dir for solution files
+		SolutionFileDir string `yaml:"solution_file_dir"`
+	}
 )
 
 // NewDefault returns a new instance of [Config] with default data.
@@ -173,6 +186,10 @@ func NewDefault() *Config {
 				Src: _defMigrationSrc,
 			},
 		},
+		Media: Media{
+			TaskFileDir:     _defTaskFileDir,
+			SolutionFileDir: _defSolutionFileDir,
+		},
 	}
 }
 
@@ -203,5 +220,18 @@ func New() (*Config, error) {
 	)
 	// collect DB connection URL string for migrate manager
 	cfg.DB.Migration.DB = "mysql://" + cfg.DB.DSN
+
+	// create task and solution files dirs
+	if err := mkdirP(cfg.Media.TaskFileDir); err != nil {
+		return nil, fmt.Errorf("create task file dir: %w", err)
+	}
+	if err := mkdirP(cfg.Media.SolutionFileDir); err != nil {
+		return nil, fmt.Errorf("create solution file dir: %w", err)
+	}
 	return cfg, nil
+}
+
+// mkdirP creates all dirs in the given path (like mkdir -p).
+func mkdirP(path string) error {
+	return os.MkdirAll(path, 0755)
 }
