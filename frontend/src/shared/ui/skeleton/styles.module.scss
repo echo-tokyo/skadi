@@ -1,8 +1,10 @@
+@use '../styles/variables' as v;
+
 .skeleton {
-  background: linear-gradient(90deg, #f7f7f7 25%, #efefef 50%, #f7f7f7 75%);
+  background: linear-gradient(90deg, v.$skeleton-base 25%, v.$skeleton-shimmer 50%, v.$skeleton-base 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 0.5rem;
+  border-radius: v.$radius-base;
 }
 
 @keyframes shimmer {

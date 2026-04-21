@@ -112,9 +112,9 @@ const File = ({
     {
       size,
       additionalClasses: [
-        isDragging ? styles.dropzone_dragging : '',
+        isDragging ? styles.dropzoneDragging : '',
         !isValid ? commonStyles.invalid : '',
-        disabled ? styles.dropzone_disabled : '',
+        disabled ? styles.dropzoneDisabled : '',
       ].filter(Boolean),
     },
     styles,
@@ -142,7 +142,7 @@ const File = ({
         required={required}
         aria-invalid={!isValid}
         aria-required={required}
-        className={styles.input_hidden}
+        className={styles.inputHidden}
         onChange={handleChange}
       />
 
@@ -166,10 +166,10 @@ const File = ({
       </div>
 
       {files.length > 0 && (
-        <ul className={styles.file_list} aria-label='Выбранные файлы'>
+        <ul className={styles.fileList} aria-label='Выбранные файлы'>
           {files.map((file) => (
-            <li key={file.name} className={styles.file_item}>
-              <Text className={styles.file_item_name} size='14'>
+            <li key={file.name} className={styles.fileItem}>
+              <Text className={styles.fileItemName} size='14'>
                 {file.name}
               </Text>
               <Button

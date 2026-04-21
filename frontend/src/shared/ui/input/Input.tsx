@@ -55,7 +55,7 @@ const Input = ({
   return (
     <div className={wrapperClassName}>
       {title && (
-        <label htmlFor={inputId} className={styles.input_title}>
+        <label htmlFor={inputId} className={styles.inputTitle}>
           {title}
           {required && (
             <span className={styles.required} aria-label='обязательное поле'>
@@ -80,7 +80,7 @@ const Input = ({
         aria-required={required}
       />
       {description && (
-        <p id={descriptionId} className={styles.input_description}>
+        <p id={descriptionId} className={styles.inputDescription}>
           {description}
         </p>
       )}

@@ -17,10 +17,10 @@ const SelectItem = memo(
       aria-selected={selected}
       aria-disabled={disabled}
       data-disabled={disabled || undefined}
-      className={clsx(styles.item, selected && styles.item_checked)}
+      className={clsx(styles.item, selected && styles.itemChecked)}
       onClick={disabled ? undefined : onSelect}
     >
-      <span className={styles.check_indicator}>{selected && <Check />}</span>
+      <span className={styles.checkIndicator}>{selected && <Check />}</span>
       {label}
     </div>
   ),

@@ -60,7 +60,7 @@ const Textarea = ({
   return (
     <div className={wrapperClassName}>
       {label && (
-        <label htmlFor={textareaId} className={styles.textarea_title}>
+        <label htmlFor={textareaId} className={styles.textareaTitle}>
           {label}
           {required && (
             <span className={styles.required} aria-label='обязательное поле'>
@@ -85,7 +85,7 @@ const Textarea = ({
         aria-required={required}
       />
       {description && (
-        <p id={descriptionId} className={styles.textarea_description}>
+        <p id={descriptionId} className={styles.textareaDescription}>
           {description}
         </p>
       )}

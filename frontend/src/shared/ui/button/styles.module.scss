@@ -1,18 +1,20 @@
+@use '../styles/variables' as v;
+
 .button {
   background-color: var(--color-primary);
   color: var(--color-white);
   border: none;
   width: var(--ui-width, fit-content);
-  border-radius: 0.5rem;
-  font-size: 14px;
-  font-family: 'Montserrat';
+  border-radius: v.$radius-base;
+  font-size: v.$font-size-body;
+  font-family: v.$font-family-base;
   font-weight: 600;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: transform 0.1s ease;
 
   &:hover:not(:disabled) {
-    opacity: 85%;
+    opacity: v.$opacity-hover;
   }
 
   &:active:not(:disabled) {
@@ -21,7 +23,7 @@
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: v.$opacity-disabled;
   }
 }
 
