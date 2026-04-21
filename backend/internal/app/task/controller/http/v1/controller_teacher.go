@@ -36,7 +36,7 @@ func NewTaskControllerTeacher(cfg *config.Config, taskUCTeacher task.UsecaseTeac
 }
 
 // @summary		Создание нового задания. [Только преподаватель]
-// @description	Создание нового задания для переданных учеников и учеников из переданных групп.
+// @description	Создание нового задания (с прикреплением файлов) для переданных учеников и учеников из переданных групп.
 // @router			/task [post]
 // @id				task-create
 // @tags			task
@@ -110,7 +110,7 @@ func (c *TaskControllerTeacher) Create(ctx *fiber.Ctx) error {
 }
 
 // @summary		Получение задания по id. [Только преподаватель]
-// @description	Получение всех данных о задании и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.
+// @description	Получение всех данных о задании (включая метаданные файлов) и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.
 // @router			/task/{id} [get]
 // @id				task-read
 // @tags			task
@@ -225,7 +225,7 @@ func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 }
 
 // @summary		Удаление задания по id. [Только преподаватель]
-// @description	Удаление задания целиком (со всеми его решениями) по его id.
+// @description	Удаление задания целиком (со всеми его файлами и решениями) по его id.
 // @router			/task/{id} [delete]
 // @id				task-delete
 // @tags			task

@@ -50,10 +50,11 @@ const (
 	_defMigrationSrc = "file://migrations" // default migrations source URL (dir ./migrations)
 
 	// media
-	_dirPerms           = 0o755                    // permissions for the file dirs
 	_defTaskFileDir     = "./media/task_files"     // default dir for task files
 	_defSolutionFileDir = "./media/solution_files" // default dir for solution files
 )
+
+var _dirPerms os.FileMode = 0o755 // permissions for the file dirs
 
 type (
 	Config struct {

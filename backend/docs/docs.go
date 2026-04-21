@@ -971,7 +971,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Создание нового задания для переданных учеников и учеников из переданных групп.",
+                "description": "Создание нового задания (с прикреплением файлов) для переданных учеников и учеников из переданных групп.",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -1052,7 +1052,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Получение всех данных о задании и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.",
+                "description": "Получение всех данных о задании (включая метаданные файлов) и преподе (ID и полное имя), а также списка учеников, которые выполняют это задание.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1097,7 +1097,7 @@ const docTemplate = `{
                         "JWTAccess": []
                     }
                 ],
-                "description": "Удаление задания целиком (со всеми его решениями) по его id.",
+                "description": "Удаление задания целиком (со всеми его файлами и решениями) по его id.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1672,6 +1672,12 @@ const docTemplate = `{
         },
         "entity.File": {
             "type": "object",
+            "required": [
+                "id",
+                "mime_type",
+                "name",
+                "size"
+            ],
             "properties": {
                 "id": {
                     "description": "file ID",
@@ -1857,6 +1863,9 @@ const docTemplate = `{
         },
         "entity.TaskWithStudents": {
             "type": "object",
+            "required": [
+                "task"
+            ],
             "properties": {
                 "students": {
                     "description": "students solving this task",

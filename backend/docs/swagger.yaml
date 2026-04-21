@@ -47,6 +47,11 @@ definitions:
       size:
         description: file size in bytes
         type: integer
+    required:
+    - id
+    - mime_type
+    - name
+    - size
     type: object
   entity.Pagination:
     properties:
@@ -171,6 +176,8 @@ definitions:
         allOf:
         - $ref: '#/definitions/entity.Task'
         description: task object
+    required:
+    - task
     type: object
   entity.User:
     properties:
@@ -1177,8 +1184,8 @@ paths:
     post:
       consumes:
       - multipart/form-data
-      description: Создание нового задания для переданных учеников и учеников из переданных
-        групп.
+      description: Создание нового задания (с прикреплением файлов) для переданных
+        учеников и учеников из переданных групп.
       operationId: task-create
       parameters:
       - description: task title
@@ -1233,7 +1240,8 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Удаление задания целиком (со всеми его решениями) по его id.
+      description: Удаление задания целиком (со всеми его файлами и решениями) по
+        его id.
       operationId: task-delete
       parameters:
       - description: ID задания
@@ -1258,8 +1266,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Получение всех данных о задании и преподе (ID и полное имя), а
-        также списка учеников, которые выполняют это задание.
+      description: Получение всех данных о задании (включая метаданные файлов) и преподе
+        (ID и полное имя), а также списка учеников, которые выполняют это задание.
       operationId: task-read
       parameters:
       - description: ID решения задания
