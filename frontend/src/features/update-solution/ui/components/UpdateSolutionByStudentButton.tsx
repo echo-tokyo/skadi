@@ -5,14 +5,12 @@ import { useStudentUpdateSolution } from '../../model/use-student-update-solutio
 
 const UpdateSolutionByStudentButton = ({ id }: { id: number }) => {
   const {
-    watch,
     handleSubmit,
     reset,
     formState: { isDirty },
   } = useFormContext<TSolutionStudentSchema>()
 
   const { submit } = useStudentUpdateSolution(id)
-  const statusValue = watch('status')
 
   const onSubmit = handleSubmit(async (data) => {
     const success = await submit(data)
@@ -21,7 +19,7 @@ const UpdateSolutionByStudentButton = ({ id }: { id: number }) => {
 
   return (
     <Button disabled={!isDirty} onClick={onSubmit}>
-      {statusValue === '3' ? 'Отправить на проверку' : 'Сохранить решение'}
+      Сохранить
     </Button>
   )
 }
