@@ -919,6 +919,32 @@ paths:
       summary: Проверка. [Только преподаватель]
       tags:
       - example
+  /file/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Загрузка файла по его id.
+      operationId: file-download
+      parameters:
+      - description: ID файла
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: файл
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: файл не найден
+      security:
+      - JWTAccess: []
+      summary: Загрузка файла по id. [Преподаватель и ученик]
+      tags:
+      - file
   /solution/{id}:
     delete:
       consumes:

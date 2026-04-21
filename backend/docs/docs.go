@@ -569,6 +569,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/file/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Загрузка файла по его id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Загрузка файла по id. [Преподаватель и ученик]",
+                "operationId": "file-download",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID файла",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "файл"
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "файл не найден"
+                    }
+                }
+            }
+        },
         "/solution/for-student": {
             "get": {
                 "security": [

@@ -62,6 +62,35 @@ type updateBody struct {
 	Profile profileBody `json:"profile" validate:"required"`
 }
 
+func (u *updateBody) ToEntityUser() *entity.User {
+	if u.ClassID != nil && *u.ClassID == 0 {
+		u.ClassID = nil
+	}
+	// data reshaping
+	userObj := &entity.User{
+		ClassID:  u.ClassID,
+		Password: []byte(u.Password),
+		Profile: &entity.Profile{
+			Fullname: u.Profile.FullName,
+			Address:  u.Profile.Address,
+			Extra:    u.Profile.Extra,
+		},
+	}
+	if u.Profile.Contact != nil {
+		userObj.Profile.Contact = &entity.Contact{
+			Phone: u.Profile.Contact.Phone,
+			Email: u.Profile.Contact.Email,
+		}
+	}
+	if u.Profile.ParentContact != nil {
+		userObj.Profile.ParentContact = &entity.Contact{
+			Phone: u.Profile.ParentContact.Phone,
+			Email: u.Profile.ParentContact.Email,
+		}
+	}
+	return userObj
+}
+
 // @description listUserQuery represents a data with optional query-params to get users list.
 type listUserQuery struct {
 	// user roles (accepted: "teacher", "student")

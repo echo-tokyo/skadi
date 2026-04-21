@@ -11,6 +11,9 @@ import (
 	classrepo "skadi/backend/internal/app/class/repository"
 	classuc "skadi/backend/internal/app/class/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
+	filehttpv1 "skadi/backend/internal/app/file/controller/http/v1"
+	filerepo "skadi/backend/internal/app/file/repository"
+	fileuc "skadi/backend/internal/app/file/usecase"
 	"skadi/backend/internal/app/service/server/middleware"
 	solhttpv1 "skadi/backend/internal/app/solution/controller/http/v1"
 	solrepo "skadi/backend/internal/app/solution/repository"
@@ -37,6 +40,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	taskRepoDB := taskrepo.NewRepoDB(dbStorage)
 	solRepoDB := solrepo.NewRepoDB(dbStorage)
 	statusRepoDB := statusrepo.NewRepoDB(dbStorage)
+	fileRepoDB := filerepo.NewRepoDB(dbStorage)
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
@@ -46,6 +50,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	solUCClient := soluc.NewUCClient(cfg, solRepoDB, taskRepoDB)
 	solUCStudent := soluc.NewUCStudent(cfg, solRepoDB, statusRepoDB)
 	solUCTeacher := soluc.NewUCTeacher(cfg, solRepoDB, statusRepoDB)
+	fileUCClient := fileuc.NewUCClient(cfg, fileRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
@@ -57,6 +62,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	solController := solhttpv1.NewSolController(solUCClient, valid)
 	solControllerStudent := solhttpv1.NewSolControllerStudent(solUCStudent, valid)
 	solControllerTeacher := solhttpv1.NewSolControllerTeacher(solUCTeacher, valid)
+	fileController := filehttpv1.NewFileController(fileUCClient, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
@@ -75,4 +81,5 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	taskhttpv1.RegisterEndpoints(apiV1, taskControllerTeacher, mwJWTAccess, middleware.Allow)
 	solhttpv1.RegisterEndpoints(apiV1, solController, solControllerStudent, solControllerTeacher,
 		mwJWTAccess, middleware.Allow)
+	filehttpv1.RegisterEndpoints(apiV1, fileController, mwJWTAccess, middleware.Allow)
 }
