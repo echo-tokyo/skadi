@@ -1176,7 +1176,7 @@
                 ],
                 "description": "Частичное обновление задания (только переданные поля: название, описание, привязанные ученики, прикреплённые файлы) по его id.",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -1195,13 +1195,46 @@
                         "required": true
                     },
                     {
-                        "description": "updateTaskBody",
-                        "name": "updateTaskBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.updateTaskBody"
-                        }
+                        "type": "string",
+                        "description": "task title",
+                        "name": "title",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "task description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "IDs of students (updated list) for the task",
+                        "name": "students",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "IDs of files to delete from the task",
+                        "name": "delete_files",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "new task files",
+                        "name": "file",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -2381,30 +2414,6 @@
                     "description": "new status ID (student and teacher)",
                     "type": "integer",
                     "example": 2
-                }
-            }
-        },
-        "v1.updateTaskBody": {
-            "description": "updateTaskBody represents a data with optional body to update task.",
-            "type": "object",
-            "properties": {
-                "description": {
-                    "description": "new task description",
-                    "type": "string",
-                    "example": "Что такое ООП? Перечислить принципы ООП"
-                },
-                "students": {
-                    "description": "IDs of students (updated list) for the task",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "title": {
-                    "description": "new task title",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "Понятие ООП"
                 }
             }
         },

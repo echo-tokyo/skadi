@@ -162,11 +162,15 @@ func (c *TaskControllerTeacher) Read(ctx *fiber.Ctx) error {
 // @router			/task/{id} [patch]
 // @id				task-update
 // @tags			task
-// @accept			json
+// @accept			mpfd
 // @produce		json
 // @security		JWTAccess
-// @param			id				path		string			true	"ID задания"
-// @param			updateTaskBody	body		updateTaskBody	true	"updateTaskBody"
+// @param			id				path		string	true	"ID задания"
+// @param			title			formData	string	false	"task title"
+// @param			description		formData	string	false	"task description"
+// @param			students		formData	[]int	false	"IDs of students (updated list) for the task"
+// @param			delete_files	formData	[]int	false	"IDs of files to delete from the task"
+// @param			file			formData	[]file	false	"new task files"
 // @success		200				{object}	entity.TaskWithStudents
 // @failure		400				"неверный ученик"
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
@@ -184,12 +188,18 @@ func (c *TaskControllerTeacher) Update(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
+	uploadedFiles, err := utilsfile.ParseAndSaveFiles(ctx, c.taskFileDir)
+	if err != nil {
+		return err
+	}
 
 	// data reshaping
 	newData := &entity.TaskUpdate{
 		Title:           inputBody.Title,
 		Desc:            inputBody.Desc,
 		NewFullStudents: slices.DelDupls(inputBody.Students), // delete duplicates from list
+		AddFiles:        uploadedFiles,
+		DelFilesIDs:     slices.DelDupls(inputBody.DelFiles), // delete duplicates from list
 	}
 	taskObj, students, err := c.taskUCTeacher.Update(userClaims.ID, inputPath.ID, newData)
 	if errors.Is(err, task.ErrForbidden) {

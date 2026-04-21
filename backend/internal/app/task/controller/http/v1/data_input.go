@@ -25,11 +25,13 @@ type taskIDPath struct {
 // @description updateTaskBody represents a data with optional body to update task.
 type updateTaskBody struct {
 	// new task title
-	Title *string `json:"title,omitempty" validate:"omitempty,max=100" example:"Понятие ООП" maxLength:"100"`
+	Title *string `form:"title" json:"title,omitempty" validate:"omitempty,max=100" example:"Понятие ООП" maxLength:"100"`
 	// new task description
-	Desc *string `json:"description,omitempty" validate:"omitempty" example:"Что такое ООП? Перечислить принципы ООП"`
+	Desc *string `form:"desc" json:"description,omitempty" validate:"omitempty" example:"Что такое ООП? Перечислить принципы ООП"`
 	// IDs of students (updated list) for the task
-	Students []int `json:"students,omitempty" validate:"omitempty"`
+	Students []int `form:"students" json:"students,omitempty" validate:"omitempty"`
+	// IDs of files to delete from the task
+	DelFiles []int `form:"delete_files" json:"delete_files,omitempty" validate:"omitempty"`
 }
 
 // @description listTaskQuery represents a data with optional query-params to get tasks list.

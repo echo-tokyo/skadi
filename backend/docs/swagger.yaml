@@ -502,24 +502,6 @@ definitions:
         example: 2
         type: integer
     type: object
-  v1.updateTaskBody:
-    description: updateTaskBody represents a data with optional body to update task.
-    properties:
-      description:
-        description: new task description
-        example: Что такое ООП? Перечислить принципы ООП
-        type: string
-      students:
-        description: IDs of students (updated list) for the task
-        items:
-          type: integer
-        type: array
-      title:
-        description: new task title
-        example: Понятие ООП
-        maxLength: 100
-        type: string
-    type: object
   v1.userBody:
     description: userBody represents a data with user.
     properties:
@@ -1328,7 +1310,7 @@ paths:
       - task
     patch:
       consumes:
-      - application/json
+      - multipart/form-data
       description: 'Частичное обновление задания (только переданные поля: название,
         описание, привязанные ученики, прикреплённые файлы) по его id.'
       operationId: task-update
@@ -1338,12 +1320,35 @@ paths:
         name: id
         required: true
         type: string
-      - description: updateTaskBody
-        in: body
-        name: updateTaskBody
-        required: true
-        schema:
-          $ref: '#/definitions/v1.updateTaskBody'
+      - description: task title
+        in: formData
+        name: title
+        type: string
+      - description: task description
+        in: formData
+        name: description
+        type: string
+      - collectionFormat: multi
+        description: IDs of students (updated list) for the task
+        in: formData
+        items:
+          type: integer
+        name: students
+        type: array
+      - collectionFormat: multi
+        description: IDs of files to delete from the task
+        in: formData
+        items:
+          type: integer
+        name: delete_files
+        type: array
+      - collectionFormat: multi
+        description: new task files
+        in: formData
+        items:
+          type: file
+        name: file
+        type: array
       produces:
       - application/json
       responses:

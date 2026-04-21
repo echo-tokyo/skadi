@@ -122,31 +122,13 @@ func (r *RepoDB) Update(taskID int, newData *entity.TaskUpdate) error {
 		if err != nil {
 			return fmt.Errorf("task: %w", err)
 		}
-
-		// delete old solutions
-		if len(newData.DelStudents) > 0 {
-			err = tx.Where("student_id IN ? AND task_id = ?", newData.DelStudents, taskID).
-				Delete(&entity.Solution{}).Error
-			if err != nil {
-				return fmt.Errorf("delete solutions for students: %w", err)
-			}
+		// update files
+		if err := r.updateTaskFiles(tx, taskID, newData); err != nil {
+			return err
 		}
-
-		// skip creating new solutions if add list is empty
-		if len(newData.AddStudents) == 0 {
-			return nil
-		}
-		// create new solutions
-		solutions := make([]entity.Solution, len(newData.AddStudents))
-		for idx, studID := range newData.AddStudents {
-			solutions[idx] = entity.Solution{
-				TaskID:    taskID,
-				StudentID: studID,
-				StatusID:  _defaultStatusID,
-			}
-		}
-		if err = tx.Omit(_preloadStudent, _preloadStatus).Create(solutions).Error; err != nil {
-			return fmt.Errorf("create solutions for students: %w", err)
+		// update solutions
+		if err := r.updateTaskSolutions(tx, taskID, newData); err != nil {
+			return err
 		}
 		return err
 	})
@@ -204,4 +186,63 @@ func (r *RepoDB) GetTaskStudents(taskID int) ([]entity.Profile, error) {
 		Joins("INNER JOIN task ON task.id = solution.task_id").
 		Where("task.id = ?", taskID).Find(&profiles).Error
 	return profiles, err // err OR nil
+}
+
+// updateTaskFiles deletes old task files and creates new ones.
+func (r *RepoDB) updateTaskFiles(tx *gorm.DB, taskID int, newData *entity.TaskUpdate) error {
+	// delete old files
+	if len(newData.DelFilesIDs) > 0 {
+		err := tx.Where("id IN ?", newData.DelFilesIDs).
+			Delete(&entity.File{}).Error
+		if err != nil {
+			return fmt.Errorf("delete files: %w", err)
+		}
+	}
+
+	// create new files and link them to the task object
+	if len(newData.AddFiles) == 0 {
+		return nil
+	}
+	for _, newFile := range newData.AddFiles {
+		if err := tx.Create(newFile).Error; err != nil {
+			return fmt.Errorf("create file: %w", err)
+		}
+		// create many2many relationship
+		err := tx.Model(&entity.Task{ID: taskID}).
+			Association("Files").Append(newFile)
+		if err != nil {
+			return fmt.Errorf("associate the file: %w", err)
+		}
+	}
+	return nil
+}
+
+// updateTaskSolutions deletes old task solutions and creates new ones.
+func (r *RepoDB) updateTaskSolutions(tx *gorm.DB, taskID int, newData *entity.TaskUpdate) error {
+	// delete old solutions
+	if len(newData.DelStudents) > 0 {
+		err := tx.Where("student_id IN ? AND task_id = ?", newData.DelStudents, taskID).
+			Delete(&entity.Solution{}).Error
+		if err != nil {
+			return fmt.Errorf("delete solutions for students: %w", err)
+		}
+	}
+
+	// skip creating new solutions if add list is empty
+	if len(newData.AddStudents) == 0 {
+		return nil
+	}
+	// create new solutions
+	solutions := make([]entity.Solution, len(newData.AddStudents))
+	for idx, studID := range newData.AddStudents {
+		solutions[idx] = entity.Solution{
+			TaskID:    taskID,
+			StudentID: studID,
+			StatusID:  _defaultStatusID,
+		}
+	}
+	if err := tx.Omit(_preloadStudent, _preloadStatus).Create(solutions).Error; err != nil {
+		return fmt.Errorf("create solutions for students: %w", err)
+	}
+	return nil
 }

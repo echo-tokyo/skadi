@@ -4,6 +4,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	goslices "slices"
 	"sync"
 
 	"skadi/backend/config"
@@ -121,6 +122,7 @@ func (u *UCTeacher) GetByID(teacherID, taskID int) (*entity.Task, []entity.Profi
 func (u *UCTeacher) Update(teacherID, taskID int,
 	newData *entity.TaskUpdate) (*entity.Task, []entity.Profile, error) {
 
+	// get task with files
 	taskObj, err := u.taskRepoDB.GetByID(taskID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get task: %w", err)
@@ -128,6 +130,18 @@ func (u *UCTeacher) Update(teacherID, taskID int,
 	if teacherID != taskObj.TeacherID {
 		return nil, nil, fmt.Errorf("%w: user is not a task owner", task.ErrForbidden)
 	}
+
+	newData.DelFiles = make(entity.Files, 0, len(newData.DelFilesIDs))
+	taskFilesRemains := make(entity.Files, 0, len(taskObj.Files))
+	// collect files' metadata to delete them from task
+	for _, oldFile := range taskObj.Files {
+		if goslices.Contains(newData.DelFilesIDs, oldFile.ID) {
+			newData.DelFiles = append(newData.DelFiles, oldFile)
+		} else {
+			taskFilesRemains = append(taskFilesRemains, oldFile)
+		}
+	}
+	taskObj.Files = taskFilesRemains
 
 	var students []entity.Profile
 	if newData.NewFullStudents != nil {
@@ -153,6 +167,11 @@ func (u *UCTeacher) Update(teacherID, taskID int,
 	if newData.Desc != nil {
 		taskObj.Desc = *newData.Desc
 	}
+	// append new files to task files
+	taskObj.Files = append(taskObj.Files, newData.AddFiles...)
+	// remove deleted files from file system
+	newData.DelFiles.Cleanup()
+
 	return taskObj, students, nil
 }
 

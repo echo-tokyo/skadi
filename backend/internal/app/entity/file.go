@@ -59,6 +59,11 @@ func (f *File) Remove() {
 	if err := os.Remove(f.Path); err != nil {
 		slog.Warn("remove file %s: %w", f.Path, err)
 	}
+	slog.Info("remove file",
+		"filename", f.Name,
+		"mime-type", f.MimeType,
+		"size", f.Size,
+		"path", f.Path)
 }
 
 // Files represents a slice of File objects.
