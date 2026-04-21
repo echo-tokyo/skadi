@@ -34,6 +34,8 @@ services:
       - ./backend/.env
     ports:
       - "127.0.0.1:8000:8000"
+    volumes:
+      - media:/app/media:rw
     networks:
       main_network:
     depends_on:
@@ -47,3 +49,4 @@ networks:
 volumes:
   mysql_data:
   redis_data:
+  media:
