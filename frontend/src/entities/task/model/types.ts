@@ -17,6 +17,7 @@ export interface ICreateTaskRequest {
   description: string
   students?: number[]
   title: string
+  file?: File[]
 }
 
 export interface ICreateTaskResponse {

@@ -5,6 +5,7 @@ export const taskSchemaUpdate = z
     title: z.string().min(1, 'Обязательное поле'),
     description: z.string().min(1, 'Обязательное поле'),
     students: z.array(z.string()),
+    file: z.array(z.file()),
   })
   .describe('taskSchemaUpdate')
 

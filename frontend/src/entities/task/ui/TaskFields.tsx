@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useImperativeHandle, useRef } from 'react'
 import type { Ref } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Input, Select, Textarea } from '@/shared/ui'
+import { File, Input, Select, Textarea } from '@/shared/ui'
 import { TPaginatedSelectField } from '@/shared/ui'
 import { ITaskFieldsRef } from '../model/types'
 import styles from './styles.module.scss'
@@ -145,6 +145,20 @@ const TaskFields = ({
             isValid={!fieldState.error}
             description={fieldState.error?.message}
             value={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name='file'
+        render={({ field, fieldState }) => (
+          <File
+            title='Файл'
+            fluid
+            multiple
+            isValid={!fieldState.error}
+            description={fieldState.error?.message}
             onChange={field.onChange}
           />
         )}

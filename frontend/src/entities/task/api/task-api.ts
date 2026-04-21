@@ -4,7 +4,6 @@ import {
   paginatedInfiniteQueryOptions,
 } from '@/shared/api'
 import {
-  ICreateTaskRequest,
   ICreateTaskResponse,
   IGetTasksQuery,
   IGetTasksResponse,
@@ -14,7 +13,7 @@ import {
 
 export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createTask: builder.mutation<ICreateTaskResponse, ICreateTaskRequest>({
+    createTask: builder.mutation<ICreateTaskResponse, FormData>({
       query: (data) => ({
         url: '/task',
         method: 'POST',
