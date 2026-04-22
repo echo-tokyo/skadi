@@ -50,6 +50,7 @@ const DialogContent = ({
       schema={taskSchemaUpdate}
       fieldValues={fieldValues}
       onDirtyChange={onDirtyChange}
+      serverFiles={taskData.task.files}
       studentField={{
         data: mergedStudentOptions,
         selectedOptions: seedStudentOptions,

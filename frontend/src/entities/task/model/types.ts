@@ -37,10 +37,11 @@ export interface IGetTasksQuery {
 
 export interface IUpdateTaskRequest {
   id: number
-  classes?: number[]
   description: string
   students?: number[]
   title: string
+  file?: File[]
+  delete_files?: number[]
 }
 
 export interface IUpdateTaskResponse {

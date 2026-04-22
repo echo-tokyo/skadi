@@ -1,19 +1,17 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 import styles from '../styles/styles.module.scss'
 import commonStyles from '../../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
-import { TFile } from '@/shared/model/index'
 import Dropzone from './Dropzone'
 import FileItem from './FileItem'
 
-export interface ILocalFile extends TFile {
-  file: File
-}
-
-interface IProps {
-  title?: string
+export interface IFileFieldProps {
+  value?: File[]
+  onChange: (files: File[]) => void
+  attachments?: { id: number; name: string }[]
+  onRemoveAttachment?: (id: number) => void
+  label?: string
   description?: string
-  serverFiles?: TFile[]
   fluid?: boolean
   size?: 's' | 'm'
   disabled?: boolean
@@ -21,14 +19,15 @@ interface IProps {
   required?: boolean
   accept?: string
   multiple?: boolean
-  onNewFilesChange: (files: File[]) => void
-  onRemoveServerFile?: (id: string) => void
 }
 
 const FileField = ({
-  title,
+  value = [],
+  onChange,
+  attachments = [],
+  onRemoveAttachment,
+  label,
   description,
-  serverFiles = [],
   fluid,
   size = 'm',
   disabled,
@@ -36,41 +35,22 @@ const FileField = ({
   required,
   accept,
   multiple,
-  onNewFilesChange,
-  onRemoveServerFile,
-}: IProps): ReactNode => {
-  const [localFiles, setLocalFiles] = useState<ILocalFile[]>([])
+}: IFileFieldProps): ReactNode => {
+  const totalCount = attachments.length + value.length
 
   const handleFiles = (incoming: FileList): void => {
     const existingNames = new Set([
-      ...serverFiles.map((f) => f.name),
-      ...localFiles.map((f) => f.name),
+      ...attachments.map((f) => f.name),
+      ...value.map((f) => f.name),
     ])
-
-    const added: ILocalFile[] = Array.from(incoming)
-      .filter((f) => !existingNames.has(f.name))
-      .map((f) => ({
-        id: crypto.randomUUID(),
-        name: f.name,
-        size: f.size,
-        mime_type: f.type,
-        file: f,
-      }))
-
+    const added = Array.from(incoming).filter((f) => !existingNames.has(f.name))
     if (added.length === 0) return
-
-    const next = [...localFiles, ...added]
-    setLocalFiles(next)
-    onNewFilesChange(next.map((f) => f.file))
+    onChange([...value, ...added])
   }
 
-  const handleRemoveLocal = (id: string): void => {
-    const next = localFiles.filter((f) => f.id !== id)
-    setLocalFiles(next)
-    onNewFilesChange(next.map((f) => f.file))
+  const handleRemoveLocal = (fileName: string): void => {
+    onChange(value.filter((f) => f.name !== fileName))
   }
-
-  const totalCount = serverFiles.length + localFiles.length
 
   const wrapperClassName = getUIClasses(
     styles.wrapper,
@@ -80,9 +60,9 @@ const FileField = ({
 
   return (
     <div className={wrapperClassName}>
-      {title && (
+      {label && (
         <label className={styles.title}>
-          {title}
+          {label}
           {required && (
             <span className={styles.required} aria-label='обязательное поле'>
               *
@@ -103,15 +83,19 @@ const FileField = ({
 
       {totalCount > 0 && (
         <ul className={styles.fileList} aria-label='Выбранные файлы'>
-          {serverFiles.map((file) => (
+          {attachments.map((file) => (
             <FileItem
               key={file.id}
-              file={file}
-              onRemove={(id) => onRemoveServerFile?.(id)}
+              file={{ id: String(file.id), name: file.name }}
+              onRemove={(id) => onRemoveAttachment?.(Number(id))}
             />
           ))}
-          {localFiles.map((file) => (
-            <FileItem key={file.id} file={file} onRemove={handleRemoveLocal} />
+          {value.map((file) => (
+            <FileItem
+              key={file.name}
+              file={{ id: file.name, name: file.name }}
+              onRemove={handleRemoveLocal}
+            />
           ))}
         </ul>
       )}

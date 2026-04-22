@@ -30,7 +30,7 @@ export type TTask = {
 }
 
 export type TFile = {
-  id: string
+  id: number
   mime_type: string
   name: string
   size: number

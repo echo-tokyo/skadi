@@ -11,7 +11,7 @@ const prepare = (data: TTaskSchemaCreate): FormData => {
     description: data.description,
     students: data.students.map(Number),
     classes: data.classes.map(Number),
-    file: data.file,
+    file: data.files,
   }
 
   const formData = new FormData()

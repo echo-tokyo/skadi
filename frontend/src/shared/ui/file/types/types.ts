@@ -1,5 +1,4 @@
-export interface ServerFile {
+export interface FileDisplayItem {
   id: string
   name: string
-  url?: string
 }

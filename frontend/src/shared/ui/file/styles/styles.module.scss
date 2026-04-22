@@ -100,6 +100,11 @@
   @include m.field-label;
 }
 
+.title {
+  display: block;
+  margin-bottom: 0.25rem !important;
+}
+
 .required {
   color: var(--color-red);
 }

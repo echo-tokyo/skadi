@@ -5,5 +5,6 @@ export const defaultValues: TTaskSchemaCreate = {
   description: '',
   students: [],
   classes: [],
-  file: [],
+  files: [],
+  deletedFileIds: [],
 }
