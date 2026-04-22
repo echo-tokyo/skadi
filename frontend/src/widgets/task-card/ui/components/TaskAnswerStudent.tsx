@@ -22,7 +22,7 @@ const TaskAnswerStudent = (props: ITaskAnswerStudentProps) => {
       <Text size='20' weight='600'>
         Ответ
       </Text>
-      <div className={styles.cardStudentFields}>
+      <div className={styles.cardAnswerFields}>
         <Controller
           control={control}
           name='answer'

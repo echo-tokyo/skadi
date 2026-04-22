@@ -7,4 +7,5 @@ export type TDisplayValues = {
   student: string
   answer: string
   files: TFile[]
+  file_answer: TFile[]
 }
