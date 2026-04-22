@@ -55,6 +55,7 @@ export type TSolution = {
   grade?: string
   id: number
   status: TStatus
+  files: TFile[]
   student?: TProfile
   task: TTask
   updated_at?: string

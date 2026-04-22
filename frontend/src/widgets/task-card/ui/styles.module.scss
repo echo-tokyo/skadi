@@ -25,14 +25,23 @@
     border-color: var(--color-gray-hover);
   }
 
-  &Fields {
+  &Fields,
+  &StudentFields,
+  &MaterialsFields {
     margin-top: 1rem;
     gap: 1rem;
     display: flex;
     align-items: center;
-    padding-bottom: 0.25rem;
     overflow-x: auto;
     flex-wrap: nowrap;
+  }
+  &StudentFields {
+    display: flex;
+    flex-direction: column;
+  }
+  &MaterialsFields {
+    display: flex;
+    padding-bottom: 0.25rem;
   }
 }
 

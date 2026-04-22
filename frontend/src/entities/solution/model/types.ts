@@ -35,7 +35,8 @@ export interface IUpdateSolutionByTeacherResponse {
 export interface IUpdateSolutionByStudentRequest {
   status_id?: TStatusId
   answer?: string
-  grade?: string
+  delete_files?: number[]
+  file?: File[]
 }
 
 export interface IUpdateSolutionByStudentResponse {

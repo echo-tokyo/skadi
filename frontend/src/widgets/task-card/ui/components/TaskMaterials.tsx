@@ -14,7 +14,7 @@ const TaskMaterials = (props: ITaskMaterialsProps) => {
       <Text size='20' weight='600'>
         Материалы
       </Text>
-      <div className={styles.cardFields}>
+      <div className={styles.cardMaterialsFields}>
         {displayValues.files.length > 0 ? (
           displayValues.files.map((el) => <FileDownload key={el.id} el={el} />)
         ) : (
