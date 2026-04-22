@@ -1,7 +1,8 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { Dialog } from '@/shared/ui'
 import { DialogContext } from './context'
 import { DialogContextType, DialogParams, DialogState, TPatch } from './types'
+import { registerCloseAll } from './dialogActions'
 
 const ANIMATION_DURATION = 150
 
@@ -62,6 +63,14 @@ export const DialogProvider = ({
       setLoading(dialog.id, false)
     }
   }
+
+  const close = useCallback(() => {
+    setDialogs([])
+  }, [])
+
+  useEffect(() => {
+    registerCloseAll(close)
+  }, [close])
 
   const contextValue: DialogContextType = useMemo(
     () => ({ show, update }),

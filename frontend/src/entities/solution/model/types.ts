@@ -35,7 +35,8 @@ export interface IUpdateSolutionByTeacherResponse {
 export interface IUpdateSolutionByStudentRequest {
   status_id?: TStatusId
   answer?: string
-  grade?: string
+  delete_files?: number[]
+  file?: File[]
 }
 
 export interface IUpdateSolutionByStudentResponse {
@@ -48,7 +49,7 @@ export interface IUpdateSolutionByStudentResponse {
   updated_at: string
 }
 export interface IGetSolutionsQuery {
-  archived?: boolean
+  status_id?: TStatusId
   'per-page'?: number
   search?: string
 }

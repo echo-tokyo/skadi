@@ -44,6 +44,8 @@ const toStudentFormValues = (
   return {
     status,
     answer: solutionData?.answer ?? '',
+    file_answer: [],
+    deleted_file_ids: [],
   }
 }
 

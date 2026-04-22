@@ -10,6 +10,8 @@ export const solutionTeacherSchema = z.object({
 export const solutionStudentSchema = z.object({
   status: z.enum(STUDENT_VALID_STATUSES, 'Обязательное поле'),
   answer: z.string(),
+  file_answer: z.array(z.file()),
+  deleted_file_ids: z.array(z.number()),
 })
 
 export type TSolutionTeacherSchema = z.infer<typeof solutionTeacherSchema>

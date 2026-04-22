@@ -26,6 +26,19 @@ export type TTask = {
   id: number
   teacher?: TProfile
   title: string
+  files: TFile[]
+}
+
+export type TFile = {
+  id: number
+  mime_type: string
+  name: string
+  size: number
+}
+
+export type TTaskWithStudents = {
+  students?: TProfile[]
+  task: TTask
 }
 
 export type TStatus = {
@@ -42,9 +55,10 @@ export type TSolution = {
   grade?: string
   id: number
   status: TStatus
+  files: TFile[]
   student?: TProfile
   task: TTask
-  updated_at: string
+  updated_at?: string
 }
 
 export type TPagination = {

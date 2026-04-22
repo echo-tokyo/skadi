@@ -7,6 +7,7 @@ import { selectAuthenticatedUser } from '@/entities/user'
 import { useAppSelector } from '@/shared/lib'
 import { Skeleton } from '@/shared/ui'
 import { getSchemaByRole, toFormValuesByRole } from '@/entities/solution'
+import { TFile } from '@/shared/model'
 
 const Task: FC = () => {
   const { id } = useParams()
@@ -19,6 +20,8 @@ const Task: FC = () => {
 
   const { data, isLoading } = useGetSolution(id)
   const solution = data?.solution
+
+  const serverFiles: TFile[] = data?.solution.files ?? []
 
   const schema = getSchemaByRole(role)
   const solutionValues = useMemo(
@@ -35,6 +38,7 @@ const Task: FC = () => {
         <TaskCard
           solutionId={Number(id)}
           schema={schema}
+          serverFiles={serverFiles}
           editableValues={solutionValues}
           displayValues={taskValues}
         />

@@ -11,14 +11,15 @@ import styles from './styles.module.scss'
 import { useInfiniteSolutions } from '../model/use-infinite-solutions'
 import { useDebounce, useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
 import { SolutionCardItem } from './SolutionCardItem'
-import { ARCHIVED_OPTIONS } from '@/shared/config'
+import { STATUS_OPTIONS } from '@/shared/config'
+import { TStatusId, TStatusValue } from '@/shared/model'
 
 const { actions, solutions } = styles
 const SKELETON_CARDS = Array.from({ length: 10 })
 
 const SolutionManagement = () => {
   const [searchValue, setSearchValue] = useState('')
-  const [statusArchived, setStatusArchived] = useState<'archived' | ''>('')
+  const [status, setStatus] = useState<TStatusId>(3)
   const debouncedSearch = useDebounce(searchValue)
 
   const {
@@ -30,7 +31,7 @@ const SolutionManagement = () => {
   } = useInfiniteSolutions({
     'per-page': 10,
     search: debouncedSearch,
-    archived: statusArchived === 'archived',
+    status_id: status,
   })
 
   const showSkeleton = useShowSkeleton(isLoading)
@@ -55,9 +56,9 @@ const SolutionManagement = () => {
         />
         <Select
           label='Фильтровать по:'
-          options={ARCHIVED_OPTIONS}
-          value={statusArchived}
-          onChange={(val) => setStatusArchived(val)}
+          options={STATUS_OPTIONS}
+          value={status.toString() as TStatusValue}
+          onChange={(val) => setStatus(Number(val) as TStatusId)}
         />
       </div>
 

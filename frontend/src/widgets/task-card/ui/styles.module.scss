@@ -1,6 +1,7 @@
 .actions {
   display: flex;
   justify-content: flex-end;
+  gap: 1rem;
 }
 
 .cards {
@@ -24,10 +25,32 @@
     border-color: var(--color-gray-hover);
   }
 
-  &Fields {
+  &Fields,
+  &StudentFields,
+  &MaterialsFields {
     margin-top: 1rem;
     gap: 1rem;
     display: flex;
+    align-items: center;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  &AnswerFields {
+    display: flex;
+    flex-direction: column;
+    align-items: normal;
+  }
+  &MaterialsFields {
+    display: flex;
+    padding-bottom: 0.25rem;
+  }
+  &AnswerFiles {
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
   }
 }
 

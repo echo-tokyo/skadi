@@ -9,4 +9,6 @@ export const toTaskValues = (
   title: solutionData?.task.title ?? '',
   answer: solutionData?.answer ?? '',
   teacher: solutionData?.task.teacher?.fullname ?? 'Преподаватель',
+  files: solutionData?.task.files ?? [],
+  file_answer: solutionData?.files ?? [],
 })

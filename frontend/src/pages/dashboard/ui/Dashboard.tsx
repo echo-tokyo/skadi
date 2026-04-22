@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { KanbanBoard } from './kanban/KanbanBoard'
-import { Skeleton } from '@/shared/ui'
+import { PlugDefault, Skeleton } from '@/shared/ui'
 import { useGetSolutions } from '../model/use-get-solutions'
 import styles from './styles.module.scss'
 
@@ -9,10 +9,12 @@ const Dashboard: FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      {!isLoading ? (
-        <KanbanBoard solutions={solutions} />
-      ) : (
+      {isLoading ? (
         <Skeleton height={'100%'} />
+      ) : solutions.length === 0 ? (
+        <PlugDefault />
+      ) : (
+        <KanbanBoard solutions={solutions} />
       )}
     </div>
   )

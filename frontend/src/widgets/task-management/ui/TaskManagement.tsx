@@ -50,7 +50,9 @@ const TaskManagement = () => {
         ) : isLoading && showSkeleton ? (
           SKELETON_CARDS.map((_, i) => <Skeleton key={i} height={'64px'} />)
         ) : (
-          taskList.map((task) => <TaskCardItem taskData={task} key={task.id} />)
+          taskList.map((task) => (
+            <TaskCardItem taskData={task} key={task.task.id} />
+          ))
         )}
 
         <Sentinel ref={sentinelRef} />

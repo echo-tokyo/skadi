@@ -16,6 +16,8 @@ import {
 } from '@/entities/solution'
 import { TDisplayValues } from '../model/types'
 import { STATUS_OPTIONS } from '@/shared/config'
+import { Button } from '@/shared/ui'
+import { TFile } from '@/shared/model'
 
 // 2 валидации, 1 режим: для препода (редактирует статус и оценку) и ученика (редактирует статус кроме "проверено", ответ и ответ файлом)
 
@@ -24,10 +26,12 @@ interface ITaskCardProps {
   displayValues: TDisplayValues
   schema: typeof solutionTeacherSchema | typeof solutionStudentSchema
   solutionId: number
+  serverFiles: TFile[]
 }
 
 const TaskCard = (props: ITaskCardProps) => {
-  const { editableValues, schema, displayValues, solutionId } = props
+  const { editableValues, schema, displayValues, solutionId, serverFiles } =
+    props
 
   const actualSchema =
     schema === solutionTeacherSchema ? 'teacherSchema' : 'studentSchema'
@@ -42,7 +46,10 @@ const TaskCard = (props: ITaskCardProps) => {
     resolver: zodResolver(schema),
   })
 
-  const { reset } = methods
+  const {
+    reset,
+    formState: { isDirty },
+  } = methods
 
   useEffect(() => {
     reset(editableValues)
@@ -51,6 +58,9 @@ const TaskCard = (props: ITaskCardProps) => {
   return (
     <FormProvider {...methods}>
       <div className={styles.actions}>
+        <Button onClick={reset} disabled={!isDirty} color='secondary'>
+          Сбросить
+        </Button>
         <UpdateSolutionButton id={solutionId} actualSchema={actualSchema} />
       </div>
       <div className={styles.cards}>
@@ -59,8 +69,12 @@ const TaskCard = (props: ITaskCardProps) => {
           statusOptions={statusOptions}
         />
         <TaskDescription displayValues={displayValues} />
-        <TaskMaterials />
-        <TaskAnswer displayValues={displayValues} actualSchema={actualSchema} />
+        <TaskMaterials displayValues={displayValues} />
+        <TaskAnswer
+          displayValues={displayValues}
+          actualSchema={actualSchema}
+          serverFiles={serverFiles}
+        />
       </div>
     </FormProvider>
   )

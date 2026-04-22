@@ -3,11 +3,11 @@ import {
   DEFAULT_PER_PAGE,
   paginatedInfiniteQueryOptions,
 } from '@/shared/api'
+import { TStatusId } from '@/shared/model'
 import {
   IGetSolutionByIdResponse,
   IGetSolutionsQuery,
   IGetSolutionsResponse,
-  IUpdateSolutionByStudentRequest,
   IUpdateSolutionByStudentResponse,
   IUpdateSolutionByTeacherRequest,
   IUpdateSolutionByTeacherResponse,
@@ -17,7 +17,7 @@ export const solutionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     updateSolutionByStudent: builder.mutation<
       IUpdateSolutionByStudentResponse,
-      { id: number; data: IUpdateSolutionByStudentRequest }
+      { id: number; data: FormData }
     >({
       query: ({ data, id }) => ({
         url: `/solution/for-student/${id}`,
@@ -25,14 +25,15 @@ export const solutionApi = baseApi.injectEndpoints({
         body: data,
       }),
       async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
+        const statusId = data.get('status_id')
         const patch = dispatch(
           solutionApi.util.updateQueryData(
             'getSolutionsForStudent',
             undefined,
             (draft) => {
-              if (data.status_id === undefined) return
+              if (statusId === null) return
               const solution = draft.data.find((s) => s.id === id)
-              if (solution) solution.status.id = data.status_id
+              if (solution) solution.status.id = Number(statusId) as TStatusId
             },
           ),
         )

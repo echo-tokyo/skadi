@@ -1,16 +1,14 @@
-import { useRef, useMemo } from 'react'
+import { useRef } from 'react'
 import { useDialog } from '@/shared/lib'
 import { ITaskFieldsRef } from '@/entities/task'
-import { toFormData } from '../lib/to-form-data'
 import { useEditTask } from './use-edit-task'
 import DialogContent from '../ui/DialogContent'
-import { TTask } from '@/shared/model'
+import { TTaskWithStudents } from '@/shared/model'
 
-export const useEditTaskDialog = (task: TTask) => {
+export const useEditTaskDialog = (task: TTaskWithStudents) => {
   const { show, update } = useDialog()
   const formRef = useRef<ITaskFieldsRef>(null)
-  const { submit } = useEditTask(task.id)
-  const fieldData = useMemo(() => toFormData(task), [task])
+  const { submit } = useEditTask(task.task.id)
   const dialogIdRef = useRef<string | null>(null)
 
   const showDialog = () => {
@@ -20,7 +18,7 @@ export const useEditTaskDialog = (task: TTask) => {
       content: (
         <DialogContent
           ref={formRef}
-          fieldData={fieldData}
+          taskData={task}
           onDirtyChange={(isDirty) => {
             if (dialogIdRef.current) {
               update(dialogIdRef.current, { isConfirmDisabled: !isDirty })

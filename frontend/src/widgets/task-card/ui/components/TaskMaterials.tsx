@@ -1,15 +1,25 @@
 import { Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
+import { TDisplayValues } from '../../model/types'
+import { FileDownload } from '@/features/file-download'
 
-const TaskMaterials = () => {
+interface ITaskMaterialsProps {
+  displayValues: TDisplayValues
+}
+
+const TaskMaterials = (props: ITaskMaterialsProps) => {
+  const { displayValues } = props
   return (
     <div className={styles.card}>
       <Text size='20' weight='600'>
         Материалы
       </Text>
-      <div className={styles.cardFields}>
-        {/* TODO: пока что бэк не готов под файлы и нет компонента под это на фронте */}
-        <Text>Пока пусто 🥲</Text>
+      <div className={styles.cardMaterialsFields}>
+        {displayValues.files.length > 0 ? (
+          displayValues.files.map((el) => <FileDownload key={el.id} el={el} />)
+        ) : (
+          <Text>Пока пусто 🥲</Text>
+        )}
       </div>
     </div>
   )

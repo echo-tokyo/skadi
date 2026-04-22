@@ -109,9 +109,9 @@ const SelectContent = <T extends string>({
   }, [])
 
   return (
-    <div className={styles.content_inner}>
+    <div className={styles.contentInner}>
       {searchable && (
-        <div className={styles.search_wrapper}>
+        <div className={styles.searchWrapper}>
           <Input
             fluid
             placeholder={searchPlaceholder}
@@ -127,7 +127,7 @@ const SelectContent = <T extends string>({
         className={styles.viewport}
       >
         {selectedSection.length === 0 && mainList.length === 0 ? (
-          <div className={styles.no_results}>{noResultsText}</div>
+          <div className={styles.noResults}>{noResultsText}</div>
         ) : (
           <>
             {selectedSection.map((option) => (
@@ -141,7 +141,7 @@ const SelectContent = <T extends string>({
             ))}
 
             {selectedSection.length > 0 && mainList.length > 0 && (
-              <div className={styles.section_divider} />
+              <div className={styles.sectionDivider} />
             )}
 
             {mainList.map((option) => (
@@ -157,7 +157,7 @@ const SelectContent = <T extends string>({
         )}
       </div>
       {onLoadMore && hasMore && (
-        <div className={styles.load_more_wrapper}>
+        <div className={styles.loadMoreWrapper}>
           <Button
             fluid
             onClick={onLoadMore}

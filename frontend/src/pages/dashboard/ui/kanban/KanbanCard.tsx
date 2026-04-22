@@ -43,7 +43,7 @@ export const KanbanCard = memo(({ solution, columnId }: IKanbanCardProps) => {
       <div className={styles.cardHeader}>
         <Text className={styles.cardTitle}>{solution.task.title}</Text>
         <Text className={styles.cardTitle}>
-          {unixToDate(solution.updated_at)}
+          {unixToDate(solution.updated_at ?? '-')}
         </Text>
       </div>
       {solution.task.description && (

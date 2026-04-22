@@ -1,37 +1,53 @@
 import { ReactNode, useEffect, useImperativeHandle, useRef } from 'react'
 import type { Ref } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useController, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Input, Select, Textarea } from '@/shared/ui'
+import { FileField, Input, Select, Textarea } from '@/shared/ui'
 import { TPaginatedSelectField } from '@/shared/ui'
+import { TFile } from '@/shared/model'
 import { ITaskFieldsRef } from '../model/types'
 import styles from './styles.module.scss'
-import { taskSchema, TTaskSchema } from '../model/schema'
+import {
+  taskSchemaCreate,
+  taskSchemaUpdate,
+  TTaskSchemaUpdate,
+} from '../model/schema'
 import { defaultValues } from '../config/default-values'
+import z from 'zod'
 
 interface ITaskFieldsProps {
   ref?: Ref<ITaskFieldsRef>
   studentField: TPaginatedSelectField
+  classField?: TPaginatedSelectField
   onDirtyChange?: (isDirty: boolean) => void
-  fieldData?: TTaskSchema
+  fieldValues?: TTaskSchemaUpdate
+  schema: typeof taskSchemaCreate | typeof taskSchemaUpdate
+  serverFiles?: TFile[]
 }
 
 const TaskFields = ({
+  schema,
   ref,
   studentField,
+  classField,
   onDirtyChange,
-  fieldData,
+  fieldValues,
+  serverFiles = [],
 }: ITaskFieldsProps): ReactNode => {
   const {
     control,
-    trigger,
     reset,
     getValues,
     handleSubmit,
     formState: { isDirty },
-  } = useForm<TTaskSchema>({
-    resolver: zodResolver(taskSchema),
-    defaultValues: fieldData ?? defaultValues,
+  } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: fieldValues ?? defaultValues,
+  })
+
+  const { field: deletedField, fieldState: deletedFieldState } = useController({
+    control,
+    name: 'deletedFileIds',
   })
 
   const onDirtyChangeRef = useRef(onDirtyChange)
@@ -56,7 +72,7 @@ const TaskFields = ({
       getFieldsData: () => getValues(),
       reset: () => reset(),
     }),
-    [trigger, reset, getValues],
+    [reset, getValues, handleSubmit],
   )
 
   return (
@@ -66,7 +82,6 @@ const TaskFields = ({
         name='title'
         render={({ field, fieldState }) => (
           <Input
-            ref={field.ref}
             fluid
             title='Название'
             required
@@ -82,7 +97,6 @@ const TaskFields = ({
         name='students'
         render={({ field, fieldState }) => (
           <Select
-            ref={field.ref}
             fluid
             label='Ученики'
             multiple
@@ -101,17 +115,67 @@ const TaskFields = ({
           />
         )}
       />
+      {classField && (
+        <Controller
+          control={control}
+          name='classes'
+          render={({ field, fieldState }) => (
+            <Select
+              fluid
+              label='Группы'
+              multiple
+              placeholder='Выберите'
+              isValid={!fieldState.error}
+              description={fieldState.error?.message}
+              options={classField.data}
+              selectedOptions={classField.selectedOptions}
+              value={field.value}
+              searchable
+              onLoadMore={classField.onLoadMore}
+              hasMore={classField.hasMore}
+              isLoadingMore={classField.isLoadingMore}
+              onSearchChange={classField.onSearchChange}
+              onChange={field.onChange}
+            />
+          )}
+        />
+      )}
       <Controller
         control={control}
         name='description'
         render={({ field, fieldState }) => (
           <Textarea
-            ref={field.ref}
             label='Описание'
             fluid
             required
             isValid={!fieldState.error}
             description={fieldState.error?.message}
+            value={field.value}
+            onChange={field.onChange}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name='files'
+        render={({ field, fieldState }) => (
+          <FileField
+            label='Файлы'
+            fluid
+            multiple
+            isValid={!fieldState.error && !deletedFieldState.error}
+            description={
+              fieldState.error?.message ??
+              (Array.isArray(deletedFieldState.error)
+                ? deletedFieldState.error[0]?.message
+                : deletedFieldState.error?.message)
+            }
+            attachments={serverFiles
+              .filter((f) => !deletedField.value.includes(f.id))
+              .map((f) => ({ id: f.id, name: f.name }))}
+            onRemoveAttachment={(id) =>
+              deletedField.onChange([...deletedField.value, id])
+            }
             value={field.value}
             onChange={field.onChange}
           />

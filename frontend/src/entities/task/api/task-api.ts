@@ -4,17 +4,15 @@ import {
   paginatedInfiniteQueryOptions,
 } from '@/shared/api'
 import {
-  ICreateTaskRequest,
   ICreateTaskResponse,
   IGetTasksQuery,
   IGetTasksResponse,
-  IUpdateTaskRequest,
   IUpdateTaskResponse,
 } from '../model/types'
 
 export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createTask: builder.mutation<ICreateTaskResponse, ICreateTaskRequest>({
+    createTask: builder.mutation<ICreateTaskResponse, FormData>({
       query: (data) => ({
         url: '/task',
         method: 'POST',
@@ -23,9 +21,9 @@ export const taskApi = baseApi.injectEndpoints({
       invalidatesTags: ['Task', 'Solution'],
     }),
 
-    updateTask: builder.mutation<IUpdateTaskResponse, IUpdateTaskRequest>({
-      query: ({ id, ...data }) => ({
-        url: `/task/${id}`,
+    updateTask: builder.mutation<IUpdateTaskResponse, FormData>({
+      query: (data) => ({
+        url: `/task/${data.get('id')}`,
         method: 'PATCH',
         body: data,
       }),

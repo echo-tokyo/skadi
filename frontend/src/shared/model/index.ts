@@ -8,5 +8,7 @@ export type {
   TStatusValue,
   TStatusId,
   TTask,
+  TTaskWithStudents,
   TPagination,
+  TFile,
 } from './types/types'

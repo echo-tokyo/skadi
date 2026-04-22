@@ -24,7 +24,7 @@ export const KanbanBoard = ({ solutions }: IKanbanBoardProps) => {
         const cardId = source.data.cardId as number
         const newColumnId = dropTarget.data.columnId as TStatusId
 
-        updateStatus({ id: cardId, status_id: newColumnId })
+        updateStatus({ id: cardId, status: newColumnId })
       },
     })
   }, [])
