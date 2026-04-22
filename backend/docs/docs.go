@@ -610,6 +610,124 @@ const docTemplate = `{
                 }
             }
         },
+        "/solutiom/{id}/comment": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка комментариев для данного решения задания.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Получение комментариев под решением задания. [Преподаватель и ученик]",
+                "operationId": "comment-list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID решения задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listCommentOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение задания не найдено"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Создание комментария от лица преподавателя или ученика для данного решения задания.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Создание комментария под решением задания. [Преподаватель и ученик]",
+                "operationId": "comment-create",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID решения задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "commentBody",
+                        "name": "commentBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.commentBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Comment"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение задания не найдено"
+                    }
+                }
+            }
+        },
         "/solution/for-student": {
             "get": {
                 "security": [
@@ -1756,6 +1874,33 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.Comment": {
+            "type": "object",
+            "required": [
+                "created_at",
+                "id",
+                "message",
+                "role"
+            ],
+            "properties": {
+                "created_at": {
+                    "description": "datetime the message was created",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "comment ID",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "message text",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "role (student or teacher)",
+                    "type": "string"
+                }
+            }
+        },
         "entity.Contact": {
             "type": "object",
             "properties": {
@@ -2155,6 +2300,20 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.commentBody": {
+            "description": "commentBody represents a data with comment.",
+            "type": "object",
+            "required": [
+                "message"
+            ],
+            "properties": {
+                "message": {
+                    "description": "text message",
+                    "type": "string",
+                    "example": "Добрый день. Подскажите, пожалуйста..."
+                }
+            }
+        },
         "v1.contactBody": {
             "description": "contactBody represents a data with profile contact.",
             "type": "object",
@@ -2231,6 +2390,30 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Class"
+                    }
+                },
+                "pagination": {
+                    "description": "pagination params",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Pagination"
+                        }
+                    ]
+                }
+            }
+        },
+        "v1.listCommentOut": {
+            "description": "listCommentOut represents a comment list and pagination params.",
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "description": "comment list",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Comment"
                     }
                 },
                 "pagination": {

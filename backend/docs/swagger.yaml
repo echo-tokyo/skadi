@@ -26,6 +26,26 @@ definitions:
     - id
     - name
     type: object
+  entity.Comment:
+    properties:
+      created_at:
+        description: datetime the message was created
+        type: string
+      id:
+        description: comment ID
+        type: integer
+      message:
+        description: message text
+        type: string
+      role:
+        description: role (student or teacher)
+        type: string
+    required:
+    - created_at
+    - id
+    - message
+    - role
+    type: object
   entity.Contact:
     properties:
       email:
@@ -304,6 +324,16 @@ definitions:
     required:
     - name
     type: object
+  v1.commentBody:
+    description: commentBody represents a data with comment.
+    properties:
+      message:
+        description: text message
+        example: Добрый день. Подскажите, пожалуйста...
+        type: string
+    required:
+    - message
+    type: object
   v1.contactBody:
     description: contactBody represents a data with profile contact.
     properties:
@@ -354,6 +384,21 @@ definitions:
         description: classes list
         items:
           $ref: '#/definitions/entity.Class'
+        type: array
+      pagination:
+        allOf:
+        - $ref: '#/definitions/entity.Pagination'
+        description: pagination params
+    required:
+    - data
+    type: object
+  v1.listCommentOut:
+    description: listCommentOut represents a comment list and pagination params.
+    properties:
+      data:
+        description: comment list
+        items:
+          $ref: '#/definitions/entity.Comment'
         type: array
       pagination:
         allOf:
@@ -932,6 +977,85 @@ paths:
       summary: Загрузка файла по id. [Преподаватель и ученик]
       tags:
       - file
+  /solutiom/{id}/comment:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка комментариев для данного решения задания.
+      operationId: comment-list
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: page pagination param
+        example: 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: per page pagination param
+        example: 5
+        in: query
+        minimum: 1
+        name: per-page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.listCommentOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение задания не найдено
+      security:
+      - JWTAccess: []
+      summary: Получение комментариев под решением задания. [Преподаватель и ученик]
+      tags:
+      - comment
+    post:
+      consumes:
+      - application/json
+      description: Создание комментария от лица преподавателя или ученика для данного
+        решения задания.
+      operationId: comment-create
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: commentBody
+        in: body
+        name: commentBody
+        required: true
+        schema:
+          $ref: '#/definitions/v1.commentBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Comment'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение задания не найдено
+      security:
+      - JWTAccess: []
+      summary: Создание комментария под решением задания. [Преподаватель и ученик]
+      tags:
+      - comment
   /solution/{id}:
     delete:
       consumes:

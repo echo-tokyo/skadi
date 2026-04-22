@@ -25,6 +25,7 @@ const (
 	_fieldFullname  = "fullname"    // table field name
 	_fieldTitle     = "title"       // table field name
 	_fieldDesc      = "description" // table field name
+	_fieldTeacherID = "teacher_id"  // table field name
 	_fieldUpdatedAt = "updated_at"  // table field name
 
 	_orderByIDDESC = "id DESC" // condition to order data by id DESC
@@ -201,6 +202,35 @@ func (r *RepoDB) GetManyForStudent(studID int, statusID int,
 		return nil, err
 	}
 	return solList, nil
+}
+
+// UserPermit returns nil error if user has rights to the given solution.
+func (r *RepoDB) UserPermit(solutionID int, userClaims *entity.UserClaims) error {
+	// get student_id from solution and teacher_id from task
+	var solObj entity.Solution
+	err := r.dbStorage.
+		Model(&entity.Solution{}).
+		Select("task_id, student_id").
+		Preload(_preloadTask, func(db *gorm.DB) *gorm.DB {
+			return db.Select(_fieldID, _fieldTeacherID) // preload only teacher ID
+		}).
+		Where(solutionID).First(&solObj).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// solution object with such id not found
+		return fmt.Errorf("solution with id: %w", solution.ErrNotFound)
+	}
+	if err != nil {
+		return err
+	}
+
+	// role checks
+	if userClaims.IsTeacher() && solObj.Task.TeacherID != userClaims.ID {
+		return fmt.Errorf("%w: user (teacher) is not a task owner", solution.ErrForbidden)
+	}
+	if userClaims.IsStudent() && solObj.StudentID != userClaims.ID {
+		return fmt.Errorf("%w: user (stud) is not a solution owner", solution.ErrForbidden)
+	}
+	return nil
 }
 
 // updateSolutionFiles deletes old solution files and creates new ones.

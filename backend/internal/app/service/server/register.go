@@ -10,6 +10,9 @@ import (
 	classhttpv1 "skadi/backend/internal/app/class/controller/http/v1"
 	classrepo "skadi/backend/internal/app/class/repository"
 	classuc "skadi/backend/internal/app/class/usecase"
+	commenthttpv1 "skadi/backend/internal/app/comment/controller/http/v1"
+	commentrepo "skadi/backend/internal/app/comment/repository"
+	commentuc "skadi/backend/internal/app/comment/usecase"
 	examplehttpv1 "skadi/backend/internal/app/example/controller/http/v1"
 	filehttpv1 "skadi/backend/internal/app/file/controller/http/v1"
 	filerepo "skadi/backend/internal/app/file/repository"
@@ -41,6 +44,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	solRepoDB := solrepo.NewRepoDB(dbStorage)
 	statusRepoDB := statusrepo.NewRepoDB(dbStorage)
 	fileRepoDB := filerepo.NewRepoDB(dbStorage)
+	commentRepoDB := commentrepo.NewRepoDB(dbStorage)
 	// create usecases
 	authUCClient := authuc.NewUCClient(cfg, userRepoDB, authRepoCache)
 	authUCMiddleware := authuc.NewUCMiddleware(cfg, authRepoCache)
@@ -51,6 +55,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	solUCStudent := soluc.NewUCStudent(cfg, solRepoDB, statusRepoDB)
 	solUCTeacher := soluc.NewUCTeacher(cfg, solRepoDB, statusRepoDB)
 	fileUCClient := fileuc.NewUCClient(cfg, fileRepoDB)
+	commentUCClient := commentuc.NewUCClient(cfg, commentRepoDB, solRepoDB)
 	// create controllers
 	authController := authhttpv1.NewAuthController(cfg, authUCClient, valid)
 	exampleController := examplehttpv1.NewExampleController()
@@ -63,6 +68,7 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	solControllerStudent := solhttpv1.NewSolControllerStudent(cfg, solUCStudent, valid)
 	solControllerTeacher := solhttpv1.NewSolControllerTeacher(solUCTeacher, valid)
 	fileController := filehttpv1.NewFileController(fileUCClient, valid)
+	commentController := commenthttpv1.NewCommentController(commentUCClient, valid)
 
 	// middlewares
 	mwJWTRefresh := middleware.JWTRefresh(cfg, authUCMiddleware)
@@ -82,4 +88,5 @@ func (s *Server) registerEndpointsV1(cfg *config.Config, dbStorage *gorm.DB,
 	solhttpv1.RegisterEndpoints(apiV1, solController, solControllerStudent, solControllerTeacher,
 		mwJWTAccess, middleware.Allow)
 	filehttpv1.RegisterEndpoints(apiV1, fileController, mwJWTAccess, middleware.Allow)
+	commenthttpv1.RegisterEndpoints(apiV1, commentController, mwJWTAccess, middleware.Allow)
 }

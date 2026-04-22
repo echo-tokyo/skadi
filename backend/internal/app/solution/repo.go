@@ -23,4 +23,7 @@ type RepositoryDB interface {
 	// StatusID param appends condition to filter solutions by status.
 	GetManyForStudent(studID int, statusID int,
 		page *entity.Pagination) ([]entity.Solution, error)
+
+	// UserPermit returns nil error if user has rights to the given solution.
+	UserPermit(solutionID int, userClaims *entity.UserClaims) error
 }
