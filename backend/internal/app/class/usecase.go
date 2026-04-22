@@ -7,7 +7,7 @@ import "skadi/backend/internal/app/entity"
 
 // UsecaseAdmin describes all class usecases for admin panel.
 type UsecaseAdmin interface {
-	// CreateClass creates a new class and fills given struct.
+	// Create creates a new class and fills given struct.
 	Create(classObj *entity.Class, studentIDs []int) error
 	// Update updates class by ID (in new class object) with the new data.
 	// It returns the updated class object.

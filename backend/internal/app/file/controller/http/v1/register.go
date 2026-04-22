@@ -9,7 +9,7 @@ import (
 	"skadi/backend/internal/app/service/server/middleware"
 )
 
-// RegisterEndpoints registers all task endpoints.
+// RegisterEndpoints registers all file endpoints.
 func RegisterEndpoints(router fiber.Router, controller *FileController,
 	mwJWTAccess fiber.Handler, mwAllow middleware.AllowFunc) {
 

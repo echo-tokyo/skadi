@@ -22,8 +22,8 @@ type SolControllerStudent struct {
 	solutionFileDir string
 }
 
-// NewSolControllerStudent returns a new instance of [SolControllerStudent].
-func NewSolControllerStudent(cfg *config.Config, solUCStudent solution.UsecaseStudent,
+// NewControllerStudent returns a new instance of [SolControllerStudent].
+func NewControllerStudent(cfg *config.Config, solUCStudent solution.UsecaseStudent,
 	valid validator.Validator) *SolControllerStudent {
 
 	return &SolControllerStudent{

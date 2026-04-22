@@ -1,5 +1,3 @@
-// Package file1 contains DB repo for file.
-// Sub-package repo contains RepoDB implementation.
 package file
 
 import "skadi/backend/internal/app/entity"

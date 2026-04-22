@@ -38,8 +38,8 @@ func NewRepoDB(dbStorage *gorm.DB) *RepoDB {
 	}
 }
 
-// CreateClass creates a new class and fills given struct.
-func (r *RepoDB) CreateClass(classObj *entity.Class, studentIDs []int) error {
+// Create creates a new class and fills given struct.
+func (r *RepoDB) Create(classObj *entity.Class, studentIDs []int) error {
 	return r.dbStorage.Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(classObj).Error
 		if errors.Is(err, gorm.ErrDuplicatedKey) {

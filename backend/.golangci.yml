@@ -138,6 +138,10 @@ linters:
           - goconst
         text: "string `/:id` has [3456789] occurrences, make it a constant"
 
+      - linters: # all HTTP-routes registers
+          - funlen
+        path: internal/app/service/server/register.go
+
 issues:
   fix: false
 

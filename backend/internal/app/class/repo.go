@@ -4,8 +4,8 @@ import "skadi/backend/internal/app/entity"
 
 // RepositoryDB describes all DB methods for class.
 type RepositoryDB interface {
-	// CreateClass creates a new class and fills given struct.
-	CreateClass(classObj *entity.Class, studentIDs []int) error
+	// Create creates a new class and fills given struct.
+	Create(classObj *entity.Class, studentIDs []int) error
 	// GetByIDShort returns class (ID and name only) by given id.
 	GetByIDShort(id int) (*entity.Class, error)
 	// GetByID returns class by given id.

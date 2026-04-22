@@ -9,8 +9,8 @@ import (
 // ExampleController represents a controller with example handlers to check auth.
 type ExampleController struct{}
 
-// NewExampleController returns a new instance of ExampleController.
-func NewExampleController() *ExampleController {
+// NewController returns a new instance of ExampleController.
+func NewController() *ExampleController {
 	return &ExampleController{}
 }
 

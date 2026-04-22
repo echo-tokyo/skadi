@@ -47,7 +47,7 @@ func (u *UCAdminClient) Create(classObj *entity.Class, studentIDs []int) (err er
 	}
 
 	// create class with students
-	if err = u.classRepoDB.CreateClass(classObj, studentIDs); err != nil {
+	if err = u.classRepoDB.Create(classObj, studentIDs); err != nil {
 		return fmt.Errorf("create class: %w", err)
 	}
 	// collect student profiles

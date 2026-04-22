@@ -24,8 +24,8 @@ type TaskControllerTeacher struct {
 	taskFileDir   string
 }
 
-// NewTaskControllerTeacher returns a new instance of [TaskControllerTeacher].
-func NewTaskControllerTeacher(cfg *config.Config, taskUCTeacher task.UsecaseTeacher,
+// NewControllerTeacher returns a new instance of [TaskControllerTeacher].
+func NewControllerTeacher(cfg *config.Config, taskUCTeacher task.UsecaseTeacher,
 	valid validator.Validator) *TaskControllerTeacher {
 
 	return &TaskControllerTeacher{

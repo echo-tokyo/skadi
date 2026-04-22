@@ -27,8 +27,8 @@ type AuthController struct {
 	refreshCookieBuilder *cookie.Builder
 }
 
-// NewAuthController returns a new instance of [AuthController].
-func NewAuthController(cfg *config.Config, authUCClient auth.UsecaseClient,
+// NewController returns a new instance of [AuthController].
+func NewController(cfg *config.Config, authUCClient auth.UsecaseClient,
 	valid validator.Validator) *AuthController {
 
 	return &AuthController{

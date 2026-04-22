@@ -19,8 +19,8 @@ type SolController struct {
 	solUCClient solution.UsecaseClient
 }
 
-// NewSolController returns a new instance of [SolController].
-func NewSolController(solUCClient solution.UsecaseClient,
+// NewController returns a new instance of [SolController].
+func NewController(solUCClient solution.UsecaseClient,
 	valid validator.Validator) *SolController {
 
 	return &SolController{

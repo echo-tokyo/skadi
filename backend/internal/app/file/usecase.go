@@ -5,7 +5,7 @@ package file
 
 import "skadi/backend/internal/app/entity"
 
-// UsecaseAdmin describes all class usecases for teacher and student.
+// UsecaseClient describes all file usecases for teacher and student.
 type UsecaseClient interface {
 	// GetByID returns file metadata by the given ID.
 	GetByID(fileID int, userClaims *entity.UserClaims) (*entity.File, error)

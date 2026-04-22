@@ -20,8 +20,8 @@ type CommentController struct {
 	commentUCClient comment.UsecaseClient
 }
 
-// NewCommentController returns a new instance of [CommentController].
-func NewCommentController(commentUCClient comment.UsecaseClient,
+// NewController returns a new instance of [CommentController].
+func NewController(commentUCClient comment.UsecaseClient,
 	valid validator.Validator) *CommentController {
 
 	return &CommentController{

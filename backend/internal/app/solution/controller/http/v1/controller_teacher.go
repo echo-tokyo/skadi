@@ -20,8 +20,8 @@ type SolControllerTeacher struct {
 	solUCTeacher solution.UsecaseTeacher
 }
 
-// NewSolControllerTeacher returns a new instance of [SolControllerTeacher].
-func NewSolControllerTeacher(solUCTeacher solution.UsecaseTeacher,
+// NewControllerTeacher returns a new instance of [SolControllerTeacher].
+func NewControllerTeacher(solUCTeacher solution.UsecaseTeacher,
 	valid validator.Validator) *SolControllerTeacher {
 
 	return &SolControllerTeacher{

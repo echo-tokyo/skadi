@@ -7,7 +7,7 @@ import (
 	"skadi/backend/internal/app/file"
 )
 
-// Ensure UCAdmin implements interfaces.
+// Ensure UCClient implements interfaces.
 var _ file.UsecaseClient = (*UCClient)(nil)
 
 // UCClient represents a file usecase for teacher and student.

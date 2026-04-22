@@ -19,8 +19,8 @@ type FileController struct {
 	fileUCClient file.UsecaseClient
 }
 
-// NewFileController returns a new instance of [FileController].
-func NewFileController(fileUCClient file.UsecaseClient,
+// NewController returns a new instance of [FileController].
+func NewController(fileUCClient file.UsecaseClient,
 	valid validator.Validator) *FileController {
 
 	return &FileController{

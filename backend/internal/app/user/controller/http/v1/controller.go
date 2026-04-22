@@ -20,8 +20,8 @@ type UserController struct {
 	userUCClient user.UsecaseClient
 }
 
-// NewUserController returns a new instance of [UserController].
-func NewUserController(userUCClient user.UsecaseClient,
+// NewController returns a new instance of [UserController].
+func NewController(userUCClient user.UsecaseClient,
 	valid validator.Validator) *UserController {
 
 	return &UserController{
