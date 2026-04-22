@@ -57,7 +57,7 @@ export type TSolution = {
   status: TStatus
   student?: TProfile
   task: TTask
-  updated_at: string
+  updated_at?: string
 }
 
 export type TPagination = {

@@ -66,7 +66,7 @@ const TaskCard = (props: ITaskCardProps) => {
           statusOptions={statusOptions}
         />
         <TaskDescription displayValues={displayValues} />
-        <TaskMaterials />
+        <TaskMaterials displayValues={displayValues} />
         <TaskAnswer displayValues={displayValues} actualSchema={actualSchema} />
       </div>
     </FormProvider>

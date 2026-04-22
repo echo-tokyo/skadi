@@ -29,7 +29,10 @@
     margin-top: 1rem;
     gap: 1rem;
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    padding-bottom: 0.25rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
   }
 }
 
