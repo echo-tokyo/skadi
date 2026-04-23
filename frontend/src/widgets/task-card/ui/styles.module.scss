@@ -31,8 +31,7 @@
   overflow-y: auto;
 }
 
-.card,
-.cardAnswer {
+.card {
   border: 1px solid var(--color-gray-light);
   border-radius: 0.5rem;
   padding: 1rem;
@@ -60,6 +59,8 @@
     display: flex;
     flex-direction: column;
     align-items: normal;
+    margin-top: 1rem;
+    gap: 1rem;
   }
 
   &AnswerFiles {
