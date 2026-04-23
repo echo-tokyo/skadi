@@ -42,7 +42,7 @@ const Task: FC = () => {
           serverFiles={serverFiles}
           editableValues={solutionValues}
           displayValues={taskValues}
-          sideBar={<Comments solutionId={Number(id)} />}
+          sideBar={<Comments solutionId={Number(id)} role={role} />}
         />
       )}
     </div>

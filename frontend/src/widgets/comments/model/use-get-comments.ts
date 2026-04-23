@@ -1,10 +1,11 @@
 import { useGetCommentsInfiniteQuery } from '@/entities/comment'
 import { getErrorMessage } from '@/shared/api'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 
 export const useGetComments = ({ id }: { id: number }) => {
   const {
+    data,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
@@ -19,7 +20,13 @@ export const useGetComments = ({ id }: { id: number }) => {
     }
   }, [error, isError])
 
+  const messages = useMemo(
+    () => data?.pages.flatMap((page) => page.data) ?? [],
+    [data?.pages],
+  )
+
   return {
+    messages,
     isFetchingNextPage,
     loadMore: fetchNextPage,
     hasMore: hasNextPage,

@@ -6,19 +6,23 @@ import {
   Skeleton,
   Text,
 } from '@/shared/ui'
-import { useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
+import { unixToDate, useInfiniteScroll, useShowSkeleton } from '@/shared/lib'
 import styles from './styles.module.scss'
 import { useGetComments } from '../model/use-get-comments'
 import { useSendComment } from '../model/use-send-comment'
+import { TRole } from '@/shared/model'
 
 interface ICommentsProps {
+  role: TRole
   solutionId: number
 }
 
-const Comments = ({ solutionId }: ICommentsProps) => {
-  const { hasMore, isFetchingNextPage, loadMore, isLoading } = useGetComments({
-    id: solutionId,
-  })
+const Comments = (props: ICommentsProps) => {
+  const { role, solutionId } = props
+  const { messages, hasMore, isFetchingNextPage, loadMore, isLoading } =
+    useGetComments({
+      id: solutionId,
+    })
 
   const { submit, isLoading: isSending } = useSendComment({ id: solutionId })
 
@@ -43,7 +47,18 @@ const Comments = ({ solutionId }: ICommentsProps) => {
 
     return (
       <>
-        <Comment message='d' time='dw' sender='dwdw' align='left' />
+        {messages.map((msg) => {
+          const align = msg.role === role ? 'right' : 'left'
+          return (
+            <Comment
+              key={msg.id}
+              message={msg.message}
+              time={unixToDate(msg.created_at)}
+              sender={msg.role}
+              align={align}
+            />
+          )
+        })}
         <Sentinel ref={sentinelRef} />
       </>
     )

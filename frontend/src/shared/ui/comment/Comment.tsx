@@ -1,3 +1,4 @@
+import Text from '../text/Text'
 import styles from './styles.module.scss'
 
 interface IProps {
@@ -12,11 +13,14 @@ const Comment = (props: IProps) => {
 
   return (
     <div className={`${styles.comment} ${styles[align]}`}>
-      <span className={styles.sender}>{sender}</span>
-      <div className={styles.row}>
-        {align === 'right' && <span className={styles.time}>{time}</span>}
-        <div className={styles.bubble}>{message}</div>
-        {align === 'left' && <span className={styles.time}>{time}</span>}
+      <Text size='14' weight='500'>
+        {sender}
+      </Text>
+      <div className={styles.bubble}>
+        <Text size='14'>{message}</Text>
+        <Text size='12' color='--color-gray' className={styles.time}>
+          {time}
+        </Text>
       </div>
     </div>
   )
