@@ -89,6 +89,7 @@ export const baseApi = createApi({
     'Task',
     'Solution',
     'StudentSolution',
+    'Comment',
   ],
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),

@@ -10,6 +10,6 @@ export interface IGetCommentsQuery {
 }
 
 export interface IGetCommentsResponse {
-  data: TComment
+  data: TComment[]
   pagination: TPagination
 }
