@@ -5,6 +5,10 @@ header {
   padding: 0.5rem 2rem;
   box-shadow: var(--box-shadow);
   background-color: var(--color-white);
+
+  @media (max-width: 600px) {
+    padding: 0.5rem 0.75rem;
+  }
 }
 
 .rightItems {
@@ -18,4 +22,9 @@ header {
   background-color: var(--color-gray-light);
   border-radius: 0.5rem;
   cursor: pointer;
+
+  @media (max-width: 600px) {
+    width: 36px;
+    height: 36px;
+  }
 }

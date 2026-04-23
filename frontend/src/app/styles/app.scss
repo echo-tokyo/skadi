@@ -21,6 +21,10 @@ html,
   nav {
     margin-top: 1rem;
   }
+
+  @include mixins.mobile {
+    margin: 0 0.75rem;
+  }
 }
 
 * {

@@ -23,3 +23,11 @@
     margin: 1rem 0;
   }
 }
+
+@media (max-width: 600px) {
+  .comments {
+    flex: 3;
+    margin-top: 0.5rem;
+    min-height: 0;
+  }
+}

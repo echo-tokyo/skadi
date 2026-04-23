@@ -71,3 +71,18 @@
     padding-bottom: 0.25rem;
   }
 }
+
+@media (max-width: 600px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .cards {
+    flex: 2;
+
+    > .card:last-child {
+      flex: none;
+    }
+  }
+
+}
