@@ -12,7 +12,7 @@ export const useGetComments = ({ id }: { id: number }) => {
     error,
     isError,
     isLoading,
-  } = useGetCommentsInfiniteQuery({ id })
+  } = useGetCommentsInfiniteQuery({ id, 'per-page': 10 })
 
   useEffect(() => {
     if (isError) {
@@ -21,7 +21,11 @@ export const useGetComments = ({ id }: { id: number }) => {
   }, [error, isError])
 
   const messages = useMemo(
-    () => data?.pages.flatMap((page) => page.data) ?? [],
+    () =>
+      data?.pages
+        .flatMap((page) => page.data)
+        .slice()
+        .reverse() ?? [],
     [data?.pages],
   )
 

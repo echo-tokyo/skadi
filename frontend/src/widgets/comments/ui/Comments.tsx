@@ -11,6 +11,7 @@ import styles from './styles.module.scss'
 import { useGetComments } from '../model/use-get-comments'
 import { useSendComment } from '../model/use-send-comment'
 import { TRole } from '@/shared/model'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 interface ICommentsProps {
   role: TRole
@@ -19,6 +20,7 @@ interface ICommentsProps {
 
 const Comments = (props: ICommentsProps) => {
   const { role, solutionId } = props
+
   const { messages, hasMore, isFetchingNextPage, loadMore, isLoading } =
     useGetComments({
       id: solutionId,
@@ -26,27 +28,49 @@ const Comments = (props: ICommentsProps) => {
 
   const { submit, isLoading: isSending } = useSendComment({ id: solutionId })
 
+  const chatRef = useRef<HTMLDivElement>(null)
+  const isLoadingMoreRef = useRef(false)
+  const scrollHeightBeforeRef = useRef(0)
+
+  const handleLoadMore = useCallback(() => {
+    if (chatRef.current) {
+      scrollHeightBeforeRef.current = chatRef.current.scrollHeight
+      isLoadingMoreRef.current = true
+    }
+    loadMore()
+  }, [loadMore])
+
   const { sentinelRef } = useInfiniteScroll({
     hasMore,
     isFetchingNextPage,
-    loadMore,
+    loadMore: handleLoadMore,
   })
 
   const showSkeleton = useShowSkeleton(isLoading)
 
-  const renderContent = () => {
+  useEffect(() => {
+    if (!chatRef.current) return
+    if (isLoadingMoreRef.current) {
+      isLoadingMoreRef.current = false
+      chatRef.current.scrollTop +=
+        chatRef.current.scrollHeight - scrollHeightBeforeRef.current
+      return
+    }
+    chatRef.current.scrollTop = chatRef.current.scrollHeight
+  }, [messages])
+
+  const content = useMemo(() => {
     if (showSkeleton) {
       return <Skeleton height={'100%'} />
     }
 
-    const hasComments = true
-
-    if (!hasComments) {
+    if (!messages.length) {
       return <PlugDefault />
     }
 
     return (
       <>
+        <Sentinel ref={sentinelRef} />
         {messages.map((msg) => {
           const align = msg.role === role ? 'right' : 'left'
           return (
@@ -59,17 +83,18 @@ const Comments = (props: ICommentsProps) => {
             />
           )
         })}
-        <Sentinel ref={sentinelRef} />
       </>
     )
-  }
+  }, [showSkeleton, messages, role, sentinelRef])
 
   return (
     <div className={styles.comments}>
       <Text size='20' weight='600'>
         Комментарии
       </Text>
-      <div className={styles.commentsContent}>{renderContent()}</div>
+      <div className={styles.commentsContent} ref={chatRef}>
+        {content}
+      </div>
       <MessageInput onSubmit={submit} disabled={isSending} />
     </div>
   )
