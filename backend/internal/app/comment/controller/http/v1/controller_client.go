@@ -32,7 +32,7 @@ func NewController(commentUCClient comment.UsecaseClient,
 
 // @summary		Создание комментария под решением задания. [Преподаватель и ученик]
 // @description	Создание комментария от лица преподавателя или ученика для данного решения задания.
-// @router			/solutiom/{id}/comment [post]
+// @router			/solution/{id}/comment [post]
 // @id				comment-create
 // @tags			comment
 // @accept			json
@@ -87,7 +87,7 @@ func (c *CommentController) Create(ctx *fiber.Ctx) error {
 
 // @summary		Получение комментариев под решением задания. [Преподаватель и ученик]
 // @description	Получение списка комментариев для данного решения задания.
-// @router			/solutiom/{id}/comment [get]
+// @router			/solution/{id}/comment [get]
 // @id				comment-list
 // @tags			comment
 // @accept			json
