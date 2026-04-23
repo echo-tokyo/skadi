@@ -36,6 +36,13 @@ export type TFile = {
   size: number
 }
 
+export type TComment = {
+  created_at: string
+  id: number
+  message: string
+  role: TRole
+}
+
 export type TTaskWithStudents = {
   students?: TProfile[]
   task: TTask
