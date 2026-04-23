@@ -8,6 +8,7 @@ import { useAppSelector } from '@/shared/lib'
 import { Skeleton } from '@/shared/ui'
 import { getSchemaByRole, toFormValuesByRole } from '@/entities/solution'
 import { TFile } from '@/shared/model'
+import { Comments } from '@/widgets/comments'
 
 const Task: FC = () => {
   const { id } = useParams()
@@ -41,6 +42,7 @@ const Task: FC = () => {
           serverFiles={serverFiles}
           editableValues={solutionValues}
           displayValues={taskValues}
+          sideBar={<Comments />}
         />
       )}
     </div>

@@ -1,0 +1,21 @@
+.comments {
+  flex: 0 0 30%;
+  min-height: 0;
+  margin-top: 1rem;
+  border: 1px solid var(--color-gray-light);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: border-color var(--transition-duration) var(--transition-timing);
+  display: flex;
+  flex-direction: column;
+
+  &Content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin-top: 1rem;
+  }
+}

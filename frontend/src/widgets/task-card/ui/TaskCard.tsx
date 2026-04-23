@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { z } from 'zod'
 import styles from './styles.module.scss'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -27,11 +27,18 @@ interface ITaskCardProps {
   schema: typeof solutionTeacherSchema | typeof solutionStudentSchema
   solutionId: number
   serverFiles: TFile[]
+  sideBar: ReactNode
 }
 
 const TaskCard = (props: ITaskCardProps) => {
-  const { editableValues, schema, displayValues, solutionId, serverFiles } =
-    props
+  const {
+    editableValues,
+    schema,
+    displayValues,
+    solutionId,
+    serverFiles,
+    sideBar,
+  } = props
 
   const actualSchema =
     schema === solutionTeacherSchema ? 'teacherSchema' : 'studentSchema'
@@ -63,18 +70,21 @@ const TaskCard = (props: ITaskCardProps) => {
         </Button>
         <UpdateSolutionButton id={solutionId} actualSchema={actualSchema} />
       </div>
-      <div className={styles.cards}>
-        <TaskGeneral
-          displayValues={displayValues}
-          statusOptions={statusOptions}
-        />
-        <TaskDescription displayValues={displayValues} />
-        <TaskMaterials displayValues={displayValues} />
-        <TaskAnswer
-          displayValues={displayValues}
-          actualSchema={actualSchema}
-          serverFiles={serverFiles}
-        />
+      <div className={styles.content}>
+        <div className={styles.cards}>
+          <TaskGeneral
+            displayValues={displayValues}
+            statusOptions={statusOptions}
+          />
+          <TaskDescription displayValues={displayValues} />
+          <TaskMaterials displayValues={displayValues} />
+          <TaskAnswer
+            displayValues={displayValues}
+            actualSchema={actualSchema}
+            serverFiles={serverFiles}
+          />
+        </div>
+        {sideBar}
       </div>
     </FormProvider>
   )
