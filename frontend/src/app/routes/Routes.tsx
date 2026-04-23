@@ -12,8 +12,8 @@ const crumb = {
   home: { label: 'Главная', to: '/' },
   authorization: { label: 'Авторизация', to: '/authorization' },
   personalArea: { label: 'Личный кабинет', to: '/personal-area' },
-  dashboard: { label: 'Дашборд', to: '/personal-area/dashboard' },
-  task: { label: (p: { id?: string }) => `Задача ${p.id}` },
+  dashboard: { label: 'Канбан-доска', to: '/personal-area/dashboard' },
+  task: { label: 'Задача' },
 } as const
 
 const teacherRoutes = [
@@ -31,7 +31,7 @@ const studentRoutes = [
     path: '/personal-area/dashboard',
     Component: Dashboard,
     handle: {
-      breadcrumbs: [crumb.home, crumb.personalArea, { label: 'Дашборд' }],
+      breadcrumbs: [crumb.home, crumb.personalArea, { label: 'Канбан-доска' }],
     },
   },
   {

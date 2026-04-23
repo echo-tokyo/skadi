@@ -11,4 +11,5 @@ export type {
   TTaskWithStudents,
   TPagination,
   TFile,
+  TComment,
 } from './types/types'

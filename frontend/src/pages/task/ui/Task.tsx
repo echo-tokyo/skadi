@@ -8,6 +8,7 @@ import { useAppSelector } from '@/shared/lib'
 import { Skeleton } from '@/shared/ui'
 import { getSchemaByRole, toFormValuesByRole } from '@/entities/solution'
 import { TFile } from '@/shared/model'
+import { Comments } from '@/widgets/comments'
 
 const Task: FC = () => {
   const { id } = useParams()
@@ -18,17 +19,17 @@ const Task: FC = () => {
     return <Navigate to='/personal-area' replace />
   }
 
+  const schema = getSchemaByRole(role)
+
   const { data, isLoading } = useGetSolution(id)
   const solution = data?.solution
-
   const serverFiles: TFile[] = data?.solution.files ?? []
 
-  const schema = getSchemaByRole(role)
+  const taskValues = useMemo(() => toTaskValues(solution), [solution])
   const solutionValues = useMemo(
     () => toFormValuesByRole(solution, role),
     [solution, role],
   )
-  const taskValues = useMemo(() => toTaskValues(solution), [solution])
 
   return (
     <div className={styles.wrapper}>
@@ -41,6 +42,7 @@ const Task: FC = () => {
           serverFiles={serverFiles}
           editableValues={solutionValues}
           displayValues={taskValues}
+          sideBar={<Comments solutionId={Number(id)} role={role} />}
         />
       )}
     </div>

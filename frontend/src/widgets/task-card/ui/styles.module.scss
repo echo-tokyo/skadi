@@ -4,18 +4,34 @@
   gap: 1rem;
 }
 
+.content {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+  overflow: hidden;
+}
+
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   flex: 1;
+  gap: 0.5rem;
   min-height: 0;
   margin-top: 1rem;
   overflow-y: auto;
+
+  > .card:last-child {
+    flex: 1 1 auto;
+  }
 }
 
-.card,
-.cardAnswer {
+.sidebar {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.card {
   border: 1px solid var(--color-gray-light);
   border-radius: 0.5rem;
   padding: 1rem;
@@ -28,32 +44,45 @@
   &Fields,
   &StudentFields,
   &MaterialsFields {
-    margin-top: 1rem;
-    gap: 1rem;
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 1rem;
     overflow-x: auto;
-    flex-wrap: nowrap;
   }
+
+  &MaterialsFields {
+    padding-bottom: 0.25rem;
+  }
+
   &AnswerFields {
     display: flex;
     flex-direction: column;
     align-items: normal;
-  }
-  &MaterialsFields {
-    display: flex;
-    padding-bottom: 0.25rem;
-  }
-  &AnswerFiles {
+    margin-top: 1rem;
     gap: 1rem;
+  }
+
+  &AnswerFiles {
     display: flex;
     align-items: center;
+    gap: 1rem;
     overflow-x: auto;
-    flex-wrap: nowrap;
     padding-bottom: 0.25rem;
   }
 }
 
-.cardAnswer {
-  flex: 1;
+@media (max-width: 600px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .cards {
+    flex: 2;
+
+    > .card:last-child {
+      flex: none;
+    }
+  }
+
 }

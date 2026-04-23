@@ -24,3 +24,18 @@
   margin-top: 1rem;
   gap: 1rem;
 }
+
+@media (max-width: 600px) {
+  .actions {
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .roles {
+    margin-top: 1rem;
+  }
+
+  .cardActions {
+    flex-wrap: wrap;
+  }
+}
