@@ -610,124 +610,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/solutiom/{id}/comment": {
-            "get": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Получение списка комментариев для данного решения задания.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Получение комментариев под решением задания. [Преподаватель и ученик]",
-                "operationId": "comment-list",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID решения задания",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "example": 1,
-                        "description": "page pagination param",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
-                        "default": 10,
-                        "example": 5,
-                        "description": "per page pagination param",
-                        "name": "per-page",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/v1.listCommentOut"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "403": {
-                        "description": "доступ запрещён"
-                    },
-                    "404": {
-                        "description": "решение задания не найдено"
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "JWTAccess": []
-                    }
-                ],
-                "description": "Создание комментария от лица преподавателя или ученика для данного решения задания.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Создание комментария под решением задания. [Преподаватель и ученик]",
-                "operationId": "comment-create",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID решения задания",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "commentBody",
-                        "name": "commentBody",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.commentBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Comment"
-                        }
-                    },
-                    "401": {
-                        "description": "неверный токен (пустой, истекший или неверный формат)"
-                    },
-                    "403": {
-                        "description": "доступ запрещён"
-                    },
-                    "404": {
-                        "description": "решение задания не найдено"
-                    }
-                }
-            }
-        },
         "/solution/for-student": {
             "get": {
                 "security": [
@@ -1086,6 +968,124 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "доступ запрещён"
+                    }
+                }
+            }
+        },
+        "/solution/{id}/comment": {
+            "get": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Получение списка комментариев для данного решения задания.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Получение комментариев под решением задания. [Преподаватель и ученик]",
+                "operationId": "comment-list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID решения задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "example": 1,
+                        "description": "page pagination param",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "example": 5,
+                        "description": "per page pagination param",
+                        "name": "per-page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.listCommentOut"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение задания не найдено"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "JWTAccess": []
+                    }
+                ],
+                "description": "Создание комментария от лица преподавателя или ученика для данного решения задания.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Создание комментария под решением задания. [Преподаватель и ученик]",
+                "operationId": "comment-create",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID решения задания",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "commentBody",
+                        "name": "commentBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.commentBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Comment"
+                        }
+                    },
+                    "401": {
+                        "description": "неверный токен (пустой, истекший или неверный формат)"
+                    },
+                    "403": {
+                        "description": "доступ запрещён"
+                    },
+                    "404": {
+                        "description": "решение задания не найдено"
                     }
                 }
             }

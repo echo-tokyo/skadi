@@ -977,7 +977,65 @@ paths:
       summary: Загрузка файла по id. [Преподаватель и ученик]
       tags:
       - file
-  /solutiom/{id}/comment:
+  /solution/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление решения (не задания целиком) со всеми файлами решения
+        по его id.
+      operationId: solution-delete
+      parameters:
+      - description: ID решения
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+      security:
+      - JWTAccess: []
+      summary: Удаление решения по id. [Только преподаватель]
+      tags:
+      - solution
+    get:
+      consumes:
+      - application/json
+      description: Получение всех данных о решении задания (с файлами решения) с полной
+        инфой о задании (с файлами задания) и преподе (ID и полное имя), а также со
+        списком учеников, которые тоже выполняют это задание.
+      operationId: solution-read
+      parameters:
+      - description: ID решения задания
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.solutionOut'
+        "401":
+          description: неверный токен (пустой, истекший или неверный формат)
+        "403":
+          description: доступ запрещён
+        "404":
+          description: решение задания не найдено
+      security:
+      - JWTAccess: []
+      summary: Получение решения задания по id. [Преподаватель и ученик]
+      tags:
+      - solution
+  /solution/{id}/comment:
     get:
       consumes:
       - application/json
@@ -1056,64 +1114,6 @@ paths:
       summary: Создание комментария под решением задания. [Преподаватель и ученик]
       tags:
       - comment
-  /solution/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Удаление решения (не задания целиком) со всеми файлами решения
-        по его id.
-      operationId: solution-delete
-      parameters:
-      - description: ID решения
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "403":
-          description: доступ запрещён
-      security:
-      - JWTAccess: []
-      summary: Удаление решения по id. [Только преподаватель]
-      tags:
-      - solution
-    get:
-      consumes:
-      - application/json
-      description: Получение всех данных о решении задания (с файлами решения) с полной
-        инфой о задании (с файлами задания) и преподе (ID и полное имя), а также со
-        списком учеников, которые тоже выполняют это задание.
-      operationId: solution-read
-      parameters:
-      - description: ID решения задания
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/v1.solutionOut'
-        "401":
-          description: неверный токен (пустой, истекший или неверный формат)
-        "403":
-          description: доступ запрещён
-        "404":
-          description: решение задания не найдено
-      security:
-      - JWTAccess: []
-      summary: Получение решения задания по id. [Преподаватель и ученик]
-      tags:
-      - solution
   /solution/for-student:
     get:
       consumes:
