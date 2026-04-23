@@ -13,27 +13,27 @@ export interface ITabConfig {
 
 export const TAB_CONFIG: ITabConfig[] = [
   {
-    name: 'Менеджмент групп',
-    component: ClassManagement,
-    role: 'admin',
-  },
-  {
-    name: 'Менеджмент ролей',
+    name: 'Управление ролями',
     component: RoleManagement,
     role: 'admin',
   },
   {
-    name: 'Список заданий',
+    name: 'Управление группами',
+    component: ClassManagement,
+    role: 'admin',
+  },
+  {
+    name: 'Домашние задания',
     component: TaskManagement,
     role: 'teacher',
   },
   {
-    name: 'Список решений',
+    name: 'Решения учеников',
     component: SolutionManagement,
     role: 'teacher',
   },
   {
-    name: 'Дашборд',
+    name: 'Канбан-доска',
     role: 'student',
   },
 ]

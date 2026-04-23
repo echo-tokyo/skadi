@@ -14,10 +14,20 @@
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   flex: 1;
+  gap: 0.5rem;
   min-height: 0;
   margin-top: 1rem;
+  overflow-y: auto;
+
+  > .card:last-child {
+    flex: 1 1 auto;
+  }
+}
+
+.sidebar {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -35,32 +45,28 @@
   &Fields,
   &StudentFields,
   &MaterialsFields {
-    margin-top: 1rem;
-    gap: 1rem;
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 1rem;
     overflow-x: auto;
-    flex-wrap: nowrap;
   }
+
+  &MaterialsFields {
+    padding-bottom: 0.25rem;
+  }
+
   &AnswerFields {
     display: flex;
     flex-direction: column;
     align-items: normal;
   }
-  &MaterialsFields {
-    display: flex;
-    padding-bottom: 0.25rem;
-  }
+
   &AnswerFiles {
-    gap: 1rem;
     display: flex;
     align-items: center;
+    gap: 1rem;
     overflow-x: auto;
-    flex-wrap: nowrap;
     padding-bottom: 0.25rem;
   }
-}
-
-.cards > .card:last-child {
-  height: 100%;
 }

@@ -10,7 +10,7 @@ import { TRole } from '@/shared/model'
 
 const getTabFromLocalStorage = (role: TRole): ITabConfig | null => {
   const savedName = localStorage.getItem('saved-tab')
-  if (savedName === 'Дашборд') {
+  if (savedName === 'Канбан-доска') {
     return null
   }
 
@@ -38,7 +38,7 @@ const PersonalArea: FC = (): ReactNode => {
   const handleTabClick = (tab: ITabConfig) => {
     setCurrentTab(tab)
     localStorage.setItem('saved-tab', tab.name)
-    if (role === 'student' && tab.name === 'Дашборд') {
+    if (role === 'student' && tab.name === 'Канбан-доска') {
       navigate('/personal-area/dashboard')
     }
   }
