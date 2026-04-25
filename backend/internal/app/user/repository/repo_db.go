@@ -320,30 +320,33 @@ func (r *RepoDB) AddDelChanges(oldStuds, newStuds []entity.Profile) (add, del []
 	return add, del
 }
 
-// findOrCreateContacts finds or creates contact and parent contact info
+// findOrCreateContacts finds or creates contact and parent contact info.
 func findOrCreateContacts(tx *gorm.DB, profile *entity.Profile) error {
+	// find or create contact record
 	if profile.Contact != nil {
-		// find or create contact record
-		err := tx.Where(entity.Contact{
-			Email: profile.Contact.Email,
-			Phone: profile.Contact.Phone,
-		}).FirstOrCreate(profile.Contact).Error
-		if err != nil {
-			return fmt.Errorf("find contact: %w", err)
+		if err := findOrCreateContact(tx, profile.Contact); err != nil {
+			return fmt.Errorf("contact: %w", err)
 		}
 		profile.ContactID = &profile.Contact.ID
 	}
 
 	// find or create parent contact record
 	if profile.ParentContact != nil {
-		err := tx.Where(entity.Contact{
-			Email: profile.ParentContact.Email,
-			Phone: profile.ParentContact.Phone,
-		}).FirstOrCreate(profile.ParentContact).Error
-		if err != nil {
-			return fmt.Errorf("find parent contact: %w", err)
+		if err := findOrCreateContact(tx, profile.ParentContact); err != nil {
+			return fmt.Errorf("parent contact: %w", err)
 		}
 		profile.ParentContactID = &profile.ParentContact.ID
+	}
+	return nil
+}
+
+// findOrCreateContacts finds or creates contact object.
+func findOrCreateContact(tx *gorm.DB, contact *entity.Contact) error {
+	err := tx.Where("email = ?", contact.Email).
+		Where("phone = ?", contact.Phone).
+		FirstOrCreate(&contact).Error
+	if err != nil {
+		return fmt.Errorf("find or create: %w", err)
 	}
 	return nil
 }

@@ -6,7 +6,6 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
-	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
@@ -63,31 +62,14 @@ func (c *UserController) GetMe(ctx *fiber.Ctx) error {
 // @success		200			{object}	entity.User
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 func (c *UserController) UpdateMeProfile(ctx *fiber.Ctx) error {
+	// parse user claims
+	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
+
 	inputBody := &profileBody{}
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
-	// parse user claims
-	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
-
-	// data reshaping
-	profile := &entity.Profile{
-		Fullname: inputBody.FullName,
-		Address:  inputBody.Address,
-		Extra:    inputBody.Extra,
-	}
-	if inputBody.Contact != nil {
-		profile.Contact = &entity.Contact{
-			Phone: inputBody.Contact.Phone,
-			Email: inputBody.Contact.Email,
-		}
-	}
-	if inputBody.ParentContact != nil {
-		profile.ParentContact = &entity.Contact{
-			Phone: inputBody.ParentContact.Phone,
-			Email: inputBody.ParentContact.Email,
-		}
-	}
+	profile := inputBody.ToEntityProfile()
 
 	// update user profile
 	userObj, err := c.userUCClient.UpdateProfile(userClaims.ID, profile)

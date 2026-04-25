@@ -6,7 +6,6 @@ import (
 
 	fiber "github.com/gofiber/fiber/v2"
 
-	"skadi/backend/internal/app/entity"
 	"skadi/backend/internal/app/user"
 	"skadi/backend/internal/pkg/httperror"
 	"skadi/backend/internal/pkg/serialize"
@@ -47,34 +46,7 @@ func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
-
-	if inputBody.ClassID != nil && *inputBody.ClassID == 0 {
-		inputBody.ClassID = nil
-	}
-	// data reshaping
-	userObj := &entity.User{
-		Username: inputBody.Username,
-		Password: []byte(inputBody.Password),
-		Role:     inputBody.Role,
-		ClassID:  inputBody.ClassID,
-	}
-	userObj.Profile = &entity.Profile{
-		Fullname: inputBody.Profile.FullName,
-		Address:  inputBody.Profile.Address,
-		Extra:    inputBody.Profile.Extra,
-	}
-	if inputBody.Profile.Contact != nil {
-		userObj.Profile.Contact = &entity.Contact{
-			Phone: inputBody.Profile.Contact.Phone,
-			Email: inputBody.Profile.Contact.Email,
-		}
-	}
-	if inputBody.Profile.ParentContact != nil {
-		userObj.Profile.ParentContact = &entity.Contact{
-			Phone: inputBody.Profile.ParentContact.Phone,
-			Email: inputBody.Profile.ParentContact.Email,
-		}
-	}
+	userObj := inputBody.ToEntityUser()
 
 	// create a new user
 	err := c.userUCAdmin.CreateWithProfile(userObj)

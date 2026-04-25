@@ -26,6 +26,19 @@ type userBody struct {
 	Profile profileBody `json:"profile" validate:"required"`
 }
 
+func (u *userBody) ToEntityUser() *entity.User {
+	if u.ClassID != nil && *u.ClassID == 0 {
+		u.ClassID = nil
+	}
+	return &entity.User{
+		Username: u.Username,
+		Password: []byte(u.Password),
+		Role:     u.Role,
+		ClassID:  u.ClassID,
+		Profile:  u.Profile.ToEntityProfile(),
+	}
+}
+
 // @description profileBody represents a data with user profile.
 type profileBody struct {
 	// user full name
@@ -40,10 +53,40 @@ type profileBody struct {
 	ParentContact *contactBody `json:"parent_contact,omitempty" validate:"omitempty"`
 }
 
+func (p *profileBody) ToEntityProfile() *entity.Profile {
+	profile := &entity.Profile{
+		Fullname: p.FullName,
+		Address:  p.Address,
+		Extra:    p.Extra,
+	}
+	if p.Contact != nil {
+		profile.Contact = p.Contact.ToEntityContact()
+	}
+	if p.ParentContact != nil {
+		profile.ParentContact = p.ParentContact.ToEntityContact()
+	}
+	return profile
+}
+
 // @description contactBody represents a data with profile contact.
 type contactBody struct {
 	Phone string `json:"phone" validate:"omitempty,max=15" example:"88005553535" maxLength:"15"`
 	Email string `json:"email" validate:"omitempty,email,max=50" example:"ivanovvp@gmail.com" maxLength:"50"`
+}
+
+func (c *contactBody) ToEntityContact() *entity.Contact {
+	if c.Phone == "" && c.Email == "" {
+		return nil
+	}
+
+	contact := &entity.Contact{}
+	if c.Phone != "" {
+		contact.Phone = &c.Phone
+	}
+	if c.Email != "" {
+		contact.Email = &c.Email
+	}
+	return contact
 }
 
 // @description userIDPath represents a data with user ID in path params.
@@ -67,28 +110,11 @@ func (u *updateBody) ToEntityUser() *entity.User {
 		u.ClassID = nil
 	}
 	// data reshaping
-	userObj := &entity.User{
+	return &entity.User{
 		ClassID:  u.ClassID,
 		Password: []byte(u.Password),
-		Profile: &entity.Profile{
-			Fullname: u.Profile.FullName,
-			Address:  u.Profile.Address,
-			Extra:    u.Profile.Extra,
-		},
+		Profile:  u.Profile.ToEntityProfile(),
 	}
-	if u.Profile.Contact != nil {
-		userObj.Profile.Contact = &entity.Contact{
-			Phone: u.Profile.Contact.Phone,
-			Email: u.Profile.Contact.Email,
-		}
-	}
-	if u.Profile.ParentContact != nil {
-		userObj.Profile.ParentContact = &entity.Contact{
-			Phone: u.Profile.ParentContact.Phone,
-			Email: u.Profile.ParentContact.Email,
-		}
-	}
-	return userObj
 }
 
 // @description listUserQuery represents a data with optional query-params to get users list.
