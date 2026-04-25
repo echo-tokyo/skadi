@@ -41,9 +41,9 @@ func NewController(commentUCClient comment.UsecaseClient,
 // @param			id			path		int			true	"ID решения задания"
 // @param			commentBody	body		commentBody	true	"commentBody"
 // @success		201			{object}	entity.Comment
+// @failure		400			"решение задания не найдено"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403			"доступ запрещён"
-// @failure		404			"решение задания не найдено"
 func (c *CommentController) Create(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -68,7 +68,7 @@ func (c *CommentController) Create(ctx *fiber.Ctx) error {
 	if errors.Is(err, solution.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
-			StatusCode: fiber.StatusNotFound,
+			StatusCode: fiber.StatusBadRequest,
 			Message:    "решение задания не найдено",
 		}
 	}
@@ -96,9 +96,9 @@ func (c *CommentController) Create(ctx *fiber.Ctx) error {
 // @param			id					path		int					true	"ID решения задания"
 // @param			listCommentQuery	query		listCommentQuery	false	"listCommentQuery"
 // @success		200					{object}	listCommentOut
+// @failure		400					"решение задания не найдено"
 // @failure		401					"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403					"доступ запрещён"
-// @failure		404					"решение задания не найдено"
 func (c *CommentController) List(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -119,7 +119,7 @@ func (c *CommentController) List(ctx *fiber.Ctx) error {
 	if errors.Is(err, solution.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
-			StatusCode: fiber.StatusNotFound,
+			StatusCode: fiber.StatusBadRequest,
 			Message:    "решение задания не найдено",
 		}
 	}

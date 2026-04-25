@@ -615,9 +615,7 @@ paths:
           schema:
             $ref: '#/definitions/entity.User'
         "400":
-          description: неверный пароль
-        "404":
-          description: пользователь с введенным логином не найден
+          description: неверный логин или пароль
       summary: Вход для юзера.
       tags:
       - auth
@@ -868,7 +866,7 @@ paths:
             $ref: '#/definitions/v1.exampleData'
         "401":
           description: Неверный токен (пустой, истекший или неверный формат)
-        "404":
+        "403":
           description: Юзер не админ, доступ запрещён
       security:
       - JWTAccess: []
@@ -904,7 +902,7 @@ paths:
             $ref: '#/definitions/v1.exampleData'
         "401":
           description: Неверный токен (пустой, истекший или неверный формат)
-        "404":
+        "403":
           description: Юзер не авторизован, доступ запрещён
       security:
       - JWTAccess: []
@@ -924,7 +922,7 @@ paths:
             $ref: '#/definitions/v1.exampleData'
         "401":
           description: Неверный токен (пустой, истекший или неверный формат)
-        "404":
+        "403":
           description: Юзер не студент, доступ запрещён
       security:
       - JWTAccess: []
@@ -944,7 +942,7 @@ paths:
             $ref: '#/definitions/v1.exampleData'
         "401":
           description: Неверный токен (пустой, истекший или неверный формат)
-        "404":
+        "403":
           description: Юзер не преподаватель, доступ запрещён
       security:
       - JWTAccess: []
@@ -1067,12 +1065,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/v1.listCommentOut'
+        "400":
+          description: решение задания не найдено
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "403":
           description: доступ запрещён
-        "404":
-          description: решение задания не найдено
       security:
       - JWTAccess: []
       summary: Получение комментариев под решением задания. [Преподаватель и ученик]
@@ -1103,12 +1101,12 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/entity.Comment'
+        "400":
+          description: решение задания не найдено
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "403":
           description: доступ запрещён
-        "404":
-          description: решение задания не найдено
       security:
       - JWTAccess: []
       summary: Создание комментария под решением задания. [Преподаватель и ученик]

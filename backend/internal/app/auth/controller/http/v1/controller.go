@@ -58,8 +58,7 @@ func NewController(cfg *config.Config, authUCClient auth.UsecaseClient,
 // @produce		json
 // @param			authBody	body		authBody	true	"authBody"
 // @success		200			{object}	entity.User
-// @failure		400			"неверный пароль"
-// @failure		404			"пользователь с введенным логином не найден"
+// @failure		400			"неверный логин или пароль"
 func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 	inputBody := &authBody{}
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
@@ -68,18 +67,11 @@ func (c *AuthController) LogIn(ctx *fiber.Ctx) error {
 
 	// log in existing user
 	userWithToken, err := c.authUCClient.LogIn(inputBody.Username, []byte(inputBody.Password))
-	if err != nil && errors.Is(err, auth.ErrInvalidPassword) {
+	if errors.Is(err, auth.ErrInvalidPassword) || errors.Is(err, user.ErrNotFound) {
 		return &httperror.HTTPError{
 			CauseErr:   err,
 			StatusCode: fiber.StatusBadRequest,
-			Message:    "неверный пароль",
-		}
-	}
-	if err != nil && errors.Is(err, user.ErrNotFound) {
-		return &httperror.HTTPError{
-			CauseErr:   err,
-			StatusCode: fiber.StatusNotFound,
-			Message:    "пользователь с введенным логином не найден",
+			Message:    "неверный логин или пароль",
 		}
 	}
 	if err != nil {

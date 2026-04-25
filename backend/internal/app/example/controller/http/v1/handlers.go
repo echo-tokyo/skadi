@@ -38,7 +38,7 @@ func (c *ExampleController) Free(ctx *fiber.Ctx) error {
 // @security		JWTAccess
 // @success		200	{object}	exampleData
 // @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-// @failure		404	"Юзер не авторизован, доступ запрещён"
+// @failure		403	"Юзер не авторизован, доступ запрещён"
 func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
@@ -57,7 +57,7 @@ func (c *ExampleController) Private(ctx *fiber.Ctx) error {
 // @security		JWTAccess
 // @success		200	{object}	exampleData
 // @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-// @failure		404	"Юзер не админ, доступ запрещён"
+// @failure		403	"Юзер не админ, доступ запрещён"
 func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
@@ -76,7 +76,7 @@ func (c *ExampleController) Admin(ctx *fiber.Ctx) error {
 // @security		JWTAccess
 // @success		200	{object}	exampleData
 // @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-// @failure		404	"Юзер не преподаватель, доступ запрещён"
+// @failure		403	"Юзер не преподаватель, доступ запрещён"
 func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{
@@ -95,7 +95,7 @@ func (c *ExampleController) Teacher(ctx *fiber.Ctx) error {
 // @security		JWTAccess
 // @success		200	{object}	exampleData
 // @failure		401	"Неверный токен (пустой, истекший или неверный формат)"
-// @failure		404	"Юзер не студент, доступ запрещён"
+// @failure		403	"Юзер не студент, доступ запрещён"
 func (c *ExampleController) Student(ctx *fiber.Ctx) error {
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
 	return ctx.Status(fiber.StatusOK).JSON(exampleData{

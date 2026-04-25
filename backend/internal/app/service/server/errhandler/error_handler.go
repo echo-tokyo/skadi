@@ -50,9 +50,9 @@ func CustomErrorHandler(ctx *fiber.Ctx, err error) error {
 		errResp.Message = err.Error()
 	// unknown error
 	default:
-		errResp.source = "internal server"
+		errResp.source = err.Error()
 		errResp.StatusCode = fiber.StatusInternalServerError
-		errResp.Message = err.Error()
+		errResp.Message = "internal server error"
 	}
 
 	// skip error log for validation errors
