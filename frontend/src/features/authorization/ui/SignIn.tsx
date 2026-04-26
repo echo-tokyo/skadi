@@ -51,6 +51,7 @@ export const SignIn: FC = (): ReactNode => {
             <Input
               title='Пароль'
               fluid
+              type='password'
               value={field.value}
               onChange={field.onChange}
               isValid={!fieldState.error}

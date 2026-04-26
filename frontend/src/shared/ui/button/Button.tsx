@@ -11,6 +11,7 @@ interface IProps {
   disabled?: boolean
   type?: 'button' | 'submit' | 'icon'
   color?: 'primary' | 'secondary' | 'ghost' | 'inverted' | 'white'
+  tabIndex?: number
 }
 
 const Button = (props: IProps): ReactNode => {
@@ -22,6 +23,7 @@ const Button = (props: IProps): ReactNode => {
     disabled,
     type = 'button',
     color = 'primary',
+    tabIndex = 0,
   } = props
 
   const handleClick = (
@@ -50,7 +52,8 @@ const Button = (props: IProps): ReactNode => {
       disabled={disabled}
       onClick={(e) => handleClick(e)}
       className={buttonClassName}
-      type={type !== 'icon' ? type : undefined}
+      type={type !== 'icon' ? type : 'button'}
+      tabIndex={tabIndex}
     >
       {children}
     </button>

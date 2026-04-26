@@ -10,20 +10,34 @@
   @include m.field-placeholder;
 }
 
+.inputField {
+  position: relative;
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+}
+
 .required {
   color: var(--color-red);
 }
 
-.inputTitle,
-.inputDescription {
-  @include m.field-label;
-}
-
 .inputTitle {
+  @include m.field-label;
   display: inline-block;
   margin-bottom: 0.25rem;
 }
 
 .inputDescription {
+  @include m.field-label;
   margin-top: 0.25rem;
+}
+
+.inputError {
+  @include m.field-label;
+  margin-top: 0.25rem;
+  color: var(--color-red);
 }

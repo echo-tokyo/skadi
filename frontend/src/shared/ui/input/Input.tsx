@@ -1,8 +1,10 @@
-import { ReactNode, ChangeEvent, useId } from 'react'
+import { ReactNode, ChangeEvent, useId, useState, useMemo } from 'react'
 import type { Ref } from 'react'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
+import Button from '../button/Button'
+import { EyeIcon, EyeOffIcon } from '../icons'
 
 interface IProps {
   ref?: Ref<HTMLInputElement>
@@ -18,6 +20,19 @@ interface IProps {
   required?: boolean
   onChange: (value: string) => void
 }
+
+interface PasswordToggleProps {
+  isVisible: boolean
+  onToggle: () => void
+}
+
+const PasswordToggle = ({ isVisible, onToggle }: PasswordToggleProps): ReactNode => (
+  <i className={styles.passwordToggle}>
+    <Button type='icon' size='s' color='secondary' onClick={onToggle} tabIndex={-1}>
+      {isVisible ? <EyeOffIcon /> : <EyeIcon />}
+    </Button>
+  </i>
+)
 
 const Input = ({
   ref,
@@ -35,21 +50,32 @@ const Input = ({
 }: IProps): ReactNode => {
   const inputId = useId()
   const descriptionId = `${inputId}-description`
+  const [isVisible, setIsVisible] = useState<boolean>(false)
+
+  const types = type === 'password' ? (isVisible ? 'text' : 'password') : 'text'
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     onChange(e.target.value)
   }
 
-  const wrapperClassName = getUIClasses(
-    styles.wrapper,
-    { fluid, additionalClasses: isValid ? [] : [commonStyles.invalidText] },
-    commonStyles,
+  const wrapperClassName = useMemo(
+    () =>
+      getUIClasses(
+        styles.wrapper,
+        { fluid, additionalClasses: isValid ? [] : [commonStyles.invalidText] },
+        commonStyles,
+      ),
+    [fluid, isValid],
   )
 
-  const inputClassName = getUIClasses(
-    styles.input,
-    { size, fluid, additionalClasses: isValid ? [] : [commonStyles.invalid] },
-    commonStyles,
+  const inputClassName = useMemo(
+    () =>
+      getUIClasses(
+        styles.input,
+        { size, fluid, additionalClasses: isValid ? [] : [commonStyles.invalid] },
+        commonStyles,
+      ),
+    [size, fluid, isValid],
   )
 
   return (
@@ -64,23 +90,31 @@ const Input = ({
           )}
         </label>
       )}
-      <input
-        autoComplete='off'
-        ref={ref}
-        id={inputId}
-        value={value}
-        type={type}
-        disabled={disabled}
-        required={required}
-        onChange={handleChange}
-        placeholder={placeholder}
-        className={inputClassName}
-        aria-invalid={!isValid}
-        aria-describedby={description ? descriptionId : undefined}
-        aria-required={required}
-      />
+      <div className={styles.inputField}>
+        {type === 'password' && (
+          <PasswordToggle isVisible={isVisible} onToggle={() => setIsVisible(!isVisible)} />
+        )}
+        <input
+          autoComplete='off'
+          ref={ref}
+          id={inputId}
+          value={value}
+          type={types}
+          disabled={disabled}
+          required={required}
+          onChange={handleChange}
+          placeholder={placeholder}
+          className={inputClassName}
+          aria-invalid={!isValid || undefined}
+          aria-describedby={description ? descriptionId : undefined}
+          aria-required={required}
+        />
+      </div>
       {description && (
-        <p id={descriptionId} className={styles.inputDescription}>
+        <p
+          id={descriptionId}
+          className={isValid ? styles.inputDescription : styles.inputError}
+        >
           {description}
         </p>
       )}
