@@ -36,4 +36,8 @@ export const TAB_CONFIG: ITabConfig[] = [
     name: 'Канбан-доска',
     role: 'student',
   },
+  {
+    name: 'Архив заданий',
+    role: 'student',
+  },
 ]

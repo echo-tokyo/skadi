@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-interface IInfiniteScrollProps {
+export interface IInfiniteScrollProps {
   hasMore: boolean
   isFetchingNextPage: boolean
   loadMore: () => void
