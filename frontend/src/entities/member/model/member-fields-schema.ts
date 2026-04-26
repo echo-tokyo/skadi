@@ -14,8 +14,6 @@ const memberBaseSchema = z.object({
   address: z.string().max(200, 'Максимум 200 символов'),
   email: z.email('Некорректный email').or(z.literal('')),
   phone: phoneSchema,
-  parentEmail: z.email('Некорректный email').or(z.literal('')),
-  parentPhone: phoneSchema,
   extra: z.string().max(500, 'Максимум 500 символов'),
 })
 
@@ -23,6 +21,8 @@ export const teacherSchema = memberBaseSchema.describe('TeacherSchema')
 export const studentSchema = memberBaseSchema
   .extend({
     class: z.string().optional(),
+    parentEmail: z.email('Некорректный email').or(z.literal('')),
+    parentPhone: phoneSchema,
   })
   .describe('StudentSchema')
 

@@ -107,7 +107,10 @@ const MemberFields = ({
   )
 
   const visibleFields = FIELD_CONFIG.filter(
-    (f) => !(f.name === 'class' && role === 'teacher'),
+    (f) =>
+      !(f.name === 'class' && role === 'teacher') &&
+      !(f.name === 'parentEmail' && role === 'teacher') &&
+      !(f.name === 'parentPhone' && role === 'teacher'),
   )
 
   return (
