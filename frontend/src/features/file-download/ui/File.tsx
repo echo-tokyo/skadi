@@ -14,6 +14,7 @@ export const FileDownload = ({ el }: IFileProps) => {
       <Text size='12'>Файл</Text>
       <FileItem
         file={{ id: el.id.toString(), name: el.name }}
+        size={el.size}
         onDownload={(id) => download(Number(id))}
       />
     </div>

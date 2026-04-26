@@ -44,6 +44,10 @@
   }
 }
 
+.dropzoneInvalid {
+  border-color: var(--color-red);
+}
+
 .dropzoneDragging {
   border-color: var(--color-primary);
   background-color: color-mix(
@@ -111,4 +115,10 @@
 
 .description {
   margin-top: 0.25rem;
+}
+
+.descriptionError {
+  @include m.field-label;
+  margin-top: 0.25rem;
+  color: var(--color-red);
 }

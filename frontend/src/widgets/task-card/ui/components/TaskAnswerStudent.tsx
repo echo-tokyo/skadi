@@ -54,7 +54,7 @@ const TaskAnswerStudent = (props: ITaskAnswerStudentProps) => {
               }
               attachments={serverFiles
                 .filter((f) => !deletedField.value.includes(f.id))
-                .map((f) => ({ id: f.id, name: f.name }))}
+                .map((f) => ({ id: f.id, name: f.name, size: f.size }))}
               onRemoveAttachment={(id) =>
                 deletedField.onChange([...deletedField.value, id])
               }
