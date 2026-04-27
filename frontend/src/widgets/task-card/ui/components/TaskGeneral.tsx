@@ -1,23 +1,31 @@
 import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
 import { Controller, useFormContext } from 'react-hook-form'
-import { TStatusValue } from '@/shared/model'
 import { TDisplayValues } from '../../model/types'
+import { selectAuthenticatedUser } from '@/entities/user'
+import { useAppSelector } from '@/shared/lib'
+import { TStatusId } from '@/shared/model'
 
 type TStatusFormFields = {
-  status: TStatusValue
+  status: TStatusId
 }
 
 interface ITaskGeneralSectionProps {
   displayValues: TDisplayValues
-  statusOptions: SelectOption<TStatusValue>[]
+  statusOptions: SelectOption<TStatusId>[]
 }
 
 const noop = () => undefined
 
 const TaskGeneral = (props: ITaskGeneralSectionProps) => {
+  const user = useAppSelector(selectAuthenticatedUser)
+  const role = user.role
   const { displayValues, statusOptions } = props
   const { control } = useFormContext<TStatusFormFields>()
+
+  const mappedStatusOptions = statusOptions.map((el) =>
+    el.value === 4 && role === 'student' ? { ...el, disabled: true } : el,
+  )
 
   return (
     <div className={styles.card}>
@@ -54,7 +62,8 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
               label='Статус'
               fluid
               value={field.value}
-              options={statusOptions}
+              options={mappedStatusOptions}
+              disabled={displayValues.status === 4 && role === 'student'}
               onChange={field.onChange}
               isValid={!fieldState.error}
               description={fieldState.error?.message}

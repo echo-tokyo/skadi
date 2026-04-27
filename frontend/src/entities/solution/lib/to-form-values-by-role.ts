@@ -9,12 +9,12 @@ import {
 const DEFAULT_TEACHER_STATUS = TEACHER_VALID_STATUSES[0]
 const DEFAULT_STUDENT_STATUS = STUDENT_VALID_STATUSES[0]
 
-const resolveStatus = <T extends string>(
+const resolveStatus = <T extends number>(
   raw: TStatusId | undefined,
   validOptions: readonly T[],
   fallback: T,
 ): T => {
-  const normalized = raw?.toString() as T | undefined
+  const normalized = raw as T | undefined
   return normalized && validOptions.includes(normalized) ? normalized : fallback
 }
 

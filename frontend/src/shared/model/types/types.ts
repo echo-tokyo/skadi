@@ -55,7 +55,6 @@ export type TStatus = {
 
 export type TStatusId = TStatus['id']
 export type TStatusName = TStatus['name']
-export type TStatusValue = `${TStatusId}`
 
 export type TSolution = {
   answer?: string

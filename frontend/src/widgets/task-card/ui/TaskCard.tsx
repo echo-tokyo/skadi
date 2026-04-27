@@ -43,9 +43,9 @@ const TaskCard = (props: ITaskCardProps) => {
   const actualSchema =
     schema === solutionTeacherSchema ? 'teacherSchema' : 'studentSchema'
 
-  const validStatuses = schema.shape.status.options
-  const statusOptions = STATUS_OPTIONS.filter(({ value }) =>
-    (validStatuses as string[]).includes(value),
+  const validStatuses = schema.shape.status.values
+  const statusOptions = STATUS_OPTIONS.filter(
+    ({ value }) => validStatuses && Array.from(validStatuses).includes(value),
   )
 
   const methods = useForm<z.infer<typeof schema>>({

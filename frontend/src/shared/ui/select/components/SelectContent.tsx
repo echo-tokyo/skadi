@@ -14,7 +14,7 @@ import Input from '../../input/Input'
 
 const SEARCH_DEBOUNCE_MS = 300
 
-interface SelectContentProps<T extends string> {
+interface SelectContentProps<T extends string | number> {
   options: SelectOption<T>[]
   /** Предзагруженные выбранные элементы — seed для форм редактирования */
   selectedOptions?: SelectOption<T>[]
@@ -25,7 +25,7 @@ interface SelectContentProps<T extends string> {
   /** Показывать ли кнопки "Сбросить" / "Сохранить" */
   showButtons: boolean
   /** Сохранённые значения для вычисления isDirty (внешний value из Multi/Single) */
-  committedValues?: readonly string[]
+  committedValues?: readonly (string | number)[]
   listboxId: string
   searchable?: boolean
   searchPlaceholder?: string
@@ -36,7 +36,7 @@ interface SelectContentProps<T extends string> {
   isLoadingMore?: boolean
 }
 
-const SelectContent = <T extends string>({
+const SelectContent = <T extends string | number>({
   options,
   selectedOptions,
   isSelected,
@@ -69,7 +69,7 @@ const SelectContent = <T extends string>({
 
   // Объединяем seed и серверные данные: seed идёт первым, сервер перезаписывает
   const allKnownOptions = useMemo(() => {
-    const map = new Map<string, SelectOption<T>>()
+    const map = new Map<string | number, SelectOption<T>>()
     selectedOptions?.forEach((o) => map.set(o.value, o))
     options.forEach((o) => map.set(o.value, o))
     return [...map.values()]

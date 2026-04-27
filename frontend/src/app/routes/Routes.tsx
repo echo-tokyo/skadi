@@ -16,16 +16,6 @@ const crumb = {
   task: { label: 'Задача' },
 } as const
 
-const teacherRoutes = [
-  {
-    path: '/personal-area/solutions/:id',
-    Component: Task,
-    handle: {
-      breadcrumbs: [crumb.home, crumb.personalArea, crumb.task],
-    },
-  },
-]
-
 const studentRoutes = [
   {
     path: '/personal-area/dashboard',
@@ -72,8 +62,11 @@ export const router = createBrowserRouter([
             },
           },
           {
-            element: <RoleRoute role='teacher' />,
-            children: teacherRoutes,
+            path: '/personal-area/solutions/:id',
+            Component: Task,
+            handle: {
+              breadcrumbs: [crumb.home, crumb.personalArea, crumb.task],
+            },
           },
           {
             element: <RoleRoute role='student' />,

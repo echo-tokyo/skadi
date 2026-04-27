@@ -1,4 +1,4 @@
-import { TFile } from '@/shared/model'
+import { TFile, TStatusId } from '@/shared/model'
 
 export type TDisplayValues = {
   title: string
@@ -8,4 +8,5 @@ export type TDisplayValues = {
   answer: string
   files: TFile[]
   file_answer: TFile[]
+  status?: TStatusId
 }

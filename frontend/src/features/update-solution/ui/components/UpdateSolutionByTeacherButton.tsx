@@ -21,7 +21,7 @@ const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
 
   return (
     <Button disabled={!isDirty} onClick={onSubmit}>
-      {statusValue === '4' ? 'Одобрить выполнение' : 'Сохранить решение'}
+      {statusValue === 4 ? 'Одобрить выполнение' : 'Сохранить решение'}
     </Button>
   )
 }

@@ -19,17 +19,18 @@ const Task: FC = () => {
     return <Navigate to='/personal-area' replace />
   }
 
-  const schema = getSchemaByRole(role)
-
   const { data, isLoading } = useGetSolution(id)
+  const schema = getSchemaByRole(role)
   const solution = data?.solution
   const serverFiles: TFile[] = data?.solution.files ?? []
 
-  const taskValues = useMemo(() => toTaskValues(solution), [solution])
-  const solutionValues = useMemo(
+  const displayValues = useMemo(() => toTaskValues(solution), [solution])
+  console.log(displayValues)
+  const editableValues = useMemo(
     () => toFormValuesByRole(solution, role),
     [solution, role],
   )
+  console.log(editableValues)
 
   return (
     <div className={styles.wrapper}>
@@ -40,8 +41,8 @@ const Task: FC = () => {
           solutionId={Number(id)}
           schema={schema}
           serverFiles={serverFiles}
-          editableValues={solutionValues}
-          displayValues={taskValues}
+          editableValues={editableValues}
+          displayValues={displayValues}
           sideBar={<Comments solutionId={Number(id)} role={role} />}
         />
       )}

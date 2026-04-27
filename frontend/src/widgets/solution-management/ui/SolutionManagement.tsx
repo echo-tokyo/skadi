@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useInfiniteSolutions } from '../model/use-infinite-solutions'
 import { SolutionCardItem } from './SolutionCardItem'
 import { STATUS_OPTIONS } from '@/shared/config'
-import { TStatusId, TStatusValue } from '@/shared/model'
+import { TStatusId } from '@/shared/model'
 
 const SolutionManagement = () => {
   const [search, setSearch] = useState('')
@@ -25,7 +25,7 @@ const SolutionManagement = () => {
         <Select
           label='Фильтровать по:'
           options={STATUS_OPTIONS}
-          value={status.toString() as TStatusValue}
+          value={status}
           onChange={(val) => setStatus(Number(val) as TStatusId)}
         />
       }

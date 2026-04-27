@@ -1,6 +1,7 @@
 export {
   useGetSolutionByIdQuery,
   useGetSolutionsInfiniteQuery,
+  useGetStudentSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
   useGetSolutionsForStudentQuery,
