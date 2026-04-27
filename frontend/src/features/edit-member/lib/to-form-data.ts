@@ -9,7 +9,7 @@ export const toFormData = (member: IMember): TMemberFormData => ({
   address: member.profile.address ?? '',
   email: member.profile.contact?.email ?? '',
   phone: member.profile.contact?.phone ?? '',
-  parentEmail: member.profile.parentContact?.email ?? '',
-  parentPhone: member.profile.parentContact?.phone ?? '',
+  parentEmail: member.profile.parent_contact?.email ?? '',
+  parentPhone: member.profile.parent_contact?.phone ?? '',
   extra: member.profile.extra ?? '',
 })

@@ -12,6 +12,7 @@ export const useInfiniteTasks = (params: IGetTasksQuery) => {
     error,
     isError,
     isLoading,
+    isFetching,
   } = useGetTasksInfiniteQuery(params)
 
   useEffect(() => {
@@ -24,6 +25,8 @@ export const useInfiniteTasks = (params: IGetTasksQuery) => {
     () => data?.pages.flatMap((page) => page.data) ?? [],
     [data?.pages],
   )
+
+  console.log(isFetching)
 
   return {
     tasks,

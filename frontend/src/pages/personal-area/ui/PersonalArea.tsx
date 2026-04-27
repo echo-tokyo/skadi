@@ -24,7 +24,7 @@ const PersonalArea: FC = (): ReactNode => {
   const user = useAppSelector(selectAuthenticatedUser)
   const role = user.role
   const navigate = useNavigate()
-  const { logout } = useLogout()
+  const { logout, isLoading } = useLogout()
 
   const tabs = useMemo(
     () => TAB_CONFIG.filter((tab) => tab.role === role),
@@ -71,7 +71,7 @@ const PersonalArea: FC = (): ReactNode => {
           <Button color='secondary' fluid onClick={() => navigate('/')}>
             На главную
           </Button>
-          <Button color='inverted' fluid onClick={logout}>
+          <Button color='inverted' fluid onClick={logout} disabled={isLoading}>
             Выйти
           </Button>
         </div>

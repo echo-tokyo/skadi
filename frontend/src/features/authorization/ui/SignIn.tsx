@@ -8,7 +8,7 @@ import { authSchema, TAuthSchema } from '../model/schema'
 
 const { wrapper, auth } = styles
 export const SignIn: FC = (): ReactNode => {
-  const { signIn } = useSignIn()
+  const { signIn, isLoading } = useSignIn()
 
   const {
     control,
@@ -59,7 +59,7 @@ export const SignIn: FC = (): ReactNode => {
             />
           )}
         />
-        <Button fluid type='submit' disabled={!isDirty}>
+        <Button fluid type='submit' disabled={!isDirty} isLoading={isLoading}>
           Войти
         </Button>
       </form>

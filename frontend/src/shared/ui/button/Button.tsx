@@ -9,6 +9,7 @@ interface IProps {
   fluid?: boolean
   size?: 's' | 'm'
   disabled?: boolean
+  isLoading?: boolean
   type?: 'button' | 'submit' | 'icon'
   color?: 'primary' | 'secondary' | 'ghost' | 'inverted' | 'white'
   tabIndex?: number
@@ -20,6 +21,7 @@ const Button = (props: IProps): ReactNode => {
     onClick,
     fluid = false,
     size = 'm',
+    isLoading = false,
     disabled,
     type = 'button',
     color = 'primary',
@@ -49,7 +51,7 @@ const Button = (props: IProps): ReactNode => {
 
   return (
     <button
-      disabled={disabled}
+      disabled={disabled || isLoading}
       onClick={(e) => handleClick(e)}
       className={buttonClassName}
       type={type !== 'icon' ? type : 'button'}

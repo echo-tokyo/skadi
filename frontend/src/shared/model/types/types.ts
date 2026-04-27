@@ -18,7 +18,7 @@ export type TProfile = {
   contact?: TContact
   extra?: string
   fullname: string
-  parentContact?: TContact
+  parent_contact?: TContact
 }
 
 export type TTask = {
