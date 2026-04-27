@@ -27,7 +27,7 @@ type updateTaskBody struct {
 	// new task title
 	Title *string `form:"title" json:"title,omitempty" validate:"omitempty,max=100" example:"Понятие ООП" maxLength:"100"`
 	// new task description
-	Desc *string `form:"desc" json:"description,omitempty" validate:"omitempty" example:"Что такое ООП? Перечислить принципы ООП"`
+	Desc *string `form:"description" json:"description,omitempty" validate:"omitempty" example:"Что такое ООП? Перечислить принципы ООП"`
 	// IDs of students (updated list) for the task
 	Students []int `form:"students" json:"students,omitempty" validate:"omitempty"`
 	// IDs of files to delete from the task
