@@ -65,7 +65,9 @@ const ManagementLayout = <T,>(props: ManagementLayoutProps<T>) => {
           SKELETON_CARDS.map((_, i) => <Skeleton key={i} height={'64px'} />)
         ) : (
           items.map((item, i) => (
-            <Fragment key={getKey ? getKey(item, i) : i}>{renderItem(item)}</Fragment>
+            <Fragment key={getKey ? getKey(item, i) : i}>
+              {renderItem(item)}
+            </Fragment>
           ))
         )}
 
