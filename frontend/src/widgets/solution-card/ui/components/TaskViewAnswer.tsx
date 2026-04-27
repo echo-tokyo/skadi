@@ -7,7 +7,7 @@ interface ITaskAnswerTeacherProps {
   displayValues: TDisplayValues
 }
 
-const TaskAnswerTeacher = ({ displayValues }: ITaskAnswerTeacherProps) => {
+const TaskViewAnswer = ({ displayValues }: ITaskAnswerTeacherProps) => {
   return (
     <div className={styles.card}>
       <Text size='20' weight='600'>
@@ -33,4 +33,4 @@ const TaskAnswerTeacher = ({ displayValues }: ITaskAnswerTeacherProps) => {
   )
 }
 
-export default TaskAnswerTeacher
+export default TaskViewAnswer

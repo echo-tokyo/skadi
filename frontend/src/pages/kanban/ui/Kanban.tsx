@@ -4,20 +4,22 @@ import { PlugDefault, Skeleton } from '@/shared/ui'
 import { useGetSolutions } from '../model/use-get-solutions'
 import styles from './styles.module.scss'
 
-const Dashboard: FC = () => {
+const Kanban: FC = () => {
   const { solutions, isLoading } = useGetSolutions()
+
+  if (isLoading) {
+    return <Skeleton height={'100%'} />
+  }
+
+  if (solutions.length === 0) {
+    return <PlugDefault />
+  }
 
   return (
     <div className={styles.wrapper}>
-      {isLoading ? (
-        <Skeleton height={'100%'} />
-      ) : solutions.length === 0 ? (
-        <PlugDefault />
-      ) : (
-        <KanbanBoard solutions={solutions} />
-      )}
+      <KanbanBoard solutions={solutions} />
     </div>
   )
 }
 
-export default Dashboard
+export default Kanban

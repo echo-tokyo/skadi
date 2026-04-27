@@ -1,5 +1,5 @@
 import { TSolution } from '@/shared/model'
-import { TDisplayValues } from '@/widgets/task-card'
+import { TDisplayValues } from '@/widgets/solution-card'
 
 export const toTaskValues = (
   solutionData: TSolution | undefined,
@@ -11,5 +11,4 @@ export const toTaskValues = (
   teacher: solutionData?.task.teacher?.fullname ?? 'Преподаватель',
   files: solutionData?.task.files ?? [],
   file_answer: solutionData?.files ?? [],
-  status: solutionData?.status.id,
 })

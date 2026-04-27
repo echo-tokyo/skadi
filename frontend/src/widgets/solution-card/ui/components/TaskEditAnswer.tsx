@@ -6,10 +6,11 @@ import { TFile } from '@/shared/model'
 
 interface ITaskAnswerStudentProps {
   serverFiles: TFile[]
+  disabled?: boolean
 }
 
-const TaskAnswerStudent = (props: ITaskAnswerStudentProps) => {
-  const { serverFiles } = props
+const TaskEditAnswer = (props: ITaskAnswerStudentProps) => {
+  const { serverFiles, disabled = false } = props
   const { control } = useFormContext<TSolutionStudentSchema>()
 
   const { field: deletedField, fieldState: deletedFieldState } = useController({
@@ -30,6 +31,7 @@ const TaskAnswerStudent = (props: ITaskAnswerStudentProps) => {
             <Textarea
               label='Письменный ответ'
               fluid
+              disabled={disabled}
               value={field.value}
               isValid={!fieldState.error}
               description={fieldState.error?.message}
@@ -45,6 +47,7 @@ const TaskAnswerStudent = (props: ITaskAnswerStudentProps) => {
               label='Файлы'
               fluid
               multiple
+              disabled={disabled}
               isValid={!fieldState.error && !deletedFieldState.error}
               description={
                 fieldState.error?.message ??
@@ -68,4 +71,4 @@ const TaskAnswerStudent = (props: ITaskAnswerStudentProps) => {
   )
 }
 
-export default TaskAnswerStudent
+export default TaskEditAnswer

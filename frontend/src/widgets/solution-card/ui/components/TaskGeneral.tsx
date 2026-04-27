@@ -2,8 +2,6 @@ import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
 import { Controller, useFormContext } from 'react-hook-form'
 import { TDisplayValues } from '../../model/types'
-import { selectAuthenticatedUser } from '@/entities/user'
-import { useAppSelector } from '@/shared/lib'
 import { TStatusId } from '@/shared/model'
 
 type TStatusFormFields = {
@@ -13,19 +11,13 @@ type TStatusFormFields = {
 interface ITaskGeneralSectionProps {
   displayValues: TDisplayValues
   statusOptions: SelectOption<TStatusId>[]
+  disabled?: boolean
 }
 
 const noop = () => undefined
 
-const TaskGeneral = (props: ITaskGeneralSectionProps) => {
-  const user = useAppSelector(selectAuthenticatedUser)
-  const role = user.role
-  const { displayValues, statusOptions } = props
+const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGeneralSectionProps) => {
   const { control } = useFormContext<TStatusFormFields>()
-
-  const mappedStatusOptions = statusOptions.map((el) =>
-    el.value === 4 && role === 'student' ? { ...el, disabled: true } : el,
-  )
 
   return (
     <div className={styles.card}>
@@ -44,8 +36,8 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
           title='Проверяющий'
           fluid
           value={displayValues.teacher}
-          onChange={noop}
           disabled
+          onChange={noop}
         />
         <Input
           title='Исполняющий'
@@ -62,8 +54,8 @@ const TaskGeneral = (props: ITaskGeneralSectionProps) => {
               label='Статус'
               fluid
               value={field.value}
-              options={mappedStatusOptions}
-              disabled={displayValues.status === 4 && role === 'student'}
+              options={statusOptions}
+              disabled={disabled}
               onChange={field.onChange}
               isValid={!fieldState.error}
               description={fieldState.error?.message}
