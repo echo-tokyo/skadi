@@ -12,6 +12,7 @@ export const useInfiniteClasses = (params: IClassQuery) => {
     error,
     isError,
     isLoading,
+    isFetching,
   } = useGetClassesInfiniteQuery(params)
 
   useEffect(() => {
@@ -31,5 +32,6 @@ export const useInfiniteClasses = (params: IClassQuery) => {
     loadMore: fetchNextPage,
     hasMore: hasNextPage,
     isLoading,
+    isFetching,
   }
 }

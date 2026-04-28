@@ -8,11 +8,18 @@ import { TStatusId } from '@/shared/model'
 const SolutionManagement = () => {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<TStatusId>(3)
-  const { solutions, hasMore, isFetchingNextPage, loadMore, isLoading } =
-    useInfiniteSolutions({ 'per-page': 10, search, status_id: status })
+  const {
+    solutions,
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+    isLoading,
+    isFetching,
+  } = useInfiniteSolutions({ 'per-page': 10, search, status_id: status })
 
   return (
     <ManagementLayout
+      isFetching={isFetching}
       title='Решения учеников'
       searchTitle='Поиск по названию'
       items={solutions}

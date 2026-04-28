@@ -9,16 +9,23 @@ import { MemberCardItem } from './MemberCardItem'
 const RoleManagement = () => {
   const [role, setRole] = useState<TRole | ''>('')
   const [debouncedSearch, setDebouncedSearch] = useState<string>('')
-  const { members, isFetchingNextPage, loadMore, hasMore, isLoading } =
-    useInfiniteMembers({
-      free: false,
-      role: role ? [role] : ROLE_VALUES,
-      search: debouncedSearch || undefined,
-      'per-page': 10,
-    })
+  const {
+    members,
+    isFetchingNextPage,
+    loadMore,
+    hasMore,
+    isLoading,
+    isFetching,
+  } = useInfiniteMembers({
+    free: false,
+    role: role ? [role] : ROLE_VALUES,
+    search: debouncedSearch || undefined,
+    'per-page': 10,
+  })
 
   return (
     <ManagementLayout
+      isFetching={isFetching}
       searchTitle='Найти пользователя'
       title='Управление ролями'
       renderItem={(item) => <MemberCardItem member={item} />}

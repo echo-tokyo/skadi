@@ -13,6 +13,7 @@ export const useArchiveSolutions = (params: IGetSolutionsQuery) => {
     error,
     isError,
     isLoading,
+    isFetching,
   } = useGetStudentSolutionsInfiniteQuery({ ...params, status_id: 4 })
 
   useEffect(() => {
@@ -30,5 +31,6 @@ export const useArchiveSolutions = (params: IGetSolutionsQuery) => {
     loadMore: fetchNextPage,
     hasMore: hasNextPage,
     isLoading,
+    isFetching,
   }
 }

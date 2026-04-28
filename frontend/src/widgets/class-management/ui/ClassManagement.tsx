@@ -6,11 +6,18 @@ import { ClassCardItem } from './ClassCardItem'
 
 const ClassManagement = () => {
   const [search, setSearch] = useState('')
-  const { classes, hasMore, isFetchingNextPage, loadMore, isLoading } =
-    useInfiniteClasses({ search, 'per-page': 10 })
+  const {
+    classes,
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+    isLoading,
+    isFetching,
+  } = useInfiniteClasses({ search, 'per-page': 10 })
 
   return (
     <ManagementLayout
+      isFetching={isFetching}
       title='Управление группами'
       searchTitle='Найти группу'
       items={classes}

@@ -1,6 +1,7 @@
 @use '../styles/variables' as v;
 
 .button {
+  position: relative;
   background-color: var(--color-primary);
   color: var(--color-white);
   border: none;
@@ -25,6 +26,18 @@
     cursor: not-allowed;
     opacity: v.$opacity-disabled;
   }
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.spinnerOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon {

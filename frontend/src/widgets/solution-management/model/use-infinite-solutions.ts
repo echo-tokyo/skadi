@@ -15,6 +15,7 @@ export const useInfiniteSolutions = (params: IGetSolutionsQuery) => {
     error,
     isError,
     isLoading,
+    isFetching,
   } = useGetSolutionsInfiniteQuery(params)
 
   useEffect(() => {
@@ -34,5 +35,6 @@ export const useInfiniteSolutions = (params: IGetSolutionsQuery) => {
     loadMore: fetchNextPage,
     hasMore: hasNextPage,
     isLoading,
+    isFetching,
   }
 }

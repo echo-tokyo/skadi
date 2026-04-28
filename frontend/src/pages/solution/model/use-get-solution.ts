@@ -4,9 +4,8 @@ import { useEffect } from 'react'
 import { toast } from 'sonner'
 
 export const useGetSolution = (id: string | undefined) => {
-  const { data, error, isError, isLoading } = useGetSolutionByIdQuery(
-    Number(id),
-  )
+  const { data, error, isError, isLoading, isFetching } =
+    useGetSolutionByIdQuery(Number(id))
 
   useEffect(() => {
     if (isError) {
@@ -17,5 +16,6 @@ export const useGetSolution = (id: string | undefined) => {
   return {
     data,
     isLoading,
+    isFetching,
   }
 }

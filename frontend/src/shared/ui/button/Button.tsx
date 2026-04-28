@@ -2,6 +2,7 @@ import { MouseEvent, ReactNode } from 'react'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
+import Spinner from '../spinner/Spinner'
 
 interface IProps {
   children: ReactNode
@@ -57,7 +58,12 @@ const Button = (props: IProps): ReactNode => {
       type={type !== 'icon' ? type : 'button'}
       tabIndex={tabIndex}
     >
-      {children}
+      <span className={isLoading ? styles.hidden : undefined}>{children}</span>
+      {isLoading && (
+        <span className={styles.spinnerOverlay}>
+          <Spinner size='s' />
+        </span>
+      )}
     </button>
   )
 }

@@ -162,7 +162,7 @@ const SelectContent = <T extends string | number>({
             fluid
             onClick={onLoadMore}
             color='ghost'
-            disabled={isLoadingMore}
+            isLoading={isLoadingMore}
           >
             {isLoadingMore ? 'Загрузка...' : 'Загрузить ещё'}
           </Button>

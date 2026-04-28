@@ -28,6 +28,7 @@ interface ITaskCardProps {
   solutionId: number
   serverFiles: TFile[]
   sideBar: ReactNode
+  isFetching: boolean
 }
 
 const SolutionCard = (props: ITaskCardProps) => {
@@ -39,6 +40,7 @@ const SolutionCard = (props: ITaskCardProps) => {
     solutionId,
     serverFiles,
     sideBar,
+    isFetching,
   } = props
 
   const isViewOnly = mode === 'student-view'
@@ -71,7 +73,11 @@ const SolutionCard = (props: ITaskCardProps) => {
     <FormProvider {...methods}>
       {!isViewOnly && (
         <div className={styles.actions}>
-          <Button onClick={reset} disabled={!isDirty} color='secondary'>
+          <Button
+            onClick={reset}
+            disabled={!isDirty || isFetching}
+            color='secondary'
+          >
             Сбросить
           </Button>
           <UpdateSolutionButton id={solutionId} actualSchema={actualSchema} />

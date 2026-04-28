@@ -5,11 +5,18 @@ import { ArchiveSolutionCard } from './ArchiveSolutionCard'
 
 const Archive = () => {
   const [search, setSearch] = useState('')
-  const { solutions, hasMore, isFetchingNextPage, loadMore, isLoading } =
-    useArchiveSolutions({ 'per-page': 10, search })
+  const {
+    solutions,
+    hasMore,
+    isFetchingNextPage,
+    loadMore,
+    isLoading,
+    isFetching,
+  } = useArchiveSolutions({ 'per-page': 10, search })
 
   return (
     <ManagementLayout
+      isFetching={isFetching}
       title='Архив решений'
       searchTitle='Поиск по названию'
       items={solutions}

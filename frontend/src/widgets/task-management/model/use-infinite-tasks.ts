@@ -26,13 +26,12 @@ export const useInfiniteTasks = (params: IGetTasksQuery) => {
     [data?.pages],
   )
 
-  console.log(isFetching)
-
   return {
     tasks,
     isFetchingNextPage,
     loadMore: fetchNextPage,
     hasMore: hasNextPage,
     isLoading,
+    isFetching,
   }
 }

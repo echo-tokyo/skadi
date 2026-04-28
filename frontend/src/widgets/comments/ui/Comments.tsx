@@ -66,7 +66,7 @@ const Comments = (props: ICommentsProps) => {
     }
 
     if (!messages.length && !isLoading) {
-      return <PlugDefault />
+      return <PlugDefault title='Комментариев нет 🥲' />
     }
 
     return (
