@@ -6,6 +6,7 @@ const phoneSchema = z
   .regex(/^\+?[0-9\s\-()]{11,20}$/, 'Некорректный номер телефона')
   .or(z.literal(''))
 
+// Базовая схема
 const memberBaseSchema = z.object({
   fullname: z
     .string()
@@ -15,8 +16,13 @@ const memberBaseSchema = z.object({
   email: z.email('Некорректный email').or(z.literal('')),
   phone: phoneSchema,
   extra: z.string().max(500, 'Максимум 500 символов'),
+  password: z.union([
+    z.literal(''),
+    z.string().min(8, 'Минимум 8 символов').max(40, 'Максимум 40 символов'),
+  ]),
 })
 
+// Схемы для редактирования
 export const teacherSchema = memberBaseSchema.describe('TeacherSchema')
 export const studentSchema = memberBaseSchema
   .extend({
@@ -26,6 +32,7 @@ export const studentSchema = memberBaseSchema
   })
   .describe('StudentSchema')
 
+// Полные схемы для создания
 const memberIdentitySchema = z.object({
   role: z.enum(ROLE_VALUES, { message: 'Выберите роль' }),
   username: z

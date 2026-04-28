@@ -11,6 +11,7 @@ export type TFieldConfig =
   | { type: 'select'; name: 'class'; title: string; required?: boolean }
   | { type: 'textarea'; name: 'extra'; title: string; required?: boolean }
 
+// Значения если не передан fieldData
 export const INITIAL_FIELDS_VALUES: TMemberFormData = {
   fullname: '',
   role: 'student',
@@ -25,6 +26,7 @@ export const INITIAL_FIELDS_VALUES: TMemberFormData = {
   extra: '',
 }
 
+// Поля для маппинга
 export const FIELD_CONFIG: TFieldConfig[] = [
   { type: 'input', name: 'fullname', title: 'ФИО', required: true },
   { type: 'select', name: 'role', title: 'Роль', required: true },
@@ -39,8 +41,8 @@ export const FIELD_CONFIG: TFieldConfig[] = [
   { type: 'textarea', name: 'extra', title: 'Дополнительная информация' },
 ]
 
+// Disabled поля при редактировании
 export const BASE_DISABLED_FIELDS: Array<keyof TMemberFormData> = [
   'role',
   'username',
-  'password',
 ]
