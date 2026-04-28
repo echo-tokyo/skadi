@@ -30,21 +30,21 @@ func NewControllerTeacher(solUCTeacher solution.UsecaseTeacher,
 	}
 }
 
-//	@summary		Обновление решения. [Только преподаватель]
-//	@description	Частичное обновление решения (только переданные поля: статус - "готово"/"проверено" - и оценка) по его id.
-//	@router			/solution/for-teacher/{id} [patch]
-//	@id				solution-for-teacher-update
-//	@tags			solution
-//	@accept			json
-//	@produce		json
-//	@security		JWTAccess
-//	@param			id					path		string				true	"ID решения"
-//	@param			updateSolutionBody	body		updateSolutionBody	true	"updateSolutionBody"
-//	@success		200					{object}	entity.Solution
-//	@failure		400					"статус не найден"
-//	@failure		401					"неверный токен (пустой, истекший или неверный формат)"
-//	@failure		403					"доступ запрещён"
-//	@failure		404					"решение не найдено"
+// @summary		Обновление решения. [Только преподаватель]
+// @description	Частичное обновление решения (только переданные поля: статус - "готово"/"проверено" - и оценка) по его id.
+// @router			/solution/for-teacher/{id} [patch]
+// @id				solution-for-teacher-update
+// @tags			solution
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id					path		string				true	"ID решения"
+// @param			updateSolutionBody	body		updateSolutionBody	true	"updateSolutionBody"
+// @success		200					{object}	entity.Solution
+// @failure		400					"статус не найден"
+// @failure		401					"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403					"доступ запрещён"
+// @failure		404					"решение не найдено"
 func (c *SolControllerTeacher) Update(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -95,18 +95,18 @@ func (c *SolControllerTeacher) Update(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(solObj)
 }
 
-//	@summary		Удаление решения по id. [Только преподаватель]
-//	@description	Удаление решения (не задания целиком) со всеми файлами решения по его id.
-//	@router			/solution/{id} [delete]
-//	@id				solution-delete
-//	@tags			solution
-//	@accept			json
-//	@produce		json
-//	@security		JWTAccess
-//	@param			id	path	string	true	"ID решения"
-//	@success		204	"No Content"
-//	@failure		401	"неверный токен (пустой, истекший или неверный формат)"
-//	@failure		403	"доступ запрещён"
+// @summary		Удаление решения по id. [Только преподаватель]
+// @description	Удаление решения (не задания целиком) со всеми файлами решения по его id.
+// @router			/solution/{id} [delete]
+// @id				solution-delete
+// @tags			solution
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			id	path	string	true	"ID решения"
+// @success		204	"No Content"
+// @failure		401	"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403	"доступ запрещён"
 func (c *SolControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -129,17 +129,17 @@ func (c *SolControllerTeacher) Delete(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNoContent).JSON(nil)
 }
 
-//	@summary		Получение списка решений. [Только преподаватель]
-//	@description	Получение списка решений для заданий конкретного преподавателя.
-//	@router			/solution/for-teacher [get]
-//	@id				solution-for-teacher-list
-//	@tags			solution
-//	@accept			json
-//	@produce		json
-//	@security		JWTAccess
-//	@param			listSolutionQuery	query		listSolutionQuery	false	"listSolutionTeacherQuery"
-//	@success		200					{object}	listSolutionOut
-//	@failure		401					"неверный токен (пустой, истекший или неверный формат)"
+// @summary		Получение списка решений. [Только преподаватель]
+// @description	Получение списка решений для заданий конкретного преподавателя.
+// @router			/solution/for-teacher [get]
+// @id				solution-for-teacher-list
+// @tags			solution
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			listSolutionQuery	query		listSolutionQuery	false	"listSolutionTeacherQuery"
+// @success		200					{object}	listSolutionOut
+// @failure		401					"неверный токен (пустой, истекший или неверный формат)"
 func (c *SolControllerTeacher) List(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
