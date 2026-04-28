@@ -75,14 +75,19 @@
 @media (max-width: 600px) {
   .content {
     flex-direction: column;
+    overflow-y: auto;
+    gap: 0.5rem;
   }
 
   .cards {
-    flex: 2;
-
-    > .card:last-child {
-      flex: none;
-    }
+    flex: none;
   }
 
+  // .cards {
+  //   flex: 2;
+
+  //   > .card:last-child {
+  //     flex: none;
+  //   }
+  // }
 }

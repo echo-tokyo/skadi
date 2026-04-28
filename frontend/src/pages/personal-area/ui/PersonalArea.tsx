@@ -55,16 +55,18 @@ const PersonalArea: FC = (): ReactNode => {
           <Text weight='600' size='20'>
             Личный кабинет
           </Text>
-          {tabs.map((tab) => (
-            <button
-              type='button'
-              className={styles.tabButton}
-              onClick={() => handleTabClick(tab)}
-              key={tab.name}
-            >
-              <Text color={getTabColor(tab)}>{tab.name}</Text>
-            </button>
-          ))}
+          <div className={styles.leftItemsTabs}>
+            {tabs.map((tab) => (
+              <button
+                type='button'
+                className={styles.tabButton}
+                onClick={() => handleTabClick(tab)}
+                key={tab.name}
+              >
+                <Text color={getTabColor(tab)}>{tab.name}</Text>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className={styles.leftActions}>

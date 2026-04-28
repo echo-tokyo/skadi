@@ -1,7 +1,6 @@
 import { EditTaskButton } from '@/features/edit-task'
 import { AccordionCard } from '@/shared/ui'
 import { memo } from 'react'
-import styles from './styles.module.scss'
 import { TTaskWithStudents } from '@/shared/model'
 import { DeleteTaskButton } from '@/features/delete-task'
 
@@ -21,13 +20,13 @@ export const TaskCardItem = memo(({ taskData }: ITaskCardItemProps) => {
         },
       ]}
       actions={
-        <div className={styles.cardActions}>
+        <>
           <DeleteTaskButton
             id={taskData.task.id}
             taskName={taskData.task.title}
           />
           <EditTaskButton task={taskData} />
-        </div>
+        </>
       }
     />
   )

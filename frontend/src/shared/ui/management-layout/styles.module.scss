@@ -3,9 +3,7 @@
   align-items: end;
   gap: 1rem;
   margin-top: 2rem;
-  button {
-    white-space: nowrap;
-  }
+  overflow-x: auto;
 }
 
 .managementList {
@@ -26,16 +24,12 @@
 }
 
 @media (max-width: 600px) {
-  .actions {
+  .managementActions {
     margin-top: 1rem;
-    flex-wrap: wrap;
+    overflow-x: auto;
   }
 
-  .roles {
+  .managementList {
     margin-top: 1rem;
-  }
-
-  .cardActions {
-    flex-wrap: wrap;
   }
 }

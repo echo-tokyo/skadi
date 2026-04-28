@@ -3,7 +3,6 @@ import { TSolution } from '@/shared/model'
 import { AccordionCard, Button } from '@/shared/ui'
 import { memo } from 'react'
 import { useNavigate } from 'react-router'
-import styles from './styles.module.scss'
 
 interface ISolutionCardItemProps {
   solutionData: TSolution
@@ -21,7 +20,7 @@ export const SolutionCardItem = memo(
           { label: 'Статус', value: solutionData.status.name },
         ]}
         actions={
-          <div className={styles.cardActions}>
+          <>
             <DeleteSolutionButton
               id={solutionData.id}
               studentName={solutionData.student?.fullname ?? 'Нет ученика'}
@@ -33,7 +32,7 @@ export const SolutionCardItem = memo(
             >
               Просмотреть
             </Button>
-          </div>
+          </>
         }
       />
     )

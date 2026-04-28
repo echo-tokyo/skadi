@@ -3,6 +3,7 @@
 .wrapper {
   position: relative;
   width: var(--ui-width, fit-content);
+  white-space: nowrap;
 }
 
 .input {

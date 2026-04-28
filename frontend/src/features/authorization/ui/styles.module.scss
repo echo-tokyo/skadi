@@ -19,6 +19,12 @@
   border-radius: 0.5rem;
 }
 
+@media (max-width: 1200px) {
+  .auth {
+    width: 50%;
+  }
+}
+
 @media (max-width: 600px) {
   .wrapper {
     margin-top: 0.75rem;

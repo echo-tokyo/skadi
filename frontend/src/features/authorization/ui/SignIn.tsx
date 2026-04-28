@@ -24,7 +24,10 @@ export const SignIn: FC = (): ReactNode => {
   })
 
   const onSubmit = (): void => {
-    signIn({ username: getValues('login'), password: getValues('password') })
+    signIn({
+      username: getValues('login').trim(),
+      password: getValues('password'),
+    })
   }
 
   return (
