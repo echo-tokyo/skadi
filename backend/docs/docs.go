@@ -645,15 +645,22 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "enum": [
-                            1,
-                            2,
-                            3,
-                            4
+                        "type": "string",
+                        "example": "HTML",
+                        "description": "case-insensitive substring to filter data by task title only for students\nor by task title or student fullname for teacher",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "example": [
+                            2
                         ],
-                        "type": "integer",
-                        "example": 2,
-                        "description": "status filter",
+                        "description": "solution status IDs (accepted: 1, 2, 3, 4)",
                         "name": "status_id",
                         "in": "query"
                     }
@@ -793,20 +800,20 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "example": "HTML",
-                        "description": "substring to filter data by task title or student fullname (case-insensitive)",
+                        "description": "case-insensitive substring to filter data by task title only for students\nor by task title or student fullname for teacher",
                         "name": "search",
                         "in": "query"
                     },
                     {
-                        "enum": [
-                            1,
-                            2,
-                            3,
-                            4
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "multi",
+                        "example": [
+                            2
                         ],
-                        "type": "integer",
-                        "example": 2,
-                        "description": "status filter",
+                        "description": "solution status IDs (accepted: 1, 2, 3, 4)",
                         "name": "status_id",
                         "in": "query"
                     }

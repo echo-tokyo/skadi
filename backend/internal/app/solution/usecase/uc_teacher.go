@@ -98,7 +98,7 @@ func (u *UCTeacher) DeleteByID(userID, solutionID int) error {
 // Search param appends condition to filter solutions
 // by task title or student fullname (substring).
 // // StatusID param appends condition to filter solutions by status.
-func (u *UCTeacher) GetManyForTeacher(teacherID int, search string, statusID int,
+func (u *UCTeacher) GetManyForTeacher(teacherID int, search string, statusID []int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
 	solList, err := u.solRepoDB.GetManyForTeacher(teacherID, search, statusID, page)

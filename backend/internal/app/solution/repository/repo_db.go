@@ -135,8 +135,8 @@ func (r *RepoDB) Delete(solObj *entity.Solution) error {
 // GetManyForTeacher returns all solutions for the teacher tasks.
 // Search param appends condition to filter solutions
 // by task title or student fullname (substring).
-// // StatusID param appends condition to filter solutions by status.
-func (r *RepoDB) GetManyForTeacher(teacherID int, search string, statusID int,
+// StatusIDs param appends condition to filter solutions by statuses.
+func (r *RepoDB) GetManyForTeacher(teacherID int, search string, statusIDs []int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
 	solList := make([]entity.Solution, 0)
@@ -155,8 +155,8 @@ func (r *RepoDB) GetManyForTeacher(teacherID int, search string, statusID int,
 		Joins("INNER JOIN profile ON user.id=profile.id").
 		Where("task.teacher_id = ?", teacherID)
 	// add filters
-	if statusID != 0 {
-		query = query.Where("status_id = ?", statusID)
+	if len(statusIDs) != 0 {
+		query = query.Where("status_id IN ?", statusIDs)
 	}
 	if search != "" {
 		query = query.Where("title REGEXP ? OR profile.fullname REGEXP ?", search, search)
@@ -175,8 +175,8 @@ func (r *RepoDB) GetManyForTeacher(teacherID int, search string, statusID int,
 }
 
 // GetManyForStudent returns all student solutions.
-// StatusID param appends condition to filter solutions by status.
-func (r *RepoDB) GetManyForStudent(studID int, statusID int,
+// StatusIDs param appends condition to filter solutions by statuses.
+func (r *RepoDB) GetManyForStudent(studID int, search string, statusIDs []int,
 	page *entity.Pagination) ([]entity.Solution, error) {
 
 	solList := make([]entity.Solution, 0)
@@ -186,10 +186,14 @@ func (r *RepoDB) GetManyForStudent(studID int, statusID int,
 			return db.Select(_fieldID, _fieldTitle, _fieldDesc) // preload only ID, title and desc
 		}).
 		Preload(_preloadStatus).
+		Joins("INNER JOIN task ON task.id = solution.task_id").
 		Where("student_id = ?", studID)
 	// add filters
-	if statusID != 0 {
-		query = query.Where("status_id = ?", statusID)
+	if len(statusIDs) != 0 {
+		query = query.Where("status_id IN ?", statusIDs)
+	}
+	if search != "" {
+		query = query.Where("title REGEXP ?", search)
 	}
 	query = query.Order(_orderByIDDESC)
 	// apply pagination if it's not nil

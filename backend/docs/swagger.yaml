@@ -1132,16 +1132,22 @@ paths:
         minimum: 1
         name: per-page
         type: integer
-      - description: status filter
-        enum:
-        - 1
-        - 2
-        - 3
-        - 4
-        example: 2
+      - description: |-
+          case-insensitive substring to filter data by task title only for students
+          or by task title or student fullname for teacher
+        example: HTML
         in: query
+        name: search
+        type: string
+      - collectionFormat: multi
+        description: 'solution status IDs (accepted: 1, 2, 3, 4)'
+        example:
+        - 2
+        in: query
+        items:
+          type: integer
         name: status_id
-        type: integer
+        type: array
       produces:
       - application/json
       responses:
@@ -1231,21 +1237,22 @@ paths:
         minimum: 1
         name: per-page
         type: integer
-      - description: substring to filter data by task title or student fullname (case-insensitive)
+      - description: |-
+          case-insensitive substring to filter data by task title only for students
+          or by task title or student fullname for teacher
         example: HTML
         in: query
         name: search
         type: string
-      - description: status filter
-        enum:
-        - 1
+      - collectionFormat: multi
+        description: 'solution status IDs (accepted: 1, 2, 3, 4)'
+        example:
         - 2
-        - 3
-        - 4
-        example: 2
         in: query
+        items:
+          type: integer
         name: status_id
-        type: integer
+        type: array
       produces:
       - application/json
       responses:

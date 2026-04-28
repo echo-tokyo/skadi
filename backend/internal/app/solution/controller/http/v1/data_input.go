@@ -39,22 +39,14 @@ func (u *updateSolutionBody) ToEntitySolutionUpdate(
 	return solUpdate
 }
 
-// @description listSolutionTeacherQuery represents a data with
-// optional query-params to get solutions list for a teacher tasks.
-type listSolutionTeacherQuery struct {
-	// status filter
-	StatusID int `query:"status_id,omitempty" json:"status_id" validate:"omitempty,oneof=1 2 3 4" example:"2"`
-	// substring to filter data by task title or student fullname (case-insensitive)
+// @description listSolutionQuery represents a data with
+// optional query-params to get solution list.
+type listSolutionQuery struct {
+	// solution status IDs (accepted: 1, 2, 3, 4)
+	StatusIDs []int `query:"status_id,omitempty" json:"status_id" validate:"omitempty" example:"2"`
+	// case-insensitive substring to filter data by task title only for students
+	// or by task title or student fullname for teacher
 	Search string `query:"search,omitempty" json:"search" example:"HTML"`
-	// pagination params
-	entity.PaginationQuery
-}
-
-// @description listSolutionStudentQuery represents a data with
-// optional query-params to get solutions list for a student.
-type listSolutionStudentQuery struct {
-	// status filter
-	StatusID int `query:"status_id,omitempty" json:"status_id" validate:"omitempty,oneof=1 2 3 4" example:"2"`
 	// pagination params
 	entity.PaginationQuery
 }

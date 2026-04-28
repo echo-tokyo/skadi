@@ -33,14 +33,6 @@ func NewUCStudent(cfg *config.Config, solRepoDB solution.RepositoryDB,
 	}
 }
 
-// GetManyForStudent returns all student solutions.
-// StatusID param appends condition to filter solutions by status.
-func (u *UCStudent) GetManyForStudent(studID int, statusID int,
-	page *entity.Pagination) ([]entity.Solution, error) {
-
-	return u.solRepoDB.GetManyForStudent(studID, statusID, page)
-}
-
 // Update updates the given solution by given ID with the new data.
 // It returns the updated solution object.
 // Allows to update the status (apart of archived), answer and solution files.
@@ -90,6 +82,15 @@ func (u *UCStudent) Update(studID, solutionID int,
 	newData.DelFiles.Cleanup()
 
 	return solObj, nil
+}
+
+// GetManyForStudent returns all student solutions.
+// Search param appends condition to filter solutions by task title (substring).
+// StatusID param appends condition to filter solutions by status.
+func (u *UCStudent) GetManyForStudent(studID int, search string, statusID []int,
+	page *entity.Pagination) ([]entity.Solution, error) {
+
+	return u.solRepoDB.GetManyForStudent(studID, search, statusID, page)
 }
 
 // getStatusToUpdate sets the new status object to updated solution.

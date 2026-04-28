@@ -16,12 +16,13 @@ type RepositoryDB interface {
 	// GetManyForTeacher returns all solutions for the teacher tasks.
 	// Search param appends condition to filter solutions
 	// by task title or student fullname (substring).
-	// StatusID param appends condition to filter solutions by status.
-	GetManyForTeacher(teacherID int, search string, statusID int,
+	// StatusIDs param appends condition to filter solutions by statuses.
+	GetManyForTeacher(teacherID int, search string, statusIDs []int,
 		page *entity.Pagination) ([]entity.Solution, error)
 	// GetManyForStudent returns all student solutions.
-	// StatusID param appends condition to filter solutions by status.
-	GetManyForStudent(studID int, statusID int,
+	// Search param appends condition to filter solutions by task title (substring).
+	// StatusIDs param appends condition to filter solutions by statuses.
+	GetManyForStudent(studID int, search string, statusIDs []int,
 		page *entity.Pagination) ([]entity.Solution, error)
 
 	// UserPermit returns nil error if user has rights to the given solution.
