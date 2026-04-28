@@ -1,12 +1,12 @@
 import type { Ref } from 'react'
 
-export interface SelectOption<T extends string = string> {
+export interface SelectOption<T extends string | number = string> {
   label: string
   value: T
   disabled?: boolean
 }
 
-interface BaseProps<T extends string = string> {
+interface BaseProps<T extends string | number = string> {
   ref?: Ref<HTMLButtonElement>
   options: SelectOption<T>[]
   /** Предзагруженные выбранные элементы (seed) — для форм редактирования,
@@ -39,7 +39,8 @@ interface BaseProps<T extends string = string> {
   isLoadingMore?: boolean
 }
 
-export interface SingleProps<T extends string = string> extends BaseProps<T> {
+export interface SingleProps<T extends string | number = string>
+  extends BaseProps<T> {
   multiple?: false
   value: T | ''
   onChange: (value: T | '') => void
@@ -47,14 +48,15 @@ export interface SingleProps<T extends string = string> extends BaseProps<T> {
   showButtons?: boolean
 }
 
-export interface MultipleProps<T extends string = string> extends BaseProps<T> {
+export interface MultipleProps<T extends string | number = string>
+  extends BaseProps<T> {
   multiple: true
   value: T[]
   onChange: (value: T[]) => void
   // кнопки в multi всегда показываются — без отдельного пропа
 }
 
-export type SelectProps<T extends string = string> =
+export type SelectProps<T extends string | number = string> =
   | SingleProps<T>
   | MultipleProps<T>
 

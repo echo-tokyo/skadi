@@ -18,7 +18,7 @@ export type TProfile = {
   contact?: TContact
   extra?: string
   fullname: string
-  parentContact?: TContact
+  parent_contact?: TContact
 }
 
 export type TTask = {
@@ -55,7 +55,6 @@ export type TStatus = {
 
 export type TStatusId = TStatus['id']
 export type TStatusName = TStatus['name']
-export type TStatusValue = `${TStatusId}`
 
 export type TSolution = {
   answer?: string

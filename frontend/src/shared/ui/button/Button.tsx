@@ -2,6 +2,7 @@ import { MouseEvent, ReactNode } from 'react'
 import styles from './styles.module.scss'
 import commonStyles from '../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
+import Spinner from '../spinner/Spinner'
 
 interface IProps {
   children: ReactNode
@@ -9,8 +10,10 @@ interface IProps {
   fluid?: boolean
   size?: 's' | 'm'
   disabled?: boolean
+  isLoading?: boolean
   type?: 'button' | 'submit' | 'icon'
   color?: 'primary' | 'secondary' | 'ghost' | 'inverted' | 'white'
+  tabIndex?: number
 }
 
 const Button = (props: IProps): ReactNode => {
@@ -19,9 +22,11 @@ const Button = (props: IProps): ReactNode => {
     onClick,
     fluid = false,
     size = 'm',
+    isLoading = false,
     disabled,
     type = 'button',
     color = 'primary',
+    tabIndex = 0,
   } = props
 
   const handleClick = (
@@ -47,12 +52,18 @@ const Button = (props: IProps): ReactNode => {
 
   return (
     <button
-      disabled={disabled}
+      disabled={disabled || isLoading}
       onClick={(e) => handleClick(e)}
       className={buttonClassName}
-      type={type !== 'icon' ? type : undefined}
+      type={type !== 'icon' ? type : 'button'}
+      tabIndex={tabIndex}
     >
-      {children}
+      <span className={isLoading ? styles.hidden : undefined}>{children}</span>
+      {isLoading && (
+        <span className={styles.spinnerOverlay}>
+          <Spinner size='s' />
+        </span>
+      )}
     </button>
   )
 }

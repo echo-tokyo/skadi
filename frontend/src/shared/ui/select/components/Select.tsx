@@ -9,7 +9,7 @@ export type { SelectOption, SelectProps } from '../types/types'
 
 import type { SelectProps } from '../types/types'
 
-const Select = <T extends string = string>(
+const Select = <T extends string | number = string>(
   props: SelectProps<T>,
 ): ReactNode => {
   const { fluid, size = 'm', isValid = true } = props

@@ -5,6 +5,6 @@ export const toProfile = (data: TMemberFormData): Omit<TProfile, 'id'> => ({
   fullname: data.fullname,
   address: data.address,
   contact: { email: data.email, phone: data.phone },
-  parentContact: { email: data.parentEmail, phone: data.parentPhone },
+  parent_contact: { email: data.parentEmail, phone: data.parentPhone },
   extra: data.extra,
 })

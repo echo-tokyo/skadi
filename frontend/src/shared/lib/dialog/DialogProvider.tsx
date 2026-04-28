@@ -54,12 +54,11 @@ export const DialogProvider = ({
       return
     }
 
+    setLoading(dialog.id, true)
     try {
       await dialog.onConfirm()
       hide(dialog.id)
     } catch {
-      // Error not handling
-    } finally {
       setLoading(dialog.id, false)
     }
   }

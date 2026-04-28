@@ -34,7 +34,7 @@
     border-color var(--transition-duration) var(--transition-timing),
     background-color var(--transition-duration) var(--transition-timing);
 
-  &:hover:not(&_disabled) {
+  &:hover:not(&:disabled) {
     border-color: var(--color-gray-hover);
   }
 
@@ -42,6 +42,10 @@
     border: 2px dashed var(--color-gray-hover);
     outline: none;
   }
+}
+
+.dropzoneInvalid {
+  border-color: var(--color-red);
 }
 
 .dropzoneDragging {
@@ -111,4 +115,10 @@
 
 .description {
   margin-top: 0.25rem;
+}
+
+.descriptionError {
+  @include m.field-label;
+  margin-top: 0.25rem;
+  color: var(--color-red);
 }

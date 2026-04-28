@@ -11,7 +11,7 @@ const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
     formState: { isDirty },
   } = useFormContext<TSolutionTeacherSchema>()
 
-  const { submit } = useTeacherUpdateSolution(id)
+  const { submit, isLoading } = useTeacherUpdateSolution(id)
   const statusValue = watch('status')
 
   const onSubmit = handleSubmit(async (data) => {
@@ -20,8 +20,8 @@ const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
   })
 
   return (
-    <Button disabled={!isDirty} onClick={onSubmit}>
-      {statusValue === '4' ? 'Одобрить выполнение' : 'Сохранить решение'}
+    <Button disabled={!isDirty} isLoading={isLoading} onClick={onSubmit}>
+      {statusValue === 4 ? 'Одобрить выполнение' : 'Сохранить решение'}
     </Button>
   )
 }

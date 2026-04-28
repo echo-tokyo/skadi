@@ -2,11 +2,11 @@ import { createBrowserRouter } from 'react-router'
 import Authorization from '@/pages/authorization'
 import MainPage from '@/pages/main'
 import { PersonalArea } from '@/pages/personal-area'
-import { Task } from '@/pages/task'
-import { Dashboard } from '@/pages/dashboard'
+import { Solution } from '@/pages/solution'
 import AppLayout from '../layouts/AppLayout'
 import ProtectedRoute from '../layouts/ProtectedRoute'
 import RoleRoute from '../layouts/RoleRoute'
+import { Kanban } from '@/pages/kanban'
 
 const crumb = {
   home: { label: 'Главная', to: '/' },
@@ -16,27 +16,17 @@ const crumb = {
   task: { label: 'Задача' },
 } as const
 
-const teacherRoutes = [
-  {
-    path: '/personal-area/solutions/:id',
-    Component: Task,
-    handle: {
-      breadcrumbs: [crumb.home, crumb.personalArea, crumb.task],
-    },
-  },
-]
-
 const studentRoutes = [
   {
     path: '/personal-area/dashboard',
-    Component: Dashboard,
+    Component: Kanban,
     handle: {
       breadcrumbs: [crumb.home, crumb.personalArea, { label: 'Канбан-доска' }],
     },
   },
   {
     path: '/personal-area/dashboard/solutions/:id',
-    Component: Task,
+    Component: Solution,
     handle: {
       breadcrumbs: [
         crumb.home,
@@ -72,8 +62,11 @@ export const router = createBrowserRouter([
             },
           },
           {
-            element: <RoleRoute role='teacher' />,
-            children: teacherRoutes,
+            path: '/personal-area/solutions/:id',
+            Component: Solution,
+            handle: {
+              breadcrumbs: [crumb.home, crumb.personalArea, crumb.task],
+            },
           },
           {
             element: <RoleRoute role='student' />,

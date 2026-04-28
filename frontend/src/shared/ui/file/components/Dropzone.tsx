@@ -7,7 +7,6 @@ import {
   KeyboardEvent,
 } from 'react'
 import styles from '../styles/styles.module.scss'
-import commonStyles from '../../styles/common.module.scss'
 import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
 import Text from '../../text/Text'
 
@@ -15,7 +14,6 @@ interface IProps {
   accept?: string
   multiple?: boolean
   disabled?: boolean
-  isValid?: boolean
   size?: 's' | 'm'
   hasFiles?: boolean
   onFiles: (files: FileList) => void
@@ -25,7 +23,6 @@ const Dropzone = ({
   accept,
   multiple,
   disabled,
-  isValid = true,
   size = 'm',
   hasFiles,
   onFiles,
@@ -71,7 +68,6 @@ const Dropzone = ({
       size,
       additionalClasses: [
         isDragging ? styles.dropzoneDragging : '',
-        !isValid ? commonStyles.invalid : '',
         disabled ? styles.dropzoneDisabled : '',
       ].filter(Boolean),
     },
@@ -87,7 +83,6 @@ const Dropzone = ({
         multiple={multiple}
         disabled={disabled}
         required={false}
-        aria-invalid={!isValid}
         className={styles.inputHidden}
         onChange={handleChange}
       />

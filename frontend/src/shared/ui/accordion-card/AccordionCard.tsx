@@ -26,7 +26,7 @@ const AccordionCard = ({ title, fields, actions }: IAccordionCardProps) => (
             <Divider />
           </div>
         ))}
-        {actions}
+        <div className={styles.cardActions}>{actions}</div>
       </div>
     }
   />

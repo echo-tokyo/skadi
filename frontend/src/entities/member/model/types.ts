@@ -11,6 +11,7 @@ export interface IMember {
 
 export interface IUpdateMemberRequest {
   class_id?: number
+  password?: string
   profile: Omit<TProfile, 'id'>
 }
 

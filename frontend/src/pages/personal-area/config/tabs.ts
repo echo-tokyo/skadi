@@ -1,4 +1,5 @@
 import { TRole } from '@/shared/model'
+import { Archive } from '@/widgets/archive'
 import { ClassManagement } from '@/widgets/class-management'
 import { RoleManagement } from '@/widgets/role-management'
 import { SolutionManagement } from '@/widgets/solution-management'
@@ -35,5 +36,10 @@ export const TAB_CONFIG: ITabConfig[] = [
   {
     name: 'Канбан-доска',
     role: 'student',
+  },
+  {
+    name: 'Архив решений',
+    role: 'student',
+    component: Archive,
   },
 ]

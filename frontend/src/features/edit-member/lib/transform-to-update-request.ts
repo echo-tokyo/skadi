@@ -9,4 +9,5 @@ export const transformToUpdateRequest = (
 ): IUpdateMemberRequest => ({
   class_id: Number(data.class),
   profile: toProfile(data),
+  password: data.password,
 })

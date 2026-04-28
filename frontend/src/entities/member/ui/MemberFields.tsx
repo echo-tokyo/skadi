@@ -22,6 +22,7 @@ import {
   FIELD_CONFIG,
   INITIAL_FIELDS_VALUES,
 } from '../config/fields-config'
+import { FIELD_OVERRIDES } from '../config/field-overrides'
 import styles from './styles.module.scss'
 import { ROLE_OPTIONS } from '@/shared/config'
 import { IMemberFieldsRef } from '../model/types'
@@ -106,14 +107,22 @@ const MemberFields = ({
     [handleSubmit, reset, getValues],
   )
 
-  const visibleFields = FIELD_CONFIG.filter(
-    (f) => !(f.name === 'class' && role === 'teacher'),
-  )
+  const visibleFields = FIELD_CONFIG.filter((f) => {
+    if (FIELD_OVERRIDES[mode][f.name]?.hidden) return false
+    return (
+      !(f.name === 'class' && role === 'teacher') &&
+      !(f.name === 'parentEmail' && role === 'teacher') &&
+      !(f.name === 'parentPhone' && role === 'teacher')
+    )
+  })
 
   return (
     <div className={styles.wrapper}>
       {visibleFields.map((field) => {
         const disabled = disabledFields.includes(field.name)
+        const override = FIELD_OVERRIDES[mode][field.name] ?? {}
+        const title = override.title ?? field.title
+        const required = override.required ?? field.required
 
         if (field.type === 'select' && field.name === 'class') {
           return (
@@ -124,10 +133,10 @@ const MemberFields = ({
               render={({ field: f, fieldState }) => (
                 <Select
                   ref={f.ref}
-                  label={field.title}
+                  label={title}
                   placeholder='Выберите'
                   fluid
-                  required={field.required}
+                  required={required}
                   disabled={disabled}
                   isValid={!fieldState.error}
                   description={fieldState.error?.message}
@@ -154,10 +163,10 @@ const MemberFields = ({
               render={({ field: f, fieldState }) => (
                 <Select
                   ref={f.ref}
-                  label={field.title}
+                  label={title}
                   placeholder='Выберите'
                   fluid
-                  required={field.required}
+                  required={required}
                   disabled={disabled}
                   isValid={!fieldState.error}
                   description={fieldState.error?.message}
@@ -182,10 +191,10 @@ const MemberFields = ({
               render={({ field: f, fieldState }) => (
                 <Textarea
                   ref={f.ref}
-                  label={field.title}
+                  label={title}
                   placeholder='Ввод..'
                   fluid
-                  required={field.required}
+                  required={required}
                   disabled={disabled}
                   isValid={!fieldState.error}
                   description={fieldState.error?.message}
@@ -206,9 +215,9 @@ const MemberFields = ({
             render={({ field: f, fieldState }) => (
               <Input
                 ref={f.ref}
-                title={field.title}
+                title={title}
                 fluid
-                required={field.required}
+                required={required}
                 disabled={disabled}
                 isValid={!fieldState.error}
                 description={fieldState.error?.message}

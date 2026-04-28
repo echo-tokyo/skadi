@@ -5,7 +5,6 @@ export type {
   TSolution,
   TStatus,
   TStatusName,
-  TStatusValue,
   TStatusId,
   TTask,
   TTaskWithStudents,

@@ -12,6 +12,7 @@ export const useInfiniteTasks = (params: IGetTasksQuery) => {
     error,
     isError,
     isLoading,
+    isFetching,
   } = useGetTasksInfiniteQuery(params)
 
   useEffect(() => {
@@ -31,5 +32,6 @@ export const useInfiniteTasks = (params: IGetTasksQuery) => {
     loadMore: fetchNextPage,
     hasMore: hasNextPage,
     isLoading,
+    isFetching,
   }
 }

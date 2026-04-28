@@ -13,12 +13,13 @@ import SelectContent from './SelectContent'
 import ChevronIcon from '../../icons/ChevronIcon'
 import type { MultipleProps, SelectOption } from '../types/types'
 
-interface MultiSelectInternalProps<T extends string> extends MultipleProps<T> {
+interface MultiSelectInternalProps<T extends string | number>
+  extends MultipleProps<T> {
   wrapperClassName: string
   triggerClassName: string
 }
 
-const MultiSelect = <T extends string>({
+const MultiSelect = <T extends string | number>({
   ref,
   options,
   selectedOptions,
@@ -51,7 +52,7 @@ const MultiSelect = <T extends string>({
 
   // Карта всех известных options (value → SelectOption) для поиска label.
   // Ref, чтобы не вызывать лишних ре-рендеров при обновлении.
-  const knownOptionsMap = useRef<Map<string, SelectOption<T>>>(
+  const knownOptionsMap = useRef<Map<string | number, SelectOption<T>>>(
     new Map(selectedOptions?.map((o) => [o.value, o]) ?? []),
   )
 

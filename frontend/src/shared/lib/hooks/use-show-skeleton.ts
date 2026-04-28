@@ -8,8 +8,11 @@ export const useShowSkeleton = (isLoading: boolean, delay = 200): boolean => {
       setShowSkeleton(false)
       return
     }
+
     const timer = setTimeout(() => setShowSkeleton(true), delay)
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(timer)
+    }
   }, [isLoading, delay])
 
   return showSkeleton

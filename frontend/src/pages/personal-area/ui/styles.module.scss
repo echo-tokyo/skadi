@@ -19,10 +19,14 @@
   flex-direction: column;
   justify-content: space-between;
   width: 30%;
+  white-space: nowrap;
   &Items {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    &Tabs {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
   }
   &Actions {
     display: flex;
@@ -82,6 +86,12 @@
   cursor: pointer;
 }
 
+@media (max-width: 1200px) {
+  .left {
+    width: 40%;
+  }
+}
+
 @media (max-width: 600px) {
   .tabButton {
     white-space: nowrap;
@@ -98,27 +108,23 @@
     width: 100%;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 0.375rem;
-    padding: 0.5rem 0.75rem;
+    gap: 1rem;
+    white-space: nowrap;
 
     &Items {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 1rem;
-      padding-bottom: 0.125rem;
+      &Tabs {
+        margin-top: 1rem;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
     }
 
     &Actions {
       flex-direction: row;
       justify-content: flex-start;
       gap: 0.5rem;
-
-      button {
-        height: 30px;
-        padding: 0 0.75rem;
-        font-size: 12px;
-      }
     }
   }
 

@@ -16,10 +16,11 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 interface ICommentsProps {
   role: TRole
   solutionId: number
+  mode: 'edit' | 'view'
 }
 
 const Comments = (props: ICommentsProps) => {
-  const { role, solutionId } = props
+  const { role, solutionId, mode } = props
 
   const { messages, hasMore, isFetchingNextPage, loadMore, isLoading } =
     useGetComments({
@@ -64,8 +65,8 @@ const Comments = (props: ICommentsProps) => {
       return <Skeleton height={'100%'} />
     }
 
-    if (!messages.length) {
-      return <PlugDefault />
+    if (!messages.length && !isLoading) {
+      return <PlugDefault title='Комментариев нет 🥲' />
     }
 
     return (
@@ -95,7 +96,7 @@ const Comments = (props: ICommentsProps) => {
       <div className={styles.commentsContent} ref={chatRef}>
         {content}
       </div>
-      <MessageInput onSubmit={submit} disabled={isSending} />
+      <MessageInput onSubmit={submit} disabled={isSending || mode === 'view'} />
     </div>
   )
 }

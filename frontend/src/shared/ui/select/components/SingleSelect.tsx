@@ -13,12 +13,13 @@ import SelectContent from './SelectContent'
 import ChevronIcon from '../../icons/ChevronIcon'
 import type { SingleProps, SelectOption } from '../types/types'
 
-interface SingleSelectInternalProps<T extends string> extends SingleProps<T> {
+interface SingleSelectInternalProps<T extends string | number>
+  extends SingleProps<T> {
   wrapperClassName: string
   triggerClassName: string
 }
 
-const SingleSelect = <T extends string>({
+const SingleSelect = <T extends string | number>({
   ref,
   options,
   selectedOptions,
@@ -50,7 +51,7 @@ const SingleSelect = <T extends string>({
     if (open && showButtons) setDraftValue(value)
   }, [open])
 
-  const knownOptionsMap = useRef<Map<string, SelectOption<T>>>(
+  const knownOptionsMap = useRef<Map<string | number, SelectOption<T>>>(
     new Map(selectedOptions?.map((o) => [o.value, o]) ?? []),
   )
 
@@ -105,7 +106,7 @@ const SingleSelect = <T extends string>({
 
   const enrichedSelectedOptions = useMemo(() => {
     if (!showButtons) return selectedOptions
-    const known = knownOptionsMap.current.get(draftValue as string)
+    const known = knownOptionsMap.current.get(draftValue as string | number)
     return known
       ? [known]
       : selectedOptions?.filter((o) => o.value === draftValue)

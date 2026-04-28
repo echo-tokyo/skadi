@@ -8,7 +8,7 @@ import { authSchema, TAuthSchema } from '../model/schema'
 
 const { wrapper, auth } = styles
 export const SignIn: FC = (): ReactNode => {
-  const { signIn } = useSignIn()
+  const { signIn, isLoading } = useSignIn()
 
   const {
     control,
@@ -24,7 +24,10 @@ export const SignIn: FC = (): ReactNode => {
   })
 
   const onSubmit = (): void => {
-    signIn({ username: getValues('login'), password: getValues('password') })
+    signIn({
+      username: getValues('login').trim(),
+      password: getValues('password'),
+    })
   }
 
   return (
@@ -51,6 +54,7 @@ export const SignIn: FC = (): ReactNode => {
             <Input
               title='Пароль'
               fluid
+              type='password'
               value={field.value}
               onChange={field.onChange}
               isValid={!fieldState.error}
@@ -58,7 +62,7 @@ export const SignIn: FC = (): ReactNode => {
             />
           )}
         />
-        <Button fluid type='submit' disabled={!isDirty}>
+        <Button fluid type='submit' disabled={!isDirty} isLoading={isLoading}>
           Войти
         </Button>
       </form>

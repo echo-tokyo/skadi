@@ -8,7 +8,7 @@ import FileItem from './FileItem'
 export interface IFileFieldProps {
   value?: File[]
   onChange: (files: File[]) => void
-  attachments?: { id: number; name: string }[]
+  attachments?: { id: number; name: string; size?: number }[]
   onRemoveAttachment?: (id: number) => void
   label?: string
   description?: string
@@ -75,17 +75,19 @@ const FileField = ({
         accept={accept}
         multiple={multiple}
         disabled={disabled}
-        isValid={isValid}
         size={size}
         hasFiles={totalCount > 0}
         onFiles={handleFiles}
       />
+
+      {description && <p className={styles.description}>{description}</p>}
 
       {totalCount > 0 && (
         <ul className={styles.fileList} aria-label='Выбранные файлы'>
           {attachments.map((file) => (
             <FileItem
               key={file.id}
+              size={file.size}
               file={{ id: String(file.id), name: file.name }}
               onRemove={(id) => onRemoveAttachment?.(Number(id))}
             />
@@ -93,14 +95,13 @@ const FileField = ({
           {value.map((file) => (
             <FileItem
               key={file.name}
+              size={file.size}
               file={{ id: file.name, name: file.name }}
               onRemove={handleRemoveLocal}
             />
           ))}
         </ul>
       )}
-
-      {description && <p className={styles.description}>{description}</p>}
     </div>
   )
 }

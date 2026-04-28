@@ -95,6 +95,27 @@ export const solutionApi = baseApi.injectEndpoints({
       providesTags: ['Solution'],
     }),
 
+    getStudentSolutions: builder.infiniteQuery<
+      IGetSolutionsResponse,
+      IGetSolutionsQuery,
+      number
+    >({
+      query: ({ queryArg, pageParam }) => {
+        const { 'per-page': perPage, ...rest } = queryArg
+        return {
+          url: '/solution/for-student',
+          method: 'GET',
+          params: {
+            ...rest,
+            page: pageParam,
+            'per-page': perPage ?? DEFAULT_PER_PAGE,
+          },
+        }
+      },
+      infiniteQueryOptions: paginatedInfiniteQueryOptions,
+      providesTags: ['Solution'],
+    }),
+
     deleteSolution: builder.mutation<void, number>({
       query: (id) => ({
         url: `/solution/${id}`,
@@ -108,6 +129,7 @@ export const solutionApi = baseApi.injectEndpoints({
 export const {
   useGetSolutionByIdQuery,
   useGetSolutionsInfiniteQuery,
+  useGetStudentSolutionsInfiniteQuery,
   useUpdateSolutionByTeacherMutation,
   useUpdateSolutionByStudentMutation,
   useGetSolutionsForStudentQuery,

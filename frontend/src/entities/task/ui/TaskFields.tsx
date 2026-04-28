@@ -45,7 +45,7 @@ const TaskFields = ({
     defaultValues: fieldValues ?? defaultValues,
   })
 
-  const { field: deletedField, fieldState: deletedFieldState } = useController({
+  const { field: deletedField } = useController({
     control,
     name: 'deletedFileIds',
   })
@@ -163,16 +163,11 @@ const TaskFields = ({
             label='Файлы'
             fluid
             multiple
-            isValid={!fieldState.error && !deletedFieldState.error}
-            description={
-              fieldState.error?.message ??
-              (Array.isArray(deletedFieldState.error)
-                ? deletedFieldState.error[0]?.message
-                : deletedFieldState.error?.message)
-            }
+            isValid={!fieldState.error}
+            description={fieldState.error?.message}
             attachments={serverFiles
               .filter((f) => !deletedField.value.includes(f.id))
-              .map((f) => ({ id: f.id, name: f.name }))}
+              .map((f) => ({ id: f.id, name: f.name, size: f.size }))}
             onRemoveAttachment={(id) =>
               deletedField.onChange([...deletedField.value, id])
             }

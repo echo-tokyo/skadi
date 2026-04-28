@@ -26,8 +26,8 @@
 
 @media (max-width: 600px) {
   .comments {
-    flex: 3;
-    margin-top: 0.5rem;
-    min-height: 0;
+    flex: none;
+    margin-top: 0;
+    height: 60vh;
   }
 }
