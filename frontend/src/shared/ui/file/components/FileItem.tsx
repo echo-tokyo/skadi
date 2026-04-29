@@ -34,7 +34,7 @@ const FileItem = (props: IProps): ReactNode => {
           aria-label={`Удалить файл ${file.name}`}
           onClick={() => onRemove(file.id)}
         >
-          <Text size='20' color='--color-gray'>
+          <Text size='20' color='--color-gray' className={styles.icon}>
             ×
           </Text>
         </Button>
