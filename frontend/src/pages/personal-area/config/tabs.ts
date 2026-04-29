@@ -10,6 +10,7 @@ export interface ITabConfig {
   name: string
   component?: FC
   role: TRole
+  navigateTo?: string
 }
 
 export const TAB_CONFIG: ITabConfig[] = [
@@ -36,6 +37,7 @@ export const TAB_CONFIG: ITabConfig[] = [
   {
     name: 'Канбан-доска',
     role: 'student',
+    navigateTo: '/personal-area/kanban',
   },
   {
     name: 'Архив решений',

@@ -12,28 +12,23 @@ const crumb = {
   home: { label: 'Главная', to: '/' },
   authorization: { label: 'Авторизация', to: '/authorization' },
   personalArea: { label: 'Личный кабинет', to: '/personal-area' },
-  dashboard: { label: 'Канбан-доска', to: '/personal-area/dashboard' },
+  kanban: { label: 'Канбан-доска', to: '/personal-area/kanban' },
   task: { label: 'Задача' },
 } as const
 
 const studentRoutes = [
   {
-    path: '/personal-area/dashboard',
+    path: '/personal-area/kanban',
     Component: Kanban,
     handle: {
       breadcrumbs: [crumb.home, crumb.personalArea, { label: 'Канбан-доска' }],
     },
   },
   {
-    path: '/personal-area/dashboard/solutions/:id',
+    path: '/personal-area/kanban/solutions/:id',
     Component: Solution,
     handle: {
-      breadcrumbs: [
-        crumb.home,
-        crumb.personalArea,
-        crumb.dashboard,
-        crumb.task,
-      ],
+      breadcrumbs: [crumb.home, crumb.personalArea, crumb.kanban, crumb.task],
     },
   },
 ]
