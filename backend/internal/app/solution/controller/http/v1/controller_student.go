@@ -33,24 +33,24 @@ func NewControllerStudent(cfg *config.Config, solUCStudent solution.UsecaseStude
 	}
 }
 
-//	@summary		Обновление решения. [Только ученик]
-//	@description	Частичное обновление решения (только переданные поля: статус, кроме "проверено", ответ, файл ответа) по его id.
-//	@router			/solution/for-student/{id} [patch]
-//	@id				solution-for-student-update
-//	@tags			solution
-//	@accept			mpfd
-//	@produce		json
-//	@security		JWTAccess
-//	@param			id				path		string	true	"ID решения"
-//	@param			status_id		formData	int		false	"new status ID"
-//	@param			answer			formData	string	false	"new answer"
-//	@param			delete_files	formData	[]int	false	"IDs of files to delete from the solution"
-//	@param			file			formData	[]file	false	"new solution files"
-//	@success		200				{object}	entity.Solution
-//	@failure		400				"неверный статус"
-//	@failure		401				"неверный токен (пустой, истекший или неверный формат)"
-//	@failure		403				"доступ запрещён"
-//	@failure		404				"решение не найдено"
+// @summary		Обновление решения. [Только ученик]
+// @description	Частичное обновление решения (только переданные поля: статус, кроме "проверено", ответ, файл ответа) по его id.
+// @router			/solution/for-student/{id} [patch]
+// @id				solution-for-student-update
+// @tags			solution
+// @accept			mpfd
+// @produce		json
+// @security		JWTAccess
+// @param			id				path		string	true	"ID решения"
+// @param			status_id		formData	int		false	"new status ID"
+// @param			answer			formData	string	false	"new answer"
+// @param			delete_files	formData	[]int	false	"IDs of files to delete from the solution"
+// @param			file			formData	[]file	false	"new solution files"
+// @success		200				{object}	entity.Solution
+// @failure		400				"неверный статус"
+// @failure		401				"неверный токен (пустой, истекший или неверный формат)"
+// @failure		403				"доступ запрещён"
+// @failure		404				"решение не найдено"
 func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
@@ -100,17 +100,17 @@ func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(solObj)
 }
 
-//	@summary		Получение списка решений. [Только ученик]
-//	@description	Получение списка решений конкретного ученика.
-//	@router			/solution/for-student [get]
-//	@id				solution-for-student-list
-//	@tags			solution
-//	@accept			json
-//	@produce		json
-//	@security		JWTAccess
-//	@param			listSolutionQuery	query		listSolutionQuery	false	"listSolutionQuery"
-//	@success		200					{object}	listSolutionOut
-//	@failure		401					"неверный токен (пустой, истекший или неверный формат)"
+// @summary		Получение списка решений. [Только ученик]
+// @description	Получение списка решений конкретного ученика.
+// @router			/solution/for-student [get]
+// @id				solution-for-student-list
+// @tags			solution
+// @accept			json
+// @produce		json
+// @security		JWTAccess
+// @param			listSolutionQuery	query		listSolutionQuery	false	"listSolutionQuery"
+// @success		200					{object}	listSolutionOut
+// @failure		401					"неверный токен (пустой, истекший или неверный формат)"
 func (c *SolControllerStudent) List(ctx *fiber.Ctx) error {
 	// parse user claims
 	userClaims := utilsjwt.ParseUserClaimsFromRequest(ctx)
