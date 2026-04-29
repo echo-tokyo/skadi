@@ -37,7 +37,7 @@ export const KanbanCard = memo(({ solution, columnId }: IKanbanCardProps) => {
   return (
     <div
       ref={ref}
-      onClick={() => nav(`/personal-area/dashboard/solutions/${solution.id}`)}
+      onClick={() => nav(`/personal-area/kanban/solutions/${solution.id}`)}
       className={`${styles.card} ${dragging ? styles.dragging : ''}`}
     >
       <div className={styles.cardHeader}>

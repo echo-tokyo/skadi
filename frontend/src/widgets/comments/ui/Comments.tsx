@@ -27,7 +27,10 @@ const Comments = (props: ICommentsProps) => {
       id: solutionId,
     })
 
-  const { submit, isLoading: isSending } = useSendComment({ id: solutionId })
+  const { submit, isLoading: isSending } = useSendComment({
+    id: solutionId,
+    role,
+  })
 
   const chatRef = useRef<HTMLDivElement>(null)
   const isLoadingMoreRef = useRef(false)

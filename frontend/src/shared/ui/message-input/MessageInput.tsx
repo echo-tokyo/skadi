@@ -6,6 +6,7 @@ import {
   useMemo,
   KeyboardEvent,
   JSX,
+  memo,
 } from 'react'
 import { SendIcon } from '../icons'
 import styles from './styles.module.scss'
@@ -43,7 +44,6 @@ const MessageInput = ({
     if (!trimmedValue || disabled) return
     onSubmit(trimmedValue)
     setValue('')
-    textareaRef.current?.focus()
   }, [trimmedValue, disabled, onSubmit])
 
   const handleKeyDown = useCallback(
@@ -87,4 +87,4 @@ const MessageInput = ({
 
 MessageInput.displayName = 'MessageInput'
 
-export default MessageInput
+export default memo(MessageInput)
