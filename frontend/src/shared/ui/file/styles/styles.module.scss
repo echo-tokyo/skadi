@@ -6,6 +6,10 @@
   width: var(--ui-width, fit-content);
 }
 
+.icon {
+  display: block;
+}
+
 .inputHidden {
   display: none;
 }

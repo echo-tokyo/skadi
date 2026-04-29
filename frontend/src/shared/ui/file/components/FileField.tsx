@@ -5,6 +5,8 @@ import { getUIClasses } from '@/shared/lib/classNames/getUIClasses'
 import Dropzone from './Dropzone'
 import FileItem from './FileItem'
 
+// TODO: нельзя скачать прикрепленные файлы
+
 export interface IFileFieldProps {
   value?: File[]
   onChange: (files: File[]) => void
