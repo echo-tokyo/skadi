@@ -12,7 +12,7 @@ export const useGetComments = ({ id }: { id: number }) => {
     error,
     isError,
     isLoading,
-  } = useGetCommentsInfiniteQuery({ id, 'per-page': 10 })
+  } = useGetCommentsInfiniteQuery({ id })
 
   useEffect(() => {
     if (isError) {

@@ -1,5 +1,6 @@
 import { useGetSolutionsForStudentQuery } from '@/entities/solution'
 import { getErrorMessage } from '@/shared/api'
+import { TSolution } from '@/shared/model'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 
@@ -12,5 +13,9 @@ export const useGetSolutions = () => {
     }
   }, [error, isError])
 
-  return { solutions: data?.data ?? [], isLoading }
+  const solutions: TSolution[] | undefined = data?.data.filter(
+    (el) => el.status.id !== 4,
+  )
+
+  return { solutions: solutions ?? [], isLoading }
 }

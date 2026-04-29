@@ -62,7 +62,7 @@ const SolutionCard = (props: ITaskCardProps) => {
 
   const {
     reset,
-    formState: { isDirty },
+    formState: { isDirty, isSubmitting },
   } = methods
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const SolutionCard = (props: ITaskCardProps) => {
         <div className={styles.actions}>
           <Button
             onClick={reset}
-            disabled={!isDirty || isFetching}
+            disabled={!isDirty || isFetching || isSubmitting}
             color='secondary'
           >
             Сбросить

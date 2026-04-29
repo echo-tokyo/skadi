@@ -14,13 +14,14 @@
   }
 
   &Content {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     margin: 1rem 0;
+
+    & > *:not(:first-child):not(:nth-child(2)) {
+      margin-top: 0.5rem;
+    }
   }
 }
 

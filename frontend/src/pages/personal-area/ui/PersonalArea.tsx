@@ -36,10 +36,10 @@ const PersonalArea: FC = (): ReactNode => {
   )
 
   const handleTabClick = (tab: ITabConfig) => {
-    setCurrentTab(tab)
     localStorage.setItem('saved-tab', tab.name)
-    if (role === 'student' && tab.name === 'Канбан-доска') {
-      navigate('/personal-area/dashboard')
+    setCurrentTab(tab)
+    if (tab.navigateTo) {
+      navigate(tab.navigateTo)
     }
   }
 
@@ -73,13 +73,17 @@ const PersonalArea: FC = (): ReactNode => {
           <Button color='secondary' fluid onClick={() => navigate('/')}>
             На главную
           </Button>
-          <Button color='inverted' fluid onClick={logout} disabled={isLoading}>
+          <Button color='inverted' fluid onClick={logout} isLoading={isLoading}>
             Выйти
           </Button>
         </div>
       </div>
       <div className={styles.right}>
-        {ActiveComponent ? <ActiveComponent /> : <PlugDefault />}
+        {ActiveComponent ? (
+          <ActiveComponent />
+        ) : currentTab?.navigateTo ? null : (
+          <PlugDefault />
+        )}
       </div>
     </div>
   )
