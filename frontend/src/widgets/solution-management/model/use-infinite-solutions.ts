@@ -29,8 +29,6 @@ export const useInfiniteSolutions = (params: IGetSolutionsQuery) => {
     [data?.pages],
   )
 
-  console.log(data)
-
   return {
     solutions,
     isFetchingNextPage,
