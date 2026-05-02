@@ -1,8 +1,14 @@
 import { FileField, Text, Textarea } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { Controller, useController, useFormContext } from 'react-hook-form'
+import {
+  Controller,
+  useController,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form'
 import { TSolutionStudentSchema } from '@/entities/solution'
 import { TFile } from '@/shared/model'
+import { CHECKING_STATUS_ID } from '@/shared/config'
 
 interface ITaskAnswerStudentProps {
   serverFiles: TFile[]
@@ -12,6 +18,7 @@ interface ITaskAnswerStudentProps {
 const TaskEditAnswer = (props: ITaskAnswerStudentProps) => {
   const { serverFiles, disabled = false } = props
   const { control } = useFormContext<TSolutionStudentSchema>()
+  const status = useWatch({ control, name: 'status' })
 
   const { field: deletedField, fieldState: deletedFieldState } = useController({
     control,
@@ -31,6 +38,7 @@ const TaskEditAnswer = (props: ITaskAnswerStudentProps) => {
             <Textarea
               label='Письменный ответ'
               fluid
+              required={status === CHECKING_STATUS_ID}
               disabled={disabled}
               value={field.value}
               isValid={!fieldState.error}

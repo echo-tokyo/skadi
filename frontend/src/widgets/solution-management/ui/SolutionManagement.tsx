@@ -2,12 +2,14 @@ import { ManagementLayout, Select } from '@/shared/ui'
 import { useState } from 'react'
 import { useInfiniteSolutions } from '../model/use-infinite-solutions'
 import { SolutionCardItem } from './SolutionCardItem'
-import { STATUS_OPTIONS } from '@/shared/config'
+import { CHECKING_STATUS_ID, STATUS_OPTIONS } from '@/shared/config'
 import { TStatusId } from '@/shared/model'
 
 const SolutionManagement = () => {
   const [search, setSearch] = useState('')
-  const [status, setStatus] = useState<TStatusId>(3)
+  const [status, setStatus] = useState<TStatusId | undefined>(
+    CHECKING_STATUS_ID,
+  )
   const {
     solutions,
     hasMore,
@@ -32,8 +34,10 @@ const SolutionManagement = () => {
         <Select
           label='Фильтровать по:'
           options={STATUS_OPTIONS}
-          value={status}
-          onChange={(val) => setStatus(Number(val) as TStatusId)}
+          value={status ?? ''}
+          onChange={(val) =>
+            setStatus((Number(val) || undefined) as TStatusId | undefined)
+          }
         />
       }
     />

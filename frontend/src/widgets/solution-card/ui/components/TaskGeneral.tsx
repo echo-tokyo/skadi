@@ -1,23 +1,59 @@
 import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { Controller, useFormContext } from 'react-hook-form'
-import { TDisplayValues } from '../../model/types'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
+import { TaskCardMode, TDisplayValues } from '../../model/types'
 import { TStatusId } from '@/shared/model'
-
-type TStatusFormFields = {
-  status: TStatusId
-}
+import {
+  TSolutionBaseSchema,
+  TSolutionTeacherSchema,
+} from '@/entities/solution'
+import { CHECKED_STATUS_ID, GRADE_OPTIONS } from '@/shared/config'
+import { useMemo } from 'react'
+import { noop } from '@/shared/lib'
 
 interface ITaskGeneralSectionProps {
-  displayValues: TDisplayValues
+  displayValues: Pick<TDisplayValues, 'title' | 'teacher' | 'student' | 'grade'>
   statusOptions: SelectOption<TStatusId>[]
   disabled?: boolean
+  mode: TaskCardMode
 }
 
-const noop = () => undefined
+const GradeField = ({ disabled }: { disabled: boolean }) => {
+  const { control } = useFormContext<TSolutionTeacherSchema>()
+  return (
+    <Controller
+      control={control}
+      name='grade'
+      render={({ field, fieldState }) => (
+        <Select
+          label='Оценка'
+          fluid
+          value={field.value}
+          options={GRADE_OPTIONS}
+          disabled={disabled}
+          onChange={field.onChange}
+          isValid={!fieldState.error}
+          description={fieldState.error?.message}
+        />
+      )}
+    />
+  )
+}
 
-const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGeneralSectionProps) => {
-  const { control } = useFormContext<TStatusFormFields>()
+const TaskGeneral = ({
+  displayValues,
+  statusOptions,
+  disabled = false,
+  mode,
+}: ITaskGeneralSectionProps) => {
+  const { control } = useFormContext<TSolutionBaseSchema>()
+  const status = useWatch({ control, name: 'status' })
+
+  const gradeLabel = useMemo(
+    () =>
+      GRADE_OPTIONS.find((el) => el.value === displayValues.grade)?.label ?? '',
+    [displayValues.grade],
+  )
 
   return (
     <div className={styles.card}>
@@ -53,6 +89,7 @@ const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGe
             <Select
               label='Статус'
               fluid
+              required
               value={field.value}
               options={statusOptions}
               disabled={disabled}
@@ -62,6 +99,19 @@ const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGe
             />
           )}
         />
+        {mode === 'teacher' && status === CHECKED_STATUS_ID ? (
+          <GradeField disabled={disabled} />
+        ) : (
+          mode === 'student-view' && (
+            <Input
+              title='Оценка'
+              fluid
+              disabled
+              value={gradeLabel}
+              onChange={noop}
+            />
+          )
+        )}
       </div>
     </div>
   )

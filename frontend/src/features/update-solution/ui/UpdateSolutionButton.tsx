@@ -3,13 +3,11 @@ import UpdateSolutionByTeacherButton from './components/UpdateSolutionByTeacherB
 
 interface IUpdateSolutionButtonProps {
   id: number
-  actualSchema: 'teacherSchema' | 'studentSchema'
+  isTeacher: boolean
 }
 
-const UpdateSolutionButton = (props: IUpdateSolutionButtonProps) => {
-  const { id, actualSchema } = props
-
-  return actualSchema === 'teacherSchema' ? (
+const UpdateSolutionButton = ({ id, isTeacher }: IUpdateSolutionButtonProps) => {
+  return isTeacher ? (
     <UpdateSolutionByTeacherButton id={id} />
   ) : (
     <UpdateSolutionByStudentButton id={id} />

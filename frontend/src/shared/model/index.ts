@@ -11,4 +11,5 @@ export type {
   TPagination,
   TFile,
   TComment,
+  TGrade,
 } from './types/types'

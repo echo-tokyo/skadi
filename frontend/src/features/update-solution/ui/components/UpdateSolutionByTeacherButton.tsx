@@ -2,6 +2,7 @@ import { Button } from '@/shared/ui'
 import { useFormContext } from 'react-hook-form'
 import { TSolutionTeacherSchema } from '@/entities/solution'
 import { useTeacherUpdateSolution } from '../../model/use-teacher-update-solution'
+import { CHECKED_STATUS_ID } from '@/shared/config'
 
 const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
   const {
@@ -21,7 +22,9 @@ const UpdateSolutionByTeacherButton = ({ id }: { id: number }) => {
 
   return (
     <Button disabled={!isDirty} isLoading={isLoading} onClick={onSubmit}>
-      {statusValue === 4 ? 'Одобрить выполнение' : 'Сохранить решение'}
+      {statusValue === CHECKED_STATUS_ID
+        ? 'Одобрить выполнение'
+        : 'Сохранить решение'}
     </Button>
   )
 }

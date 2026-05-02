@@ -1,4 +1,4 @@
-import { TFile } from '@/shared/model'
+import { TFile, TGrade } from '@/shared/model'
 
 export type TaskCardMode = 'teacher' | 'student-edit' | 'student-view'
 
@@ -10,4 +10,5 @@ export type TDisplayValues = {
   answer: string
   files: TFile[]
   file_answer: TFile[]
+  grade: TGrade | ''
 }
