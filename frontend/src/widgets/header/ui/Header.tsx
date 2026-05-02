@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react'
 import styles from './styles.module.scss'
 
 const Header: FC = (): ReactNode => {
-  const { logo, avatar, rightItems } = styles
+  const { logo } = styles
 
   return (
     <header>
@@ -12,10 +12,6 @@ const Header: FC = (): ReactNode => {
         height='32'
         alt='IT-Школа "Скади"'
       ></img>
-      <div className={rightItems}>
-        <div className={avatar}></div>
-        <div className={avatar}></div>
-      </div>
     </header>
   )
 }
