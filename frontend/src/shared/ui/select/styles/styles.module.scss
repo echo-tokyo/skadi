@@ -87,7 +87,8 @@
   cursor: pointer;
   outline: none;
   user-select: none;
-  transition: background-color var(--transition-duration-fast) var(--transition-timing);
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing);
 
   &:hover,
   &[data-highlighted] {
@@ -180,7 +181,8 @@
   border: none;
   border-radius: v.$radius-inner;
   cursor: pointer;
-  transition: background-color var(--transition-duration-fast) var(--transition-timing);
+  transition: background-color var(--transition-duration-fast)
+    var(--transition-timing);
 
   &:hover:not(:disabled) {
     background-color: var(--color-gray-light);

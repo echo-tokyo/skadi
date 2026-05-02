@@ -1,56 +1,33 @@
 import { TRole, TSolution, TStatusId } from '@/shared/model'
 import {
-  TEACHER_VALID_STATUSES,
-  STUDENT_VALID_STATUSES,
+  VALID_STATUSES,
   TSolutionTeacherSchema,
   TSolutionStudentSchema,
 } from '../model/schemas'
+import { parseGrade } from './parseGrade'
 
-const DEFAULT_TEACHER_STATUS = TEACHER_VALID_STATUSES[0]
-const DEFAULT_STUDENT_STATUS = STUDENT_VALID_STATUSES[0]
+const DEFAULT_STATUS = VALID_STATUSES[0]
 
-const resolveStatus = <T extends number>(
+const resolveStatus = (
   raw: TStatusId | undefined,
-  validOptions: readonly T[],
-  fallback: T,
-): T => {
-  const normalized = raw as T | undefined
-  return normalized && validOptions.includes(normalized) ? normalized : fallback
-}
+): (typeof VALID_STATUSES)[number] =>
+  raw !== undefined && VALID_STATUSES.includes(raw) ? raw : DEFAULT_STATUS
 
 const toTeacherFormValues = (
   solutionData: TSolution | undefined,
-): TSolutionTeacherSchema => {
-  const raw: TStatusId | undefined = solutionData?.status.id
-  const grade = solutionData?.grade ?? ''
-
-  const status = resolveStatus(
-    raw,
-    TEACHER_VALID_STATUSES,
-    DEFAULT_TEACHER_STATUS,
-  )
-  return {
-    status,
-    grade,
-  }
-}
+): TSolutionTeacherSchema => ({
+  status: resolveStatus(solutionData?.status.id),
+  grade: parseGrade(solutionData?.grade),
+})
 
 const toStudentFormValues = (
   solutionData: TSolution | undefined,
-): TSolutionStudentSchema => {
-  const raw = solutionData?.status.id
-  const status = resolveStatus(
-    raw,
-    STUDENT_VALID_STATUSES,
-    DEFAULT_STUDENT_STATUS,
-  )
-  return {
-    status,
-    answer: solutionData?.answer ?? '',
-    file_answer: [],
-    deleted_file_ids: [],
-  }
-}
+): TSolutionStudentSchema => ({
+  status: resolveStatus(solutionData?.status.id),
+  answer: solutionData?.answer ?? '',
+  file_answer: [],
+  deleted_file_ids: [],
+})
 
 export const toFormValuesByRole = (
   solutionData: TSolution | undefined,

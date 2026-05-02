@@ -1,20 +1,44 @@
 import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { TaskCardMode, TDisplayValues } from '../../model/types'
 import { TStatusId } from '@/shared/model'
-import { TSolutionTeacherSchema } from '@/entities/solution'
-import { GRADE_OPTIONS } from '@/shared/config'
+import {
+  TSolutionBaseSchema,
+  TSolutionTeacherSchema,
+} from '@/entities/solution'
+import { CHECKED_STATUS_ID, GRADE_OPTIONS } from '@/shared/config'
 import { useMemo } from 'react'
+import { noop } from '@/shared/lib'
 
 interface ITaskGeneralSectionProps {
-  displayValues: TDisplayValues
+  displayValues: Pick<TDisplayValues, 'title' | 'teacher' | 'student' | 'grade'>
   statusOptions: SelectOption<TStatusId>[]
   disabled?: boolean
   mode: TaskCardMode
 }
 
-const noop = () => undefined
+const GradeField = ({ disabled }: { disabled: boolean }) => {
+  const { control } = useFormContext<TSolutionTeacherSchema>()
+  return (
+    <Controller
+      control={control}
+      name='grade'
+      render={({ field, fieldState }) => (
+        <Select
+          label='Оценка'
+          fluid
+          value={field.value}
+          options={GRADE_OPTIONS}
+          disabled={disabled}
+          onChange={field.onChange}
+          isValid={!fieldState.error}
+          description={fieldState.error?.message}
+        />
+      )}
+    />
+  )
+}
 
 const TaskGeneral = ({
   displayValues,
@@ -22,15 +46,14 @@ const TaskGeneral = ({
   disabled = false,
   mode,
 }: ITaskGeneralSectionProps) => {
-  const { control, getValues } = useFormContext<TSolutionTeacherSchema>()
-  const status = getValues('status')
+  const { control } = useFormContext<TSolutionBaseSchema>()
+  const status = useWatch({ control, name: 'status' })
 
-  const grade = useMemo(() => {
-    const gradeOption = GRADE_OPTIONS.filter(
-      (el) => el.value === displayValues.grade,
-    )
-    return gradeOption.map((el) => el.label)[0]
-  }, [displayValues])
+  const gradeLabel = useMemo(
+    () =>
+      GRADE_OPTIONS.find((el) => el.value === displayValues.grade)?.label ?? '',
+    [displayValues.grade],
+  )
 
   return (
     <div className={styles.card}>
@@ -76,30 +99,15 @@ const TaskGeneral = ({
             />
           )}
         />
-        {mode === 'teacher' && status === 4 ? (
-          <Controller
-            control={control}
-            name='grade'
-            render={({ field, fieldState }) => (
-              <Select
-                label='Оценка'
-                fluid
-                value={field.value}
-                options={GRADE_OPTIONS}
-                disabled={disabled}
-                onChange={field.onChange}
-                isValid={!fieldState.error}
-                description={fieldState.error?.message}
-              />
-            )}
-          />
+        {mode === 'teacher' && status === CHECKED_STATUS_ID ? (
+          <GradeField disabled={disabled} />
         ) : (
           mode === 'student-view' && (
             <Input
               title='Оценка'
               fluid
               disabled
-              value={grade}
+              value={gradeLabel}
               onChange={noop}
             />
           )

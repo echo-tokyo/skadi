@@ -10,7 +10,7 @@
   width: var(--ui-width, 16rem);
   border-radius: v.$radius-base;
   outline: none;
-  min-width: 10rem;
+  min-width: 14rem;
   transition:
     border-color var(--transition-duration) var(--transition-timing),
     box-shadow var(--transition-duration) var(--transition-timing);

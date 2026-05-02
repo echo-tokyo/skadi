@@ -17,6 +17,8 @@ export const STATUS_OPTIONS: SelectOption<TStatusId>[] = [
   { value: 4, label: 'Проверено' },
 ]
 
+export const CHECKED_STATUS_ID = 4
+
 export const GRADE_OPTIONS: SelectOption<TGrade>[] = [
   { value: '5', label: 'Отлично' },
   { value: '4', label: 'Хорошо' },

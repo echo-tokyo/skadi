@@ -1,13 +1,15 @@
 import { Text, Textarea } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { TDisplayValues } from '../../model/types'
+import { TFile } from '@/shared/model'
 import { FileDownload } from '@/features/file-download'
+import { noop } from '@/shared/lib'
 
 interface ITaskAnswerTeacherProps {
-  displayValues: TDisplayValues
+  answer: string
+  fileAnswer: TFile[]
 }
 
-const TaskViewAnswer = ({ displayValues }: ITaskAnswerTeacherProps) => {
+const TaskViewAnswer = ({ answer, fileAnswer }: ITaskAnswerTeacherProps) => {
   return (
     <div className={styles.card}>
       <Text size='20' weight='600'>
@@ -19,14 +21,12 @@ const TaskViewAnswer = ({ displayValues }: ITaskAnswerTeacherProps) => {
           placeholder='Письменного ответа нет'
           fluid
           disabled
-          value={displayValues.answer}
-          onChange={() => undefined}
+          value={answer}
+          onChange={noop}
         />
         <div className={styles.cardAnswerFiles}>
-          {displayValues.file_answer.length > 0 &&
-            displayValues.file_answer.map((el) => (
-              <FileDownload key={el.id} el={el} />
-            ))}
+          {fileAnswer.length > 0 &&
+            fileAnswer.map((el) => <FileDownload key={el.id} el={el} />)}
         </div>
       </div>
     </div>
