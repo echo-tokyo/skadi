@@ -14,6 +14,7 @@ import { getSchemaByRole, toFormValuesByRole } from '@/entities/solution'
 import { TFile } from '@/shared/model'
 import { Comments } from '@/widgets/comments'
 import Spinner from '@/shared/ui/spinner/Spinner'
+import { CHECKED_STATUS_ID } from '@/shared/config'
 
 const Solution: FC = () => {
   const { id } = useParams()
@@ -34,11 +35,12 @@ const Solution: FC = () => {
   const mode: TaskCardMode =
     role === 'teacher'
       ? 'teacher'
-      : solution?.status.id === 4
+      : solution?.status.id === CHECKED_STATUS_ID
         ? 'student-view'
         : 'student-edit'
 
-  const modeForComments = solution?.status.id === 4 ? 'view' : 'edit'
+  const modeForComments =
+    solution?.status.id === CHECKED_STATUS_ID ? 'view' : 'edit'
 
   const displayValues = useMemo(() => toTaskValues(solution), [solution])
   const editableValues = useMemo(
