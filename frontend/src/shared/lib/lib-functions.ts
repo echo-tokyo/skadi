@@ -7,3 +7,5 @@ export const formatFileSize = (bytes: number): string => {
   if (bytes >= 1024) return `${(bytes / 1024).toFixed(2)} КБ`
   return `${bytes} Б`
 }
+
+export const noop = (): void => {}

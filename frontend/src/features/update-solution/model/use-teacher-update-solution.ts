@@ -3,6 +3,7 @@ import {
   TSolutionTeacherSchema,
   useUpdateSolutionByTeacherMutation,
 } from '@/entities/solution'
+import { CHECKED_STATUS_ID } from '@/shared/config'
 import { useMutationAction } from '@/shared/lib'
 
 export const useTeacherUpdateSolution = (id: number) => {
@@ -13,8 +14,11 @@ export const useTeacherUpdateSolution = (id: number) => {
     ): { id: number; data: IUpdateSolutionByTeacherRequest } => ({
       id,
       data: {
-        status_id: Number(data.status),
-        grade: data.status === 4 ? data.grade : undefined,
+        status_id: data.status,
+        grade:
+          data.status === CHECKED_STATUS_ID
+            ? data.grade || undefined
+            : undefined,
       },
     }),
     successMessage: 'Решение обновлено',

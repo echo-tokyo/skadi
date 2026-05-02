@@ -1,13 +1,12 @@
 import { Text, Textarea } from '@/shared/ui'
 import styles from '../styles.module.scss'
-import { TDisplayValues } from '../../model/types'
+import { noop } from '@/shared/lib'
 
 interface ITaskDescriptionSectionProps {
-  displayValues: TDisplayValues
+  description: string
 }
 
-const TaskDescription = (props: ITaskDescriptionSectionProps) => {
-  const { displayValues } = props
+const TaskDescription = ({ description }: ITaskDescriptionSectionProps) => {
   return (
     <div className={styles.card}>
       <Text size='20' weight='600'>
@@ -18,8 +17,8 @@ const TaskDescription = (props: ITaskDescriptionSectionProps) => {
           label='Описание задания'
           fluid
           disabled
-          value={displayValues.description}
-          onChange={() => ''}
+          value={description}
+          onChange={noop}
         />
       </div>
     </div>

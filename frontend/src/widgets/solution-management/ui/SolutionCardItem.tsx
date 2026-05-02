@@ -18,6 +18,7 @@ export const SolutionCardItem = memo(
         fields={[
           { label: 'Задание', value: solutionData.task.title },
           { label: 'Статус', value: solutionData.status.name },
+          { label: 'Оценка', value: solutionData.grade },
         ]}
         actions={
           <>

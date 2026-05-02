@@ -3,6 +3,7 @@ import { getErrorMessage } from '@/shared/api'
 import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 import { IGetSolutionsQuery } from '@/entities/solution'
+import { CHECKED_STATUS_ID } from '@/shared/config'
 
 export const useArchiveSolutions = (params: IGetSolutionsQuery) => {
   const {
@@ -14,7 +15,10 @@ export const useArchiveSolutions = (params: IGetSolutionsQuery) => {
     isError,
     isLoading,
     isFetching,
-  } = useGetStudentSolutionsInfiniteQuery({ ...params, status_id: 4 })
+  } = useGetStudentSolutionsInfiniteQuery({
+    ...params,
+    status_id: CHECKED_STATUS_ID,
+  })
 
   useEffect(() => {
     if (isError) toast.error(getErrorMessage(error))

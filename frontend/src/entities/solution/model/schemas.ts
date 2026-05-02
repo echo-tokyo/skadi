@@ -1,17 +1,16 @@
+import { GRADE_OPTIONS } from '@/shared/config'
 import { z } from 'zod'
 
-export const TEACHER_VALID_STATUSES = [1, 2, 3, 4] as const
-export const STUDENT_VALID_STATUSES = [1, 2, 3, 4] as const
+export const VALID_STATUSES = [1, 2, 3, 4] as const
 
-// FIXME: Взять из GRADE_OPTIONS
-export const GRADE = ['2', '3', '4', '5'] as const
+const GRADE_VALUES = GRADE_OPTIONS.map((o) => o.value)
 
 export const solutionTeacherSchema = z.object({
-  status: z.literal(TEACHER_VALID_STATUSES, 'Обязательное поле'),
-  grade: z.literal(GRADE, 'Неправильное значение').or(z.string()),
+  status: z.literal(VALID_STATUSES, 'Обязательное поле'),
+  grade: z.enum(GRADE_VALUES).or(z.literal('')),
 })
 export const solutionStudentSchema = z.object({
-  status: z.literal(STUDENT_VALID_STATUSES, 'Обязательное поле'),
+  status: z.literal(VALID_STATUSES, 'Обязательное поле'),
   answer: z.string(),
   file_answer: z.array(z.file()),
   deleted_file_ids: z.array(z.number()),
@@ -19,3 +18,4 @@ export const solutionStudentSchema = z.object({
 
 export type TSolutionTeacherSchema = z.infer<typeof solutionTeacherSchema>
 export type TSolutionStudentSchema = z.infer<typeof solutionStudentSchema>
+export type TSolutionBaseSchema = Pick<TSolutionTeacherSchema, 'status'>
