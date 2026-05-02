@@ -1,23 +1,36 @@
 import { Input, Select, SelectOption, Text } from '@/shared/ui'
 import styles from '../styles.module.scss'
 import { Controller, useFormContext } from 'react-hook-form'
-import { TDisplayValues } from '../../model/types'
+import { TaskCardMode, TDisplayValues } from '../../model/types'
 import { TStatusId } from '@/shared/model'
-
-type TStatusFormFields = {
-  status: TStatusId
-}
+import { TSolutionTeacherSchema } from '@/entities/solution'
+import { GRADE_OPTIONS } from '@/shared/config'
+import { useMemo } from 'react'
 
 interface ITaskGeneralSectionProps {
   displayValues: TDisplayValues
   statusOptions: SelectOption<TStatusId>[]
   disabled?: boolean
+  mode: TaskCardMode
 }
 
 const noop = () => undefined
 
-const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGeneralSectionProps) => {
-  const { control } = useFormContext<TStatusFormFields>()
+const TaskGeneral = ({
+  displayValues,
+  statusOptions,
+  disabled = false,
+  mode,
+}: ITaskGeneralSectionProps) => {
+  const { control, getValues } = useFormContext<TSolutionTeacherSchema>()
+  const status = getValues('status')
+
+  const grade = useMemo(() => {
+    const gradeOption = GRADE_OPTIONS.filter(
+      (el) => el.value === displayValues.grade,
+    )
+    return gradeOption.map((el) => el.label)[0]
+  }, [displayValues])
 
   return (
     <div className={styles.card}>
@@ -53,6 +66,7 @@ const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGe
             <Select
               label='Статус'
               fluid
+              required={mode === 'teacher'}
               value={field.value}
               options={statusOptions}
               disabled={disabled}
@@ -62,6 +76,34 @@ const TaskGeneral = ({ displayValues, statusOptions, disabled = false }: ITaskGe
             />
           )}
         />
+        {mode === 'teacher' && status === 4 ? (
+          <Controller
+            control={control}
+            name='grade'
+            render={({ field, fieldState }) => (
+              <Select
+                label='Оценка'
+                fluid
+                value={field.value}
+                options={GRADE_OPTIONS}
+                disabled={disabled}
+                onChange={field.onChange}
+                isValid={!fieldState.error}
+                description={fieldState.error?.message}
+              />
+            )}
+          />
+        ) : (
+          mode === 'student-view' && (
+            <Input
+              title='Оценка'
+              fluid
+              disabled
+              value={grade}
+              onChange={noop}
+            />
+          )
+        )}
       </div>
     </div>
   )

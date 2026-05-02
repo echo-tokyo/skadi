@@ -56,6 +56,8 @@ export type TStatus = {
 export type TStatusId = TStatus['id']
 export type TStatusName = TStatus['name']
 
+export type TGrade = '2' | '3' | '4' | '5'
+
 export type TSolution = {
   answer?: string
   grade?: string

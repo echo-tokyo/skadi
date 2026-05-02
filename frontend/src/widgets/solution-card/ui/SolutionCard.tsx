@@ -88,6 +88,7 @@ const SolutionCard = (props: ITaskCardProps) => {
           <TaskGeneral
             displayValues={displayValues}
             statusOptions={statusOptions}
+            mode={mode}
             disabled={isViewOnly}
           />
           <TaskDescription displayValues={displayValues} />
