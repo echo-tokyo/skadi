@@ -22,6 +22,8 @@ const toTeacherFormValues = (
   solutionData: TSolution | undefined,
 ): TSolutionTeacherSchema => {
   const raw: TStatusId | undefined = solutionData?.status.id
+  const grade = solutionData?.grade ?? ''
+
   const status = resolveStatus(
     raw,
     TEACHER_VALID_STATUSES,
@@ -29,6 +31,7 @@ const toTeacherFormValues = (
   )
   return {
     status,
+    grade,
   }
 }
 

@@ -12,7 +12,10 @@ export const useTeacherUpdateSolution = (id: number) => {
       data: TSolutionTeacherSchema,
     ): { id: number; data: IUpdateSolutionByTeacherRequest } => ({
       id,
-      data: { status_id: Number(data.status) },
+      data: {
+        status_id: Number(data.status),
+        grade: data.status === 4 ? data.grade : undefined,
+      },
     }),
     successMessage: 'Решение обновлено',
   })

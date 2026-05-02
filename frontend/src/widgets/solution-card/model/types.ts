@@ -10,4 +10,5 @@ export type TDisplayValues = {
   answer: string
   files: TFile[]
   file_answer: TFile[]
+  grade: string
 }
