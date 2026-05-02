@@ -7,7 +7,9 @@ import { TStatusId } from '@/shared/model'
 
 const SolutionManagement = () => {
   const [search, setSearch] = useState('')
-  const [status, setStatus] = useState<TStatusId>(CHECKING_STATUS_ID)
+  const [status, setStatus] = useState<TStatusId | undefined>(
+    CHECKING_STATUS_ID,
+  )
   const {
     solutions,
     hasMore,
@@ -32,8 +34,10 @@ const SolutionManagement = () => {
         <Select
           label='Фильтровать по:'
           options={STATUS_OPTIONS}
-          value={status}
-          onChange={(val) => setStatus(Number(val) as TStatusId)}
+          value={status ?? ''}
+          onChange={(val) =>
+            setStatus((Number(val) || undefined) as TStatusId | undefined)
+          }
         />
       }
     />
