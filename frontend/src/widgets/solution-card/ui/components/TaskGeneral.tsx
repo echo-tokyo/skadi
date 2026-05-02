@@ -89,7 +89,7 @@ const TaskGeneral = ({
             <Select
               label='Статус'
               fluid
-              required={mode === 'teacher'}
+              required
               value={field.value}
               options={statusOptions}
               disabled={disabled}
