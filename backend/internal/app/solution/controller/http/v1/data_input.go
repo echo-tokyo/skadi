@@ -16,7 +16,7 @@ type updateSolutionBody struct {
 	// new status ID (student and teacher)
 	StatusID *int `form:"status_id" json:"status_id,omitempty" validate:"omitempty" example:"2"`
 	// new grade (teacher only)
-	Grade *string `json:"grade,omitempty" validate:"omitempty,max=5" example:"5+" maxLength:"50"`
+	Grade *string `json:"grade,omitempty" validate:"omitempty,max=5" example:"5+" maxLength:"5"`
 	// new answer (student only)
 	Answer *string `form:"answer" json:"answer,omitempty" validate:"omitempty" example:"ООП - это объектно-ориентированное программирование"`
 	// IDs of files to delete from the task (student only)

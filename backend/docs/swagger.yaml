@@ -545,7 +545,7 @@ definitions:
       grade:
         description: new grade (teacher only)
         example: 5+
-        maxLength: 50
+        maxLength: 5
         type: string
       status_id:
         description: new status ID (student and teacher)
@@ -1592,7 +1592,7 @@ paths:
           schema:
             $ref: '#/definitions/entity.User'
         "400":
-          description: группа не найдена
+          description: группа не найдена | слабый пароль
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "409":
@@ -1682,7 +1682,7 @@ paths:
             $ref: '#/definitions/entity.User'
         "400":
           description: неподдерживаемые данные для роли обновляемого пользователя
-            | группа не найдена
+            | группа не найдена | слабый пароль
         "401":
           description: неверный токен (пустой, истекший или неверный формат)
         "404":
