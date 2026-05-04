@@ -8,7 +8,7 @@ import (
 
 type SampleStruct struct {
 	Login    string `validate:"required,max=50"`
-	Password string `validate:"required,min=8,max=30"`
+	Password string `validate:"required,strong-passwd,min=8,max=30"`
 }
 
 func TestTagValidator_WithError(t *testing.T) {

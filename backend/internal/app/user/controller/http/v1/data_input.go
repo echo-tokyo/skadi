@@ -17,7 +17,7 @@ type userBody struct {
 	// user username
 	Username string `json:"username" validate:"required,max=50" example:"user1" maxLength:"50"`
 	// user password
-	Password string `json:"password" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
+	Password string `json:"password" validate:"required,strong-passwd,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// user role (teacher or student)
 	Role entity.Role `json:"role" validate:"required,oneof=teacher student" example:"teacher"`
 	// class id (for students)
@@ -100,7 +100,7 @@ type updateBody struct {
 	// class id (for students)
 	ClassID *int `json:"class_id,omitempty" validate:"omitempty,numeric" example:"3"`
 	// user password
-	Password string `json:"password,omitempty" validate:"omitempty,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
+	Password string `json:"password,omitempty" validate:"omitempty,strong-passwd,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// user profile
 	Profile profileBody `json:"profile" validate:"required"`
 }
@@ -153,13 +153,13 @@ func (u *listUserQuery) Validate(valid validator.Validator) serialize.Validator 
 // @description updatePasswordAdminBody represents a data to update user password by admin.
 type updatePasswordAdminBody struct {
 	// new password for user
-	NewPasswd string `json:"new" validate:"required,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
+	NewPasswd string `json:"new" validate:"required,strong-passwd,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
 }
 
 // @description updatePasswordBody represents a data to update user password by the user himself.
 type updatePasswordBody struct {
 	// old user password
-	OldPasswd string `json:"old" validate:"required,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
+	OldPasswd string `json:"old" validate:"required,strong-passwd,min=8,max=40" example:"qwerty123" minLength:"8" maxLength:"40"`
 	// new user password
-	NewPasswd string `json:"new" validate:"required,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
+	NewPasswd string `json:"new" validate:"required,strong-passwd,min=8,max=40" example:"ytrewq321" minLength:"8" maxLength:"40"`
 }

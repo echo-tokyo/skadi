@@ -56,7 +56,7 @@ func NewServer() (*App, error) {
 	slog.Debug("current config", "config", cfg)
 
 	// init validator
-	valid, err := validator.NewTagValidator()
+	valid, err := validator.NewRuTagValidator()
 	if err != nil {
 		return nil, fmt.Errorf("validator: %w", err)
 	}

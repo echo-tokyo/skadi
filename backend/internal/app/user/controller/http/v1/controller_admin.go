@@ -38,7 +38,7 @@ func NewControllerAdmin(userUCAdmin user.UsecaseAdmin,
 // @security		JWTAccess
 // @param			userBody	body		userBody	true	"userBody"
 // @success		201			{object}	entity.User
-// @failure		400			"группа не найдена"
+// @failure		400			"группа не найдена | слабый пароль"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 // @failure		409			"пользователь с введенным логином уже существует"
 func (c *UserControllerAdmin) Create(ctx *fiber.Ctx) error {
@@ -113,7 +113,7 @@ func (c *UserControllerAdmin) Read(ctx *fiber.Ctx) error {
 // @param			id			path		int			true	"ID юзера"
 // @param			updateBody	body		updateBody	true	"updateBody"
 // @success		200			{object}	entity.User
-// @failure		400			"неподдерживаемые данные для роли обновляемого пользователя | группа не найдена"
+// @failure		400			"неподдерживаемые данные для роли обновляемого пользователя | группа не найдена | слабый пароль"
 // @failure		401			"неверный токен (пустой, истекший или неверный формат)"
 // @failure		404			"пользователь не найден"
 func (c *UserControllerAdmin) Update(ctx *fiber.Ctx) error {

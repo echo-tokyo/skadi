@@ -7,6 +7,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// strong password rules
+var _strongPassRules = []*regexp.Regexp{
+	regexp.MustCompile(`.{8,}`), // length
+	regexp.MustCompile(`[a-z]`), // lower
+	regexp.MustCompile(`\d`),    // digit
+	regexp.MustCompile(`[A-Z]`), // upper
+	regexp.MustCompile(`\W`),    // special
+}
+
 // Encode returns hashed password.
 func Encode(password []byte) ([]byte, error) {
 	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
@@ -29,18 +38,8 @@ func IsCorrect(password, hash []byte) bool {
 // 3) At least 1 upper case.
 // 4) At least 1 special character.
 func Strong(password string) bool {
-	var (
-		matched bool
-		err     error
-		tests   = []string{".{8,}", "[a-z]", "[0-9]", "[A-Z]", "[^\\d\\w]"}
-	)
-
-	for _, test := range tests {
-		matched, err = regexp.MatchString(test, password)
-		if err != nil {
-			return false
-		}
-		if !matched {
+	for _, rule := range _strongPassRules {
+		if !rule.MatchString(password) {
 			return false
 		}
 	}

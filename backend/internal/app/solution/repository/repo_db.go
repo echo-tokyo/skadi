@@ -141,7 +141,7 @@ func (r *RepoDB) GetManyForTeacher(teacherID int, search string, statusIDs []int
 
 	solList := make([]entity.Solution, 0)
 	query := r.dbStorage.Model(entity.Solution{}).
-		Omit("grade", "answer", "updated_at").
+		Omit("answer", "updated_at").
 		Preload(_preloadTask, func(db *gorm.DB) *gorm.DB {
 			return db.Select(_fieldID, _fieldTitle) // preload only ID and title
 		}).
@@ -181,7 +181,7 @@ func (r *RepoDB) GetManyForStudent(studID int, search string, statusIDs []int,
 
 	solList := make([]entity.Solution, 0)
 	query := r.dbStorage.Model(entity.Solution{}).
-		Omit("grade", "answer", "student_id").
+		Omit("answer", "student_id").
 		Preload(_preloadTask, func(db *gorm.DB) *gorm.DB {
 			return db.Select(_fieldID, _fieldTitle, _fieldDesc) // preload only ID, title and desc
 		}).
