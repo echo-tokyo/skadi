@@ -54,7 +54,7 @@ func (v *ValidTag) RegisterWithTrans(inst *validator.Validate,
 		func(ut ut.Translator) error {
 			return ut.Add(v.Tag, v.translations.get(transLocale), true)
 		},
-		func(ut ut.Translator, fe validator.FieldError) string {
+		func(ut ut.Translator, _ validator.FieldError) string {
 			t, _ := ut.T(v.Tag) // nolint:errcheck // tag v.tag was registered
 			return t
 		},
