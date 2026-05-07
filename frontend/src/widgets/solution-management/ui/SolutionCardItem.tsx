@@ -1,3 +1,4 @@
+import { parseGrade, useGradeLabel } from '@/entities/solution'
 import { DeleteSolutionButton } from '@/features/delete-solution'
 import { TSolution } from '@/shared/model'
 import { AccordionCard, Button } from '@/shared/ui'
@@ -12,13 +13,16 @@ export const SolutionCardItem = memo(
   ({ solutionData }: ISolutionCardItemProps) => {
     const nav = useNavigate()
 
+    const parsedGrade = parseGrade(solutionData.grade)
+    const gradeLabel = useGradeLabel(parsedGrade)
+
     return (
       <AccordionCard
         title={solutionData.student?.fullname ?? 'Нет ученика'}
         fields={[
           { label: 'Задание', value: solutionData.task.title },
           { label: 'Статус', value: solutionData.status.name },
-          { label: 'Оценка', value: solutionData.grade },
+          { label: 'Оценка', value: gradeLabel || '-' },
         ]}
         actions={
           <>
