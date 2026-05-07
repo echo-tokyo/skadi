@@ -4,7 +4,7 @@ import {
   TSolutionTeacherSchema,
   TSolutionStudentSchema,
 } from '../model/schemas'
-import { parseGrade } from './parseGrade'
+import { parseGrade } from './parse-grade'
 
 const DEFAULT_STATUS = VALID_STATUSES[0]
 

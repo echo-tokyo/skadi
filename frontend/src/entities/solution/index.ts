@@ -29,4 +29,5 @@ export {
 
 export { getSchemaByRole } from './lib/get-schema-by-role'
 export { toFormValuesByRole } from './lib/to-form-values-by-role'
-export { parseGrade } from './lib/parseGrade'
+export { useGradeLabel } from './model/use-grade-label'
+export { parseGrade } from './lib/parse-grade'

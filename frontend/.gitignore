@@ -27,3 +27,5 @@ dist-ssr
 env/
 *.env
 .vite
+/.claude/
+CLAUDE.md

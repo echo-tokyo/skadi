@@ -8,8 +8,8 @@ import {
   TSolutionTeacherSchema,
 } from '@/entities/solution'
 import { CHECKED_STATUS_ID, GRADE_OPTIONS } from '@/shared/config'
-import { useMemo } from 'react'
 import { noop } from '@/shared/lib'
+import { useGradeLabel } from '@/entities/solution/model/use-grade-label'
 
 interface ITaskGeneralSectionProps {
   displayValues: Pick<TDisplayValues, 'title' | 'teacher' | 'student' | 'grade'>
@@ -49,11 +49,7 @@ const TaskGeneral = ({
   const { control } = useFormContext<TSolutionBaseSchema>()
   const status = useWatch({ control, name: 'status' })
 
-  const gradeLabel = useMemo(
-    () =>
-      GRADE_OPTIONS.find((el) => el.value === displayValues.grade)?.label ?? '',
-    [displayValues.grade],
-  )
+  const gradeLabel = useGradeLabel(displayValues.grade)
 
   return (
     <div className={styles.card}>
@@ -89,7 +85,7 @@ const TaskGeneral = ({
             <Select
               label='Статус'
               fluid
-              required
+              required={mode !== 'student-view'}
               value={field.value}
               options={statusOptions}
               disabled={disabled}
@@ -107,6 +103,7 @@ const TaskGeneral = ({
               title='Оценка'
               fluid
               disabled
+              placeholder='Оценки нет'
               value={gradeLabel}
               onChange={noop}
             />
