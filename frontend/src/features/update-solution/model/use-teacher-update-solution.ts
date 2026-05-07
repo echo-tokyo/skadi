@@ -15,10 +15,7 @@ export const useTeacherUpdateSolution = (id: number) => {
       id,
       data: {
         status_id: data.status,
-        grade:
-          data.status === CHECKED_STATUS_ID
-            ? data.grade || undefined
-            : undefined,
+        grade: data.status === CHECKED_STATUS_ID ? data.grade : undefined,
       },
     }),
     successMessage: 'Решение обновлено',

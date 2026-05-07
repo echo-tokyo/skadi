@@ -1,3 +1,4 @@
+import { parseGrade, useGradeLabel } from '@/entities/solution'
 import { TSolution } from '@/shared/model'
 import { AccordionCard, Button } from '@/shared/ui'
 import { memo } from 'react'
@@ -11,12 +12,15 @@ export const ArchiveSolutionCard = memo(
   ({ solutionData }: IArchiveSolutionCardProps) => {
     const nav = useNavigate()
 
+    const parsedGrade = parseGrade(solutionData.grade)
+    const gradeLabel = useGradeLabel(parsedGrade)
+
     return (
       <AccordionCard
         title={solutionData.task.title}
         fields={[
           { label: 'Статус', value: solutionData.status.name },
-          { label: 'Оценка', value: solutionData.grade ?? '-' },
+          { label: 'Оценка', value: gradeLabel || '-' },
         ]}
         actions={
           <Button
