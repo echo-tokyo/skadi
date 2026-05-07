@@ -71,6 +71,11 @@ func (u *UCStudent) Update(studID, solutionID int,
 		solObj.Answer = newData.Answer
 	}
 
+	// check that solution has either an answer or at least one file to change status to "ready"
+	if err := statusRestrictions(solObj); err != nil {
+		return nil, err
+	}
+
 	if err := u.solRepoDB.Update(solutionID, newData); err != nil {
 		return nil, fmt.Errorf("update: %w", err)
 	}
@@ -109,6 +114,18 @@ func (u *UCStudent) getStatusToUpdate(solObj *entity.Solution, newStatusID int) 
 	}
 	if err != nil {
 		return fmt.Errorf("get status: %w", err)
+	}
+	return nil
+}
+
+// statusRestrictions checks data-status compliance when updating solution.
+func statusRestrictions(solObj *entity.Solution) error {
+	// check that solution has either an answer or at least one file to change status to "ready"
+	zeroFiles := len(solObj.Files) == 0
+	nilAnswer := solObj.Answer == nil || solObj.Answer != nil && *solObj.Answer == ""
+
+	if solObj.StatusID == _readyStatusID && zeroFiles && nilAnswer {
+		return fmt.Errorf("%w: set ready status without any answer", solution.ErrUnsupportedData)
 	}
 	return nil
 }
