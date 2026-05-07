@@ -47,7 +47,7 @@ func NewControllerStudent(cfg *config.Config, solUCStudent solution.UsecaseStude
 // @param			delete_files	formData	[]int	false	"IDs of files to delete from the solution"
 // @param			file			formData	[]file	false	"new solution files"
 // @success		200				{object}	entity.Solution
-// @failure		400				"неверный статус"
+// @failure		400				"неверный статус | отправка на проверку возможна только при наличии ответа"
 // @failure		401				"неверный токен (пустой, истекший или неверный формат)"
 // @failure		403				"доступ запрещён"
 // @failure		404				"решение не найдено"
@@ -78,6 +78,13 @@ func (c *SolControllerStudent) Update(ctx *fiber.Ctx) error {
 			CauseErr:   err,
 			StatusCode: fiber.StatusBadRequest,
 			Message:    "неверный статус",
+		}
+	}
+	if errors.Is(err, solution.ErrUnsupportedData) {
+		return &httperror.HTTPError{
+			CauseErr:   err,
+			StatusCode: fiber.StatusBadRequest,
+			Message:    "отправка на проверку возможна только при наличии ответа",
 		}
 	}
 	if errors.Is(err, solution.ErrForbidden) {
