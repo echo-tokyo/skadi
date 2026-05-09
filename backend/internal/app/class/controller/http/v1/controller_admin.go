@@ -48,13 +48,8 @@ func (c *ClassControllerAdmin) Create(ctx *fiber.Ctx) error {
 	if err := serialize.Deserialize(inputBody, ctx.BodyParser, c.valid.Validate); err != nil {
 		return err
 	}
+	classObj := inputBody.ToEntityClass()
 
-	// data reshaping
-	classObj := &entity.Class{
-		Name:      inputBody.Name,
-		TeacherID: inputBody.TeacherID,
-		Schedule:  inputBody.Schedule,
-	}
 	// create a new class
 	err := c.classUCAdmin.Create(classObj, inputBody.StudentIDs)
 	if errors.Is(err, class.ErrAlreadyExists) {
