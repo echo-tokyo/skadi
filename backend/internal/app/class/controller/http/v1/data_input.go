@@ -14,6 +14,20 @@ type classBody struct {
 	StudentIDs []int `json:"students,omitempty" validate:"omitempty"`
 }
 
+func (u *classBody) ToEntityClass() *entity.Class {
+	if u.TeacherID != nil && *u.TeacherID == 0 {
+		u.TeacherID = nil
+	}
+	if u.Schedule != nil && *u.Schedule == "" {
+		u.Schedule = nil
+	}
+	return &entity.Class{
+		Name:      u.Name,
+		TeacherID: u.TeacherID,
+		Schedule:  u.Schedule,
+	}
+}
+
 // @description classIDPath represents a data with class ID in path params.
 type classIDPath struct {
 	// class id
