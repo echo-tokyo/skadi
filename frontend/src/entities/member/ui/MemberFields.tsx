@@ -217,6 +217,7 @@ const MemberFields = ({
                 ref={f.ref}
                 title={title}
                 fluid
+                type={field.type}
                 required={required}
                 disabled={disabled}
                 isValid={!fieldState.error}
