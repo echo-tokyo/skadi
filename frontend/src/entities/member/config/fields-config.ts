@@ -6,10 +6,11 @@ type TInputFieldName = Exclude<
 >
 
 export type TFieldConfig =
-  | { type: 'input'; name: TInputFieldName; title: string; required?: boolean }
+  | { type: 'text'; name: TInputFieldName; title: string; required?: boolean }
   | { type: 'select'; name: 'role'; title: string; required?: boolean }
   | { type: 'select'; name: 'class'; title: string; required?: boolean }
   | { type: 'textarea'; name: 'extra'; title: string; required?: boolean }
+  | { type: 'password'; name: 'password'; title: string; required?: boolean }
 
 // Значения если не передан fieldData
 export const INITIAL_FIELDS_VALUES: TMemberFormData = {
@@ -28,16 +29,16 @@ export const INITIAL_FIELDS_VALUES: TMemberFormData = {
 
 // Поля для маппинга
 export const FIELD_CONFIG: TFieldConfig[] = [
-  { type: 'input', name: 'fullname', title: 'ФИО', required: true },
+  { type: 'text', name: 'fullname', title: 'ФИО', required: true },
   { type: 'select', name: 'role', title: 'Роль', required: true },
-  { type: 'input', name: 'username', title: 'Логин', required: true },
-  { type: 'input', name: 'password', title: 'Пароль', required: true },
+  { type: 'text', name: 'username', title: 'Логин', required: true },
+  { type: 'password', name: 'password', title: 'Пароль', required: true },
   { type: 'select', name: 'class', title: 'Группа' },
-  { type: 'input', name: 'address', title: 'Адрес проживания' },
-  { type: 'input', name: 'email', title: 'Email' },
-  { type: 'input', name: 'phone', title: 'Телефон' },
-  { type: 'input', name: 'parentEmail', title: 'Email родителя' },
-  { type: 'input', name: 'parentPhone', title: 'Телефон родителя' },
+  { type: 'text', name: 'address', title: 'Адрес проживания' },
+  { type: 'text', name: 'email', title: 'Email' },
+  { type: 'text', name: 'phone', title: 'Телефон' },
+  { type: 'text', name: 'parentEmail', title: 'Email родителя' },
+  { type: 'text', name: 'parentPhone', title: 'Телефон родителя' },
   { type: 'textarea', name: 'extra', title: 'Дополнительная информация' },
 ]
 
