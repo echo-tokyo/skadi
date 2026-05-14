@@ -53,8 +53,14 @@ migrate-status:
 migrate-up:
 	@go run $(go_migrator_path) up -n 1
 
+migrate-up-full:
+	@go run $(go_migrator_path) up
+
 migrate-down:
 	@go run $(go_migrator_path) down -n 1
+
+migrate-down-full:
+	@go run $(go_migrator_path) down
 
 # ---- #
 # PROD #
