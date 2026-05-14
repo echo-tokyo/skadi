@@ -91,11 +91,6 @@ func (u *UCAdminClient) Update(id int, newUser *entity.User) (*entity.User, erro
 		return nil, fmt.Errorf("profile: %w", err)
 	}
 
-	// skip class update for non-student users and not updated data
-	if userObj.ClassID == newUser.ClassID {
-		return userObj, nil
-	}
-
 	// update user object only
 	userObj.ClassID = newUser.ClassID // set new class ID
 	// process and set new password hash
