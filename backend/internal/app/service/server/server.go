@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"time"
 
 	fiber "github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -14,6 +15,12 @@ import (
 	"skadi/backend/internal/app/service/server/middleware"
 	"skadi/backend/internal/pkg/cache"
 	"skadi/backend/internal/pkg/validator"
+)
+
+const (
+	_bodyLimit    = 30 * 1024 * 1024  // control on Nginx
+	_readTimeout  = 300 * time.Second // control on Nginx
+	_writeTimeout = 300 * time.Second // control on Nginx
 )
 
 // Server represents a HTTP-server.
@@ -57,6 +64,9 @@ func New(cfg *config.Config, dbStorage *gorm.DB, cacheStorage cache.Storage,
 			ServerHeader:  "Skadi",
 			StrictRouting: false,
 			ErrorHandler:  errhandler.CustomErrorHandler,
+			BodyLimit:     _bodyLimit,
+			ReadTimeout:   _readTimeout,
+			WriteTimeout:  _writeTimeout,
 		}),
 	}
 
